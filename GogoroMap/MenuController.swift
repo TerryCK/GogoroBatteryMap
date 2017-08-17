@@ -25,30 +25,20 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNaviagtionAndCollectionView()
-        getInfo(.removeAds) { (success, products) in
-            if success, let products = products {
-                self.products = products
-            }
-        }
+        setupPurchaseItem()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupObserver()
         
-        // discard by using verify purchased receipts
-        //        guard !UserDefaults.standard.bool(forKey: Products.removeAds) else { return }
-        //        setupObserver()
-        //        Products.store.requestProducts { (success, products) in
-        //            if success {
-        //                self.products = products!
-        //            }
-        //        }
+        
     }
+   
     
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: RegisteredPurchase.observerName, object: nil)
+       
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -117,22 +107,14 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         self.present(activityVC, animated: true, completion: nil)
     }
     
-    func removeAds() {
-        mapViewController?.removeAds()
-    }
     func restorePurchase() {
         restore()
+        
     }
+    
     
     func presentMail() {
         presentErrorMailReport()
-    }
-
-    private func setupObserver() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handlePurchaseNotification(_:)),
-                                               name: RegisteredPurchase.observerName,
-                                               object: nil)
     }
     
     private func setupNaviagtionAndCollectionView() {
@@ -157,9 +139,20 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self, name: RegisteredPurchase.observerName, object: nil)
         print("menu controller deinitialize")
     }
-
+    
+    private func setupPurchaseItem() {
+        guard let hasUserPurchased = mapViewController?.hasUserPurchased,
+          !hasUserPurchased else { return }
+        setupObserver()
+        getInfo(.removeAds) { (success, products) in
+            if success, let products = products {
+                self.products = products
+            }
+        }
+    }
 }
 
 
@@ -168,41 +161,24 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
 extension MenuController {
     
     func handlePurchaseNotification(_ notification: Notification) {
-        guard let productID = notification.object as? String else { return }
-        
-        for product in products {
-            guard product.productIdentifier == productID else { continue }
-            
-            removeAds()
-            
+        print("MenuController recieved notify")
+        guard let productID = notification.object as? String,
+            RegisteredPurchase.removedProductID == productID else { return }
+
             if let cell = collectionView?.visibleCells.first as? StationsViewCell {
                 cell.buyStoreButtonStackView.removeFromSuperview()
-                collectionView?.layoutIfNeeded()
-            }
-            
-            collectionView?.reloadData()
-            
-            //  discard
-            //            guard product.productIdentifier == productID else { continue }
-            //
-            //            switch productID {
-            //            case Products.removeAds:
-            //                print(productID ,"removeAds")
-            //                removeAds()
-            //                if let cell = collectionView?.visibleCells.first as? StationsViewCell {
-            //                    cell.buyStoreButtonStackView.removeFromSuperview()
-            //                    collectionView?.layoutIfNeeded()
-            //                }
-            //                collectionView?.reloadData()
-            //            default:
-            //                break
-            //            }
-            
+                cell.layoutIfNeeded()
         }
     }
     
+    fileprivate func setupObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePurchaseNotification(_:)),
+                                               name: RegisteredPurchase.observerName,
+                                               object: nil)
+    }
+    
 }
-
 
 
 

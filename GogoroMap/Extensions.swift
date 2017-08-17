@@ -77,11 +77,6 @@ extension Double {
     var format: Double {
         return Double(String(format:"%.2f", self))!
     }
-    var toRadian: CGFloat {
-        get { return CGFloat(self * (Double.pi/180))
-        }
-    }
-    
 }
 
 

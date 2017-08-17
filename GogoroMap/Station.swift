@@ -39,6 +39,7 @@ struct Station {
     struct LocName {
         let engName: String?
         let twName: String?
+        
         init?(arr: [[String: Any]]) {
             self.engName = arr[0]["Value"] as? String ?? ""
             self.twName = arr[1]["Value"] as? String ?? ""

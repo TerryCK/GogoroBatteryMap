@@ -51,8 +51,6 @@ extension Mailsendable where Self: UIViewController {
         
     }
     
-    
-    
     func presentErrorMailReport() {
         let mailComposeViewController = configuredMailComposeViewController()
         if MFMailComposeViewController.canSendMail() {

@@ -19,7 +19,7 @@ final class StationsViewCell: UICollectionViewCell {
             shareButton.addTarget(menuController, action: #selector(menuController?.shareThisApp), for: .touchUpInside)
             moreAppsButton.addTarget(menuController, action: #selector(menuController?.moreApp), for: .touchUpInside)
             guideButton.addTarget(menuController, action: #selector(menuController?.performGuidePage), for: .touchUpInside)
-            restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
+            
         }
     }
     
@@ -34,9 +34,15 @@ final class StationsViewCell: UICollectionViewCell {
     var product: SKProduct? {
         didSet {
 
-            self.buyStoreButtonStackView.addArrangedSubview(removeAdsButton)
-            self.restoreButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-            self.removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
+            
+            restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
+            removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
+            
+            buttonsStackView.addArrangedSubview(buyStoreButtonStackView)
+            buttonsStackView.addArrangedSubview(copyrightLabel)
+            layoutIfNeeded()
+            
+            
             
 //            guard let product = product else { return }
 //            
@@ -170,12 +176,12 @@ final class StationsViewCell: UICollectionViewCell {
     private let restoreButton: UIButton = {
         let button = CustomButton(type: .system)
         button.setTitle("恢復購買", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
     
     lazy var buyStoreButtonStackView: UIStackView = { [unowned self] in
-        let stackView = UIStackView(arrangedSubviews:  [self.restoreButton])
+        let stackView = UIStackView(arrangedSubviews:  [self.restoreButton, self.removeAdsButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -190,13 +196,13 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     private lazy var buttonsStackView: UIStackView = { [unowned self] in
-        var subviews: [UIView] = [self.pushShareStackView, self.contactButton, self.moreAppsButton, self.guideButton, self.buyStoreButtonStackView]
+        var subviews: [UIView] = [self.pushShareStackView, self.contactButton, self.moreAppsButton, self.guideButton, self.copyrightLabel]
         
-//        if !UserDefaults.standard.bool(forKey: Products.removeAds) {
-//            subviews.append(self.buyStoreButtonStackView)
-//        }
-        
-        subviews.append(self.copyrightLabel)
+////        if !UserDefaults.standard.bool(forKey: Products.removeAds) {
+////            subviews.append(self.buyStoreButtonStackView)
+////        }
+//        
+//        subviews.append(self.copyrightLabel)
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical

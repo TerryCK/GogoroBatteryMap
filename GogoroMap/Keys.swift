@@ -17,6 +17,7 @@ struct Keys {
     let gadiPad: String
     let fabricAPIKey: String
     let gogoroAPI: String
+    
     init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
         applicationID = dictionary["applicationID"] as? String ?? ""

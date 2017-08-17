@@ -15,18 +15,24 @@ import Foundation
 import UIKit
 
 
+protocol PurchaseItem {}
+extension String: PurchaseItem {}
+extension RegisteredPurchase: PurchaseItem {}
+
 protocol IAPPurchasable: IAPAlartable {
     
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)
     func purchase(_ result: SKProduct)
     func restore()
+//    func verifyPurchase(_ purchase: RegisteredPurchase)
+    func verifyPurchase<T: PurchaseItem>(_ purchase: T)
     
 }
 
 
 
 extension IAPPurchasable where Self: UIViewController {
-     
+    
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler) {
         NetworkActivityIndicatorManager.networkOperationStarted()
         SwiftyStoreKit.retrieveProductsInfo([Bundle.id + "." + purchase.rawValue]) { result in
@@ -51,7 +57,8 @@ extension IAPPurchasable where Self: UIViewController {
                 if purchase.needsFinishTransaction {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
-                self.deliverPurchaseNotificationFor(identifier: purchase.productId)
+                self.verifyPurchase(purchase.productId)
+//                self.deliverPurchaseNotificationFor(identifier: purchase.productId)
             }
             self.showAlert(self.alertForPurchase(result))
         }
@@ -67,27 +74,17 @@ extension IAPPurchasable where Self: UIViewController {
                 SwiftyStoreKit.finishTransaction(purchase.transaction)
             }
             
-            let productId = results.restoredPurchases.first?.productId
-            self.deliverPurchaseNotificationFor(identifier: productId)
-            self.showAlert(self.alertForRestore(results))
-        }
-    }
-
-    
-    
-    
-    
-    
-    func verifyReceipt() {
-        
-        NetworkActivityIndicatorManager.networkOperationStarted()
-        verifyReceipt { result in
-            NetworkActivityIndicatorManager.networkOperationFinished()
-            self.showAlert(self.alertForVerifyReceipt(result))
+            if let productId = results.restoredPurchases.first?.productId {
+                self.verifyPurchase(productId)
+            }
+//            self.deliverPurchaseNotificationFor(identifier: productId)
+            
+            //            self.showAlert(self.alertForRestore(results))
         }
     }
     
-    func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
+    
+    private func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
         
         let appleValidator = AppleReceiptValidator(service: .production)
         let password = Keys.standard.secretKet
@@ -95,60 +92,103 @@ extension IAPPurchasable where Self: UIViewController {
     }
     
     
-
     
-    func verifyPurchase(_ purchase: RegisteredPurchase) {
+    
+    //    func verifyReceipt() {
+    //
+    //        NetworkActivityIndicatorManager.networkOperationStarted()
+    //        verifyReceipt { result in
+    //            NetworkActivityIndicatorManager.networkOperationFinished()
+    //            self.showAlert(self.alertForVerifyReceipt(result))
+    //        }
+    //    }
+    
+    
+    
+    func verifyPurchase<T: PurchaseItem>(_ purchase: T) {
         
         NetworkActivityIndicatorManager.networkOperationStarted()
+        print("verify Purchase")
         verifyReceipt { result in
+            
             NetworkActivityIndicatorManager.networkOperationFinished()
             
             switch result {
             case .success(let receipt):
                 
-                let productId = Bundle.id + "." + purchase.rawValue
+                var productId: String
+                if let purchase = purchase as? RegisteredPurchase {
+                    productId = Bundle.id + "." + purchase.rawValue
+                } else {
+                    productId = purchase as! String
+                }
                 
-                let purchaseResult = SwiftyStoreKit.verifyPurchase(
+                let purchaseResult = SwiftyStoreKit.verifyPurchase (
                     productId: productId,
                     inReceipt: receipt
                 )
-                //                    self.showAlert(self.alertForVerifyPurchase(purchaseResult))
-                self.verifyPurchaseResultParser(with: purchaseResult, purchase: purchase)
+                
+                switch purchaseResult {
+                case .purchased(let item):
+                    
+                    self.deliverPurchaseNotificationFor(identifier: item.productId)
+                    
+                default:
+                    print("no purchased item with:", productId)
+                }
                 
             case .error:
-                self.showAlert(self.alertForVerifyReceipt(result))
+                break
+                //                self.showAlert(self.alertForVerifyReceipt(result))
             }
         }
     }
     
-    private func verifyPurchaseResultParser(with result: VerifyPurchaseResult, purchase: RegisteredPurchase) {
-        
-        switch result {
-        case .purchased:
-            print("Product is purchased")
-            NotificationCenter.default.post(name: RegisteredPurchase.observerName, object: purchase.rawValue)
-            
-        case .notPurchased:
-            print("This product has never been purchased")
-            
-            //           self.showAlert(alertWithTitle("Not purchased", message: "This product has never been purchased"))
-        }
-        
-    }
+//    
+//    func verifyPurchase(_ purchase: RegisteredPurchase) {
+//        
+//        NetworkActivityIndicatorManager.networkOperationStarted()
+//        
+//        verifyReceipt { result in
+//            
+//            NetworkActivityIndicatorManager.networkOperationFinished()
+//            
+//            switch result {
+//            case .success(let receipt):
+//                
+//                let productId = Bundle.id + "." + purchase.rawValue
+//                
+//                let purchaseResult = SwiftyStoreKit.verifyPurchase (
+//                    productId: productId,
+//                    inReceipt: receipt
+//                )
+//                
+//                switch purchaseResult {
+//                case .purchased(let item):
+//                    
+//                    self.deliverPurchaseNotificationFor(identifier: item.productId)
+//                    
+//                default:
+//                    print("no purchased item with:", purchase.rawValue)
+//                }
+//                
+//            case .error:
+//                break
+//                //                self.showAlert(self.alertForVerifyReceipt(result))
+//            }
+//        }
+//    }
     
-    
-    
-    
-    private func deliverPurchaseNotificationFor(identifier: String?) {
+    fileprivate func deliverPurchaseNotificationFor(identifier: String?) {
         guard let identifier = identifier else { return }
         NetworkActivityIndicatorManager.networkOperationFinished()
-        //        purchasedProductIdentifiers.insert(identifier)
-        //        UserDefaults.standard.set(true, forKey: identifier)
-        //        UserDefaults.standard.synchronize()
-        
+        UserDefaults.standard.set(true, forKey: "hasPurchesd")
+        UserDefaults.standard.synchronize()
         NotificationCenter.default.post(name: RegisteredPurchase.observerName, object: identifier)
     }
     
 }
+
+
 
 

@@ -16,6 +16,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     var stationData: (totle: Int, available: Int) = (0, 0)
+    var hasUserPurchased = false
     
     fileprivate var selectedPin: CustomPointAnnotation?
     
@@ -65,18 +66,27 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupObserver()
         performGuidePage()
         setupSideMenu()
         setupMapViewAndNavTitle()
         authrizationStatus()
         getDataOffline()
+
+        setupPurchase()
+    }
+    
+    func setupPurchase() {
+        if UserDefaults.standard.bool(forKey: "hasPurchesd") {
+            verifyPurchase(RegisteredPurchase.removeAds)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         myLocationManager.stopUpdatingLocation()
     }
-
+    
     
     func performGuidePage() {
         let hasReiewedGuidePage = UserDefaults.standard.bool(forKey: "hasReviewedGuidePage")
@@ -135,7 +145,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         SideMenuManager.menuBlurEffectStyle = nil
         SideMenuManager.menuPresentMode = .viewSlideInOut
     }
-
+    
     
     private func setupMapViewAndNavTitle() {
         navigationItem.title = "Gogoro 電池交換站地圖"
@@ -151,7 +161,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         
         navigationController?.view.addSubview(locationArrowView)
         locationArrowView.anchor(top: navigationController?.view.topAnchor, left: nil, bottom: nil, right: navigationController?.view.rightAnchor, topPadding: 23, leftPadding: 0, bottomPadding: 0, rightPadding: 8, width: 50, height: 38)
-
+        
         navigationController?.view.addSubview(menuBarButton)
         menuBarButton.anchor(top: navigationController?.view.topAnchor, left: navigationController?.view.leftAnchor, bottom: nil, right: nil, topPadding: 23, leftPadding: 8, bottomPadding: 0, rightPadding: 0, width: 50, height: 38)
         
@@ -163,7 +173,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         adContainerView.anchor(top: nil, left: mapView.leftAnchor, bottom: mapView.bottomAnchor, right: mapView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
     }
     func locationArrowPressed() {
-    locationArrowTapped()
+        locationArrowTapped()
     }
 }
 
@@ -218,20 +228,33 @@ extension MapViewController: Navigatorable {
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
-    
-    func removeAds() {
-        adContainerView.removeFromSuperview()
-        mapView.layoutIfNeeded()
-    }
-    
-
 }
 
 
 
-// MARK: verify purchase
+// MARK: verify purchase notification
 extension MapViewController: IAPPurchasable {
-    func verifyPurchase(_ purchase: RegisteredPurchase) {
-        //        <#code#>
+    
+    fileprivate func setupObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePurchaseNotification(_:)),
+                                               name: RegisteredPurchase.observerName,
+                                               object: nil)
     }
+    
+    func handlePurchaseNotification(_ notification: Notification) {
+        print("MapViewController recieved notify")
+        guard let productID = notification.object as? String,
+            RegisteredPurchase.removedProductID == productID else {
+                hasUserPurchased = false
+                return
+        }
+        
+        hasUserPurchased = true
+        adContainerView.removeFromSuperview()
+        mapView.layoutIfNeeded()
+    }
+    
+    
+
 }
