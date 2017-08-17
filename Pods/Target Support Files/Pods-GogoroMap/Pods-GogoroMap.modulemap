@@ -1,6 +1,0 @@
-framework module Pods_GogoroMap {
-  umbrella header "Pods-GogoroMap-umbrella.h"
-
-  export *
-  module * { export * }
-}
