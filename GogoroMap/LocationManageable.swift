@@ -98,9 +98,6 @@ extension LocationManageable where Self: MapViewController {
     }
     
     
-    
-    
-    
     private func setTrackModeToFollowWithHeading() {
         setCurrentLocation(latDelta: 0.01, longDelta: 0.01)
         mapView.setUserTrackingMode(MKUserTrackingMode.followWithHeading, animated: true)

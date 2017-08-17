@@ -95,7 +95,7 @@ extension IAPPurchasable where Self: UIViewController {
     }
     
     
-    
+
     
     func verifyPurchase(_ purchase: RegisteredPurchase) {
         
