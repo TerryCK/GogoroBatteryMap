@@ -24,7 +24,6 @@ protocol IAPPurchasable: IAPAlartable {
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)
     func purchase(_ result: SKProduct)
     func restore()
-//    func verifyPurchase(_ purchase: RegisteredPurchase)
     func verifyPurchase<T: PurchaseItem>(_ purchase: T)
     
 }
@@ -39,9 +38,7 @@ extension IAPPurchasable where Self: UIViewController {
             NetworkActivityIndicatorManager.networkOperationFinished()
             
             if let product = result.retrievedProducts.first {
-                //            let priceString = product.localizedPrice ?? ""
                 completeHandle(true, [product])
-                //            return alertWithTitle(product.localizedTitle, message: "\(product.localizedDescription) - \(priceString)")
                 return
             }
             self.showAlert(self.alertForProductRetrievalInfo(result))
@@ -58,7 +55,6 @@ extension IAPPurchasable where Self: UIViewController {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
                 self.verifyPurchase(purchase.productId)
-//                self.deliverPurchaseNotificationFor(identifier: purchase.productId)
             }
             self.showAlert(self.alertForPurchase(result))
         }
@@ -77,9 +73,6 @@ extension IAPPurchasable where Self: UIViewController {
             if let productId = results.restoredPurchases.first?.productId {
                 self.verifyPurchase(productId)
             }
-//            self.deliverPurchaseNotificationFor(identifier: productId)
-            
-            //            self.showAlert(self.alertForRestore(results))
         }
     }
     
@@ -90,8 +83,6 @@ extension IAPPurchasable where Self: UIViewController {
         let password = Keys.standard.secretKet
         SwiftyStoreKit.verifyReceipt(using: appleValidator, password: password, completion: completion)
     }
-    
-    
     
     
     //    func verifyReceipt() {
@@ -139,45 +130,10 @@ extension IAPPurchasable where Self: UIViewController {
                 
             case .error:
                 break
-                //                self.showAlert(self.alertForVerifyReceipt(result))
             }
         }
     }
     
-//    
-//    func verifyPurchase(_ purchase: RegisteredPurchase) {
-//        
-//        NetworkActivityIndicatorManager.networkOperationStarted()
-//        
-//        verifyReceipt { result in
-//            
-//            NetworkActivityIndicatorManager.networkOperationFinished()
-//            
-//            switch result {
-//            case .success(let receipt):
-//                
-//                let productId = Bundle.id + "." + purchase.rawValue
-//                
-//                let purchaseResult = SwiftyStoreKit.verifyPurchase (
-//                    productId: productId,
-//                    inReceipt: receipt
-//                )
-//                
-//                switch purchaseResult {
-//                case .purchased(let item):
-//                    
-//                    self.deliverPurchaseNotificationFor(identifier: item.productId)
-//                    
-//                default:
-//                    print("no purchased item with:", purchase.rawValue)
-//                }
-//                
-//            case .error:
-//                break
-//                //                self.showAlert(self.alertForVerifyReceipt(result))
-//            }
-//        }
-//    }
     
     fileprivate func deliverPurchaseNotificationFor(identifier: String?) {
         guard let identifier = identifier else { return }

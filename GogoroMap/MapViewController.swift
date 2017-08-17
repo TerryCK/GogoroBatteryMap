@@ -72,7 +72,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         setupMapViewAndNavTitle()
         authrizationStatus()
         getDataOffline()
-
         setupPurchase()
     }
     
@@ -120,7 +119,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         stations.forEach { stationsOfAvailable += $0.state == 1 ? 1 : 0 }
         stationData = (totle: stations.count, available: stationsOfAvailable)
     }
-    
     
     
     private func setupSideMenu() {
@@ -172,6 +170,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         mapView.addSubview(adContainerView)
         adContainerView.anchor(top: nil, left: mapView.leftAnchor, bottom: mapView.bottomAnchor, right: mapView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
     }
+    
     func locationArrowPressed() {
         locationArrowTapped()
     }
@@ -244,7 +243,8 @@ extension MapViewController: IAPPurchasable {
     
     func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")
-        guard let productID = notification.object as? String,
+        guard
+            let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else {
                 hasUserPurchased = false
                 return

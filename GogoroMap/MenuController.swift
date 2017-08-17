@@ -27,19 +27,6 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
-    }
-   
-    
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-       
-    }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as! StationsViewCell
@@ -109,9 +96,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     func restorePurchase() {
         restore()
-        
     }
-    
     
     func presentMail() {
         presentErrorMailReport()
