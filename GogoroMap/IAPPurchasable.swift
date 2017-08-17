@@ -15,8 +15,6 @@ import Foundation
 import UIKit
 
 
-
-
 protocol IAPPurchasable: IAPAlartable {
     
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)
