@@ -12,7 +12,7 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 
 
-### 特色
+### 主要特色
 -----------
 	1. 站點地圖化 - 直觀清楚的顯示Gogoro交換站各站點資訊
 	
@@ -20,8 +20,9 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 	
 	3. 地圖羅盤模式 - 讓你在地圖中不會迷失方向
 	
-    4. 十秒上手的操作
+	4. 十秒上手的操作
 
+  
 ### Screen Shots
 -----------
 !["ScreenShots"](https://github.com/TerryCK/GogoroBatteryMap/blob/master/Screenshot/demo.png)
@@ -31,15 +32,17 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 ### Update history
 -----------
-      2017/8/17 v1.1    first release.
-      2017/8/19 v1.2    add networking, log report, manually update, get data process(local, remote).
-                        bug fixed, iap-process improvement, transform location manager class to protocol 
+      2017/8/19 v1.2    Introduce new features 
+      					manually update, get data process(local, remote), bug fixed, iap-process improvement, 
+                        supported languages: Taiwanese(繁體中文), English
+      2017/8/17 v1.1    First release
+      
                        
 
 ### Requirement
 -----------
 
-- Xcode 8
+- Xcode 8.3.3
 - iOS 9
 - Swift 3.1
 

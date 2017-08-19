@@ -54,7 +54,7 @@ extension LocationManageable where Self: MapViewController {
         }
         
         self.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-        self.mapView.userLocation.title = "😏目前位置"
+        self.mapView.userLocation.title = "😏 \(NSLocalizedString("here", comment: ""))"
         
     }
     

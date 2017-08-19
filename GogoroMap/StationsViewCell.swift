@@ -27,39 +27,21 @@ final class StationsViewCell: UICollectionViewCell {
     var stationData: (totle: Int, available: Int) = (0, 0) {
         didSet {
             
-            availableLabel.text = "營運中: \(stationData.available)"
-            buildingLabel.text = "建置中: \(stationData.totle - stationData.available)"
-            totleLabel.text = "總站數: \(stationData.totle)"
+            availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
+            buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.totle - stationData.available)"
+            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
         }
     }
     
     var product: SKProduct? {
         didSet {
-
+            if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
+                restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
+                removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
+                buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
+                layoutIfNeeded()
+            }
             
-            restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
-            removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
-            
-            buttonsStackView.addArrangedSubview(buyStoreButtonStackView)
-            buttonsStackView.addArrangedSubview(copyrightLabel)
-            layoutIfNeeded()
-            
-            
-            
-//            guard let product = product else { return }
-//            
-//            
-//            if Products.store.isProductPurchased(product.productIdentifier) {
-//            } else if IAPHelper.canMakePayments() {
-//                StationsViewCell.priceFormatter.locale = product.priceLocale
-//                self.buyStoreButtonStackView.addArrangedSubview(removeAdsButton)
-//                self.restoreButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-//                self.removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
-//            } else {
-//                self.buttonsStackView.willRemoveSubview(self.removeAdsButton)
-//            }
-//            
-//            self.layoutIfNeeded()
         }
     }
     
@@ -82,28 +64,28 @@ final class StationsViewCell: UICollectionViewCell {
     
     private lazy var availableLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
-        label.text = "營運中的站點數量："
+        label.text = ""
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }()
     
     private lazy var totleLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
-        label.text = "總站點數量："
+        label.text = NSLocalizedString("Total:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }()
     
     private lazy var buildingLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
-        label.text = "建置中："
+        label.text = NSLocalizedString("Building:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }()
     
     private let copyrightLabel: UILabel = {
         let label = UILabel()
-        label.text = "資料為gogoro所有，僅供查詢使用不保證其資訊正確性，App為作者所有，背景影像授權自：CC0 Public Domain"
+        label.text = NSLocalizedString("Data provided by Gogoro, image: CC0 Public Domain", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 9)
         label.numberOfLines = 0
         return label
@@ -111,7 +93,7 @@ final class StationsViewCell: UICollectionViewCell {
     
     private lazy var dataUpdateButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("更新", for: .normal)
+        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
     }()
@@ -131,30 +113,29 @@ final class StationsViewCell: UICollectionViewCell {
         let date = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
-        
         let dateString = formatter.string(from: date)
-        label.text = "資料更新日期：" + dateString
+        label.text = "\(NSLocalizedString("Last:", comment: "")) " + dateString
         label.font = UIFont.boldSystemFont(ofSize: 11)
         return label
     }()
     
     private let contactButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("聯繫作者", for: .normal)
+        button.setTitle(NSLocalizedString("FeedBack", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
     
     private let shareButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("分    享", for: .normal)
+        button.setTitle(NSLocalizedString("Share", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
     
     private let recommandButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("給    推", for: .normal)
+        button.setTitle(NSLocalizedString("Rating", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
@@ -169,21 +150,21 @@ final class StationsViewCell: UICollectionViewCell {
     
     private let moreAppsButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("更多同作者app", for: .normal)
+        button.setTitle("\(NSLocalizedString("More", comment: "")) app", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
     
     private let guideButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("功能導覽", for: .normal)
+        button.setTitle(NSLocalizedString("Guide", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
     
     private let removeAdsButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("NTD 30\n去廣告", for: .normal)
+        button.setTitle("NTD 30\n\(NSLocalizedString("RemovedAD", comment: ""))", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         button.titleLabel?.numberOfLines = 0
         button.titleLabel?.textAlignment = .center
@@ -192,7 +173,7 @@ final class StationsViewCell: UICollectionViewCell {
     
     private let restoreButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("恢復購買", for: .normal)
+        button.setTitle(NSLocalizedString("Restore", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
@@ -273,7 +254,7 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     
-
+    
     
     private func setupView() {
         backgroundColor = .clear

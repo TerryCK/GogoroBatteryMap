@@ -118,17 +118,17 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Data update"])
-        navigationItem.title = "資料更新中..."
+        navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
         mapViewController?.getData { [unowned self] in
             self.collectionView?.reloadData()
-            self.navigationItem.title = "更多資訊"
+            self.navigationItem.title = NSLocalizedString("Information", comment: "")
         }
     }
     private func setupNaviagtionAndCollectionView() {
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
-        navigationItem.title = "更多資訊"
+        navigationItem.title = NSLocalizedString("Information", comment: "")
         navigationController?.view.backgroundColor = .clear
         navigationItem.titleView?.backgroundColor = .clear
         
