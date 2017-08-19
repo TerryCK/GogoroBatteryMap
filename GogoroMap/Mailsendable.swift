@@ -24,7 +24,6 @@ extension Mailsendable where Self: UIViewController {
         mailComposerVC.mailComposeDelegate = self
         let currentDevice = UIDevice.current
 
-        
         var systemInfo = "傳送自：\(currentDevice.model), \(currentDevice.systemName): \(currentDevice.systemVersion)  \n"
         
         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {

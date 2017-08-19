@@ -8,12 +8,13 @@
 
 import UIKit
 import StoreKit
+import Crashlytics
 
 final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, IAPPurchasable {
     
     let cellid = "cellid"
     let appID = Keys.standard.appID
-
+    
     weak var mapViewController: MapViewController?
     
     var products = [SKProduct]() {
@@ -27,7 +28,12 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
     }
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
+        
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as! StationsViewCell
         
@@ -41,7 +47,9 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         cell.buyButtonHandler = { product in
             self.purchase(product)
         }
-        
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            cell.buyStoreButtonStackView.removeFromSuperview()
+        }
         return cell
     }
     
@@ -68,10 +76,12 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     
     func performGuidePage() {
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
         present(GuidePageViewController(), animated: true, completion: nil)
     }
     
     func recommand() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
         let url = head + appID + foot
@@ -79,10 +89,12 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func moreApp() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "MoreApp"])
         open(url: "https://itunes.apple.com/tw/app/id1192891004?l=zh&mt=8")
     }
     
     func shareThisApp() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Share"])
         guard let name = NSURL(string: "https://itunes.apple.com/tw/app/id\(appID)?l=zh&mt=8") else { return }
         let activityVC = UIActivityViewController(activityItems: [name], applicationActivities: nil)
         
@@ -95,13 +107,23 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func restorePurchase() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Restore purchase"])
         restore()
     }
     
     func presentMail() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "SendMail"])
         presentErrorMailReport()
     }
     
+    func dataUpdate() {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Data update"])
+        navigationItem.title = "資料更新中..."
+        mapViewController?.getData { [unowned self] in
+            self.collectionView?.reloadData()
+            self.navigationItem.title = "更多資訊"
+        }
+    }
     private func setupNaviagtionAndCollectionView() {
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
@@ -122,15 +144,14 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             UIApplication.shared.canOpenURL(checkURL) else { return }
         UIApplication.shared.openURL(checkURL)
     }
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: RegisteredPurchase.observerName, object: nil)
         print("menu controller deinitialize")
     }
     
     private func setupPurchaseItem() {
-        guard let hasUserPurchased = mapViewController?.hasUserPurchased,
-          !hasUserPurchased else { return }
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) { return }
         setupObserver()
         getInfo(.removeAds) { (success, products) in
             if success, let products = products {
@@ -150,13 +171,10 @@ extension MenuController {
         guard let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else { return }
 
-            if let cell = collectionView?.visibleCells.first as? StationsViewCell {
-                cell.buyStoreButtonStackView.removeFromSuperview()
-                cell.layoutIfNeeded()
-        }
+        collectionView?.reloadData()
     }
     
-    fileprivate func setupObserver() {
+     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
                                                name: RegisteredPurchase.observerName,

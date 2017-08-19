@@ -7,17 +7,16 @@
 //
 
 
-// do verify recipts
-
 import SwiftyStoreKit
 import StoreKit
 import Foundation
 import UIKit
+import Crashlytics
 
 
-protocol PurchaseItem {}
-extension String: PurchaseItem {}
-extension RegisteredPurchase: PurchaseItem {}
+protocol PurchaseItem { }
+extension String: PurchaseItem { }
+extension RegisteredPurchase: PurchaseItem { }
 
 protocol IAPPurchasable: IAPAlartable {
     
@@ -25,7 +24,8 @@ protocol IAPPurchasable: IAPAlartable {
     func purchase(_ result: SKProduct)
     func restore()
     func verifyPurchase<T: PurchaseItem>(_ purchase: T)
-    
+    func handlePurchaseNotification(_ notification: Notification)
+    func setupObserver()
 }
 
 
@@ -33,9 +33,12 @@ protocol IAPPurchasable: IAPAlartable {
 extension IAPPurchasable where Self: UIViewController {
     
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler) {
-        NetworkActivityIndicatorManager.networkOperationStarted()
+        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Get purchase item list"])
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        
+        
         SwiftyStoreKit.retrieveProductsInfo([Bundle.id + "." + purchase.rawValue]) { result in
-            NetworkActivityIndicatorManager.networkOperationFinished()
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             
             if let product = result.retrievedProducts.first {
                 completeHandle(true, [product])
@@ -48,12 +51,18 @@ extension IAPPurchasable where Self: UIViewController {
     
     
     func purchase(_ result: SKProduct) {
-        NetworkActivityIndicatorManager.networkOperationStarted()
+        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Remove Ad"])
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.purchaseProduct(result, quantity: 1, atomically: true) { result in
             if case .success(let purchase) = result {
+                NetworkActivityIndicatorManager.shared.networkOperationFinished()
                 if purchase.needsFinishTransaction {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
+                
+                Answers.logPurchase(withPrice: 30, currency: "TWD", success: true, itemName: purchase.productId, itemType: nil, itemId: nil, customAttributes: nil)
+                Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents,
+                                       customAttributes: [Log.sharedName.purchaseEvent: "Purchase succeeded"])
                 self.verifyPurchase(purchase.productId)
             }
             self.showAlert(self.alertForPurchase(result))
@@ -63,7 +72,7 @@ extension IAPPurchasable where Self: UIViewController {
     
     
     func restore() {
-        NetworkActivityIndicatorManager.networkOperationStarted()
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.restorePurchases(atomically: true) { results in
             
             for purchase in results.restoredPurchases where purchase.needsFinishTransaction {
@@ -71,6 +80,7 @@ extension IAPPurchasable where Self: UIViewController {
             }
             
             if let productId = results.restoredPurchases.first?.productId {
+                Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Restore succeeded"])
                 self.verifyPurchase(productId)
             }
         }
@@ -87,9 +97,9 @@ extension IAPPurchasable where Self: UIViewController {
     
     //    func verifyReceipt() {
     //
-    //        NetworkActivityIndicatorManager.networkOperationStarted()
+    //        NetworkActivityIndicatorManager.shared.networkOperationStarted()
     //        verifyReceipt { result in
-    //            NetworkActivityIndicatorManager.networkOperationFinished()
+    //            NetworkActivityIndicatorManager.shared.networkOperationFinished()
     //            self.showAlert(self.alertForVerifyReceipt(result))
     //        }
     //    }
@@ -98,15 +108,16 @@ extension IAPPurchasable where Self: UIViewController {
     
     func verifyPurchase<T: PurchaseItem>(_ purchase: T) {
         
-        NetworkActivityIndicatorManager.networkOperationStarted()
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
         print("verify Purchase")
+        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase"])
         verifyReceipt { result in
             
-            NetworkActivityIndicatorManager.networkOperationFinished()
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             
             switch result {
             case .success(let receipt):
-                
+                Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyReceipt succeeded"])
                 var productId: String
                 if let purchase = purchase as? RegisteredPurchase {
                     productId = Bundle.id + "." + purchase.rawValue
@@ -121,6 +132,7 @@ extension IAPPurchasable where Self: UIViewController {
                 
                 switch purchaseResult {
                 case .purchased(let item):
+                    Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase purchased"])
                     
                     self.deliverPurchaseNotificationFor(identifier: item.productId)
                     
@@ -129,6 +141,8 @@ extension IAPPurchasable where Self: UIViewController {
                 }
                 
             case .error:
+                UserDefaults.standard.set(false, forKey: Keys.standard.hasPurchesdKey)
+                UserDefaults.standard.synchronize()
                 break
             }
         }
@@ -136,9 +150,12 @@ extension IAPPurchasable where Self: UIViewController {
     
     
     fileprivate func deliverPurchaseNotificationFor(identifier: String?) {
-        guard let identifier = identifier else { return }
-        NetworkActivityIndicatorManager.networkOperationFinished()
-        UserDefaults.standard.set(true, forKey: "hasPurchesd")
+        guard let identifier = identifier else {
+            return }
+        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Deliver purchase"])
+        
+        NetworkActivityIndicatorManager.shared.networkOperationFinished()
+        UserDefaults.standard.set(true, forKey: Keys.standard.hasPurchesdKey)
         UserDefaults.standard.synchronize()
         NotificationCenter.default.post(name: RegisteredPurchase.observerName, object: identifier)
     }

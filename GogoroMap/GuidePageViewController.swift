@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Crashlytics
 
 final class GuidePageViewController: UIViewController {
 
@@ -28,6 +29,10 @@ final class GuidePageViewController: UIViewController {
         return button
     }()
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Answers.logContentView(withName: "Guide Page", contentType: nil, contentId: nil, customAttributes: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +40,6 @@ final class GuidePageViewController: UIViewController {
         guideImageView.addSubview(okButton)
         okButton.anchor(top: nil, left: guideImageView.leftAnchor, bottom: guideImageView.bottomAnchor, right: guideImageView.rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 20, rightPadding: 10, width: 0, height: 35)
         okButton.centerXAnchor.constraint(equalTo: guideImageView.centerXAnchor).isActive = true
-        
     }
     
     deinit {
@@ -43,9 +47,10 @@ final class GuidePageViewController: UIViewController {
     }
     
     func dismissController () {
-        UserDefaults.standard.set(true, forKey: "hasReviewedGuidePage")
+        UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)
+        UserDefaults.standard.synchronize()
         mapViewController?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-        mapViewController?.getDataOffline()
+        mapViewController?.getData()
         dismiss(animated: true, completion: nil)
     }
 }

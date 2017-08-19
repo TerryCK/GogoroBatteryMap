@@ -1,24 +1,31 @@
 PODS:
-  - Crashlytics (3.8.4):
+  - Crashlytics (3.8.5):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.11)
-  - Firebase/Core (4.0.2):
-    - FirebaseAnalytics (= 4.0.1)
-    - FirebaseCore (= 4.0.2)
-  - FirebaseAnalytics (4.0.1):
+  - Fabric (1.6.12)
+  - Firebase/Core (4.1.0):
+    - FirebaseAnalytics (= 4.0.3)
+    - FirebaseCore (= 4.0.5)
+  - FirebaseAnalytics (4.0.3):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseCore (4.0.2):
+    - nanopb (~> 0.3)
+  - FirebaseCore (4.0.5):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseInstanceID (2.0.0):
+    - nanopb (~> 0.3)
+  - FirebaseInstanceID (2.0.1):
     - FirebaseCore (~> 4.0)
-  - Google-Mobile-Ads-SDK (7.21.0)
+  - Google-Mobile-Ads-SDK (7.22.0)
   - GoogleToolboxForMac/Defines (2.1.1)
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
-  - SideMenu (2.3.2)
-  - SwiftyStoreKit (0.10.3)
+  - nanopb (0.3.8):
+    - nanopb/decode (= 0.3.8)
+    - nanopb/encode (= 0.3.8)
+  - nanopb/decode (0.3.8)
+  - nanopb/encode (0.3.8)
+  - SideMenu (2.3.3)
+  - SwiftyStoreKit (0.10.5)
 
 DEPENDENCIES:
   - Crashlytics
@@ -29,17 +36,18 @@ DEPENDENCIES:
   - SwiftyStoreKit
 
 SPEC CHECKSUMS:
-  Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
-  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
-  Firebase: c7ad0731eab26d18a3fc547dd048b0f7cd9c63ae
-  FirebaseAnalytics: 4d7040fefc3cd8b291cde35f12cf063d7963f15d
-  FirebaseCore: 1a8bf6c795ad07d2918278657954ffd2552e9c17
-  FirebaseInstanceID: 9fbf536668f4d3f0880e7438456dabd1376e294b
-  Google-Mobile-Ads-SDK: 4a6f1b43c8cc0e1e95a3b59d9f52a01671c6f9f3
+  Crashlytics: dfbae35ef22ca189240d230ad501feea4ee85d2d
+  Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
+  Firebase: ebebf41db7f10e0c7668b6eaaa857fbe599aa478
+  FirebaseAnalytics: 76f754d37ca5b04f36856729b6af3ca0152d1069
+  FirebaseCore: 7d876ea97a830cbe62ba7fbbe7670c833a324ba0
+  FirebaseInstanceID: 0500e3cb54a1a4e01a8cffcc09323b8bb8fc7e1e
+  Google-Mobile-Ads-SDK: 1bdf1a4244d0553b1840239874c209c01aef055f
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
-  SideMenu: 3fa07dd05d4bade2b6f9889fb1877e312e1ba319
-  SwiftyStoreKit: 91c41fb7c09b2937078936054db7b4eb908ed02a
+  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  SideMenu: a447554ae5c982e8077666389e1c8b0c8656e065
+  SwiftyStoreKit: 6b4132ad703d3ebc075100c10eacfe429b943719
 
-PODFILE CHECKSUM: a1a9ed1e693b2a951a48840ffeee079419a99da7
+PODFILE CHECKSUM: feed6e779da345e8a4738ddc41754f247e7f06ae
 
 COCOAPODS: 1.2.1

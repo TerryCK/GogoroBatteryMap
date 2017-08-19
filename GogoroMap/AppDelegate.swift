@@ -25,12 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         setupIAPOberserver()
-        
-        Crashlytics.start(withAPIKey: Keys.standard.fabricAPIKey)
-        Fabric.with([Crashlytics.self])
         FirebaseApp.configure()
         GADMobileAds.configure(withApplicationID: Keys.standard.applicationID)
-        
+        Fabric.sharedSDK().debug = true
+        Fabric.with([Crashlytics.self])
         return true
     }
     

@@ -8,6 +8,7 @@
 
 import MapKit
 import CoreLocation
+import Crashlytics
 
 protocol LocationManageable: CLLocationManagerDelegate, MKMapViewDelegate {
     func authrizationStatus()
@@ -100,14 +101,17 @@ extension LocationManageable where Self: MapViewController {
     
     private func setTrackModeToFollowWithHeading() {
         setCurrentLocation(latDelta: 0.01, longDelta: 0.01)
+        Answers.logCustomEvent(withName: "TrackingMode", customAttributes: ["TrackingMode" : "Heading"])
         mapView.setUserTrackingMode(MKUserTrackingMode.followWithHeading, animated: true)
     }
     
     func setTrackModeNone() {
+        Answers.logCustomEvent(withName: "TrackingMode", customAttributes: ["TrackingMode" : "None"])
         mapView.setUserTrackingMode(MKUserTrackingMode.none, animated: false)
     }
     
     private func setTrackModeToFollow() {
+        Answers.logCustomEvent(withName: "TrackingMode", customAttributes: ["TrackingMode" : "Follow"])
         mapView.setUserTrackingMode(MKUserTrackingMode.follow, animated: false)
     }
     

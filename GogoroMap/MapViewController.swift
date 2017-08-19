@@ -9,14 +9,38 @@
 import UIKit
 import MapKit
 import SideMenu
+import Crashlytics
 import GoogleMobileAds
 
-final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerViewDelegate, AnnotationHandleable {
+
+
+final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerViewDelegate, AnnotationHandleable, DataGettable {
     
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     var stationData: (totle: Int, available: Int) = (0, 0)
-    var hasUserPurchased = false
+    
+    
+    var annotations = [MKAnnotation]() {
+        didSet {
+            DispatchQueue.main.async {
+                
+                self.mapView.addAnnotations(self.annotations)
+                self.mapView.removeAnnotations(oldValue)
+                
+                // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
+                // Mark: check for avoid add annotation at same location which case too closeing to find
+                
+                let differential = Swift.abs(self.annotations.count - self.mapView.annotations.count)
+                if differential > 1 {
+                    print("")
+                    print("error: annotation view count out of controller!!")
+                    print("annotations: ", self.annotations.count, "mapView: ", self.mapView.annotations.count)
+                    print("")
+                }
+            }
+        }
+    }
     
     fileprivate var selectedPin: CustomPointAnnotation?
     
@@ -33,7 +57,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
     }()
     
     lazy var adContainerView: AdContainerView = {
-        let containerView = AdContainerView()
+        let containerView = AdContainerView.shared
         containerView.nativeAdView.delegate = self
         containerView.nativeAdView.rootViewController = self
         return containerView
@@ -46,7 +70,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         button.addTarget(self, action: #selector(locationArrowPressed), for: .touchUpInside)
         return button
         }()
-    
+
     private lazy var menuBarButton: UIButton = { [unowned self] in
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
@@ -64,6 +88,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         }
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -71,14 +97,23 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         setupSideMenu()
         setupMapViewAndNavTitle()
         authrizationStatus()
-        getDataOffline()
+        getData()
         setupPurchase()
+        
     }
     
+    
+    
+    
     func setupPurchase() {
-        if UserDefaults.standard.bool(forKey: "hasPurchesd") {
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             verifyPurchase(RegisteredPurchase.removeAds)
         }
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
+        seupAdContainerView()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -88,37 +123,22 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
     
     
     func performGuidePage() {
-        let hasReiewedGuidePage = UserDefaults.standard.bool(forKey: "hasReviewedGuidePage")
-        guard !hasReiewedGuidePage else { return }
+        if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
         let guidePageController = GuidePageViewController()
         guidePageController.mapViewController = self
         present(guidePageController, animated: true, completion: nil)
     }
     
     func performMenu() {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
         if let sideManuController = SideMenuManager.menuLeftNavigationController {
             self.setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
         }
     }
     
-    
-    func getDataOffline() {
-        guard
-            let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json"),
-            let data = NSData(contentsOfFile: filePath) as Data?,
-            let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else { return }
-        
-        let stations = jsonDic.map { Station(dictionary: $0) }
-        
-        mapView.addAnnotations(getObjectArray(from: stations, userLocation: currentUserLocation))
-        
-        var stationsOfAvailable = 0
-        
-        stations.forEach { stationsOfAvailable += $0.state == 1 ? 1 : 0 }
-        stationData = (totle: stations.count, available: stationsOfAvailable)
-    }
+
     
     
     private func setupSideMenu() {
@@ -163,17 +183,18 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         navigationController?.view.addSubview(menuBarButton)
         menuBarButton.anchor(top: navigationController?.view.topAnchor, left: navigationController?.view.leftAnchor, bottom: nil, right: nil, topPadding: 23, leftPadding: 8, bottomPadding: 0, rightPadding: 0, width: 50, height: 38)
         
-        seupAdContainerView()
+        
     }
     
     private func seupAdContainerView() {
-        mapView.addSubview(adContainerView)
-        adContainerView.anchor(top: nil, left: mapView.leftAnchor, bottom: mapView.bottomAnchor, right: mapView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            Answers.logContentView(withName: "Ad View", contentType: nil, contentId: nil, customAttributes: nil)
+            self.mapView.addSubview(self.adContainerView)
+            self.adContainerView.anchor(top: nil, left: self.mapView.leftAnchor, bottom: self.mapView.bottomAnchor, right: self.mapView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        }
+        
     }
     
-    func locationArrowPressed() {
-        locationArrowTapped()
-    }
 }
 
 
@@ -220,13 +241,24 @@ extension MapViewController: Navigatorable {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Display annotation view"])
         self.selectedPin = view.annotation as? CustomPointAnnotation
     }
     
     func navigating() {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Navigate"])
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
+    
+    func locationArrowPressed() {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Changing tracking mode"])
+        locationArrowTapped()
+    }
+    
 }
 
 
@@ -234,7 +266,7 @@ extension MapViewController: Navigatorable {
 // MARK: verify purchase notification
 extension MapViewController: IAPPurchasable {
     
-    fileprivate func setupObserver() {
+    func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
                                                name: RegisteredPurchase.observerName,
@@ -246,15 +278,12 @@ extension MapViewController: IAPPurchasable {
         guard
             let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else {
-                hasUserPurchased = false
                 return
         }
         
-        hasUserPurchased = true
+        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Removed Ad"])
         adContainerView.removeFromSuperview()
         mapView.layoutIfNeeded()
     }
-    
-    
-
 }
+

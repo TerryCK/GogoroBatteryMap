@@ -19,12 +19,14 @@ final class StationsViewCell: UICollectionViewCell {
             shareButton.addTarget(menuController, action: #selector(menuController?.shareThisApp), for: .touchUpInside)
             moreAppsButton.addTarget(menuController, action: #selector(menuController?.moreApp), for: .touchUpInside)
             guideButton.addTarget(menuController, action: #selector(menuController?.performGuidePage), for: .touchUpInside)
+            dataUpdateButton.addTarget(menuController, action: #selector(menuController?.dataUpdate), for: .touchUpInside)
             
         }
     }
     
     var stationData: (totle: Int, available: Int) = (0, 0) {
         didSet {
+            
             availableLabel.text = "營運中: \(stationData.available)"
             buildingLabel.text = "建置中: \(stationData.totle - stationData.available)"
             totleLabel.text = "總站數: \(stationData.totle)"
@@ -107,6 +109,21 @@ final class StationsViewCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var dataUpdateButton: UIButton = {
+        let button = CustomButton(type: .system)
+        button.setTitle("更新", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        return button
+    }()
+    
+    
+    private lazy var updateStackView: UIStackView = { [unowned self] in
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 10
+        return stackView
+        }()
     
     
     private lazy var lastUpdateDateLabel: UILabel = {
@@ -116,8 +133,8 @@ final class StationsViewCell: UICollectionViewCell {
         formatter.dateFormat = "yyyy.MM.dd"
         
         let dateString = formatter.string(from: date)
-        label.text = "更新日期：" + dateString
-        label.font = UIFont.boldSystemFont(ofSize: 10)
+        label.text = "資料更新日期：" + dateString
+        label.font = UIFont.boldSystemFont(ofSize: 11)
         return label
     }()
     
@@ -188,8 +205,8 @@ final class StationsViewCell: UICollectionViewCell {
         return stackView
         }()
     
-    private lazy var labelStackView: UIStackView = { [unowned self] in
-        let stackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.availableLabel, self.buildingLabel, self.totleLabel])
+    private lazy var headStackView: UIStackView = { [unowned self] in
+        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.availableLabel, self.buildingLabel, self.totleLabel])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
@@ -197,20 +214,12 @@ final class StationsViewCell: UICollectionViewCell {
     
     private lazy var buttonsStackView: UIStackView = { [unowned self] in
         var subviews: [UIView] = [self.pushShareStackView, self.contactButton, self.moreAppsButton, self.guideButton, self.copyrightLabel]
-        
-////        if !UserDefaults.standard.bool(forKey: Products.removeAds) {
-////            subviews.append(self.buyStoreButtonStackView)
-////        }
-//        
-//        subviews.append(self.copyrightLabel)
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         stackView.spacing = 10
         return stackView
         }()
-    
-    
     
     private lazy var bottomLabelStackView: UIStackView = { [unowned self] in
         let stackView = UIStackView(arrangedSubviews: [self.copyrightLabel ,self.authorLabel])
@@ -222,6 +231,7 @@ final class StationsViewCell: UICollectionViewCell {
     
     
     func buyButtonTapped() {
+        
         if let product = product {
             buyButtonHandler?(product)
         }
@@ -270,14 +280,14 @@ final class StationsViewCell: UICollectionViewCell {
         layer.cornerRadius = 10
         layer.masksToBounds = true
         
-        viewContainer.addSubview(labelStackView)
-        labelStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 128)
+        viewContainer.addSubview(headStackView)
+        headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 128)
         
         let separatorView = UIView()
         separatorView.backgroundColor = .white
         
         viewContainer.addSubview(separatorView)
-        separatorView.anchor(top: labelStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
+        separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
         
         
         viewContainer.addSubview(authorLabel)

@@ -27,7 +27,7 @@ extension AnnotationHandleable {
             let image = station.state != 1 ? #imageLiteral(resourceName: "building") : station.availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shoTiime")
             
             return CustomPointAnnotation(title: title,
-                                         subtitle: "營業時間: " + station.availableTime! ,
+                                         subtitle: "營業時間: " + (station.availableTime ?? "") ,
                                          coordinate: location,
                                          placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                                          distance: CLLocation(latitude: latitude, longitude: longitude).distance(from: userLocation).km,

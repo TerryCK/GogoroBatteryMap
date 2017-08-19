@@ -114,3 +114,7 @@ for case let number? in arrayOfOptionalInts {
 for number in arrayOfOptionalInts {
     print("Found a \(number)")
 }
+let intA = -10
+
+Swift.abs(intA)
+

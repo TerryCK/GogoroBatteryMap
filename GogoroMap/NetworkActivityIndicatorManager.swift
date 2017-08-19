@@ -24,28 +24,33 @@
 
 import UIKit
 
-class NetworkActivityIndicatorManager: NSObject {
-
-    private static var loadingCount = 0
-
-    class func networkOperationStarted() {
-
+final class NetworkActivityIndicatorManager: NSObject {
+    
+    private override init() { super.init() }
+    
+    static let shared = NetworkActivityIndicatorManager()
+    
+    private var loadingCount = 0
+    
+    
+    func networkOperationStarted() {
+        
         #if os(iOS)
-        if loadingCount == 0 {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-        loadingCount += 1
+            if loadingCount == 0 {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            }
+            loadingCount += 1
         #endif
     }
-
-    class func networkOperationFinished() {
+    
+    func networkOperationFinished() {
         #if os(iOS)
-        if loadingCount > 0 {
-            loadingCount -= 1
-        }
-        if loadingCount == 0 {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        }
+            if loadingCount > 0 {
+                loadingCount -= 1
+            }
+            if loadingCount == 0 {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
         #endif
     }
 }

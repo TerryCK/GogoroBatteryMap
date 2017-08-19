@@ -15,10 +15,12 @@ struct Keys {
     let secretKet: String
     let gadiPhone: String
     let gadiPad: String
-    let fabricAPIKey: String
     let gogoroAPI: String
+    let beenHereKey = "beenHere"
+    let hasPurchesdKey = "hasPurchesd"
+    let dataKey = "dataKey"
     
-    init(dictionary: [String: Any] = ["": ""]) {
+    private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
         applicationID = dictionary["applicationID"] as? String ?? ""
         appID = dictionary["appID"] as? String ?? ""
@@ -26,19 +28,17 @@ struct Keys {
         gadiPhone = dictionary["gadiPhone"] as? String ?? ""
         gadiPad = dictionary["gadiPad"] as? String ?? ""
         gogoroAPI = dictionary["gogoroAPI"] as? String ?? ""
-        fabricAPIKey = dictionary["fabricAPIKey"] as? String ?? ""
+        
     }
     
     static let standard: Keys = {
         guard
             let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
-            var dictionary = NSDictionary(contentsOfFile: path) as? [String: Any],
-            let fabricPath = Bundle.main.path(forResource: "fabric", ofType: "apikey"),
-            let fabricAPIKey = try? String(contentsOfFile: fabricPath, encoding: String.Encoding.utf8) else {
+            var dictionary = NSDictionary(contentsOfFile: path) as? [String: Any] else {
                 return Keys()
         }
         
-        dictionary["fabricAPIKey"] = fabricAPIKey
+        
         
         return Keys(dictionary: dictionary)
     }()
