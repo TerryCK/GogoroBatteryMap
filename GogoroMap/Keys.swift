@@ -9,6 +9,7 @@
 import Foundation
 
 struct Keys {
+   
     let adUnitID: String
     let applicationID: String
     let appID: String
@@ -45,3 +46,4 @@ struct Keys {
     
     
 }
+

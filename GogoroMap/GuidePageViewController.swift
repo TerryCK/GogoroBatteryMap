@@ -23,7 +23,7 @@ final class GuidePageViewController: UIViewController {
     
     private lazy var okButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("我知道了，按此繼續", for: .normal)
+        button.setTitle(NSLocalizedString("Press here and continue", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         button.addTarget(self, action: #selector(dismissController), for: .touchUpInside)
         return button

@@ -33,7 +33,7 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 -----------
       2017/8/17 v1.1    first release.
       2017/8/19 v1.2    add networking, log report, manually update, get data process(local, remote).
-                        bug fixed, iap-process improvement, transform location manager class to protocol 
+                        bug fixed, iap-process improvement, transform location manager class to protocol, supported ENG, Taiwanese
                        
 
 ### Requirement

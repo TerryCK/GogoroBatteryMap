@@ -23,11 +23,13 @@ extension AnnotationHandleable {
             let latitude: CLLocationDegrees = station.latitude ?? 0.0
             let longitude: CLLocationDegrees = station.longitude ?? 0.0
             let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let title = station.locName?.twName ?? ""
+            let twName = station.locName?.twName ?? ""
+            let engName = station.locName?.engName ?? ""
+            let title = NSLocale.preferredLanguages[0] == "en" ? engName : twName
             let image = station.state != 1 ? #imageLiteral(resourceName: "building") : station.availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shoTiime")
             
             return CustomPointAnnotation(title: title,
-                                         subtitle: "營業時間: " + (station.availableTime ?? "") ,
+                                         subtitle: "\(NSLocalizedString("Open hours", comment: "")): \(station.availableTime ?? "")",
                                          coordinate: location,
                                          placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                                          distance: CLLocation(latitude: latitude, longitude: longitude).distance(from: userLocation).km,

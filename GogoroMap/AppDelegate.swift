@@ -25,10 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         setupIAPOberserver()
+        #if RELEASE
         FirebaseApp.configure()
         GADMobileAds.configure(withApplicationID: Keys.standard.applicationID)
         Fabric.sharedSDK().debug = true
         Fabric.with([Crashlytics.self])
+        print("test release mode ")
+        #endif
         return true
     }
     

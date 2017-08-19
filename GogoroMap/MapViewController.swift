@@ -166,7 +166,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
     
     
     private func setupMapViewAndNavTitle() {
-        navigationItem.title = "Gogoro 電池交換站地圖"
+        navigationItem.title = "Gogoro " + NSLocalizedString("Battery Station", comment: "")
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.barStyle = .blackTranslucent
