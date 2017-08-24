@@ -18,12 +18,12 @@
 
 // MARK: StationViewCell
 "RemovedAD" = "去廣告";
-"Restore" = "回覆購買";
-"Guide" = "功能導覽";
-"More" = "更多同作者";
+"Restore" = "恢復購買";
+"Guide" = "導    覽";
+"More" = "更多";
 "Rating" =  "給    推";
 "Share" = "分    享";
-"FeedBack" = "回饋建議";
+"FeedBack" = "回    饋";
 "Last:" = "資料更新日期：";
 "refresh" = "更新";
 "Building:" = "建置中：";
@@ -31,4 +31,7 @@
 "Opening:" = "營運中：";
 "Data provided by Gogoro, image: CC0 Public Domain" =  "資料為gogoro所有，僅供查詢使用不保證其資訊正確性，App為作者所有，背景影像授權自：CC0 Public Domain";
 
+"Have been:"  = "已打卡站點：";
+"Completed ratio:" = "打卡完成率：" ;
 
+"Total checkins:" = "總打卡次數：";

@@ -26,6 +26,14 @@ extension UIColor {
         return UIColor.rgb(red: 17, green: 154, blue: 237)
     }
     
+    class var grassGreen: UIColor {
+        return UIColor.rgb(red: 85 , green: 177, blue: 114)
+    }
+    
+    class var lightRed: UIColor {
+        return UIColor.rgb(red: 218 , green: 52, blue: 53)
+    }
+    
 }
 
 
@@ -67,16 +75,42 @@ extension UIView {
     }
 }
 
-
+extension Date {
+    static let today: String = {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        let dateString = formatter.string(from: date)
+        return dateString
+    }()
+}
 
 
 extension Double {
     var km: String {
-        return String(format:"%.1f", self/1000) }
+        return String(format:"%.1f", self / 1000) }
     
     var format: Double {
         return Double(String(format:"%.2f", self))!
     }
+
+    var percentage: String {
+        return String(format: "%.1f", self * 100)
+    }
+    var convertToHMS: String {
+        
+        let minutes = Int(self.truncatingRemainder(dividingBy: 3600) / 60)
+        let hours = Int(self / 3600)
+        
+        var result: String = ""
+        
+        result += hours > 0 ? "\(hours) 小時 " : ""
+        result += "\(minutes + 1) 分鐘 "
+        
+      
+        return result
+    }
+
 }
 
 

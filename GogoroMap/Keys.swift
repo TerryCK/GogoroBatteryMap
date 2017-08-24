@@ -20,6 +20,9 @@ struct Keys {
     let beenHereKey = "beenHere"
     let hasPurchesdKey = "hasPurchesd"
     let dataKey = "dataKey"
+    let annotationsKey = "annotationsKey"
+    
+    let manuLabelOberseverName = "manuLabelOberseverName"
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
@@ -38,9 +41,6 @@ struct Keys {
             var dictionary = NSDictionary(contentsOfFile: path) as? [String: Any] else {
                 return Keys()
         }
-        
-        
-        
         return Keys(dictionary: dictionary)
     }()
     

@@ -17,6 +17,10 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     weak var mapViewController: MapViewController?
     
+    var timer: Timer?
+    
+    
+    
     var products = [SKProduct]() {
         didSet {
             collectionView?.reloadData()
@@ -40,6 +44,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         if let stationData = mapViewController?.stationData {
             cell.stationData = stationData
         }
+        
         cell.menuController = self
         if !self.products.isEmpty {
             cell.product = self.products[indexPath.item]
@@ -81,7 +86,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func recommand() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
         let url = head + appID + foot
@@ -89,7 +94,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func moreApp() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "MoreApp"])
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "MoreApp"])
         open(url: "https://itunes.apple.com/tw/app/id1192891004?l=zh&mt=8")
     }
     
@@ -116,13 +121,25 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         presentErrorMailReport()
     }
     
+     func attempUpdate() {
+        
+        navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
+    }
+    
+
+
     func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Data update"])
-        navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
-        mapViewController?.getData { [unowned self] in
-            self.collectionView?.reloadData()
-            self.navigationItem.title = NSLocalizedString("Information", comment: "")
+        mapViewController?.getAnnotationFromRemote { [unowned self] in
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+                self.navigationItem.title = NSLocalizedString("Information", comment: "")
+            }
+            
         }
+        
     }
     private func setupNaviagtionAndCollectionView() {
         navigationController?.view.layer.cornerRadius = 10
@@ -168,8 +185,8 @@ extension MenuController {
     
     func handlePurchaseNotification(_ notification: Notification) {
         print("MenuController recieved notify")
-        guard let productID = notification.object as? String,
-            RegisteredPurchase.removedProductID == productID else { return }
+//        guard let productID = notification.object as? String,
+//            RegisteredPurchase.removedProductID == productID else { return }
 
         collectionView?.reloadData()
     }
@@ -179,6 +196,12 @@ extension MenuController {
                                                selector: #selector(handlePurchaseNotification(_:)),
                                                name: RegisteredPurchase.observerName,
                                                object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePurchaseNotification(_:)),
+                                               name: NotificationName.shared.oberseManuLabelName,
+                                               object: nil)
+
     }
     
 }

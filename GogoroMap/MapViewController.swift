@@ -14,35 +14,72 @@ import GoogleMobileAds
 
 
 
-final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerViewDelegate, AnnotationHandleable, DataGettable {
+final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable {
     
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
-    var stationData: (totle: Int, available: Int) = (0, 0)
+    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0)
+    
+    var index: Int = 0
+    
+    fileprivate var selectedAnnotationView: MKAnnotationView? =  MKAnnotationView()
+    fileprivate var detailView = DetailAnnotationView()
     
     
-    var annotations = [MKAnnotation]() {
+    var selectedPin: CustomPointAnnotation?
+    
+    var annotations = [CustomPointAnnotation]() {
         didSet {
+            saveToDatabase(with: annotations)
+            setupSummaryInfo()
+            let isSameArray = self.areArrayEqual(array: self.annotations, otherArray: oldValue)
+
             DispatchQueue.main.async {
-                
                 self.mapView.addAnnotations(self.annotations)
-                self.mapView.removeAnnotations(oldValue)
-                
-                // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
-                // Mark: check for avoid add annotation at same location which case too closeing to find
-                
-                let differential = Swift.abs(self.annotations.count - self.mapView.annotations.count)
-                if differential > 1 {
-                    print("")
-                    print("error: annotation view count out of controller!!")
-                    print("annotations: ", self.annotations.count, "mapView: ", self.mapView.annotations.count)
-                    print("")
+                if !isSameArray {
+                    self.mapView.removeAnnotations(oldValue)
                 }
             }
+            self.matchForAnnotationCorrect(annotationsCounter: self.annotations.count, mapViewsAnnotationsCounter: self.mapView.annotations.count)
         }
     }
     
-    fileprivate var selectedPin: CustomPointAnnotation?
+    private func setupSummaryInfo() {
+        var stationsOfAvailable = 0
+        var hasFlags = 0
+        var hasCheckins = 0
+        
+        annotations.forEach {
+            stationsOfAvailable += $0.isOpening ? 1 : 0
+            hasFlags += $0.checkinCounter > 0 ? 1 : 0
+            hasCheckins += $0.checkinCounter
+        }
+        
+        stationData.totle = annotations.count
+        stationData.hasFlags = hasFlags
+        stationData.available = stationsOfAvailable
+        stationData.hasCheckins = hasCheckins
+        
+    }
+    
+    
+
+   private func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
+    // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
+    // Mark: check for avoid add annotation at same location which case too closeing to find
+    var isAnnotationsCounterOK: Bool = true
+    let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
+        if differential > 1 {
+            isAnnotationsCounterOK = false
+            print("")
+            print("error: annotation view count out of controller!!")
+            print("annotations:", annotationsCounter, " mapView:", mapViewsAnnotationsCounter)
+            print("")
+        }
+    
+        print("is annotationView count OK?: \(isAnnotationsCounterOK)")
+    }
+    
     
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
@@ -70,7 +107,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         button.addTarget(self, action: #selector(locationArrowPressed), for: .touchUpInside)
         return button
         }()
-
+    
     private lazy var menuBarButton: UIButton = { [unowned self] in
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
@@ -88,8 +125,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         }
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -97,19 +132,71 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         setupSideMenu()
         setupMapViewAndNavTitle()
         authrizationStatus()
-        getData()
+        initializeData()
         setupPurchase()
+        
+        #if DEBUG
+        let button = UIButton(type: .system)
+        button.setTitle("getData fromDB", for: .normal)
+        button.addTarget(self, action: #selector(getDataTest), for: .touchUpInside)
+        view.addSubview(button)
+        button.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 100, leftPadding: 30, bottomPadding: 0, rightPadding: 30, width: 0, height: 80)
+        
+        #endif
+        
+    }
+    
+    func getDataTest() {
+        
+        annotations = getAnnotationFromDatabase()
         
     }
     
     
-    
-    
-    func setupPurchase() {
-        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            verifyPurchase(RegisteredPurchase.removeAds)
+    func checkin() {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Check in"])
+        let checkinCounter = annotations[index].checkinCounter + 1
+        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
+        detailView.lastCheckTimeLabel.text = "最近的打卡日：\(Date.today)"
+        annotations[index].checkinCounter = checkinCounter
+        annotations[index].checkinDay = Date.today
+        
+        if checkinCounter > 0 && annotations[index].image != #imageLiteral(resourceName: "checkin") {
+            selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
+            annotations[index].image = selectedAnnotationView?.image
+            detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
+            
         }
+        post()
+        saveToDatabase(with: annotations)
     }
+    
+    func unCheckin() {
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: "Remove check in"])
+        let checkinCounter = annotations[index].checkinCounter - 1
+        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
+        annotations[index].checkinCounter = checkinCounter
+        
+        if checkinCounter == 0 {
+            selectedAnnotationView?.image = #imageLiteral(resourceName: "pinFull")
+            annotations[index].image = selectedAnnotationView?.image
+            annotations[index].checkinDay = ""
+            detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
+            detailView.lastCheckTimeLabel.text = "最近的打卡日："
+            
+        }
+        post()
+        saveToDatabase(with: annotations)
+    }
+    
+    func post() {
+        setupSummaryInfo()
+        NotificationCenter.default.post(name: NotificationName.shared.oberseManuLabelName, object: nil)
+    }
+    
+ 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
@@ -138,18 +225,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         }
     }
     
-
-    
-    
     private func setupSideMenu() {
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
         menuController.mapViewController = self
+        guard let navigationController = self.navigationController else {return }
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         SideMenuManager.menuLeftNavigationController?.leftSide = true
         SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
-        SideMenuManager.menuAddPanGestureToPresent(toView: self.navigationController!.navigationBar)
-        SideMenuManager.menuAddScreenEdgePanGesturesToPresent(toView: self.navigationController!.view)
+        SideMenuManager.menuAddPanGestureToPresent(toView: navigationController.navigationBar)
+        SideMenuManager.menuAddScreenEdgePanGesturesToPresent(toView: navigationController.view)
         SideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
@@ -194,7 +279,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, GADBannerVie
         }
         
     }
-    
 }
 
 
@@ -215,35 +299,54 @@ extension MapViewController: Navigatorable {
             annotationView?.annotation = annotation
         }
         
-        guard
-            let customAnnotation = annotation as? CustomPointAnnotation,
-            let distance = Double(customAnnotation.distance ?? "0") else { return nil }
         
-        let subTitleView = UILabel(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: distance > 100 ? 40 : 28, height: 40)))
-        subTitleView.font = subTitleView.font.withSize(12)
-        subTitleView.textAlignment = .right
-        subTitleView.numberOfLines = 0
-        subTitleView.textColor = .gray
+        guard let customAnnotation = annotation as? CustomPointAnnotation else { return nil }
+        let detailView: DetailAnnotationView = DetailAnnotationView(with: customAnnotation)
         
-        subTitleView.text = "\(distance) km"
-        annotationView?.image = customAnnotation.image
+        detailView.goButton.addTarget(self, action: #selector(navigating), for: .touchUpInside)
+        detailView.checkinButton.addTarget(self, action: #selector(checkin), for: .touchUpInside)
+        detailView.unCheckinButton.addTarget(self, action: #selector(unCheckin), for: .touchUpInside)
         
+        annotationView?.image = customAnnotation.checkinCounter > 0 ? #imageLiteral(resourceName: "checkin") : customAnnotation.image
+        annotationView?.detailCalloutAccessoryView = detailView
         
-        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 43, height: 43)))
-        button.setBackgroundImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: UIControlState())
-        
-        button.addTarget(self, action: #selector(MapViewController.navigating), for: .touchUpInside)
-        
-        annotationView?.rightCalloutAccessoryView = button
-        annotationView?.leftCalloutAccessoryView = subTitleView
         return annotationView
         
     }
     
+    
+    
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Display annotation view"])
-        self.selectedPin = view.annotation as? CustomPointAnnotation
+        self.selectedAnnotationView = view
+        
+        guard
+            let annotation = view.annotation as? CustomPointAnnotation,
+            let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
+            let index = annotations.index(of: annotation) else { return }
+        
+        self.selectedPin = annotation
+        self.index = index
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        detailCalloutView.distanceLabel.text = "計算中..."
+        detailCalloutView.etaLabel.text = "計算中..."
+        self.detailView = detailCalloutView
+        
+        
+        getETAData { (distance, travelTime) in
+            DispatchQueue.main.async {
+                detailCalloutView.distanceLabel.text = "距離：\(distance) km "
+                detailCalloutView.etaLabel.text = "約：\(travelTime)"
+                NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            }
+        }
+       
+        
+            
+        
+        
     }
     
     func navigating() {

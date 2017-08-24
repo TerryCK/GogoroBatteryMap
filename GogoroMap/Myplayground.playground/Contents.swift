@@ -3,42 +3,7 @@
 import UIKit
 import PlaygroundSupport
 
-func test() {
-    
-    guard
-        let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json"),
-        let data = NSData(contentsOfFile: filePath) as Data?,
-        let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-        let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else { return }
-    
-    
-        let stations = jsonDic.map { Station(dictionary: $0) }
-   
 
-    var countStats: Int = 0
-    var count24HR: Int = 0
-        stations.forEach { (station) in
-//            if station.state == 1 {
-//                countStats += 1
-//            } else {
-//                print("stats non \(station.id)")
-//            }
-            
-            if station.availableTime == "24HR" {
-                count24HR += 1
-            } else {print(station.id)}
-            
-    }
-//    print(countStats)
-    
-    print(count24HR)
-    
-    
-    }
-
-
-
-test()
 
 struct Station {
     let id: String?
@@ -95,26 +60,147 @@ struct Station {
     }
 }
 
-let optionalnum: Int? = 40
 
-if case .some(let x) = optionalnum {
-    print(x)
+func getDataLocoal() -> [Station]? {
+    
+    guard
+        let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json"),
+        let data = NSData(contentsOfFile: filePath) as Data?,
+        let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else { return nil }
+    
+    
+    return jsonDic.map { Station(dictionary: $0) }
+    
 }
 
-let arrayOfOptionalInts: [Int?] = [nil, 2, 3, nil, 5]
-// Match only non-nil values.
-for case let number in arrayOfOptionalInts {
-    print("Found a \(number)")
+class Obj: NSObject {
+    let name: String?
+    let age: Int?
+    var counter: Int? = 0
+    init (name:String, age: Int, counter:Int = 0) {
+        self.name = name
+        self.age = age
+        self.counter = counter
+    }
+   override var hashValue: Int {
+        get { return 1 }
+    }
+    
+    
+    static func ==(lhs: Obj, rhs: Obj) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+    
 }
 
-for case let number? in arrayOfOptionalInts {
-    print("Found a \(number)")
+//func getHashValue(_ element: String) -> Int {
+//    
+//}
+
+let localArray = [
+    Obj(name: "Terry", age: 10, counter: 10),   // merage counter
+    Obj(name: "Rock", age: 23, counter: 12)     // prepare to remove
+]
+
+let severArray = [
+    Obj(name: "Terry", age: 10), // merage counter
+    Obj(name: "Bob", age: 12)    // prepare to add
+]
+
+func merge<T: Obj>(to origin: [T], from new: [T]) -> (result: [T], discard: [T]) {
+    var dic = [String: T]()
+    var result = [T]()
+    var discard = [T]()
+    let newElements = new.map { $0.name ?? "" }
+    
+    new.forEach { dic[$0.name ?? ""] = $0 }
+    origin.forEach { dic[$0.name ?? ""] = $0 }
+    
+    
+    for (key, value) in dic {
+        if newElements.contains(key) {
+        result.append(value)
+        } else {
+        discard.append(value)
+        }
+    }
+    
+    return (result: result, discard: discard)
 }
 
-for number in arrayOfOptionalInts {
-    print("Found a \(number)")
-}
-let intA = -10
 
-Swift.abs(intA)
+// merge 2 array if element if same, reseve origin one
+// 合併伺服器與本地兩個陣列，本地陣列會帶有counter參數，伺服器過來的則沒有，要讓陣列元素與伺服器相同，但陣列的counter參數要保留本地自己的。
+
+let (merged, discard) = merge(to: localArray, from: severArray)
+print("Meraged:")
+merged.forEach { print($0.name!) }
+
+print("\nDiscard:")
+discard.forEach { print($0.name!) }
+let setLocal = Set(localArray)
+
+
+
+
+
+
+
+
+//
+//
+//let setMerged = Set(merged)
+//let setRemote = Set(severArray)
+//setMerged.isSubset(of: setLocal)
+//setLocal.isSubset(of: setMerged)
+//
+//setRemote.isDisjoint(with: localArray)
+//
+//setLocal.count
+//
+//
+//let array = Array(Set(localArray + severArray))
+//
+//
+////let array3 = array1.filter { array2.contains(where: $0) }
+////print(array3)
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+let x = (1.0 / 10)
+let seconds = 3660.0
+
+seconds.truncatingRemainder(dividingBy: 3600) / 60
+
+
+
+
+
+//let array1 = [1,2,3,4,5]
+//let array2 = [2,3,4,5,6,8]
+//
+//let set1 = Set(array1)
+//let set2 = Set(array2)
+//
+//let ina = set1.union(set2)
+//print(ina)
+
+
+
+
+
+
+
 

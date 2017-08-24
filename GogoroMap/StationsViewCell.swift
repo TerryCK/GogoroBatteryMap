@@ -14,22 +14,28 @@ final class StationsViewCell: UICollectionViewCell {
     weak var menuController: MenuController? {
         
         didSet {
-            contactButton.addTarget(menuController, action: #selector(menuController?.presentMail), for: .touchUpInside)
+            feedBackButton.addTarget(menuController, action: #selector(menuController?.presentMail), for: .touchUpInside)
             recommandButton.addTarget(menuController, action: #selector(menuController?.recommand), for: .touchUpInside)
             shareButton.addTarget(menuController, action: #selector(menuController?.shareThisApp), for: .touchUpInside)
             moreAppsButton.addTarget(menuController, action: #selector(menuController?.moreApp), for: .touchUpInside)
             guideButton.addTarget(menuController, action: #selector(menuController?.performGuidePage), for: .touchUpInside)
-            dataUpdateButton.addTarget(menuController, action: #selector(menuController?.dataUpdate), for: .touchUpInside)
+            dataUpdateButton.addTarget(menuController, action: #selector(menuController?.attempUpdate), for: .touchUpInside)
             
         }
     }
     
-    var stationData: (totle: Int, available: Int) = (0, 0) {
+    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0) {
         didSet {
             
             availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
             buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.totle - stationData.available)"
-            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
+//            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
+            haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
+            
+            let completedPercentage = (Double(stationData.hasFlags) / Double(stationData.available)).percentage
+            completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage)%"
+            
+            hasCheckinsLabel.text = "\(NSLocalizedString("Total checkins:", comment: "")) \(stationData.hasCheckins)"
         }
     }
     
@@ -55,6 +61,17 @@ final class StationsViewCell: UICollectionViewCell {
         return formatter
     }()
     
+    private lazy var lastUpdateDateLabel: UILabel = {
+        let label = UILabel()
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        let dateString = formatter.string(from: date)
+        label.text = "\(NSLocalizedString("Last:", comment: "")) " + dateString
+        label.font = UIFont.boldSystemFont(ofSize: 11)
+        return label
+    }()
+    
     private lazy var authorLabel: UILabel = { [unowned self] in
         let label = UILabel()
         label.text = "Chen, Guan-Jhen 2017 Copyright"
@@ -65,6 +82,27 @@ final class StationsViewCell: UICollectionViewCell {
     private lazy var availableLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
         label.text = ""
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        return label
+        }()
+    
+    private lazy var haveBeenLabel: UILabel = { [unowned self] in
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        label.text = NSLocalizedString("Have been:", comment: "")
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        return label
+        }()
+    
+    private lazy var hasCheckinsLabel: UILabel = { [unowned self] in
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        label.text = NSLocalizedString("Total checkins:", comment: "")
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        return label
+        }()
+    
+    private lazy var completedRatioLabel: UILabel = { [unowned self] in
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        label.text = NSLocalizedString("completed ratio", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }()
@@ -72,14 +110,14 @@ final class StationsViewCell: UICollectionViewCell {
     private lazy var totleLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
         label.text = NSLocalizedString("Total:", comment: "")
-        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
         }()
     
     private lazy var buildingLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
         label.text = NSLocalizedString("Building:", comment: "")
-        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
         }()
     
@@ -92,9 +130,12 @@ final class StationsViewCell: UICollectionViewCell {
     }()
     
     private lazy var dataUpdateButton: UIButton = {
-        let button = CustomButton(type: .system)
-        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
+        button.contentMode = .scaleAspectFit
+        button.layer.cornerRadius = 5
+//        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
+//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
     }()
     
@@ -108,18 +149,9 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     
-    private lazy var lastUpdateDateLabel: UILabel = {
-        let label = UILabel()
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        let dateString = formatter.string(from: date)
-        label.text = "\(NSLocalizedString("Last:", comment: "")) " + dateString
-        label.font = UIFont.boldSystemFont(ofSize: 11)
-        return label
-    }()
     
-    private let contactButton: UIButton = {
+    
+    private let feedBackButton: UIButton = {
         let button = CustomButton(type: .system)
         button.setTitle(NSLocalizedString("FeedBack", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -142,6 +174,14 @@ final class StationsViewCell: UICollectionViewCell {
     
     private lazy var pushShareStackView: UIStackView = { [unowned self] in
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.shareButton, self.recommandButton])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        return stackView
+        }()
+    
+    private lazy var feedBackButtonStackView: UIStackView = { [unowned self] in
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.guideButton, self.feedBackButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -187,14 +227,14 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     private lazy var headStackView: UIStackView = { [unowned self] in
-        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.availableLabel, self.buildingLabel, self.totleLabel])
+        let stackView = UIStackView(arrangedSubviews: [ self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.availableLabel, self.buildingLabel])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
         }()
     
     private lazy var buttonsStackView: UIStackView = { [unowned self] in
-        var subviews: [UIView] = [self.pushShareStackView, self.contactButton, self.moreAppsButton, self.guideButton, self.copyrightLabel]
+        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView ,  self.copyrightLabel]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
@@ -262,7 +302,7 @@ final class StationsViewCell: UICollectionViewCell {
         layer.masksToBounds = true
         
         viewContainer.addSubview(headStackView)
-        headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 128)
+        headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 200)
         
         let separatorView = UIView()
         separatorView.backgroundColor = .white

@@ -46,11 +46,10 @@ final class GuidePageViewController: UIViewController {
         print("guide page controller deinitialize")
     }
     
-    func dismissController () {
+    func dismissController() {
         UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)
         UserDefaults.standard.synchronize()
         mapViewController?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-        mapViewController?.getData()
         dismiss(animated: true, completion: nil)
     }
 }
