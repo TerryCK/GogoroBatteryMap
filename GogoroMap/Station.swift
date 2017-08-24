@@ -14,7 +14,7 @@ struct Station {
     let latitude: Double?
     let longitude: Double?
     let zipcode: Int?
-    let address: String?
+    let address: LocName?
     let district: String?
     let state: Int?
     let city: String?
@@ -27,13 +27,13 @@ struct Station {
         self.latitude = dictionary["Latitude"] as? Double ?? 0
         self.longitude = dictionary["Longitude"] as? Double ?? 0
         self.zipcode = dictionary["ZipCode"] as? Int ?? 0
-        self.address = dictionary["Address"] as? String ?? ""
         self.district = dictionary["District"] as? String ?? ""
         self.state = dictionary["State"] as? Int ?? 0
         self.city = dictionary["City"] as? String ?? ""
         self.availableTime = dictionary["AvailableTime"] as? String ?? ""
         self.availableTimeByte = dictionary["AvailableTimeByte"] as? String ?? ""
         self.locName = Station.getLocalNameObject(jsonString: dictionary["LocName"] as? String ?? "")
+        self.address = Station.getLocalNameObject(jsonString: dictionary["Address"] as? String ?? "")
     }
     
     struct LocName {
@@ -46,6 +46,8 @@ struct Station {
         }
     }
     
+    
+    
     private static func getLocalNameObject(jsonString: String) -> LocName? {
         
         guard
@@ -56,4 +58,5 @@ struct Station {
         return LocName(arr: parsedLocoName)
         
     }
-}
+    
+   }

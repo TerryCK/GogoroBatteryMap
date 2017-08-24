@@ -39,7 +39,7 @@ final class AdContainerView: UIView {
 }
 
 
-extension MapViewController {
+extension MapViewController: GADBannerViewDelegate {
 
     func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         print("Google Ad error: \(error)")

@@ -160,6 +160,11 @@ extension IAPPurchasable where Self: UIViewController {
         NotificationCenter.default.post(name: RegisteredPurchase.observerName, object: identifier)
     }
     
+    func setupPurchase() {
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            verifyPurchase(RegisteredPurchase.removeAds)
+        }
+    }
 }
 
 

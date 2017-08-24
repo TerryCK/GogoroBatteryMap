@@ -32,8 +32,9 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 ### Update history
 -----------
+      2017/8/24 v1.3	Introduce new ckeckin system to record you have been station in local database
       2017/8/19 v1.2    Introduce new features 
-      					manually update, get data process(local, remote), bug fixed, iap-process improvement, 
+      manually update, get data process(local, remote), bug fixed, iap-process improvement, 
                         supported languages: Taiwanese(繁體中文), English
       2017/8/17 v1.1    First release
       
