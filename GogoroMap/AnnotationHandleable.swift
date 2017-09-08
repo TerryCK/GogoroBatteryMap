@@ -35,8 +35,9 @@ extension AnnotationHandleable {
             let title = isEnglish ? engName : twName
             let image = station.state != 1 ? #imageLiteral(resourceName: "building") : station.availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shortTime")
             
+            
             return CustomPointAnnotation(title: title,
-                                         subtitle: "\(NSLocalizedString("Open hours", comment: "")): \(station.availableTime ?? "")",
+                                         subtitle: "\(NSLocalizedString("Open hours:", comment: "")): \(station.availableTime ?? "")",
                                          coordinate: location,
                                          placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                                          image: image,

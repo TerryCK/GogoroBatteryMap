@@ -198,6 +198,14 @@ seconds.truncatingRemainder(dividingBy: 3600) / 60
 //print(ina)
 
 
+let fruitsArray = ["apple", "mango", "blueberry", "orange"]
+let vegArray = ["tomato", "potato", "mango", "blueberry"]
+
+let answer = fruitsArray.filter{ item in !vegArray.contains(item) }
+
+print("\(answer)") //  ["apple", "orange"]
+
+
 
 
 

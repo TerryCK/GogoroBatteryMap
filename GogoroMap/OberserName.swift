@@ -8,9 +8,12 @@
 
 import Foundation
 struct NotificationName {
+    
     static let shared = NotificationName()
-    let oberseManuLabelName = NSNotification.Name(rawValue: Keys.standard.manuLabelOberseverName)
-    private init() {
-        
-    }
+    
+    let manuContent = NSNotification.Name(rawValue: Keys.standard.manuContentObserverName)
+    
+    let removeAds = NSNotification.Name(rawValue: Keys.standard.removeAdsObserverName)
+    
+    private init() { }
 }

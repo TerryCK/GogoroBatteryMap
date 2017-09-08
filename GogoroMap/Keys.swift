@@ -22,7 +22,8 @@ struct Keys {
     let dataKey = "dataKey"
     let annotationsKey = "annotationsKey"
     
-    let manuLabelOberseverName = "manuLabelOberseverName"
+    let manuContentObserverName = "manuContentObserverName"
+    let removeAdsObserverName = "removeAdsObserverName"
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""

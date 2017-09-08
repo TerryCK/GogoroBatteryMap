@@ -10,16 +10,14 @@ import UIKit
 import StoreKit
 import Crashlytics
 
-final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, IAPPurchasable {
+final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let cellid = "cellid"
     let appID = Keys.standard.appID
     
-    weak var mapViewController: MapViewController?
+    weak var delegate: ManuDelegate?
     
     var timer: Timer?
-    
-    
     
     var products = [SKProduct]() {
         didSet {
@@ -32,6 +30,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
@@ -39,32 +38,31 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as! StationsViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as? StationsViewCell else { return StationsViewCell() }
         
-        if let stationData = mapViewController?.stationData {
+        if let stationData = delegate?.stationData {
             cell.stationData = stationData
         }
         
         cell.menuController = self
+        
         if !self.products.isEmpty {
-            cell.product = self.products[indexPath.item]
+            cell.product = self.products.first
         }
-        cell.buyButtonHandler = { product in
+        
+        cell.purchaseHandler = { product in
             self.purchase(product)
         }
+        
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.removeFromSuperview()
         }
+        
         return cell
     }
     
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("selected \(indexPath.item)")
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
     }
     
@@ -102,7 +100,6 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Share"])
         guard let name = NSURL(string: "https://itunes.apple.com/tw/app/id\(appID)?l=zh&mt=8") else { return }
         let activityVC = UIActivityViewController(activityItems: [name], applicationActivities: nil)
-        
         if UIDevice.current.userInterfaceIdiom == .pad {
             activityVC.popoverPresentationController?.sourceView = self.view
             activityVC.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
@@ -112,42 +109,39 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func restorePurchase() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Restore purchase"])
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Restore purchase"])
         restore()
     }
     
     func presentMail() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "SendMail"])
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "SendMail"])
         presentErrorMailReport()
     }
     
      func attempUpdate() {
-        
         navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
     }
     
-
-
     func dataUpdate() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Data update"])
-        mapViewController?.getAnnotationFromRemote { [unowned self] in
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
+        delegate?.getAnnotationFromRemote { [unowned self] in
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = NSLocalizedString("Information", comment: "")
             }
-            
         }
-        
     }
+    
+   
+
     private func setupNaviagtionAndCollectionView() {
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
         navigationItem.title = NSLocalizedString("Information", comment: "")
-        navigationController?.view.backgroundColor = .clear
-        navigationItem.titleView?.backgroundColor = .clear
+
         
         collectionView?.backgroundColor = .clear
         collectionView?.contentInset = UIEdgeInsetsMake(10, 10, 10, 10)
@@ -163,11 +157,19 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: RegisteredPurchase.observerName, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
         print("menu controller deinitialize")
     }
     
-    private func setupPurchaseItem() {
+    
+}
+
+
+// MARK: in-App purchase thing
+
+extension MenuController: IAPPurchasable {
+    
+    fileprivate func setupPurchaseItem() {
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) { return }
         setupObserver()
         getInfo(.removeAds) { (success, products) in
@@ -176,30 +178,21 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             }
         }
     }
-}
-
-
-// MARK: in-App purchase thing
-
-extension MenuController {
     
     func handlePurchaseNotification(_ notification: Notification) {
         print("MenuController recieved notify")
-//        guard let productID = notification.object as? String,
-//            RegisteredPurchase.removedProductID == productID else { return }
-
         collectionView?.reloadData()
     }
     
      func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: RegisteredPurchase.observerName,
+                                               name: NotificationName.shared.removeAds,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.oberseManuLabelName,
+                                               name: NotificationName.shared.manuContent,
                                                object: nil)
 
     }

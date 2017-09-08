@@ -9,9 +9,13 @@
 import UIKit
 import Crashlytics
 
+protocol GuidePageViewControllerDelegate: class {
+    func setCurrentLocation(latDelta: Double, longDelta: Double)
+}
+
 final class GuidePageViewController: UIViewController {
 
-    weak var mapViewController: MapViewController?
+    weak var delegate: GuidePageViewControllerDelegate?
     
     private lazy var guideImageView: UIImageView! = { [unowned self] in
         let imageView: UIImageView = UIImageView(frame: self.view.frame)
@@ -26,7 +30,7 @@ final class GuidePageViewController: UIViewController {
         button.setTitle(NSLocalizedString("Press here and continue", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         button.addTarget(self, action: #selector(dismissController), for: .touchUpInside)
-        return button
+        return button                   
     }()
 
     override func viewDidAppear(_ animated: Bool) {
@@ -49,7 +53,7 @@ final class GuidePageViewController: UIViewController {
     func dismissController() {
         UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)
         UserDefaults.standard.synchronize()
-        mapViewController?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
+        delegate?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
         dismiss(animated: true, completion: nil)
     }
 }

@@ -126,7 +126,6 @@ extension DataGettable where Self: MapViewController {
                 discard.append(value)
             }
         }
-        print("result.count", result.count)
         
         return (result: result, discard: discard)
     }

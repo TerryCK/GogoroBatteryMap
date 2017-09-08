@@ -9,7 +9,7 @@
 // MARK: MapViewController
 "here" = "目前位置";
 "Battery Station" = "電池站";
-"Open hours" = "營業時間";
+"Open hours:" = "營業時間：";
 "Updating" = "資料更新中" ;
 "Information" = "更多資訊";
 

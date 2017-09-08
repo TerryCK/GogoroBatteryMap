@@ -157,7 +157,7 @@ extension IAPPurchasable where Self: UIViewController {
         NetworkActivityIndicatorManager.shared.networkOperationFinished()
         UserDefaults.standard.set(true, forKey: Keys.standard.hasPurchesdKey)
         UserDefaults.standard.synchronize()
-        NotificationCenter.default.post(name: RegisteredPurchase.observerName, object: identifier)
+        NotificationCenter.default.post(name: NotificationName.shared.removeAds, object: identifier)
     }
     
     func setupPurchase() {

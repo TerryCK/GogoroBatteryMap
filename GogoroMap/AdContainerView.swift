@@ -25,7 +25,7 @@ final class AdContainerView: UIView {
         return gAdView
     }()
     
-   private override init(frame: CGRect) {
+    private override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
         addSubview(nativeAdView)
@@ -40,7 +40,7 @@ final class AdContainerView: UIView {
 
 
 extension MapViewController: GADBannerViewDelegate {
-
+    
     func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         print("Google Ad error: \(error)")
     }

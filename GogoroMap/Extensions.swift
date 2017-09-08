@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import StoreKit
 import Foundation
 
 extension UIColor {
@@ -118,4 +119,18 @@ extension Bundle {
     static var id: String {
         return Bundle.main.bundleIdentifier ?? ""
     }
+}
+
+
+
+
+extension SKProduct {
+    
+    func localizedPrice() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = self.priceLocale
+        return formatter.string(from: self.price) ?? "\(price)"
+    }
+    
 }

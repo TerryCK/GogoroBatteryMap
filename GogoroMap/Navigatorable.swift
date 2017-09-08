@@ -41,15 +41,53 @@ extension Navigatorable where Self: MapViewController {
         request.source = sourceMapItem
         request.destination = destinationMapItem
         request.transportType = MKDirectionsTransportType.automobile
-        request.requestsAlternateRoutes = false
+        request.requestsAlternateRoutes = true
         let directions = MKDirections(request: request)
         directions.calculate { response, error in
+//            defer {   print(response?.routes.count) }
             if let route = response?.routes.first {
                 completeHandler(route.distance.km, route.expectedTravelTime.convertToHMS)
-            } else {
+            } else  {
                 completeHandler("無法取得資料", "無法取得資料")
-                print("Error!")
+                print("Error: \(error!)")
             }
+            
+            
+            
+            
+            
+            
+            
+//            guard let unwrappedResponse = response else { return }
+//            var count = 0
+//            for route in unwrappedResponse.routes {
+//                print("第\(count)條")
+//                route.steps.forEach {
+//                    print(" 指示：\($0.instructions) \n 座標：\($0.polyline.coordinate) \n距離：\($0.distance.km) km  \($0.notice?.description)\n\n ")
+//                    
+//                }
+//                    count += 1
+//                
+//                if route.expectedTravelTime > 3600 {
+//                    print("route.expectedTravelTime:", route.expectedTravelTime.convertToHMS)
+//                }
+//                self.mapView.add(route.polyline)
+//                if self.mapView.overlays.count == 1 {
+//                    self.mapView.setVisibleMapRect(route.polyline.boundingMapRect,
+//                                              edgePadding: UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0),
+//                                              animated: false)
+//                }
+//                    // 3
+//                else {
+//                    let polylineBoundingRect =  MKMapRectUnion(self.mapView.visibleMapRect,
+//                                                               route.polyline.boundingMapRect)
+//                    self.mapView.setVisibleMapRect(polylineBoundingRect,
+//                                              edgePadding: UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0),
+//                                              animated: false)
+//                }
+//            }
+//            
+//            
         }
 
     }

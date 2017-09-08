@@ -22,7 +22,7 @@ enum RegisteredPurchase: String {
     
     case removeAds = "RemoveAds"
     static let removedProductID = Bundle.id + "." + RegisteredPurchase.removeAds.rawValue
-    static let observerName = NSNotification.Name(rawValue: RegisteredPurchase.removeAds.rawValue)
+
 }
 
 

@@ -12,9 +12,13 @@ import SideMenu
 import Crashlytics
 import GoogleMobileAds
 
+protocol ManuDelegate: class {
+     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
+     var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get set }
+}
 
 
-final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable {
+final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuDelegate {
     
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
@@ -135,14 +139,24 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         initializeData()
         setupPurchase()
         
-        #if DEBUG
-        let button = UIButton(type: .system)
-        button.setTitle("getData fromDB", for: .normal)
-        button.addTarget(self, action: #selector(getDataTest), for: .touchUpInside)
-        view.addSubview(button)
-        button.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 100, leftPadding: 30, bottomPadding: 0, rightPadding: 30, width: 0, height: 80)
+//        #if DEBUG
+//        let button = UIButton(type: .system)
+//        button.setTitle("getData fromDB", for: .normal)
+//        button.addTarget(self, action: #selector(getDataTest), for: .touchUpInside)
+//        view.addSubview(button)
+//        button.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 100, leftPadding: 30, bottomPadding: 0, rightPadding: 30, width: 0, height: 80)
+//        
+//        #endif
         
-        #endif
+//        #if DEBUG
+//            
+//            let activity = selectedPin?.userActivity
+//            activity?.isEligibleForPublicIndexing = true
+//            activity?.isEligibleForSearch = true
+//            
+//            userActivity = activity
+//            
+//        #endif
         
     }
     
@@ -193,7 +207,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     func post() {
         setupSummaryInfo()
-        NotificationCenter.default.post(name: NotificationName.shared.oberseManuLabelName, object: nil)
+        NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
     }
     
  
@@ -212,7 +226,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
         let guidePageController = GuidePageViewController()
-        guidePageController.mapViewController = self
+        guidePageController.delegate = self
         present(guidePageController, animated: true, completion: nil)
     }
     
@@ -228,8 +242,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private func setupSideMenu() {
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
-        menuController.mapViewController = self
-        guard let navigationController = self.navigationController else {return }
+        menuController.delegate = self
+        guard let navigationController = self.navigationController else { return }
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         SideMenuManager.menuLeftNavigationController?.leftSide = true
         SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
@@ -242,7 +256,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private func setSideMenuDefalts() {
         SideMenuManager.menuFadeStatusBar = true
         SideMenuManager.menuShadowOpacity = 0.59
-        SideMenuManager.menuWidth = view.frame.width * CGFloat(0.75)
+        SideMenuManager.menuWidth = view.frame.width * CGFloat(0.80)
         SideMenuManager.menuAnimationTransformScaleFactor = 0.95
         SideMenuManager.menuAnimationFadeStrength = 0.40
         SideMenuManager.menuBlurEffectStyle = nil
@@ -342,11 +356,15 @@ extension MapViewController: Navigatorable {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
             }
         }
-       
+  
+    }
+    
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        renderer.strokeColor = .heavyBlue
         
-            
-        
-        
+        return renderer
     }
     
     func navigating() {
@@ -372,7 +390,7 @@ extension MapViewController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: RegisteredPurchase.observerName,
+                                               name: NotificationName.shared.removeAds,
                                                object: nil)
     }
     
@@ -390,3 +408,6 @@ extension MapViewController: IAPPurchasable {
     }
 }
 
+extension MapViewController: GuidePageViewControllerDelegate {
+    
+}

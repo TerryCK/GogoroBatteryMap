@@ -9,6 +9,8 @@
 import UIKit
 import StoreKit
 
+typealias PurchaseFunc = (_ product: SKProduct) -> ()
+
 final class StationsViewCell: UICollectionViewCell {
     
     weak var menuController: MenuController? {
@@ -29,7 +31,7 @@ final class StationsViewCell: UICollectionViewCell {
             
             availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
             buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.totle - stationData.available)"
-//            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
+            //            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
             haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
             
             let completedPercentage = (Double(stationData.hasFlags) / Double(stationData.available)).percentage
@@ -41,6 +43,9 @@ final class StationsViewCell: UICollectionViewCell {
     
     var product: SKProduct? {
         didSet {
+            removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
+            print(product?.productIdentifier)
+            
             if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
                 restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
                 removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
@@ -52,14 +57,17 @@ final class StationsViewCell: UICollectionViewCell {
     }
     
     
-    var buyButtonHandler: ((_ product: SKProduct) -> ())?
+    var purchaseHandler: (PurchaseFunc)?
     
-    static let priceFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.formatterBehavior = .behavior10_4
-        formatter.numberStyle = .currency
-        return formatter
-    }()
+    
+    func buyButtonTapped() {
+        
+        if let product = product, let purchaseing = purchaseHandler {
+            
+            purchaseing(product)
+        }
+    }
+    
     
     private lazy var lastUpdateDateLabel: UILabel = {
         let label = UILabel()
@@ -71,6 +79,17 @@ final class StationsViewCell: UICollectionViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 11)
         return label
     }()
+    
+    private lazy var hasBeenList: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
+        button.contentMode = .scaleAspectFit
+        button.layer.cornerRadius = 5
+        //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
+        //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        return button
+    }()
+    
     
     private lazy var authorLabel: UILabel = { [unowned self] in
         let label = UILabel()
@@ -134,8 +153,8 @@ final class StationsViewCell: UICollectionViewCell {
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
         button.contentMode = .scaleAspectFit
         button.layer.cornerRadius = 5
-//        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
-//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
+        //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
     }()
     
@@ -204,7 +223,7 @@ final class StationsViewCell: UICollectionViewCell {
     
     private let removeAdsButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("NTD 30\n\(NSLocalizedString("RemovedAD", comment: ""))", for: .normal)
+        button.setTitle("testing", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         button.titleLabel?.numberOfLines = 0
         button.titleLabel?.textAlignment = .center
@@ -251,12 +270,7 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     
-    func buyButtonTapped() {
-        
-        if let product = product {
-            buyButtonHandler?(product)
-        }
-    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)

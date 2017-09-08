@@ -9,7 +9,7 @@
 import UIKit
 
 final class DetailAnnotationView: UIView {
-
+    
     
     let goButton: UIButton = {
         let button = UIButton(type: .system)
@@ -18,23 +18,23 @@ final class DetailAnnotationView: UIView {
         return button
     }()
     
-     let checkinButton: UIButton = {
+    let checkinButton: UIButton = {
         let button = CheckinButton(type: .system)
         return button
     }()
     
-     let unCheckinButton: UIButton = {
+    let unCheckinButton: UIButton = {
         let button = UnCheckInButton(type: .system)
         return button
     }()
     
-     lazy var buttonStackView: UIStackView = { [unowned self] in
+    lazy var buttonStackView: UIStackView = { [unowned self] in
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.checkinButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .center
         stackView.spacing = 10
-
+        
         return stackView
         }()
     
@@ -46,21 +46,21 @@ final class DetailAnnotationView: UIView {
         textField.textColor = .lightGray
         textField.font = UIFont.systemFont(ofSize: 10)
         return textField
-        }()
-
+    }()
+    
     let etaLabel: UILabel = {
         let label = UILabel()
         label.text = "約需：120 分鐘"
         label.font = UIFont.systemFont(ofSize: 11)
         return label
-        }()
+    }()
     
     let distanceLabel: UILabel = {
         let label = UILabel()
         label.text = "100 km"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
-        }()
+    }()
     
     private lazy var etaStackview: UIStackView = { [unowned self] in
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.distanceLabel, self.etaLabel])
@@ -77,8 +77,8 @@ final class DetailAnnotationView: UIView {
         stackView.spacing = 10
         return stackView
         }()
-
-
+    
+    
     
     
     let lastCheckTimeLabel: UILabel = {
@@ -86,14 +86,14 @@ final class DetailAnnotationView: UIView {
         label.text = "最近的打卡日："
         label.font = UIFont.systemFont(ofSize: 12)
         return label
-        }()
-
-    let timesOfCheckinLabel: UILabel = { 
+    }()
+    
+    let timesOfCheckinLabel: UILabel = {
         let label = UILabel()
         label.text = "打卡： 0  次"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
-        }()
+    }()
     
     private let isAvailableLabel: UILabel = {
         let label = UILabel()
@@ -106,14 +106,14 @@ final class DetailAnnotationView: UIView {
         label.font = UIFont.systemFont(ofSize: 9)
         label.anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 40, height: 12)
         return label
-        }()
-
+    }()
+    
     private let opneHourLabel: UILabel = {
         let label = UILabel()
         label.text = "營業時間：" + "24hr"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
-        }()
+    }()
     
     private lazy var openStackView: UIStackView = { [unowned self] in
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.opneHourLabel])
@@ -166,7 +166,7 @@ final class DetailAnnotationView: UIView {
         backgroundColor = .white
         layer.cornerRadius = 10
         layer.masksToBounds = true
-
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -181,7 +181,7 @@ final class DetailAnnotationView: UIView {
             self.isAvailableLabel.text = "營運中"
             self.isAvailableLabel.backgroundColor = .lightGreen
             self.checkinButton.isEnabled = true
-          
+            
         }
         
         self.opneHourLabel.text = "\(annotation.subtitle ?? "")"
@@ -191,5 +191,18 @@ final class DetailAnnotationView: UIView {
         if annotation.checkinCounter > 0 {
             self.buttonStackView.addArrangedSubview(unCheckinButton)
         }
+    }
+}
+
+
+class ViewClass: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    // 從這邊開始
+    
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
