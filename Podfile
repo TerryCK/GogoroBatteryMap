@@ -8,13 +8,13 @@ pod 'SideMenu'
 pod 'Google-Mobile-Ads-SDK'
 pod 'Fabric'
 pod 'Crashlytics'
-pod 'Firebase/Core'
+
 pod 'SwiftyStoreKit'
 
 end
 
 target 'GogoroMap' do
-
+pod 'Firebase/Core', '~> 4.0.4'
     shared_pods
     
 end

@@ -2,15 +2,14 @@ PODS:
   - Crashlytics (3.8.6):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.13)
-  - Firebase/Core (4.1.1):
-    - FirebaseAnalytics (= 4.0.3)
-    - FirebaseCore (= 4.0.6)
-  - FirebaseAnalytics (4.0.3):
+  - Firebase/Core (4.0.4):
+    - FirebaseAnalytics (= 4.0.2)
+    - FirebaseCore (= 4.0.4)
+  - FirebaseAnalytics (4.0.2):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-    - nanopb (~> 0.3)
-  - FirebaseCore (4.0.6):
+  - FirebaseCore (4.0.4):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
   - FirebaseInstanceID (2.0.2):
@@ -30,7 +29,7 @@ PODS:
 DEPENDENCIES:
   - Crashlytics
   - Fabric
-  - Firebase/Core
+  - Firebase/Core (~> 4.0.4)
   - Google-Mobile-Ads-SDK
   - SideMenu
   - SwiftyStoreKit
@@ -38,9 +37,9 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
   Fabric: 2fb5676bc811af011a04513451f463dac6803206
-  Firebase: 052c0de688fc87b414996eea13e223dd9fee3fa2
-  FirebaseAnalytics: 76f754d37ca5b04f36856729b6af3ca0152d1069
-  FirebaseCore: 28def3c643989c97ea5a69ea5000f5fa9902b9fd
+  Firebase: 1492bf04e1b73a7353b4fb2cf5a20bac9692f341
+  FirebaseAnalytics: ad41720e3e67fc63fbe3d2948d3e26932a8de311
+  FirebaseCore: cfc042628ef9f20debe09c0eb683135fcd404cb4
   FirebaseInstanceID: c4c7fca62c7b7330caee5da04f19a37ea37bb1c1
   Google-Mobile-Ads-SDK: a43dc8efdb566c74d00ac6934c781de969348d80
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
@@ -48,6 +47,6 @@ SPEC CHECKSUMS:
   SideMenu: a447554ae5c982e8077666389e1c8b0c8656e065
   SwiftyStoreKit: b13badd58fe138e258d04dec7bc1c9b092351af6
 
-PODFILE CHECKSUM: feed6e779da345e8a4738ddc41754f247e7f06ae
+PODFILE CHECKSUM: a5e7557528400e0e31ee717394c07f1abc72e839
 
 COCOAPODS: 1.2.1
