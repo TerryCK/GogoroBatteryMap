@@ -44,7 +44,7 @@ final class StationsViewCell: UICollectionViewCell {
     var product: SKProduct? {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
-            print(product?.productIdentifier)
+            
             
             if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
                 restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
@@ -159,17 +159,6 @@ final class StationsViewCell: UICollectionViewCell {
     }()
     
     
-    private lazy var updateStackView: UIStackView = { [unowned self] in
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.spacing = 10
-        return stackView
-        }()
-    
-    
-    
-    
     private let feedBackButton: UIButton = {
         let button = CustomButton(type: .system)
         button.setTitle(NSLocalizedString("FeedBack", comment: ""), for: .normal)
@@ -191,21 +180,6 @@ final class StationsViewCell: UICollectionViewCell {
         return button
     }()
     
-    private lazy var pushShareStackView: UIStackView = { [unowned self] in
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.shareButton, self.recommandButton])
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 10
-        return stackView
-        }()
-    
-    private lazy var feedBackButtonStackView: UIStackView = { [unowned self] in
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.guideButton, self.feedBackButton])
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 10
-        return stackView
-        }()
     
     private let moreAppsButton: UIButton = {
         let button = CustomButton(type: .system)
@@ -237,6 +211,33 @@ final class StationsViewCell: UICollectionViewCell {
         return button
     }()
     
+    
+    private lazy var updateStackView: UIStackView = { [unowned self] in
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 10
+        return stackView
+        }()
+
+    
+    private lazy var pushShareStackView: UIStackView = { [unowned self] in
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.shareButton, self.recommandButton])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        return stackView
+        }()
+    
+    private lazy var feedBackButtonStackView: UIStackView = { [unowned self] in
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.guideButton, self.feedBackButton])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        return stackView
+        }()
+
+    
     lazy var buyStoreButtonStackView: UIStackView = { [unowned self] in
         let stackView = UIStackView(arrangedSubviews:  [self.restoreButton, self.removeAdsButton])
         stackView.axis = .horizontal
@@ -246,14 +247,14 @@ final class StationsViewCell: UICollectionViewCell {
         }()
     
     private lazy var headStackView: UIStackView = { [unowned self] in
-        let stackView = UIStackView(arrangedSubviews: [ self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.availableLabel, self.buildingLabel])
+        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.availableLabel, self.buildingLabel])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
         }()
     
     private lazy var buttonsStackView: UIStackView = { [unowned self] in
-        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView ,  self.copyrightLabel]
+        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView,  self.copyrightLabel]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical

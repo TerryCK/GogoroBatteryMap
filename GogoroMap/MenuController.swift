@@ -25,10 +25,53 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         }
     }
     
+//    private lazy var viewContainer: UIView = { [unowned self] in
+//        
+//        let containerView = UIView()
+//        
+//        let blurEffect = UIBlurEffect(style: .extraLight)
+//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurEffectView.frame = self.view.bounds
+//        blurEffectView.alpha = 0.85
+//        
+//        self.view.addSubview(blurEffectView)
+//        
+//        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+//        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+//        
+//        vibrancyEffectView.frame = self.view.bounds
+//        blurEffectView.contentView.addSubview(vibrancyEffectView)
+//        
+//        
+//        let vibrancyEffectContentView = vibrancyEffectView.contentView
+//        vibrancyEffectContentView.addSubview(containerView)
+//        
+//        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: vibrancyEffectContentView.bottomAnchor, right:  vibrancyEffectContentView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+//        
+//        return containerView
+//        }()
+    
+    
+//    let boardView: UIView = {
+//        let view = UIView()
+//        view.backgroundColor = .red
+//        return view
+//    }()
+//
+//    func setupView() {
+////        view.addSubview(boardView)
+////        boardView.anchor(top: topLayoutGuide.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 150)
+////        view.addSubview(collectionView!)
+////        collectionView?.anchor(top: boardView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+//        
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
+//        setupView()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -126,7 +169,9 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
+        print("\nreflash\n")
         delegate?.getAnnotationFromRemote { [unowned self] in
+            
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = NSLocalizedString("Information", comment: "")
@@ -137,14 +182,21 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
    
 
     private func setupNaviagtionAndCollectionView() {
+        
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
         navigationItem.title = NSLocalizedString("Information", comment: "")
-
+        navigationItem.titleView?.layer.cornerRadius = 10
+        navigationItem.titleView?.layer.masksToBounds = true
         
         collectionView?.backgroundColor = .clear
-        collectionView?.contentInset = UIEdgeInsetsMake(10, 10, 10, 10)
+        collectionView?.contentInset = UIEdgeInsetsMake( 10, 0, 10, 0)
+        
+//        if let collectionLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+//            collectionLayout.sectionInset = UIEdgeInsets(top: 50, left: 10, bottom: 10, right: 10)
+//        }
+        
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)

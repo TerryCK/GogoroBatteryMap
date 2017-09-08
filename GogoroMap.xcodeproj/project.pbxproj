@@ -40,7 +40,6 @@
 		A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */; };
 		A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689A1F3B44D70015F5F9 /* Extensions.swift */; };
 		A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689E1F3B54C80015F5F9 /* Station.swift */; };
-		A8DB8CE61F4153C70062FA7A /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DB8CE51F4153C70062FA7A /* IAPHelper.swift */; };
 		A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DB8CE71F4153F40062FA7A /* StoreKit.framework */; };
 		A8E68F8C1F46D3BA00160388 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A8E68F8B1F46D3BA00160388 /* gogoro.json */; };
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
@@ -101,7 +100,6 @@
 		A8D368761F3B435E0015F5F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A8D3689A1F3B44D70015F5F9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A8D3689E1F3B54C80015F5F9 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
-		A8DB8CE51F4153C70062FA7A /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		A8DB8CE71F4153F40062FA7A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A8E68F8B1F46D3BA00160388 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -185,8 +183,8 @@
 			children = (
 				A8D3689E1F3B54C80015F5F9 /* Station.swift */,
 				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
-				A8742B011F449741002BA66B /* Keys.swift */,
 				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
+				A8742B011F449741002BA66B /* Keys.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -292,7 +290,6 @@
 			children = (
 				A869AA191F44150A0085133C /* IAPProducts.swift */,
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
-				A8DB8CE51F4153C70062FA7A /* IAPHelper.swift */,
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
 			);
@@ -537,7 +534,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8DB8CE61F4153C70062FA7A /* IAPHelper.swift in Sources */,
 				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,

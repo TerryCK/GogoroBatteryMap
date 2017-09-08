@@ -8,8 +8,10 @@
 
 import Foundation
 
+typealias CompleteHandle = () -> Void
+
 protocol DataGettable {
-    // from local file @app first launch start point
+    
     func initializeData()
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation]
@@ -23,7 +25,7 @@ protocol DataGettable {
     func merge<T: CustomPointAnnotation>(to origin: [T], from new: [T]) -> (result: [T], discard: [T])
 }
 
-typealias CompleteHandle = () -> Void
+
 
 extension DataGettable where Self: MapViewController {
     
@@ -37,19 +39,21 @@ extension DataGettable where Self: MapViewController {
             let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
             let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
                 
-                print("could not unachive from placeData")
+
                 return getAnnotationFromFile()
         }
+        print("get data from database")
         return annotationFromDatabase
     }
     
-   private func getAnnotationFromFile() -> [CustomPointAnnotation] {
+    private func getAnnotationFromFile() -> [CustomPointAnnotation] {
         guard
             let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json"),
             let data = try? NSData(contentsOfFile: filePath) as Data,
             let annotationsFromFile = parsed(with: data) else {
                 return [CustomPointAnnotation]()
         }
+        print("get data from local file")
         return annotationsFromFile
     }
     
@@ -65,16 +69,16 @@ extension DataGettable where Self: MapViewController {
     }
     
     func initializeData() {
-        guard UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) else {
+        if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {
             self.annotations = getAnnotationFromFile()
-            return
-        }
-        DispatchQueue.global().async {
-            self.annotations = self.getAnnotationFromDatabase()
-            self.getAnnotationFromRemote()
-            
         }
         
+        DispatchQueue.global().async {
+            if self.mapView.annotations.isEmpty {
+                self.annotations = self.getAnnotationFromDatabase()
+            }
+            self.getAnnotationFromRemote()
+        }
     }
     
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle? = nil) {
@@ -92,18 +96,31 @@ extension DataGettable where Self: MapViewController {
             }
             
             if let err = err {
-                self.annotations = self.getAnnotationFromDatabase()
+                dataFromDatabase()
                 print("Failed: ", err)
                 return
             }
             
             guard let annotationFromRemote = self.parsed(with: data),
                 annotationFromRemote.count > 50 else {
-                self.annotations = self.getAnnotationFromDatabase()
-                return
+                dataFromDatabase()
+                    return
             }
-            self.annotations = self.merge(to: self.annotations, from: annotationFromRemote).result
+            print("get data from romote")
+            DispatchQueue.main.async {
+                (self.annotations, self.willRemovedAnnotations) = self.merge(to: self.annotations, from: annotationFromRemote)
+            }
+            
             }.resume()
+        
+         func dataFromDatabase() {
+            if self.annotations.isEmpty {
+                DispatchQueue.main.async {
+                     self.annotations = self.getAnnotationFromDatabase()
+                }
+               
+            }
+        }
     }
     
     
@@ -111,22 +128,24 @@ extension DataGettable where Self: MapViewController {
     func merge<T: CustomPointAnnotation>(to origin: [T], from new: [T]) -> (result: [T], discard: [T]) {
         
         var dic = [String: T]()
+        
         var result = [T]()
         var discard = [T]()
-        let newElements = new.map { $0.title ?? "" }
+        let newElementsTitle = new.map { $0.title ?? "" }
         
         new.forEach { dic[$0.title ?? ""] = $0 }
         origin.forEach { dic[$0.title ?? ""] = $0 }
         
-        
         for (key, value) in dic {
-            if newElements.contains(key) {
+            
+            if newElementsTitle.contains(key) {
                 result.append(value)
             } else {
                 discard.append(value)
             }
         }
         
+        print("result: ", result.count , " discard:", discard.count)
         return (result: result, discard: discard)
     }
     

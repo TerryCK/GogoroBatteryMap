@@ -13,8 +13,8 @@ import Crashlytics
 import GoogleMobileAds
 
 protocol ManuDelegate: class {
-     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
-     var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get set }
+    func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
+    var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get set }
 }
 
 
@@ -24,31 +24,35 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var myLocationManager: CLLocationManager!
     var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0)
     
-    var index: Int = 0
+    
     
     fileprivate var selectedAnnotationView: MKAnnotationView? =  MKAnnotationView()
     fileprivate var detailView = DetailAnnotationView()
     
-    
+    var index: Int = 0
     var selectedPin: CustomPointAnnotation?
+    
+    var willRemovedAnnotations = [CustomPointAnnotation]() {
+        didSet {
+            if willRemovedAnnotations.count > 0 {
+                self.mapView.removeAnnotations(willRemovedAnnotations)
+            }
+            self.matchForAnnotationCorrect(annotationsCounter: self.annotations.count, mapViewsAnnotationsCounter: self.mapView.annotations.count)
+        }
+        
+    }
     
     var annotations = [CustomPointAnnotation]() {
         didSet {
             saveToDatabase(with: annotations)
-            setupSummaryInfo()
-            let isSameArray = self.areArrayEqual(array: self.annotations, otherArray: oldValue)
-
-            DispatchQueue.main.async {
-                self.mapView.addAnnotations(self.annotations)
-                if !isSameArray {
-                    self.mapView.removeAnnotations(oldValue)
-                }
-            }
-            self.matchForAnnotationCorrect(annotationsCounter: self.annotations.count, mapViewsAnnotationsCounter: self.mapView.annotations.count)
+            updateSummaryInfo()
+            
+            self.mapView.addAnnotations(self.annotations)
+            print("annotations did set")
         }
     }
     
-    private func setupSummaryInfo() {
+    private func updateSummaryInfo() {
         var stationsOfAvailable = 0
         var hasFlags = 0
         var hasCheckins = 0
@@ -67,21 +71,23 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     
-
-   private func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
-    // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
-    // Mark: check for avoid add annotation at same location which case too closeing to find
-    var isAnnotationsCounterOK: Bool = true
-    let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
+    
+    private func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
+        // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
+        // Mark: check for avoid add annotation at same location which case too closeing to find
+        
+        let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
         if differential > 1 {
-            isAnnotationsCounterOK = false
+             
             print("")
             print("error: annotation view count out of controller!!")
             print("annotations:", annotationsCounter, " mapView:", mapViewsAnnotationsCounter)
             print("")
+        } else {
+            print(" ** annotation view count currect ** ")
         }
-    
-        print("is annotationView count OK?: \(isAnnotationsCounterOK)")
+        
+        
     }
     
     
@@ -139,32 +145,20 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         initializeData()
         setupPurchase()
         
-//        #if DEBUG
-//        let button = UIButton(type: .system)
-//        button.setTitle("getData fromDB", for: .normal)
-//        button.addTarget(self, action: #selector(getDataTest), for: .touchUpInside)
-//        view.addSubview(button)
-//        button.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 100, leftPadding: 30, bottomPadding: 0, rightPadding: 30, width: 0, height: 80)
+                    
+//                #if DEBUG
 //        
-//        #endif
-        
-//        #if DEBUG
-//            
-//            let activity = selectedPin?.userActivity
-//            activity?.isEligibleForPublicIndexing = true
-//            activity?.isEligibleForSearch = true
-//            
-//            userActivity = activity
-//            
-//        #endif
-        
-    }
+//                    let activity = selectedPin?.userActivity
+//                    activity?.isEligibleForPublicIndexing = true
+//                    activity?.isEligibleForSearch = true
+//        
+//                    userActivity = activity
+//        
+//                #endif
     
-    func getDataTest() {
-        
-        annotations = getAnnotationFromDatabase()
-        
     }
+
+    
     
     
     func checkin() {
@@ -206,11 +200,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     func post() {
-        setupSummaryInfo()
+        updateSummaryInfo()
         NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
     }
     
- 
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
@@ -243,12 +237,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
         menuController.delegate = self
-        guard let navigationController = self.navigationController else { return }
+//        guard let navigationController = self.navigationController else { return }
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         SideMenuManager.menuLeftNavigationController?.leftSide = true
+        
         SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
-        SideMenuManager.menuAddPanGestureToPresent(toView: navigationController.navigationBar)
-        SideMenuManager.menuAddScreenEdgePanGesturesToPresent(toView: navigationController.view)
+//        SideMenuManager.menuAddPanGestureToPresent(toView: navigationController.navigationBar)
+//        SideMenuManager.menuAddScreenEdgePanGesturesToPresent(toView: navigationController.view)
         SideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
@@ -270,8 +265,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.barTintColor = UIColor.lightGreen
-        navigationController?.view.layer.cornerRadius = 3
-        navigationController?.view.layer.masksToBounds = true
+
         
         view.addSubview(mapView)
         mapView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
@@ -356,11 +350,12 @@ extension MapViewController: Navigatorable {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
             }
         }
-  
+        
     }
     
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
         renderer.strokeColor = .heavyBlue
         

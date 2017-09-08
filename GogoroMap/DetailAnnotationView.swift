@@ -193,16 +193,3 @@ final class DetailAnnotationView: UIView {
         }
     }
 }
-
-
-class ViewClass: UIView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    // 從這邊開始
-    
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}

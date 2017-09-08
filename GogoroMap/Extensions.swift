@@ -92,7 +92,7 @@ extension Double {
         return String(format:"%.1f", self / 1000) }
     
     var format: Double {
-        return Double(String(format:"%.2f", self))!
+        return Double(String(format:"%.2f", self)) ?? 0
     }
 
     var percentage: String {

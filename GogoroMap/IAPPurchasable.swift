@@ -122,7 +122,7 @@ extension IAPPurchasable where Self: UIViewController {
                 if let purchase = purchase as? RegisteredPurchase {
                     productId = Bundle.id + "." + purchase.rawValue
                 } else {
-                    productId = purchase as! String
+                    productId = purchase as? String ?? ""
                 }
                 
                 let purchaseResult = SwiftyStoreKit.verifyPurchase (

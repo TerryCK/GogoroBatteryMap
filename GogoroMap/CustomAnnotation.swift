@@ -59,7 +59,7 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
     required convenience init?(coder aDecoder: NSCoder) {
         
         let isOpening = aDecoder.decodeBool(forKey: CustomPointAnnotation.isOpeningKey)
-        let image = aDecoder.decodeObject(forKey: CustomPointAnnotation.imageKey) as! UIImage
+        let image = aDecoder.decodeObject(forKey: CustomPointAnnotation.imageKey) as? UIImage ?? #imageLiteral(resourceName: "pinFull")
         let title = aDecoder.decodeObject(forKey: CustomPointAnnotation.titleKey) as? String ?? ""
         let subtitle = aDecoder.decodeObject(forKey: CustomPointAnnotation.subtitleKey) as? String ?? ""
         let latitude = aDecoder.decodeObject(forKey: CustomPointAnnotation.latitudeKey) as? String ?? ""
