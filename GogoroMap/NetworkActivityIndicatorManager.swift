@@ -37,7 +37,10 @@ final class NetworkActivityIndicatorManager: NSObject {
         
         #if os(iOS)
             if loadingCount == 0 {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                }
+                
             }
             loadingCount += 1
         #endif
@@ -49,7 +52,11 @@ final class NetworkActivityIndicatorManager: NSObject {
                 loadingCount -= 1
             }
             if loadingCount == 0 {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                
+                DispatchQueue.main.async {
+                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
+               
             }
         #endif
     }

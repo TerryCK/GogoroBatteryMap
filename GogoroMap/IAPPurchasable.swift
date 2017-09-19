@@ -25,6 +25,7 @@ protocol IAPPurchasable: IAPAlartable {
     func restore()
     func verifyPurchase<T: PurchaseItem>(_ purchase: T)
     func handlePurchaseNotification(_ notification: Notification)
+    
     func setupObserver()
 }
 
@@ -36,10 +37,10 @@ extension IAPPurchasable where Self: UIViewController {
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Get purchase item list"])
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
+        let proudctInfo = "\(Bundle.id).\(purchase.rawValue)"
         
-        SwiftyStoreKit.retrieveProductsInfo([Bundle.id + "." + purchase.rawValue]) { result in
-            NetworkActivityIndicatorManager.shared.networkOperationFinished()
-            
+        SwiftyStoreKit.retrieveProductsInfo([proudctInfo]) { result in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished() 
             if let product = result.retrievedProducts.first {
                 completeHandle(true, [product])
                 return
@@ -60,7 +61,7 @@ extension IAPPurchasable where Self: UIViewController {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
                 
-                Answers.logPurchase(withPrice: 30, currency: "TWD", success: true, itemName: purchase.productId, itemType: nil, itemId: nil, customAttributes: nil)
+                Answers.logPurchase(withPrice: purchase.product.price, currency: "TWD", success: true, itemName: purchase.productId, itemType: nil, itemId: nil, customAttributes: nil)
                 Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents,
                                        customAttributes: [Log.sharedName.purchaseEvent: "Purchase succeeded"])
                 self.verifyPurchase(purchase.productId)

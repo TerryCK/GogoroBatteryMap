@@ -1,30 +1,36 @@
 //
-//  AnnotationHandleable.swift
+//  CollectionExtensions.swift
 //  GogoroMap
 //
-//  Created by 陳 冠禎 on 2017/8/12.
-//  Copyright © 2017年 陳 冠禎. All rights reserved.
+//  Created by 陳 冠禎 on 19/09/2017.
+//  Copyright © 2017 陳 冠禎. All rights reserved.
 //
 
 
 import MapKit
 import Foundation
-import CoreLocation
 
-protocol AnnotationHandleable {
-    func getObjectArray(from stations: [Station], userLocation: CLLocation) -> [CustomPointAnnotation]
+extension Collection where Iterator.Element: CustomPointAnnotation {
+    var getStationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) {
+        var total: Int = 0, available: Int = 0, hasFlags: Int = 0, hasCheckins: Int = 0
+        self.forEach {
+            available += $0.isOpening ? 1 : 0
+            hasFlags += $0.checkinCounter > 0 ? 1 : 0
+            hasCheckins += $0.checkinCounter
+            total += 1
+        }
+        return (total, available, hasFlags, hasCheckins)
+    }
 }
 
-extension AnnotationHandleable {
+extension Collection where Iterator.Element == Station {
     
-    func getObjectArray(from stations: [Station], userLocation: CLLocation) -> [CustomPointAnnotation] {
-        return stations.map { (station) -> CustomPointAnnotation in
+    var customPointAnnotations: [CustomPointAnnotation] {
+        return self.map { (station) -> CustomPointAnnotation in
             let isEnglish = NSLocale.preferredLanguages[0] == "en"
-            
             let latitude: CLLocationDegrees = station.latitude ?? 0.0
             let longitude: CLLocationDegrees = station.longitude ?? 0.0
             let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            
             let twName = station.locName?.twName ?? ""
             let engName = station.locName?.engName ?? ""
             
@@ -38,16 +44,12 @@ extension AnnotationHandleable {
             
             return CustomPointAnnotation(title: title,
                                          subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
-                                         coordinate: location,
-                                         placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
-                                         image: image,
-                                         address: address,
-                                         isOpening: station.state == 1 ? true : false
+                coordinate: location,
+                placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
+                image: image,
+                address: address,
+                isOpening: station.state == 1 ? true : false
             )
         }
     }
 }
-
-
-
-

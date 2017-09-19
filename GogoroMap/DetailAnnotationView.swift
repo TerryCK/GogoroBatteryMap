@@ -9,8 +9,7 @@
 import UIKit
 
 final class DetailAnnotationView: UIView {
-    
-    
+     
     let goButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)
@@ -110,7 +109,7 @@ final class DetailAnnotationView: UIView {
     
     private let opneHourLabel: UILabel = {
         let label = UILabel()
-        label.text = "營業時間：" + "24hr"
+        label.text = "營業時間：24hr"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
@@ -193,3 +192,5 @@ final class DetailAnnotationView: UIView {
         }
     }
 }
+
+

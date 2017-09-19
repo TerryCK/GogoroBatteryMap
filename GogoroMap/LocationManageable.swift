@@ -73,6 +73,7 @@ extension LocationManageable where Self: MapViewController {
             self.userLocationCoordinate = current.coordinate
             print("取得使用者GPS位置")
         } else {
+            
             let kaohsiungStationLocation = CLLocationCoordinate2D(latitude: 22.6384542, longitude: 120.3019452)
             self.userLocationCoordinate = kaohsiungStationLocation
             print("無法取得使用者位置、改取得高雄火車站GPS位置")

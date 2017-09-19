@@ -41,6 +41,7 @@
 		A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689A1F3B44D70015F5F9 /* Extensions.swift */; };
 		A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689E1F3B54C80015F5F9 /* Station.swift */; };
 		A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DB8CE71F4153F40062FA7A /* StoreKit.framework */; };
+		A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */; };
 		A8E68F8C1F46D3BA00160388 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A8E68F8B1F46D3BA00160388 /* gogoro.json */; };
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
@@ -101,6 +102,7 @@
 		A8D3689A1F3B44D70015F5F9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A8D3689E1F3B54C80015F5F9 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		A8DB8CE71F4153F40062FA7A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
 		A8E68F8B1F46D3BA00160388 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				A8B19D621F4406410082283F /* IAPPurchasable.swift */,
+				A869AA191F44150A0085133C /* IAPProducts.swift */,
 				A8B19D601F44032A0082283F /* IAPAlartable.swift */,
 			);
 			name = IAPs;
@@ -235,6 +238,7 @@
 				A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
 				A840F34D1F472A4900D33741 /* DataGettable.swift */,
+				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
 				A869AA181F4414B20085133C /* IAPs */,
 			);
 			name = Protocols;
@@ -288,7 +292,6 @@
 		A8D368991F3B44A00015F5F9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				A869AA191F44150A0085133C /* IAPProducts.swift */,
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
@@ -348,12 +351,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "陳 冠禎";
 				TargetAttributes = {
 					A84AC7FD1F46EB70004F5E3B = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = Y8SJ5M44N4;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						TestTargetID = A8D368661F3B435D0015F5F9;
 					};
@@ -451,9 +455,18 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS9.0/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS9.0/SideMenu.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS9.0/SwiftyStoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb-iOS9.0/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -466,13 +479,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GogoroMap-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7A9E22C1550BB336C453621C /* [CP] Check Pods Manifest.lock */ = {
@@ -481,13 +497,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GogoroMapTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */ = {
@@ -510,9 +529,18 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS10.3/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.3/SideMenu.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS10.3/SwiftyStoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb-iOS10.3/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -553,6 +581,7 @@
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
+				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
@@ -613,7 +642,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GogoroMap.app/GogoroMap";
 			};
 			name = Debug;
@@ -628,7 +658,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GogoroMap.app/GogoroMap";
 			};
 			name = Release;
@@ -644,7 +675,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -652,7 +685,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -696,7 +733,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -704,7 +743,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -739,9 +782,11 @@
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -755,10 +800,12 @@
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

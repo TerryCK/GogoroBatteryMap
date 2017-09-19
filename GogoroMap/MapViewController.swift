@@ -14,7 +14,7 @@ import GoogleMobileAds
 
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
-    var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get set }
+    var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get }
 }
 
 
@@ -22,9 +22,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
-    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0)
     
-    
+    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int)  {
+        return annotations.getStationData
+    }
     
     fileprivate var selectedAnnotationView: MKAnnotationView? =  MKAnnotationView()
     fileprivate var detailView = DetailAnnotationView()
@@ -45,50 +46,19 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var annotations = [CustomPointAnnotation]() {
         didSet {
             saveToDatabase(with: annotations)
-            updateSummaryInfo()
-            
-            self.mapView.addAnnotations(self.annotations)
+            DispatchQueue.main.async {
+                
+                self.mapView.addAnnotations(self.annotations)
+                
+            }
+            post()
             print("annotations did set")
         }
     }
     
-    private func updateSummaryInfo() {
-        var stationsOfAvailable = 0
-        var hasFlags = 0
-        var hasCheckins = 0
-        
-        annotations.forEach {
-            stationsOfAvailable += $0.isOpening ? 1 : 0
-            hasFlags += $0.checkinCounter > 0 ? 1 : 0
-            hasCheckins += $0.checkinCounter
-        }
-        
-        stationData.totle = annotations.count
-        stationData.hasFlags = hasFlags
-        stationData.available = stationsOfAvailable
-        stationData.hasCheckins = hasCheckins
-        
-    }
     
     
-    
-    private func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
-        // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
-        // Mark: check for avoid add annotation at same location which case too closeing to find
-        
-        let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
-        if differential > 1 {
-             
-            print("")
-            print("error: annotation view count out of controller!!")
-            print("annotations:", annotationsCounter, " mapView:", mapViewsAnnotationsCounter)
-            print("")
-        } else {
-            print(" ** annotation view count currect ** ")
-        }
-        
-        
-    }
+     
     
     
     lazy var mapView: MKMapView = {
@@ -134,34 +104,63 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
             currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude)
         }
     }
+    override func loadView() {
+        super.loadView()
+        setupSideMenu()
+        setupMapViewAndNavTitle()
+        
+    }
     
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
         performGuidePage()
-        setupSideMenu()
-        setupMapViewAndNavTitle()
+
         authrizationStatus()
         initializeData()
         setupPurchase()
         
-                    
-//                #if DEBUG
-//        
-//                    let activity = selectedPin?.userActivity
-//                    activity?.isEligibleForPublicIndexing = true
-//                    activity?.isEligibleForSearch = true
-//        
-//                    userActivity = activity
-//        
-//                #endif
-    
+        //                #if DEBUG
+        //
+        //                    let activity = selectedPin?.userActivity
+        //                    activity?.isEligibleForPublicIndexing = true
+        //                    activity?.isEligibleForSearch = true
+        //
+        //                    userActivity = activity
+        //
+        //                #endif
+        
+        #if DEBUG
+            
+            view.addSubview(testButton)
+            testButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 60, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        #endif
+        
     }
-
     
+    private lazy var testButton: UIButton = {
+        let myButton = UIButton(type: .system)
+        myButton.setTitle("testButton", for: .normal)
+        myButton.backgroundColor = .lightBlue
+        myButton.titleLabel?.textColor = .white
+        myButton.addTarget(self, action: #selector(testFunc), for: .touchUpInside)
+        return myButton
+    }()
     
+    @objc func testFunc() {
+        print("test")
+        DispatchQueue.global().async {
+            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
+            predicated.forEach { (station) in
+                print(station.title)
+            }
+        }
+        
+        
+    }
     
-    func checkin() {
+    @objc func checkin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Check in"])
         let checkinCounter = annotations[index].checkinCounter + 1
@@ -180,7 +179,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         saveToDatabase(with: annotations)
     }
     
-    func unCheckin() {
+    @objc func unCheckin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Remove check in"])
         let checkinCounter = annotations[index].checkinCounter - 1
@@ -199,8 +198,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         saveToDatabase(with: annotations)
     }
     
-    func post() {
-        updateSummaryInfo()
+    private func post() {
         NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
     }
     
@@ -224,7 +222,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         present(guidePageController, animated: true, completion: nil)
     }
     
-    func performMenu() {
+    @objc func performMenu() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
         if let sideManuController = SideMenuManager.menuLeftNavigationController {
@@ -237,13 +235,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
         menuController.delegate = self
-//        guard let navigationController = self.navigationController else { return }
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         SideMenuManager.menuLeftNavigationController?.leftSide = true
         
         SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
-//        SideMenuManager.menuAddPanGestureToPresent(toView: navigationController.navigationBar)
-//        SideMenuManager.menuAddScreenEdgePanGesturesToPresent(toView: navigationController.view)
+        
         SideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
@@ -260,12 +256,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     
     private func setupMapViewAndNavTitle() {
-        navigationItem.title = "Gogoro " + NSLocalizedString("Battery Station", comment: "")
+        navigationItem.title = "Gogoro \(NSLocalizedString("Battery Station", comment: ""))"
         navigationController?.navigationBar.isTranslucent = true
-        navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.barTintColor = UIColor.lightGreen
-
+        navigationController?.isNavigationBarHidden = false
         
         view.addSubview(mapView)
         mapView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
@@ -306,7 +301,6 @@ extension MapViewController: Navigatorable {
         } else {
             annotationView?.annotation = annotation
         }
-        
         
         guard let customAnnotation = annotation as? CustomPointAnnotation else { return nil }
         let detailView: DetailAnnotationView = DetailAnnotationView(with: customAnnotation)
@@ -362,14 +356,14 @@ extension MapViewController: Navigatorable {
         return renderer
     }
     
-    func navigating() {
+    @objc func navigating() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Navigate"])
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
     
-    func locationArrowPressed() {
+    @objc func locationArrowPressed() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Changing tracking mode"])
         locationArrowTapped()
@@ -389,7 +383,7 @@ extension MapViewController: IAPPurchasable {
                                                object: nil)
     }
     
-    func handlePurchaseNotification(_ notification: Notification) {
+    @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")
         guard
             let productID = notification.object as? String,

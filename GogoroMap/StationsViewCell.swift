@@ -45,7 +45,6 @@ final class StationsViewCell: UICollectionViewCell {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
             
-            
             if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
                 restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
                 removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
@@ -58,12 +57,9 @@ final class StationsViewCell: UICollectionViewCell {
     
     
     var purchaseHandler: (PurchaseFunc)?
-    
-    
-    func buyButtonTapped() {
-        
+
+    @objc func buyButtonTapped() {
         if let product = product, let purchaseing = purchaseHandler {
-            
             purchaseing(product)
         }
     }
@@ -88,13 +84,13 @@ final class StationsViewCell: UICollectionViewCell {
         //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
         //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
-    }()
+        }()
     
     
     private lazy var authorLabel: UILabel = { [unowned self] in
         let label = UILabel()
         label.text = "Chen, Guan-Jhen 2017 Copyright"
-        label.font = UIFont.systemFont(ofSize: 11)
+        label.font = UIFont.systemFont(ofSize: 12)
         return label
         }()
     
@@ -117,7 +113,7 @@ final class StationsViewCell: UICollectionViewCell {
         label.text = NSLocalizedString("Total checkins:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
-        }()
+        }() 
     
     private lazy var completedRatioLabel: UILabel = { [unowned self] in
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
@@ -143,7 +139,7 @@ final class StationsViewCell: UICollectionViewCell {
     private let copyrightLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("Data provided by Gogoro, image: CC0 Public Domain", comment: "")
-        label.font = UIFont.boldSystemFont(ofSize: 9)
+        label.font = UIFont.boldSystemFont(ofSize: 11)
         label.numberOfLines = 0
         return label
     }()
@@ -153,8 +149,7 @@ final class StationsViewCell: UICollectionViewCell {
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
         button.contentMode = .scaleAspectFit
         button.layer.cornerRadius = 5
-        //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
-        //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+
         return button
     }()
     
@@ -246,8 +241,16 @@ final class StationsViewCell: UICollectionViewCell {
         return stackView
         }()
     
+    lazy var operationStatusStack: UIStackView = { [unowned self] in
+        let stackView = UIStackView(arrangedSubviews:  [self.availableLabel, self.buildingLabel])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        return stackView
+        }()
+    
     private lazy var headStackView: UIStackView = { [unowned self] in
-        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.availableLabel, self.buildingLabel])
+        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.operationStatusStack])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
@@ -270,9 +273,7 @@ final class StationsViewCell: UICollectionViewCell {
         return stackView
         }()
     
-    
-    
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -285,7 +286,6 @@ final class StationsViewCell: UICollectionViewCell {
     private lazy var viewContainer: UIView = { [unowned self] in
         
         let containerView = UIView()
-        
         let blurEffect = UIBlurEffect(style: .extraLight)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = self.bounds
@@ -295,11 +295,10 @@ final class StationsViewCell: UICollectionViewCell {
         
         let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
         let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
-        
+
         vibrancyEffectView.frame = self.bounds
         blurEffectView.contentView.addSubview(vibrancyEffectView)
-        
-        
+  
         let vibrancyEffectContentView = vibrancyEffectView.contentView
         vibrancyEffectContentView.addSubview(containerView)
         
@@ -307,7 +306,6 @@ final class StationsViewCell: UICollectionViewCell {
         
         return containerView
         }()
-    
     
     
     
@@ -324,7 +322,6 @@ final class StationsViewCell: UICollectionViewCell {
         
         viewContainer.addSubview(separatorView)
         separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
-        
         
         viewContainer.addSubview(authorLabel)
         authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 10, rightPadding: 0, width: 0, height: 20)

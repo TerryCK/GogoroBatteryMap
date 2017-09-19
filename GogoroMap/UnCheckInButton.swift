@@ -10,8 +10,6 @@ import UIKit
 
 final class UnCheckInButton: UIButton {
 
-  
-    
     let mainColor = UIColor.lightRed
     let slaveColor = UIColor.white
     

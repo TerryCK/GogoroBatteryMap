@@ -10,6 +10,7 @@ import UIKit
 import StoreKit
 import Foundation
 
+
 extension UIColor {
     
     static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
@@ -88,8 +89,9 @@ extension Date {
 
 
 extension Double {
-    var km: String {
-        return String(format:"%.1f", self / 1000) }
+    var km: Double {
+        return Double(String(format:"%.1f", self / 1000)) ?? 0
+    }
     
     var format: Double {
         return Double(String(format:"%.2f", self)) ?? 0
@@ -134,3 +136,5 @@ extension SKProduct {
     }
     
 }
+
+

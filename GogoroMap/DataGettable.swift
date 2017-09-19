@@ -38,8 +38,6 @@ extension DataGettable where Self: MapViewController {
         guard
             let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
             let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
-                
-
                 return getAnnotationFromFile()
         }
         print("get data from database")
@@ -58,22 +56,26 @@ extension DataGettable where Self: MapViewController {
     }
     
     func parsed(with data: Data?) -> [CustomPointAnnotation]? {
-        if
+        guard
             let data = data,
             let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let jsonDic = jsonDictionary?["data"] as? [[String: Any]] {
-            let stations =  jsonDic.map { Station(dictionary: $0) }
-            return getObjectArray(from: stations, userLocation: currentUserLocation)
+            let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else {
+                return nil
         }
-        return nil
+        
+        let stations: [Station] =  jsonDic.map { (stationDic) in
+            return Station(dictionary: stationDic)
+        }
+        
+//        return getObjectArray(from: stations, userLocation: currentUserLocation)
+        return stations.customPointAnnotations
     }
     
     func initializeData() {
-        if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {
-            self.annotations = getAnnotationFromFile()
-        }
-        
         DispatchQueue.global().async {
+            if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {
+                self.annotations = self.getAnnotationFromFile()
+            }
             if self.mapView.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
             }
@@ -103,7 +105,7 @@ extension DataGettable where Self: MapViewController {
             
             guard let annotationFromRemote = self.parsed(with: data),
                 annotationFromRemote.count > 50 else {
-                dataFromDatabase()
+                    dataFromDatabase()
                     return
             }
             print("get data from romote")
@@ -113,12 +115,12 @@ extension DataGettable where Self: MapViewController {
             
             }.resume()
         
-         func dataFromDatabase() {
+        func dataFromDatabase() {
             if self.annotations.isEmpty {
                 DispatchQueue.main.async {
-                     self.annotations = self.getAnnotationFromDatabase()
+                    self.annotations = self.getAnnotationFromDatabase()
                 }
-               
+                
             }
         }
     }
@@ -150,14 +152,32 @@ extension DataGettable where Self: MapViewController {
     }
     
     
-    
     func areArrayEqual<T: CustomPointAnnotation>(array: [T], otherArray: [T]) -> Bool {
         guard array.count == otherArray.count else { return false }
         
         return zip(array.sorted { $0.title! > $1.title! }, otherArray.sorted { $0.title! > $1.title! }).enumerated().filter() {
             return $1.0 == $1.1
             }.count == array.count
+        
     }
+}
+
+extension DataGettable {
     
-    
+    func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
+        // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
+        // Mark: check for avoid add annotation at same location which case too closeing to find
+        
+        let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
+        if differential > 1 {
+            let errorMessage = """
+            error: annotation view count out of controller!!
+            annotations:", \(annotationsCounter), " mapView:", \(mapViewsAnnotationsCounter)
+            """
+            print(errorMessage)
+            
+        } else {
+            print(" ** annotation view count currect ** ")
+        }
+    }
 }
