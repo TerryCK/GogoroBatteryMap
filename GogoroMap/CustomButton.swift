@@ -16,6 +16,7 @@ final class CustomButton: UIButton {
         layer.borderColor = UIColor.lightGray.cgColor
         layer.cornerRadius = 10
         layer.masksToBounds = true
+        
     }
     
     

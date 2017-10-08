@@ -145,6 +145,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         myButton.backgroundColor = .lightBlue
         myButton.titleLabel?.textColor = .white
         myButton.addTarget(self, action: #selector(testFunc), for: .touchUpInside)
+        
         return myButton
     }()
     
@@ -156,8 +157,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
                 print(station.title)
             }
         }
-        
-        
     }
     
     @objc func checkin() {
@@ -382,6 +381,7 @@ extension MapViewController: IAPPurchasable {
                                                name: NotificationName.shared.removeAds,
                                                object: nil)
     }
+    
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")

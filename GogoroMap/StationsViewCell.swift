@@ -11,59 +11,67 @@ import StoreKit
 
 typealias PurchaseFunc = (_ product: SKProduct) -> ()
 
+@objc protocol StationsViewCellDelegate: class {
+    @objc func performGuidePage()
+    @objc func presentMail()
+    @objc func recommand()
+    @objc func shareThisApp()
+    @objc func moreApp()
+    @objc func attempUpdate()
+    @objc func restorePurchase()
+}
+
+
 final class StationsViewCell: UICollectionViewCell {
     
-    weak var menuController: MenuController? {
-        
+    weak var delegate: StationsViewCellDelegate? {
         didSet {
-            feedBackButton.addTarget(menuController, action: #selector(menuController?.presentMail), for: .touchUpInside)
-            recommandButton.addTarget(menuController, action: #selector(menuController?.recommand), for: .touchUpInside)
-            shareButton.addTarget(menuController, action: #selector(menuController?.shareThisApp), for: .touchUpInside)
-            moreAppsButton.addTarget(menuController, action: #selector(menuController?.moreApp), for: .touchUpInside)
-            guideButton.addTarget(menuController, action: #selector(menuController?.performGuidePage), for: .touchUpInside)
-            dataUpdateButton.addTarget(menuController, action: #selector(menuController?.attempUpdate), for: .touchUpInside)
-            
+            guideButton.addTarget(delegate, action: .performGuidePage(), for: .touchUpInside)
+            feedBackButton.addTarget(delegate, action: .presentMail(), for: .touchUpInside)
+            recommandButton.addTarget(delegate, action: .recommand(), for: .touchUpInside)
+            shareButton.addTarget(delegate, action: .shareThisApp(), for: .touchUpInside)
+            moreAppsButton.addTarget(delegate, action: .moreApp(), for: .touchUpInside)
+            dataUpdateButton.addTarget(delegate, action: .attempUpdate(), for: .touchUpInside)
         }
     }
     
     var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0) {
         didSet {
-            
             availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
             buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.totle - stationData.available)"
-            //            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
             haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
-            
-            let completedPercentage = (Double(stationData.hasFlags) / Double(stationData.available)).percentage
             completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage)%"
-            
             hasCheckinsLabel.text = "\(NSLocalizedString("Total checkins:", comment: "")) \(stationData.hasCheckins)"
+             //            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
+        }
+    }
+    
+    private var completedPercentage: String {
+        get {
+            return (Double(stationData.hasFlags) / Double(stationData.available)).percentage
         }
     }
     
     var product: SKProduct? {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
-            
             if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
-                restoreButton.addTarget(menuController, action: #selector(menuController?.restorePurchase), for: .touchUpInside)
+                restoreButton.addTarget(delegate, action: .restorePurchase(), for: .touchUpInside)
                 removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
                 buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
                 layoutIfNeeded()
             }
-            
         }
     }
     
     
     var purchaseHandler: (PurchaseFunc)?
-
+    
     @objc func buyButtonTapped() {
         if let product = product, let purchaseing = purchaseHandler {
             purchaseing(product)
         }
     }
-    
     
     private lazy var lastUpdateDateLabel: UILabel = {
         let label = UILabel()
@@ -84,8 +92,7 @@ final class StationsViewCell: UICollectionViewCell {
         //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
         //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
-        }()
-    
+    }()
     
     private lazy var authorLabel: UILabel = { [unowned self] in
         let label = UILabel()
@@ -149,10 +156,8 @@ final class StationsViewCell: UICollectionViewCell {
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
         button.contentMode = .scaleAspectFit
         button.layer.cornerRadius = 5
-
         return button
     }()
-    
     
     private let feedBackButton: UIButton = {
         let button = CustomButton(type: .system)
@@ -174,7 +179,6 @@ final class StationsViewCell: UICollectionViewCell {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
-    
     
     private let moreAppsButton: UIButton = {
         let button = CustomButton(type: .system)
@@ -206,7 +210,6 @@ final class StationsViewCell: UICollectionViewCell {
         return button
     }()
     
-    
     private lazy var updateStackView: UIStackView = { [unowned self] in
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
         stackView.axis = .horizontal
@@ -214,7 +217,6 @@ final class StationsViewCell: UICollectionViewCell {
         stackView.spacing = 10
         return stackView
         }()
-
     
     private lazy var pushShareStackView: UIStackView = { [unowned self] in
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.shareButton, self.recommandButton])
@@ -231,9 +233,8 @@ final class StationsViewCell: UICollectionViewCell {
         stackView.spacing = 10
         return stackView
         }()
-
     
-    lazy var buyStoreButtonStackView: UIStackView = { [unowned self] in
+     lazy var buyStoreButtonStackView: UIStackView = { [unowned self] in
         let stackView = UIStackView(arrangedSubviews:  [self.restoreButton, self.removeAdsButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -241,7 +242,7 @@ final class StationsViewCell: UICollectionViewCell {
         return stackView
         }()
     
-    lazy var operationStatusStack: UIStackView = { [unowned self] in
+    private lazy var operationStatusStack: UIStackView = { [unowned self] in
         let stackView = UIStackView(arrangedSubviews:  [self.availableLabel, self.buildingLabel])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -273,7 +274,6 @@ final class StationsViewCell: UICollectionViewCell {
         return stackView
         }()
     
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -295,10 +295,10 @@ final class StationsViewCell: UICollectionViewCell {
         
         let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
         let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
-
+        
         vibrancyEffectView.frame = self.bounds
         blurEffectView.contentView.addSubview(vibrancyEffectView)
-  
+        
         let vibrancyEffectContentView = vibrancyEffectView.contentView
         vibrancyEffectContentView.addSubview(containerView)
         
@@ -306,8 +306,6 @@ final class StationsViewCell: UICollectionViewCell {
         
         return containerView
         }()
-    
-    
     
     private func setupView() {
         backgroundColor = .clear

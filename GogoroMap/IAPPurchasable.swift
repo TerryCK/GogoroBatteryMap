@@ -18,6 +18,12 @@ protocol PurchaseItem { }
 extension String: PurchaseItem { }
 extension RegisteredPurchase: PurchaseItem { }
 
+
+
+
+
+
+
 protocol IAPPurchasable: IAPAlartable {
     
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)

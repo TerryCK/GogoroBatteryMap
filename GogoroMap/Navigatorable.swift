@@ -56,7 +56,7 @@ extension Navigatorable where Self: MapViewController {
 }
 
 
-
+// new feature
 
 extension Collection where Iterator.Element: CustomPointAnnotation {
     func getDistance(userPosition: CLLocation) -> [CustomPointAnnotation] {
@@ -96,18 +96,11 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
                                                 print("Error: \(error!)")
                                             }
                         groupQueue.leave()
-                        
                     }
-                    
-               
                 }
-                
                  groupQueue.wait()
                 return isPredicated
         }
-        
     }
-    
-    
 }
 

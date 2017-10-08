@@ -10,7 +10,7 @@ import UIKit
 import StoreKit
 import Crashlytics
 
-final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
     
     let cellid = "cellid"
     let appID = Keys.standard.appID
@@ -43,11 +43,11 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as? StationsViewCell ?? StationsViewCell()
         
+        cell.delegate = self
+        
         if let stationData = delegate?.stationData {
             cell.stationData = stationData
         }
-        
-        cell.menuController = self
         
         if !self.products.isEmpty {
             cell.product = self.products.first
@@ -79,11 +79,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         return 1
     }
     
-    
-    
-    
-    
-    
+ 
     private func setupNaviagtionAndCollectionView() {
         
         navigationController?.view.layer.cornerRadius = 10
@@ -169,12 +165,13 @@ extension MenuController {
     
     @objc func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
-        print("\nreflash\n")
+        print("\n data reflash\n")
         delegate?.getAnnotationFromRemote { [unowned self] in
             
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = NSLocalizedString("Information", comment: "")
+                self.timer = nil
             }
         }
     }
