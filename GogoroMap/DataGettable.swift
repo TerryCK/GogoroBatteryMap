@@ -29,9 +29,14 @@ protocol DataGettable {
 
 extension DataGettable where Self: MapViewController {
     
+    private func post() {
+        NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
+    }
+    
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
         UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: annotations), forKey: Keys.standard.annotationsKey)
         UserDefaults.standard.synchronize()
+        post()
     }
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {

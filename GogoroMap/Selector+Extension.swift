@@ -20,6 +20,7 @@ extension Selector {
     static let recommand = {
         #selector(MenuController.recommand)
     }
+    
     static let shareThisApp = {
         #selector(MenuController.shareThisApp)
     }

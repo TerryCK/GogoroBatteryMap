@@ -11,23 +11,26 @@ import MapKit
 import SideMenu
 import Crashlytics
 import GoogleMobileAds
+import Cluster
+
+
+typealias StationDatas = (total: Int, available: Int, hasFlags: Int, hasCheckins: Int)
 
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
-    var  stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) { get }
+    var  stationData: StationDatas { get }
 }
-
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuDelegate {
     
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     
-    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int)  {
+    var stationData: StationDatas {
         return annotations.getStationData
     }
     
-    fileprivate var selectedAnnotationView: MKAnnotationView? =  MKAnnotationView()
+    fileprivate var selectedAnnotationView: MKAnnotationView? = MKAnnotationView()
     fileprivate var detailView = DetailAnnotationView()
     
     var index: Int = 0
@@ -45,22 +48,24 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     var annotations = [CustomPointAnnotation]() {
         didSet {
-            saveToDatabase(with: annotations)
             DispatchQueue.main.async {
-                
-                self.mapView.addAnnotations(self.annotations)
-                
+                self.clusterManager.add(self.annotations)
             }
-            post()
+            saveToDatabase(with: annotations)
             print("annotations did set")
         }
     }
-    
-    
-    
-     
-    
-    
+    /**
+     Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
+     */
+    let clusterManager: ClusterManager = {
+        let myManager = ClusterManager()
+        myManager.zoomLevel = 14
+        myManager.minimumCountForCluster = 5
+        myManager.shouldRemoveInvisibleAnnotations = true
+        return myManager
+    }()
+
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
         mapView.delegate = self
@@ -108,7 +113,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         super.loadView()
         setupSideMenu()
         setupMapViewAndNavTitle()
-        
     }
     
    
@@ -116,7 +120,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         super.viewDidLoad()
         setupObserver()
         performGuidePage()
-
         authrizationStatus()
         initializeData()
         setupPurchase()
@@ -145,19 +148,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         myButton.backgroundColor = .lightBlue
         myButton.titleLabel?.textColor = .white
         myButton.addTarget(self, action: #selector(testFunc), for: .touchUpInside)
-        
         return myButton
     }()
     
-    @objc func testFunc() {
-        print("test")
-        DispatchQueue.global().async {
-            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
-            predicated.forEach { (station) in
-                print(station.title)
-            }
-        }
-    }
+   
     
     @objc func checkin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
@@ -174,7 +168,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
             detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
             
         }
-        post()
         saveToDatabase(with: annotations)
     }
     
@@ -193,15 +186,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
             detailView.lastCheckTimeLabel.text = "最近的打卡日："
             
         }
-        post()
         saveToDatabase(with: annotations)
     }
     
-    private func post() {
-        NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
-    }
-    
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
@@ -222,6 +210,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     @objc func performMenu() {
+        
+        
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
         if let sideManuController = SideMenuManager.menuLeftNavigationController {
@@ -252,6 +242,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         SideMenuManager.menuBlurEffectStyle = nil
         SideMenuManager.menuPresentMode = .viewSlideInOut
     }
+    
+    
     
     
     private func setupMapViewAndNavTitle() {
@@ -289,6 +281,33 @@ extension MapViewController: Navigatorable {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
+        
+        
+        if let annotation = annotation as? ClusterAnnotation {
+            guard let type = annotation.type else { return nil }
+            let identifier = "Cluster"
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if let view = view as? BorderedClusterAnnotationView {
+                view.annotation = annotation
+                view.configure(with: type)
+            } else {
+                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type, borderColor: .white)
+            }
+
+            return view
+            
+            
+        } else {
+            return getOriginalMKAnnotationView(mapView, viewFor: annotation)
+        }
+        
+        
+        
+    }
+   
+    
+    //: OriginalMKAnnotationView
+    private func getOriginalMKAnnotationView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation.isKind(of: MKUserLocation.self) { return nil }
         let identifier = "station"
         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
@@ -312,23 +331,28 @@ extension MapViewController: Navigatorable {
         annotationView?.detailCalloutAccessoryView = detailView
         
         return annotationView
-        
     }
-    
-    
-    
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Display annotation view"])
+        guard let annotation = view.annotation else { return }
+        self.selectedAnnotationView = nil
+        
+        //: ## feature fo cluster
+        if let clusterAnnotation = annotation as? ClusterAnnotation {
+            clusterSetVisibleMapRect(with: clusterAnnotation)
+            return
+        }
+        
         self.selectedAnnotationView = view
         
         guard
-            let annotation = view.annotation as? CustomPointAnnotation,
+            let customPointannotation = annotation as? CustomPointAnnotation,
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
-            let index = annotations.index(of: annotation) else { return }
+            let index = annotations.index(of: customPointannotation) else { return }
         
-        self.selectedPin = annotation
+        self.selectedPin = customPointannotation
         self.index = index
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         detailCalloutView.distanceLabel.text = "計算中..."
@@ -344,6 +368,21 @@ extension MapViewController: Navigatorable {
             }
         }
         
+      
+    }
+    
+    private func clusterSetVisibleMapRect(with cluster: ClusterAnnotation) {
+        var zoomRect = MKMapRectNull
+        for annotation in cluster.annotations {
+            let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
+            let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0)
+            if MKMapRectIsNull(zoomRect) {
+                zoomRect = pointRect
+            } else {
+                zoomRect = MKMapRectUnion(zoomRect, pointRect)
+            }
+        }
+        mapView.setVisibleMapRect(zoomRect, animated: true)
     }
     
     
@@ -399,4 +438,51 @@ extension MapViewController: IAPPurchasable {
 
 extension MapViewController: GuidePageViewControllerDelegate {
     
+}
+
+// test area
+extension MapViewController {
+    @objc func testFunc() {
+        print("test")
+        DispatchQueue.global().async {
+            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
+            predicated.forEach { (station) in
+                print(station.title)
+            }
+        }
+    }
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+        self.userLocationCoordinate = mapView.centerCoordinate
+        
+        print("Radius - \(self.getRadius(centralLocation: centralLocation))")
+        
+    }
+    
+    
+    func getRadius(centralLocation: CLLocation) -> Double{
+        let topCentralLat:Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
+        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
+        let radius = centralLocation.distance(from: topCentralLocation)
+        return radius / 1000.0 // to convert radius to meters
+    }
+    
+}
+
+
+//feature for cluster
+extension MapViewController {
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+            views.forEach { $0.alpha = 1 }
+        }, completion: nil)
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+    }
+    
+
 }

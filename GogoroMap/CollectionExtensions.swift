@@ -11,15 +11,16 @@ import MapKit
 import Foundation
 
 extension Collection where Iterator.Element: CustomPointAnnotation {
-    var getStationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) {
-        var total: Int = 0, available: Int = 0, hasFlags: Int = 0, hasCheckins: Int = 0
-        self.forEach {
-            available += $0.isOpening ? 1 : 0
-            hasFlags += $0.checkinCounter > 0 ? 1 : 0
-            hasCheckins += $0.checkinCounter
-            total += 1
+    
+    // MARK -: get the station informations count of total,available,hasFlags,hasCheckins
+    var getStationData: StationDatas {
+        return reduce((0,0,0,0))  { (result, element) -> StationDatas in
+            return ( result.0 + (element.isOpening ? 1 : 0) ,
+                     result.1 + (element.checkinCounter > 0 ? 1 : 0),
+                     result.2 + element.checkinCounter,
+                     result.3 + 1
+            )
         }
-        return (total, available, hasFlags, hasCheckins)
     }
 }
 

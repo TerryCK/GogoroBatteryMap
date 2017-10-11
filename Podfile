@@ -10,6 +10,7 @@ pod 'Fabric'
 pod 'Crashlytics'
 pod 'Firebase/Core'
 pod 'SwiftyStoreKit'
+pod 'Cluster'
 
 end
 

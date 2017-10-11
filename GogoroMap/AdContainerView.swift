@@ -13,7 +13,7 @@ final class AdContainerView: UIView {
     
     static let shared = AdContainerView()
     
-    let nativeAdView: GADBannerView = {
+    lazy var nativeAdView: GADBannerView = {
         let gAdView = GADBannerView()
         let request: GADRequest = GADRequest()
         let test_iPhone = Keys.standard.gadiPhone
