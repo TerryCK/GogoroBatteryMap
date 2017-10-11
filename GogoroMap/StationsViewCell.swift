@@ -35,10 +35,10 @@ final class StationsViewCell: UICollectionViewCell {
         }
     }
     
-    var stationData: (totle: Int, available: Int, hasFlags: Int, hasCheckins: Int) = (0, 0, 0, 0) {
+    var stationData: StationDatas = (0,0,0,0) {
         didSet {
             availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
-            buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.totle - stationData.available)"
+            buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.total - stationData.available)"
             haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
             completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage)%"
             hasCheckinsLabel.text = "\(NSLocalizedString("Total checkins:", comment: "")) \(stationData.hasCheckins)"
