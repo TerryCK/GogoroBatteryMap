@@ -8,7 +8,7 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 <nobr><img src="https://img.shields.io/badge/platform-ios-lightgrey.svg">
 <img src="http://img.shields.io/badge/License-MIT-green.svg?style=flat">
-<img src="https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat"></nobr>
+<img src="https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat"></nobr>
 
 
 
@@ -54,9 +54,9 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 ### Requirement
 -----------
 
-- Xcode 8.3.3
-- iOS 9
-- Swift 3.1
+- Xcode 9
+- iOS 10
+- Swift 4
 
 
 ### Author

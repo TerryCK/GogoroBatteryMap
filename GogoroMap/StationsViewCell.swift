@@ -40,7 +40,7 @@ final class StationsViewCell: UICollectionViewCell {
             availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
             buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.total - stationData.available)"
             haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
-            completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage)%"
+            completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage) %"
             hasCheckinsLabel.text = "\(NSLocalizedString("Total checkins:", comment: "")) \(stationData.hasCheckins)"
              //            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
         }
