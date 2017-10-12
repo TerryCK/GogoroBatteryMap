@@ -30,7 +30,9 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 8. 離線功能 - 提供最近一次連線時的地圖資料。
 
-9. 收錄台灣Gogoro 390+ 個站點資訊
+9. 收錄台灣Gogoro 400+ 個站點資訊
+
+10. 加入地圖標示集合，加強使用體驗
 
 ### Screen Shots
 -----------
@@ -41,10 +43,11 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 ### Update history
 -----------
-2017/8/24 v1.3  Introduce new ckeckin system to record you have been station in local database
-2017/8/19 v1.2  Manually update, get data process(local, remote), bug fixed, iap-process improvement, 
-supported languages: Taiwanese(繁體中文), English
-2017/8/17 v1.1  First release
+	2017/10/12 v1.4  Introduce new cluster of annotation views, refactor DataGetable to Functional Programming. 
+	2017/8/24 v1.3  Introduce new ckeckin system to record you have been station in local database
+	2017/8/19 v1.2  Manually update, get data process(local, remote), bug fixed, iap-process improvement, 
+	supported languages: Taiwanese(繁體中文), English
+	2017/8/17 v1.1  First release
 
 
 
@@ -66,5 +69,5 @@ Thanks for Gogoro and OpenData platform
 
 Copyright 2017 Chen, Guan-Jhen
 
-Licensed under MIT License: https://opensource.org/licenses/MIT
+[Licensed under MIT License](https://opensource.org/licenses/MIT)
 
