@@ -8,12 +8,12 @@
 
 import MapKit
 
+typealias MapRequestCompleted = (_ distance: String, _ expectedTravelTime: String) -> Void
+
 protocol Navigatorable {
     func go(to destination: CustomPointAnnotation)
     func getETAData(completeHandler: @escaping MapRequestCompleted)
-    typealias MapRequestCompleted = (String, String) -> Void
 }
-
 
 
 extension Navigatorable where Self: MapViewController {
@@ -44,10 +44,12 @@ extension Navigatorable where Self: MapViewController {
         request.transportType = MKDirectionsTransportType.automobile
         request.requestsAlternateRoutes = true
         let directions = MKDirections(request: request)
+        
+        
         directions.calculate { response, error in
             if let route = response?.routes.first {
                 completeHandler("\(route.distance.km)", route.expectedTravelTime.convertToHMS)
-            } else  {
+            } else {
                 completeHandler("無法取得資料", "無法取得資料")
                 print("Error: \(error!)")
             }
@@ -57,8 +59,7 @@ extension Navigatorable where Self: MapViewController {
 }
 
 
-// new feature
-
+//TODO :- Route for Travel
 extension Collection where Iterator.Element: CustomPointAnnotation {
     func getDistance(userPosition: CLLocation) -> [CustomPointAnnotation] {
         return self.filter { (station) -> Bool in

@@ -58,7 +58,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
-    let clusterManager: ClusterManager = {
+    private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.zoomLevel = 14
         myManager.minimumCountForCluster = 5

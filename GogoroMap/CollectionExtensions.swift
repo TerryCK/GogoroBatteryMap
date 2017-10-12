@@ -10,15 +10,16 @@
 import MapKit
 import Foundation
 typealias StationDatas = (total: Int, available: Int, hasFlags: Int, hasCheckins: Int)
+
 extension Collection where Iterator.Element: CustomPointAnnotation {
-    
-    // MARK -: get the station informations count of total,available,hasFlags,hasCheckins
+    //MARK: get the station informations count of total,available,hasFlags,hasCheckins
     var getStationData: StationDatas {
         return reduce((0,0,0,0))  { (result, element) -> StationDatas in
-            return ( result.available + (element.isOpening ? 1 : 0) ,
-                     result.hasFlags + (element.checkinCounter > 0 ? 1 : 0),
-                     result.hasCheckins + element.checkinCounter,
-                     result.total + 1
+            return (result.total + 1,
+                    result.available + (element.isOpening ? 1 : 0) ,
+                    result.hasFlags + (element.checkinCounter > 0 ? 1 : 0),
+                    result.hasCheckins + element.checkinCounter
+                
             )
         }
     }
