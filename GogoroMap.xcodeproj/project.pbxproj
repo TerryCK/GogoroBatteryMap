@@ -21,7 +21,6 @@
 		A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84209D41F4EBCE800633FC7 /* OberserName.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
 		A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D81F4ECB3700633FC7 /* Taipei.gpx */; };
-		A846017A1F74DF430089A588 /* StationsViewCellHandlerable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84601791F74DF430089A588 /* StationsViewCellHandlerable.swift */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
@@ -76,7 +75,6 @@
 		A84209D41F4EBCE800633FC7 /* OberserName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OberserName.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
 		A84209D81F4ECB3700633FC7 /* Taipei.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Taipei.gpx; sourceTree = "<group>"; };
-		A84601791F74DF430089A588 /* StationsViewCellHandlerable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewCellHandlerable.swift; sourceTree = "<group>"; };
 		A846017B1F74E46D0089A588 /* Selector+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Selector+Extension.swift"; sourceTree = "<group>"; };
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
@@ -113,7 +111,7 @@
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
-		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; };
+		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
 		E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -201,8 +199,7 @@
 		A8C8BAC61F3C557B00E9E18C /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */,
-				A84209D81F4ECB3700633FC7 /* Taipei.gpx */,
+				A8EACCBA1F8EF5E2000B12BF /* GPS */,
 				A872054E1F4287D600E9F65D /* GoogleService-Info.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
 				A878E08C1F4482D000EF8394 /* Keys.plist */,
@@ -223,44 +220,27 @@
 			name = Boards;
 			sourceTree = "<group>";
 		};
-		A8C8BACA1F3C5AF700E9E18C /* Views */ = {
+		A8C8BACA1F3C5AF700E9E18C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */,
 				A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */,
-				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
-				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
-				A80759671F4C04430031D576 /* CheckinButton.swift */,
-				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
-				A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */,
 			);
-			name = Views;
+			name = View;
 			sourceTree = "<group>";
 		};
 		A8CE224C1F3EA0A600A4EF6D /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				A869AA181F4414B20085133C /* IAPs */,
 				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */,
 				A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
 				A840F34D1F472A4900D33741 /* DataGettable.swift */,
 				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
-				A869AA181F4414B20085133C /* IAPs */,
-				A84601791F74DF430089A588 /* StationsViewCellHandlerable.swift */,
 				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
 			);
 			name = Protocols;
-			sourceTree = "<group>";
-		};
-		A8CE224D1F3EA0EF00A4EF6D /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				A8E71FD41F3D4B7300C8E34D /* MenuController.swift */,
-				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
-				A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */,
-			);
-			name = Controllers;
 			sourceTree = "<group>";
 		};
 		A8D3685E1F3B435D0015F5F9 = {
@@ -289,23 +269,81 @@
 			children = (
 				A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */,
 				A8CE224C1F3EA0A600A4EF6D /* Protocols */,
-				A8C8BACA1F3C5AF700E9E18C /* Views */,
-				A8CE224D1F3EA0EF00A4EF6D /* Controllers */,
+				A8EACCBD1F8EF640000B12BF /* Pages */,
 				A8C8BAC51F3C556400E9E18C /* Models */,
-				A8D368991F3B44A00015F5F9 /* Utility */,
+				A8D368991F3B44A00015F5F9 /* Utilitys */,
 				A8C8BAC61F3C557B00E9E18C /* Resource */,
 			);
 			path = GogoroMap;
 			sourceTree = "<group>";
 		};
-		A8D368991F3B44A00015F5F9 /* Utility */ = {
+		A8D368991F3B44A00015F5F9 /* Utilitys */ = {
 			isa = PBXGroup;
 			children = (
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
 			);
-			name = Utility;
+			name = Utilitys;
+			sourceTree = "<group>";
+		};
+		A8EACCB81F8EF534000B12BF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */,
+				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
+				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
+				A80759671F4C04430031D576 /* CheckinButton.swift */,
+				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
+				A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */,
+			);
+			name = Views;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		A8EACCB91F8EF555000B12BF /* MainPage */ = {
+			isa = PBXGroup;
+			children = (
+				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
+				A8EACCB81F8EF534000B12BF /* Views */,
+			);
+			path = MainPage;
+			sourceTree = "<group>";
+		};
+		A8EACCBA1F8EF5E2000B12BF /* GPS */ = {
+			isa = PBXGroup;
+			children = (
+				A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */,
+				A84209D81F4ECB3700633FC7 /* Taipei.gpx */,
+			);
+			path = GPS;
+			sourceTree = "<group>";
+		};
+		A8EACCBB1F8EF628000B12BF /* ManuPage */ = {
+			isa = PBXGroup;
+			children = (
+				A8E71FD41F3D4B7300C8E34D /* MenuController.swift */,
+				A8C8BACA1F3C5AF700E9E18C /* View */,
+			);
+			name = ManuPage;
+			sourceTree = "<group>";
+		};
+		A8EACCBC1F8EF632000B12BF /* GuidePage */ = {
+			isa = PBXGroup;
+			children = (
+				A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */,
+			);
+			name = GuidePage;
+			sourceTree = "<group>";
+		};
+		A8EACCBD1F8EF640000B12BF /* Pages */ = {
+			isa = PBXGroup;
+			children = (
+				A8EACCB91F8EF555000B12BF /* MainPage */,
+				A8EACCBB1F8EF628000B12BF /* ManuPage */,
+				A8EACCBC1F8EF632000B12BF /* GuidePage */,
+			);
+			name = Pages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -598,7 +636,6 @@
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
 				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
-				A846017A1F74DF430089A588 /* StationsViewCellHandlerable.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
 				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,
