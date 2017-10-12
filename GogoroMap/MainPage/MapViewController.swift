@@ -14,8 +14,6 @@ import GoogleMobileAds
 import Cluster
 
 
-
-
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
     var  stationData: StationDatas { get }
@@ -39,25 +37,26 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
             if willRemovedAnnotations.count > 0 {
-                self.mapView.removeAnnotations(willRemovedAnnotations)
+                DispatchQueue.main.async { self.mapView.removeAnnotations(self.willRemovedAnnotations) }
             }
-            self.matchForAnnotationCorrect(annotationsCounter: self.annotations.count, mapViewsAnnotationsCounter: self.mapView.annotations.count)
         }
-        
     }
     
     var annotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
                 self.clusterManager.add(self.annotations)
+                self.mapView.layoutIfNeeded()
             }
             saveToDatabase(with: annotations)
             print("annotations did set")
+            
         }
     }
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
+    
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.zoomLevel = 14
@@ -102,13 +101,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         }()
     
     var userLocationCoordinate: CLLocationCoordinate2D! {
-        get {
-            return currentUserLocation.coordinate
-        }
-        set {
-            currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude)
-        }
+        get { return currentUserLocation.coordinate }
+        set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
     }
+    
     override func loadView() {
         super.loadView()
         setupSideMenu()
@@ -151,7 +147,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return myButton
     }()
     
-   
     
     @objc func checkin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
@@ -189,7 +184,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         saveToDatabase(with: annotations)
     }
     
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
@@ -200,7 +194,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         super.viewDidDisappear(animated)
         myLocationManager.stopUpdatingLocation()
     }
-    
     
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
@@ -224,9 +217,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         menuController.delegate = self
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         SideMenuManager.menuLeftNavigationController?.leftSide = true
-        
         SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
-        
         SideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
@@ -250,7 +241,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.barTintColor = UIColor.lightGreen
         navigationController?.isNavigationBarHidden = false
-        
         view.addSubview(mapView)
         mapView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
@@ -259,8 +249,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         
         navigationController?.view.addSubview(menuBarButton)
         menuBarButton.anchor(top: navigationController?.view.topAnchor, left: navigationController?.view.leftAnchor, bottom: nil, right: nil, topPadding: 23, leftPadding: 8, bottomPadding: 0, rightPadding: 0, width: 50, height: 38)
-        
-        
     }
     
     private func seupAdContainerView() {
@@ -274,12 +262,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 }
 
 
-// Mark: present annotationView
+//MARK: present annotationView
 extension MapViewController: Navigatorable {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        
+
         if let annotation = annotation as? ClusterAnnotation {
             guard let type = annotation.type else { return nil }
             let identifier = "Cluster"
@@ -291,20 +278,15 @@ extension MapViewController: Navigatorable {
             } else {
                 view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type, borderColor: .white)
             }
-
             return view
-            
             
         } else {
             return getOriginalMKAnnotationView(mapView, viewFor: annotation)
         }
-        
-        
-        
     }
    
     
-    //MARK:- OriginalMKAnnotationView
+    //MARK:- Original MKAnnotationView
     private func getOriginalMKAnnotationView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation.isKind(of: MKUserLocation.self) { return nil }
         let identifier = "station"
@@ -367,8 +349,6 @@ extension MapViewController: Navigatorable {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
             }
         }
-        
-      
     }
     
     //TODO:- will change pin with number
@@ -435,7 +415,22 @@ extension MapViewController: GuidePageViewControllerDelegate {
     
 }
 
-// test area
+//feature for cluster
+extension MapViewController {
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+            views.forEach { $0.alpha = 1 }
+        }, completion: nil)
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+    }
+}
+
+
+//MARK:- test area
 extension MapViewController {
     @objc func testFunc() {
         print("test")
@@ -466,18 +461,4 @@ extension MapViewController {
 }
 
 
-//feature for cluster
-extension MapViewController {
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        views.forEach { $0.alpha = 0 }
-        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
-            views.forEach { $0.alpha = 1 }
-        }, completion: nil)
-    }
-    
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
-    }
-    
 
-}

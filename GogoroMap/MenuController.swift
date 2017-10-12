@@ -177,7 +177,7 @@ extension MenuController {
     }
 }
 
-// MARK: in-App purchase thing
+//MARK:- in-App purchase process
 
 extension MenuController: IAPPurchasable {
     

@@ -89,8 +89,6 @@ final class StationsViewCell: UICollectionViewCell {
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
         button.contentMode = .scaleAspectFit
         button.layer.cornerRadius = 5
-        //        button.setTitle(NSLocalizedString("refresh", comment: ""), for: .normal)
-        //        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         return button
     }()
     

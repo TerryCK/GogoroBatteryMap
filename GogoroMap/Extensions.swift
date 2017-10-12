@@ -40,11 +40,11 @@ extension UIColor {
 
 
 extension UIView {
-    func anchor(top: NSLayoutYAxisAnchor?, left: NSLayoutXAxisAnchor?,
-                bottom: NSLayoutYAxisAnchor?, right:  NSLayoutXAxisAnchor?,
-                topPadding: CGFloat, leftPadding: CGFloat,
-                bottomPadding: CGFloat, rightPadding: CGFloat,
-                width: CGFloat, height: CGFloat
+    func anchor(top: NSLayoutYAxisAnchor? = nil, left: NSLayoutXAxisAnchor? = nil,
+                bottom: NSLayoutYAxisAnchor? = nil, right:  NSLayoutXAxisAnchor? = nil,
+                topPadding: CGFloat = 0, leftPadding: CGFloat = 0,
+                bottomPadding: CGFloat = 0, rightPadding: CGFloat = 0,
+                width: CGFloat = 0, height: CGFloat = 0
         ) {
         
         translatesAutoresizingMaskIntoConstraints = false
