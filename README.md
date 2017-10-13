@@ -38,9 +38,9 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 ### Screen Shots
 -----------
-!["ScreenShots"](/Screenshot/demo.png)
+!["ScreenShots"](/Screenshot/demo2.png)
 
-!["ScreenShots"](/Screenshot/demo.gif)
+!["ScreenShots"](/Screenshot/demo2.gif)
 
 
 ### Update history
