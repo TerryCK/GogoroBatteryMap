@@ -60,8 +60,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.zoomLevel = 14
-        myManager.minimumCountForCluster = 5
-        myManager.shouldRemoveInvisibleAnnotations = true
+        myManager.minimumCountForCluster = 3
+        
         return myManager
     }()
 
@@ -381,7 +381,6 @@ extension MapViewController: Navigatorable {
                                customAttributes: [Log.sharedName.mapButton: "Changing tracking mode"])
         locationArrowTapped()
     }
-    
 }
 
 

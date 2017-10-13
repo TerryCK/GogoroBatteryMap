@@ -206,7 +206,16 @@ let answer = fruitsArray.filter{ item in !vegArray.contains(item) }
 print("\(answer)") //  ["apple", "orange"]
 
 
+let keywords = ["全聯", "全國"]
 
+let name = "全國電子揪甘心欸"
+
+let closure = { (result: Bool, element: String) -> Bool in
+    return result || name.contains(element)
+}
+keywords.reduce(false) { (result, element) -> Bool in
+    return  result || name.contains(element)
+}
 
 
 
