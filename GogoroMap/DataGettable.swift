@@ -24,9 +24,7 @@ protocol DataGettable {
 }
 
 
-
-extension DataGettable where Self: MapViewController {
-    
+extension DataGettable where Self: MapViewController {    
     func initializeData() {
         DispatchQueue.global().async {
             if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {

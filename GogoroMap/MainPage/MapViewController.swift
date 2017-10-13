@@ -44,9 +44,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     var annotations = [CustomPointAnnotation]() {
         didSet {
-            DispatchQueue.main.async {
-                self.clusterManager.add(self.annotations)
-                self.mapView.layoutIfNeeded()
+                DispatchQueue.main.async {
+                    self.clusterManager.remove(oldValue)
+                    self.updataAnnotationImage(annotations: self.annotations)
+                    self.clusterManager.add(self.annotations)
             }
             saveToDatabase(with: annotations)
             print("annotations did set")
@@ -60,7 +61,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.zoomLevel = 14
-        myManager.minimumCountForCluster = 3
+        myManager.minimumCountForCluster = 2
         
         return myManager
     }()
@@ -174,7 +175,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         annotations[index].checkinCounter = checkinCounter
         
         if checkinCounter == 0 {
-            selectedAnnotationView?.image = #imageLiteral(resourceName: "pinFull")
+            
+            selectedAnnotationView?.image = getImage(with: selectedPin?.title)
             annotations[index].image = selectedAnnotationView?.image
             annotations[index].checkinDay = ""
             detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
@@ -268,7 +270,7 @@ extension MapViewController: Navigatorable {
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 
         if let annotation = annotation as? ClusterAnnotation {
-            guard let type = annotation.type else { return nil }
+            let type = ClusterAnnotationType.color(.grassGreen, radius: 36)
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             
@@ -356,7 +358,7 @@ extension MapViewController: Navigatorable {
         
         let zoomRect = cluster.annotations.reduce(MKMapRectNull) { (zoomRect, annotation) in
             let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
-            let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0)
+            let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 2500, 0)
             return MKMapRectIsNull(zoomRect) ? pointRect : MKMapRectUnion(zoomRect, pointRect)
         }
         mapView.setVisibleMapRect(zoomRect, animated: true)

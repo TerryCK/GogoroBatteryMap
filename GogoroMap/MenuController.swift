@@ -193,7 +193,7 @@ extension MenuController: IAPPurchasable {
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MenuController recieved notify")
-        collectionView?.reloadData()
+        DispatchQueue.main.async { self.collectionView?.reloadData() }
     }
     
     func setupObserver() {

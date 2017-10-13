@@ -48,25 +48,41 @@ extension AnnotationHandleable {
         }
     }
     
-    func getImage(with station: Station) -> UIImage {
+    typealias StationName = String
+    
+    
+    
+    
+    func getImage(with name: StationName?) -> UIImage {
         
-        let name = station.locName?.twName ?? ""
         let convenientKeywords = ["HiLife", "全聯", "7-ELEVEN", "全家"]
-        let mallKeywords = ["家樂福", "大潤發"]
+        let mallKeywords = ["家樂福", "大潤發", "Mall"]
         let gasStationKeyword = ["加油"]
         let goStationKeyword = ["Gogoro"]
         
         let closure = { (result: Bool, keyword: String) -> Bool in
-            return result || name.contains(keyword)
+            return result || name?.contains(keyword) ?? false
         }
         
         let isConvenientStore = convenientKeywords.reduce(false, closure)
         let isMall = mallKeywords.reduce(false, closure)
         let isGasStation = gasStationKeyword.reduce(false, closure)
         let isGoStation = goStationKeyword.reduce(false, closure)
-       
-        return station.state != 1 ? #imageLiteral(resourceName: "building") : isConvenientStore ? #imageLiteral(resourceName: "convenientStore") : isMall ? #imageLiteral(resourceName: "mallStore") :
-            isGasStation ? #imageLiteral(resourceName: "gasStation") : isGoStation ? #imageLiteral(resourceName: "goStore") : #imageLiteral(resourceName: "pinFull")
+        return isConvenientStore ? #imageLiteral(resourceName: "convenientStore") : isMall ? #imageLiteral(resourceName: "mallStore") : isGasStation ? #imageLiteral(resourceName: "gasStation") : isGoStation ? #imageLiteral(resourceName: "goStore") : #imageLiteral(resourceName: "pinFull")
+    }
+    
+    private func getImage(with annotation: CustomPointAnnotation) -> UIImage {
+        return annotation.isOpening ? #imageLiteral(resourceName: "building") : getImage(with: annotation.title)
+    }
+    
+    private func getImage(with station: Station) -> UIImage {
+        return station.state != 1 ? #imageLiteral(resourceName: "building") : getImage(with: station.locName?.twName)
+    }
+    
+    func updataAnnotationImage(annotations: [CustomPointAnnotation]) {
+        annotations.forEach { (element) in
+            element.image = getImage(with: element)
+        }
     }
 }
 

@@ -213,9 +213,8 @@ let name = "全國電子揪甘心欸"
 let closure = { (result: Bool, element: String) -> Bool in
     return result || name.contains(element)
 }
-keywords.reduce(false) { (result, element) -> Bool in
-    return  result || name.contains(element)
-}
+keywords.reduce(false, closure)
+
 
 
 

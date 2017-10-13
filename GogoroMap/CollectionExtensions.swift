@@ -19,12 +19,12 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
                     result.available + (element.isOpening ? 1 : 0) ,
                     result.hasFlags + (element.checkinCounter > 0 ? 1 : 0),
                     result.hasCheckins + element.checkinCounter
-                
             )
         }
     }
 }
 
+ 
 extension Collection where Iterator.Element == Station {
     
     var customPointAnnotations: [CustomPointAnnotation] {
