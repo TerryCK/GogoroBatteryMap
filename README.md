@@ -32,13 +32,15 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 9. 收錄台灣Gogoro 400+ 個站點資訊
 
-10. 加入地圖標示集合，加強使用體驗
+10. 更新地圖圖示，加入地圖標示集合功能，提昇使用體驗
+
+
 
 ### Screen Shots
 -----------
-!["ScreenShots"](https://github.com/TerryCK/GogoroBatteryMap/blob/master/Screenshot/demo.png)
+!["ScreenShots"](/Screenshot/demo.png)
 
-!["ScreenShots"](https://github.com/TerryCK/GogoroBatteryMap/blob/master/Screenshot/demo.gif)
+!["ScreenShots"](/Screenshot/demo.gif)
 
 
 ### Update history

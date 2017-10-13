@@ -72,7 +72,7 @@ extension AnnotationHandleable {
     }
     
     private func getImage(with annotation: CustomPointAnnotation) -> UIImage {
-        return annotation.isOpening ? #imageLiteral(resourceName: "building") : getImage(with: annotation.title)
+        return !annotation.isOpening ? #imageLiteral(resourceName: "building") : getImage(with: annotation.title)
     }
     
     private func getImage(with station: Station) -> UIImage {
