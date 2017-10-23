@@ -17,18 +17,14 @@ import Crashlytics
 protocol PurchaseItem { }
 extension String: PurchaseItem { }
 extension RegisteredPurchase: PurchaseItem { }
-
-
-
-
-
-
+typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> ()
 
 protocol IAPPurchasable: IAPAlartable {
     
     func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)
     func purchase(_ result: SKProduct)
     func restore()
+    
     func verifyPurchase<T: PurchaseItem>(_ purchase: T)
     func handlePurchaseNotification(_ notification: Notification)
     

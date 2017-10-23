@@ -10,7 +10,7 @@ import MapKit
 import UIKit
 import Cluster
 
-class BorderedClusterAnnotationView: ClusterAnnotationView {
+final class BorderedClusterAnnotationView: ClusterAnnotationView {
     let borderColor: UIColor
     
     init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType, borderColor: UIColor) {

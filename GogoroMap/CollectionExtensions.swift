@@ -12,7 +12,7 @@ import Foundation
 typealias StationDatas = (total: Int, available: Int, hasFlags: Int, hasCheckins: Int)
 
 extension Collection where Iterator.Element: CustomPointAnnotation {
-    //MARK: get the station informations count of total,available,hasFlags,hasCheckins
+    //MARK: - Get the station informations count of total,available,hasFlags,hasCheckins
     var getStationData: StationDatas {
         return reduce((0,0,0,0))  { (result, element) -> StationDatas in
             return (result.total + 1,
@@ -54,4 +54,6 @@ extension Collection where Iterator.Element == Station {
             )
         }
     }
+    
+
 }

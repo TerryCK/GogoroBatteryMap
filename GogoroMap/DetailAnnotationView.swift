@@ -27,7 +27,7 @@ final class DetailAnnotationView: UIView {
         return button
     }()
     
-    lazy var buttonStackView: UIStackView = { [unowned self] in
+    lazy var buttonStackView: UIStackView = {   
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.checkinButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -61,7 +61,7 @@ final class DetailAnnotationView: UIView {
         return label
     }()
     
-    private lazy var etaStackview: UIStackView = { [unowned self] in
+    private lazy var etaStackview: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.distanceLabel, self.etaLabel])
         stackView.axis = .vertical
         stackView.alignment = .leading
@@ -69,7 +69,7 @@ final class DetailAnnotationView: UIView {
         return stackView
         }()
     
-    private lazy var goButtonStackView: UIStackView = { [unowned self] in
+    private lazy var goButtonStackView: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.goButton, self.etaStackview])
         stackView.axis = .horizontal
         stackView.alignment = .leading
@@ -114,7 +114,7 @@ final class DetailAnnotationView: UIView {
         return label
     }()
     
-    private lazy var openStackView: UIStackView = { [unowned self] in
+    private lazy var openStackView: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.opneHourLabel])
         stackView.axis = .horizontal
         stackView.alignment = .center
@@ -123,7 +123,7 @@ final class DetailAnnotationView: UIView {
         }()
     
     
-    private lazy var mainStackView: UIStackView = { [unowned self] in
+    private lazy var mainStackView: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [self.isAvailableLabel, self.openStackView, self.timesOfCheckinLabel,  self.lastCheckTimeLabel])
         stackView.axis = .vertical
         stackView.alignment = .leading
@@ -160,7 +160,9 @@ final class DetailAnnotationView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
+        
         anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 170, height: 210)
+        
         setup()
         backgroundColor = .white
         layer.cornerRadius = 10
@@ -192,5 +194,6 @@ final class DetailAnnotationView: UIView {
         }
     }
 }
+
 
 

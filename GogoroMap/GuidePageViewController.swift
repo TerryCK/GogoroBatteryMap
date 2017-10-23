@@ -17,7 +17,7 @@ final class GuidePageViewController: UIViewController {
 
     weak var delegate: GuidePageViewControllerDelegate?
     
-    private lazy var guideImageView: UIImageView = { [unowned self] in
+    private lazy var guideImageView: UIImageView = {
         let imageView: UIImageView = UIImageView(frame: self.view.frame)
         imageView.image = #imageLiteral(resourceName: "guidePage")
         imageView.contentMode = .scaleAspectFit

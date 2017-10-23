@@ -34,9 +34,6 @@ extension AnnotationHandleable {
             let address = isEnglish ? engAddress : twAddress
             let title = isEnglish ? engName : twName
             
-            
-            
-            
             return CustomPointAnnotation(title: title,
                                          subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
                                          coordinate: location,
@@ -68,6 +65,8 @@ extension AnnotationHandleable {
         let isMall = mallKeywords.reduce(false, closure)
         let isGasStation = gasStationKeyword.reduce(false, closure)
         let isGoStation = goStationKeyword.reduce(false, closure)
+        
+        
         return isConvenientStore ? #imageLiteral(resourceName: "convenientStore") : isMall ? #imageLiteral(resourceName: "mallStore") : isGasStation ? #imageLiteral(resourceName: "gasStation") : isGoStation ? #imageLiteral(resourceName: "goStore") : #imageLiteral(resourceName: "pinFull")
     }
     

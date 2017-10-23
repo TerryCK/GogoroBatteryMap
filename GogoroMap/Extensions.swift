@@ -44,8 +44,7 @@ extension UIView {
                 bottom: NSLayoutYAxisAnchor? = nil, right:  NSLayoutXAxisAnchor? = nil,
                 topPadding: CGFloat = 0, leftPadding: CGFloat = 0,
                 bottomPadding: CGFloat = 0, rightPadding: CGFloat = 0,
-                width: CGFloat = 0, height: CGFloat = 0
-        ) {
+                width: CGFloat = 0, height: CGFloat = 0) {
         
         translatesAutoresizingMaskIntoConstraints = false
         
@@ -72,8 +71,6 @@ extension UIView {
         if height != 0 {
             self.heightAnchor.constraint(equalToConstant: height).isActive = true
         }
-        
-        
     }
 }
 
@@ -84,7 +81,7 @@ extension Date {
         formatter.dateFormat = "yyyy.MM.dd"
         let dateString = formatter.string(from: date)
         return dateString
-    }()
+    } ()
 }
 
 
@@ -109,8 +106,6 @@ extension Double {
         
         result += hours > 0 ? "\(hours) 小時 " : ""
         result += "\(minutes + 1) 分鐘 "
-        
-      
         return result
     }
 
@@ -127,7 +122,6 @@ extension Bundle {
 
 
 extension SKProduct {
-    
     func localizedPrice() -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency

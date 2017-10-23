@@ -27,6 +27,7 @@ extension LocationManageable where Self: MapViewController {
         initializeLocationManager()
         
         let authrizationStatus = CLLocationManager.authorizationStatus()
+        
         switch authrizationStatus {
             
         case .notDetermined:

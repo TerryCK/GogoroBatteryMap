@@ -166,8 +166,7 @@ extension MenuController {
     @objc func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
         print("\n data reflash\n")
-        delegate?.getAnnotationFromRemote { [unowned self] in
-            
+        delegate?.getAnnotationFromRemote {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = NSLocalizedString("Information", comment: "")

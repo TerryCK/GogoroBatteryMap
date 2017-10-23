@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         setupIAPOberserver()
+        
+
         #if RELEASE
         FirebaseApp.configure()
         GADMobileAds.configure(withApplicationID: Keys.standard.applicationID)

@@ -21,6 +21,8 @@
 		A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84209D41F4EBCE800633FC7 /* OberserName.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
 		A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D81F4ECB3700633FC7 /* Taipei.gpx */; };
+		A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D421F947BC200AA28C2 /* SegmentStatus.swift */; };
+		A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
@@ -37,6 +39,7 @@
 		A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */; };
 		A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */; };
 		A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */; };
+		A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */; };
 		A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */; };
 		A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */; };
 		A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */; };
@@ -75,6 +78,8 @@
 		A84209D41F4EBCE800633FC7 /* OberserName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OberserName.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
 		A84209D81F4ECB3700633FC7 /* Taipei.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Taipei.gpx; sourceTree = "<group>"; };
+		A8422D421F947BC200AA28C2 /* SegmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentStatus.swift; sourceTree = "<group>"; };
+		A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		A846017B1F74E46D0089A588 /* Selector+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Selector+Extension.swift"; sourceTree = "<group>"; };
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
@@ -96,6 +101,7 @@
 		A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationHandleable.swift; sourceTree = "<group>"; };
 		A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigatorable.swift; sourceTree = "<group>"; };
 		A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnCheckInButton.swift; sourceTree = "<group>"; };
 		A8D368671F3B435D0015F5F9 /* GogoroMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GogoroMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -192,6 +198,7 @@
 				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
 				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
 				A8742B011F449741002BA66B /* Keys.swift */,
+				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -280,6 +287,7 @@
 		A8D368991F3B44A00015F5F9 /* Utilitys */ = {
 			isa = PBXGroup;
 			children = (
+				A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */,
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
@@ -296,6 +304,7 @@
 				A80759671F4C04430031D576 /* CheckinButton.swift */,
 				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
 				A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */,
+				A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */,
 			);
 			name = Views;
 			path = ..;
@@ -628,13 +637,16 @@
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
+				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
+				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
 				A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */,
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
 				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
+				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
@@ -840,7 +852,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -859,7 +871,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

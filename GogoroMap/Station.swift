@@ -46,8 +46,6 @@ struct Station {
         }
     }
     
-    
-    
     private static func getLocalNameObject(jsonString: String) -> LocName? {
         
         guard
@@ -59,4 +57,4 @@ struct Station {
         
     }
     
-   }
+}

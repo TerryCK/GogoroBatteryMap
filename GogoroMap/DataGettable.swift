@@ -63,7 +63,7 @@ extension DataGettable where Self: MapViewController {
         guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
-        URLSession.shared.dataTask(with: url) { [unowned self] (data, _, err) in
+        URLSession.shared.dataTask(with: url) { (data, _, err) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
                 if let completeHandle = completeHandle {

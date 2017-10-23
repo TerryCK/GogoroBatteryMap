@@ -54,55 +54,99 @@ extension Navigatorable where Self: MapViewController {
                 print("Error: \(error!)")
             }
         }
-
+        
     }
 }
 
 
-//TODO :- Route for Travel
+
+
+
+
+
+// TODO: - Route for Travel
 extension Collection where Iterator.Element: CustomPointAnnotation {
+    
+    ////    func getRouteStations(from start: CLLocation , to end: CustomPointAnnotation , maxDistance: Double) -> [CustomPointAnnotation] {
+    ////
+    ////    }
+    //    
+    //    func getTerminalStation(from start: CustomPointAnnotation , to end: CustomPointAnnotation , maxDistance: Double) -> [CustomPointAnnotation] {
+    //        
+    //        if start.toCLLocation.distance(from: end.toCLLocation) <= maxDistance {
+    //            
+    //        }
+    //        
+    //    }
+    
+    
+    
+    typealias Distance = Double
     func getDistance(userPosition: CLLocation) -> [CustomPointAnnotation] {
+        
+        // MARK: - put the task to thread-pool and get the callback Bool
+        
+        let groupQueue = DispatchGroup()
+        func calculateRoute(station: CustomPointAnnotation , complete: @escaping (Bool) -> () ) {
+            
+            var isPredicated: Bool = false
+            groupQueue.enter()
+            DispatchQueue.global().async {
+                let sourcePlacemark = MKPlacemark(coordinate: userPosition.coordinate, addressDictionary: nil)
+                let sourceMapItem = MKMapItem(placemark: sourcePlacemark)
+                
+                // Get destination position
+                let destinationCoordinates = CLLocationCoordinate2DMake(station.coordinate.latitude, station.coordinate.longitude)
+                let destinationPlacemark = MKPlacemark(coordinate: destinationCoordinates, addressDictionary: nil)
+                let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
+                
+                // Create request
+                let request = MKDirectionsRequest()
+                request.source = sourceMapItem
+                request.destination = destinationMapItem
+                request.transportType = MKDirectionsTransportType.automobile
+                request.requestsAlternateRoutes = true
+                let directions = MKDirections(request: request)
+                
+                directions.calculate { response, error in
+                    
+                    if let route = response?.routes.first {
+                        isPredicated = 40...50 ~= route.distance.km ? true : false
+                        
+                    } else  {
+                        print("Error: \(error!)")
+                    }
+                    groupQueue.leave()
+                }
+            }
+            
+            groupQueue.notify(queue: DispatchQueue.main) {
+                complete(isPredicated)
+            }
+        }
+        
         return self.filter { (station) -> Bool in
-            let distance: Double = CLLocation(latitude: station.coordinate.latitude, longitude: station.coordinate.longitude).distance(from: userPosition).km
+            
+            let distance: Distance = CLLocation(latitude: station.coordinate.latitude, longitude: station.coordinate.longitude).distance(from: userPosition).km
             
             return 40...50 ~= distance && !(station.title?.contains("建置中") ?? false)
             
+            // TODO: Filter conditions
             }.filter { (station) -> Bool in
-                var isPredicated: Bool = false
+             var isPrediction = false
+                calculateRoute(station: station) { isPrediction = $0 }
+                let requestResult = groupQueue.wait(timeout: DispatchTime.now() + 5.0)
                 
-                let groupQueue = DispatchGroup()
-                groupQueue.enter()
-                DispatchQueue.global(qos: .default).async {
-                    let sourcePlacemark = MKPlacemark(coordinate: userPosition.coordinate, addressDictionary: nil)
-                    let sourceMapItem = MKMapItem(placemark: sourcePlacemark)
-                    
-                    // Get destination position
-                    let destinationCoordinates = CLLocationCoordinate2DMake(station.coordinate.latitude, station.coordinate.longitude)
-                    let destinationPlacemark = MKPlacemark(coordinate: destinationCoordinates, addressDictionary: nil)
-                    let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
-                    
-                    // Create request
-                    let request = MKDirectionsRequest()
-                    request.source = sourceMapItem
-                    request.destination = destinationMapItem
-                    request.transportType = MKDirectionsTransportType.automobile
-                    request.requestsAlternateRoutes = true
-                    let directions = MKDirections(request: request)
-                    
-                    directions.calculate { response, error in
-                        
-                                            if let route = response?.routes.first {
-                                                isPredicated = 40...50 ~= route.distance.km ? true : false
-
-                                            } else  {
-                                                print("Error: \(error!)")
-                                            }
-                        groupQueue.leave()
-                    }
+                switch requestResult {
+                
+                case .success:
+                    return isPrediction
+              
+                case .timedOut:
+                    return false
                 }
-                 groupQueue.wait()
-                return isPredicated
+                
         }
+        
     }
 }
-

@@ -8,6 +8,25 @@
 
 import Foundation
 
+// MARK: - MapViewController
+
+extension Selector {
+    static let checkin = {
+        #selector(MapViewController.checkin)
+    }
+    static let unCheckin = {
+        #selector(MapViewController.unCheckin)
+    }
+    static let navigating = {
+        #selector(MapViewController.navigating)
+    }
+    
+}
+
+
+
+
+// MARK: - ManuViewController
 extension Selector {
     
     static let performGuidePage = {
