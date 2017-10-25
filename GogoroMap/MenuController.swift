@@ -11,7 +11,7 @@ import StoreKit
 import Crashlytics
 
 final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
-    
+    // MARK: - Properties
     let cellid = "cellid"
     let appID = Keys.standard.appID
     
@@ -24,14 +24,13 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             collectionView?.reloadData()
         }
     }
-    
+    // MARK: - ViewController life cycles
     override func loadView() {
         super.loadView()
         setupNaviagtionAndCollectionView()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupPurchaseItem()
     }
     
@@ -40,6 +39,12 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
+        print("menu controller deinitialize")
+    }
+    
+    // MARK: - CollectionView logics
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as? StationsViewCell ?? StationsViewCell()
         
@@ -80,6 +85,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
  
+    // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
         
         navigationController?.view.layer.cornerRadius = 10
@@ -101,20 +107,19 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)
     }
     
+    // MARK: - Events
     private func open(url: String) {
         guard let checkURL = URL(string: url),
             UIApplication.shared.canOpenURL(checkURL) else { return }
         UIApplication.shared.openURL(checkURL)
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
-        print("menu controller deinitialize")
-    }
+   
     
     
 }
 
+// MARK: - Perform target's events
 extension MenuController {
     
     @objc func performGuidePage() {
@@ -176,7 +181,7 @@ extension MenuController {
     }
 }
 
-//MARK:- in-App purchase process
+// MARK: - in-App purchase process
 
 extension MenuController: IAPPurchasable {
     

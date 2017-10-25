@@ -22,7 +22,7 @@ protocol ManuDelegate: class {
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
-    
+    //     MARK: - Properties
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     let myCellid = "myCellid"
@@ -34,15 +34,45 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private var selectedAnnotationView: MKAnnotationView? = MKAnnotationView()
     private var detailView = DetailAnnotationView()
     
-    //get the index of selected Annotations
-    var indexOfAnnotations: Int = 0
     
-    // current selected pin
+    var indexOfAnnotations: Int = 0
     var selectedPin: CustomPointAnnotation?
     
+    private lazy var isiPhoneX: Bool = {
+        let iPhoneXHeight: CGFloat = 812 // iPhone X Height
+        return UIDevice.modelName == .iPhoneX || view.frame.height == iPhoneXHeight
+    }()
     
+     var counterOfcheckin: Int = 0 {
+        didSet {
+            var lastCheckinString: String = "最近的打卡日："
+            let isChecking = counterOfcheckin > 0
+            
+            switch isChecking {
+            
+            case true:
+                selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
+                annotations[indexOfAnnotations].checkinDay = Date.today
+                detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
+                lastCheckinString = "最近的打卡日：\(Date.today)"
+                
+            case false:
+                selectedAnnotationView?.image = getImage(with: selectedPin?.title)
+                annotations[indexOfAnnotations].checkinDay = ""
+                detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
+                
+            }
+            
+            detailView.timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
+            detailView.lastCheckTimeLabel.text = lastCheckinString
+            annotations[indexOfAnnotations].checkinCounter = counterOfcheckin
+            annotations[indexOfAnnotations].image = selectedAnnotationView?.image
+            
+            saveToDatabase(with: annotations)
+        }
+    }
     
-    // MARK: - View Creator
+    // MARK: - View Creators
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.zoomLevel = 14
@@ -88,11 +118,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return button
     }()
     
-    // MARK:  SegmentController
-    let items: [SegmentStatus] = [.map , .checkin, .nearby, .building]
+    
+    let segmentItems: [SegmentStatus] = [.map , .checkin, .nearby, .building]
+    
     private lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl()
-        items.enumerated().forEach {
+        segmentItems.enumerated().forEach {
             sc.insertSegment(withTitle: $1.rawValue, at: $0, animated: false)
         }
         sc.selectedSegmentIndex = 0
@@ -116,7 +147,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }()
     
     @objc func segmentChange(sender: UISegmentedControl) {
-        let segmentStatus = items[sender.selectedSegmentIndex]
+        let segmentStatus = segmentItems[sender.selectedSegmentIndex]
         
         mapView.isHidden = segmentStatus == .map ? false : true
         collectionView.isHidden =  !mapView.isHidden
@@ -170,9 +201,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var annotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
-                self.clusterManager.remove(oldValue)
-                self.updataAnnotationImage(annotations: self.annotations)
-                self.clusterManager.add(self.annotations)
+                self.clusterUpdating(with: oldValue)
             }
             saveToDatabase(with: annotations)
             print("annotations did set")
@@ -180,6 +209,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         }
     }
     
+    private func clusterUpdating(with oldValue: [CustomPointAnnotation]) {
+        clusterManager.remove(oldValue)
+        updataAnnotationImage(annotations: annotations)
+        clusterManager.add(annotations)
+    }
     
     // MARK: - Computed Properties
     var userLocationCoordinate: CLLocationCoordinate2D! {
@@ -193,8 +227,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     // MARK: - ViewController life cycle
     override func loadView() {
         super.loadView()
+        setupView()
         setupSideMenu()
-        setupMapViewAndNavTitle()
     }
     
     
@@ -206,28 +240,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         initializeData()
         setupPurchase()
         
-        //                #if DEBUG
-        //
-        //                    let activity = selectedPin?.userActivity
-        //                    activity?.isEligibleForPublicIndexing = true
-        //                    activity?.isEligibleForSearch = true
-        //
-        //                    userActivity = activity
-        //
-        //                #endif
-        
-        #if DEBUG
-            
-            view.addSubview(testButton)
-            testButton.anchor(top: segmentControllerContainer.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-        #endif
-        
+        testFunc()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
-        seupAdContainerView()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.seupAdContainerView()
+        }
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -265,98 +288,120 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setSideMenuDefalts()
     }
     
-    private func setupBottomBackgroundView() {
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = .lightGreen
-        view.addSubview(backgroundView)
-        backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
-    }
+   
     
     private func setSideMenuDefalts() {
+        let displayFactor: CGFloat = 0.80
+        
         SideMenuManager.menuFadeStatusBar = true
         SideMenuManager.menuShadowOpacity = 0.59
-        SideMenuManager.menuWidth = view.frame.width * CGFloat(0.80)
+        SideMenuManager.menuWidth = view.frame.width * displayFactor
         SideMenuManager.menuAnimationTransformScaleFactor = 0.95
         SideMenuManager.menuAnimationFadeStrength = 0.40
         SideMenuManager.menuBlurEffectStyle = nil
         SideMenuManager.menuPresentMode = .viewSlideInOut
     }
     
-    private func setupSegmentControllerContainer() {
-        
-        view.addSubview(segmentControllerContainer)
-        
-        var topPadding: CGFloat = 44
-        let safeAreaTopPadding: CGFloat = 80
-        
-        if #available(iOS 11.0, *) { topPadding = safeAreaTopPadding }
-        
-        segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
-        
-        segmentControllerContainer.addSubview(segmentedControl)
-       
-        segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
+    private func setupView() {
+        setupNavigationTitle()
+        setupNavigationItems()
+        setupSegmentControllerContainer()
+        setupMainViews()
     }
     
-    private func setupMainViews(myView: UIView) {
-        view.addSubview(myView)
-        myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
-    }
-    
-    private func setupMapViewAndNavTitle() {
+    private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \(NSLocalizedString("Battery Station", comment: ""))"
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.barTintColor = UIColor.lightGreen
         navigationController?.isNavigationBarHidden = false
-        
         navigationController?.view.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-        
-        setupSegmentControllerContainer()
-        
-        
-        setupMainViews(myView: mapView)
-        setupMainViews(myView: collectionView)
-       
-        
+    }
+    
+    private func setupNavigationItems() {
         navigationController?.view.addSubview(locationArrowView)
         navigationController?.view.addSubview(menuBarButton)
         
         guard let navigationControllerView = navigationController?.view else { return }
+        let sidePading: CGFloat = 8
+        let height: CGFloat = 38
+        let width: CGFloat = 50
         
-        if #available(iOS 11.0, *) {
-           
-            guard let safeAreaLayoutGuide = navigationController?.view.safeAreaLayoutGuide else { return }
-            
-            locationArrowView.anchor(top: safeAreaLayoutGuide.topAnchor, left:  nil, bottom: nil, right:  safeAreaLayoutGuide.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 8, width: 50, height: 38)
-
-            menuBarButton.anchor(top: safeAreaLayoutGuide.topAnchor, left: navigationControllerView.leftAnchor, bottom: nil, right: nil, topPadding: 0, leftPadding: 8, bottomPadding: 0, rightPadding: 0, width: 50, height: 38)
-            
+        var topAnchor: NSLayoutYAxisAnchor = navigationControllerView.topAnchor
+        var topPadding: CGFloat = 23
+        
+        if isiPhoneX,
+            #available(iOS 11.0, *) {
+            topAnchor = navigationControllerView.safeAreaLayoutGuide.topAnchor
+            topPadding = 0
             setupBottomBackgroundView()
-            
-        } else {
-            
-            locationArrowView.anchor(top: navigationControllerView.topAnchor, left: nil, bottom: nil, right: navigationControllerView.rightAnchor, topPadding: 23, leftPadding: 0, bottomPadding: 0, rightPadding: 8, width: 50, height: 38)
-            
-            menuBarButton.anchor(top: navigationControllerView.topAnchor, left: navigationControllerView.leftAnchor, bottom: nil, right: nil, topPadding: 23, leftPadding: 8, bottomPadding: 0, rightPadding: 0, width: 50, height: 38)
         }
         
-        //        setupSegmentController()
+        locationArrowView.anchor(top: topAnchor, left:  nil, bottom: nil, right:  navigationControllerView.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: sidePading, width: width, height: height)
+        
+        menuBarButton.anchor(top: topAnchor, left: navigationControllerView.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
+    }
+    
+    
+    private func setupMainViews() {
+        setupMainViews(with: mapView)
+        setupMainViews(with: collectionView)
+    }
+    
+    private func setupSegmentControllerContainer() {
+        
+        view.addSubview(segmentControllerContainer)
+        
+        var topPadding: CGFloat = 64
+        
+        
+        if isiPhoneX {
+            let safeAreaTopPadding: CGFloat = 80
+            topPadding = safeAreaTopPadding
+            print(UIDevice.modelName)
+        }
+        
+        segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
+        
+        segmentControllerContainer.addSubview(segmentedControl)
+        
+        segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
+    }
+    
+    private func setupMainViews(with myView: UIView) {
+        view.addSubview(myView)
+        myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     }
     
     private func seupAdContainerView() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            Answers.logContentView(withName: "Ad View", contentType: nil, contentId: nil, customAttributes: nil)
-            self.view.addSubview(self.adContainerView)
-            
-            var bottomAnchor = self.view.bottomAnchor
-            if #available(iOS 11, *) { bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor }
-            self.adContainerView.anchor(top: nil, left: self.view.leftAnchor, bottom: bottomAnchor, right: self.view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-            self.view.bringSubview(toFront: self.adContainerView)
+        
+        Answers.logContentView(withName: "Ad View", contentType: nil, contentId: nil, customAttributes: nil)
+        view.addSubview(self.adContainerView)
+        
+        var bottomAnchor = view.bottomAnchor
+            // MARK: - iPhone X autolayout
+        if #available(iOS 11.0, *),
+            isiPhoneX {
+            bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
         }
+        adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        
+        view.bringSubview(toFront: adContainerView)
+        
         
     }
+    
+    private func setupBottomBackgroundView() {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .lightGreen
+        view.addSubview(backgroundView)
+        backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
+    }
+
+    
+    
 }
+
 // MARK: - CollectionView
 extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -390,37 +435,40 @@ extension MapViewController {
     @objc func checkin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Check in"])
-        let checkinCounter = annotations[indexOfAnnotations].checkinCounter + 1
-        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
-        detailView.lastCheckTimeLabel.text = "最近的打卡日：\(Date.today)"
-        annotations[indexOfAnnotations].checkinCounter = checkinCounter
-        annotations[indexOfAnnotations].checkinDay = Date.today
-        
-        if checkinCounter > 0 && annotations[indexOfAnnotations].image != #imageLiteral(resourceName: "checkin") {
-            selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
-            annotations[indexOfAnnotations].image = selectedAnnotationView?.image
-            detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
-        }
-        saveToDatabase(with: annotations)
+        counterOfcheckin = annotations[indexOfAnnotations].checkinCounter + 1
+//        let checkinCounter = annotations[indexOfAnnotations].checkinCounter + 1
+//        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
+//        detailView.lastCheckTimeLabel.text = "最近的打卡日：\(Date.today)"
+//        annotations[indexOfAnnotations].checkinCounter = checkinCounter
+//        annotations[indexOfAnnotations].checkinDay = Date.today
+//
+//        if checkinCounter > 0,
+//            annotations[indexOfAnnotations].image != #imageLiteral(resourceName: "checkin") {
+//            selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
+//            annotations[indexOfAnnotations].image = selectedAnnotationView?.image
+//            detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
+//        }
+//        saveToDatabase(with: annotations)
     }
     
     
     @objc func unCheckin() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Remove check in"])
-        let checkinCounter = annotations[indexOfAnnotations].checkinCounter - 1
-        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
-        annotations[indexOfAnnotations].checkinCounter = checkinCounter
+        counterOfcheckin = annotations[indexOfAnnotations].checkinCounter - 1
+//        let checkinCounter = annotations[indexOfAnnotations].checkinCounter - 1
+//        detailView.timesOfCheckinLabel.text = "打卡：\(checkinCounter) 次"
+//        annotations[indexOfAnnotations].checkinCounter = checkinCounter
+//
+//        if checkinCounter == 0 {
+//            selectedAnnotationView?.image = getImage(with: selectedPin?.title)
+//            annotations[indexOfAnnotations].image = selectedAnnotationView?.image
+//            annotations[indexOfAnnotations].checkinDay = ""
+//            detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
+//            detailView.lastCheckTimeLabel.text = "最近的打卡日："
+//        }
         
-        if checkinCounter == 0 {
-            selectedAnnotationView?.image = getImage(with: selectedPin?.title)
-            annotations[indexOfAnnotations].image = selectedAnnotationView?.image
-            annotations[indexOfAnnotations].checkinDay = ""
-            detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
-            detailView.lastCheckTimeLabel.text = "最近的打卡日："
-        }
-        
-        saveToDatabase(with: annotations)
+//        saveToDatabase(with: annotations)
     }
 }
 
@@ -482,7 +530,7 @@ extension MapViewController: Navigatorable {
         guard let annotation = view.annotation else { return }
         self.selectedAnnotationView = nil
         
-        //: ## feature fo cluster
+        //MARK: - feature fo cluster
         
         if let clusterAnnotation = annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
@@ -554,7 +602,7 @@ extension MapViewController: IAPPurchasable {
                                                name: NotificationName.shared.removeAds,
                                                object: nil)
     }
-
+    
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")
         
@@ -584,8 +632,27 @@ extension MapViewController {
 }
 
 
-//MARK:- test area
+//TODO:- test area
 extension MapViewController {
+    
+    private func testFunction() {
+        //                #if DEBUG
+        //
+        //                    let activity = selectedPin?.userActivity
+        //                    activity?.isEligibleForPublicIndexing = true
+        //                    activity?.isEligibleForSearch = true
+        //
+        //                    userActivity = activity
+        //
+        //                #endif
+        
+        #if DEBUG
+            
+            view.addSubview(testButton)
+            testButton.anchor(top: segmentControllerContainer.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        #endif
+        
+    }
     @objc func testFunc() {
         print("test")
         DispatchQueue.global().async {

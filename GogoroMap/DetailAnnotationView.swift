@@ -9,7 +9,7 @@
 import UIKit
 
 final class DetailAnnotationView: UIView {
-     
+    // MARK: - View creators
     let goButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)
@@ -77,9 +77,6 @@ final class DetailAnnotationView: UIView {
         return stackView
         }()
     
-    
-    
-    
     let lastCheckTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "最近的打卡日："
@@ -138,6 +135,8 @@ final class DetailAnnotationView: UIView {
         return view
     }()
     
+    
+    //    MARK: - View's setup & initialize with autolayout
     private func setup() {
         addSubview(goButtonStackView)
         addSubview(mainStackView)
