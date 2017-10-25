@@ -36,9 +36,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     var indexOfAnnotations: Int = 0
     var selectedPin: CustomPointAnnotation?
-
-    
-//    var isiPhoneX: Bool { return UIDevice.isiPhoneX }
     
      var counterOfcheckin: Int = 0 {
         didSet {
