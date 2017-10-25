@@ -53,7 +53,7 @@ extension AnnotationHandleable {
     func getImage(with name: StationName?) -> UIImage {
         
         let convenientKeywords = ["HiLife", "全聯", "7-ELEVEN", "全家"]
-        let mallKeywords = ["家樂福", "大潤發", "Mall"]
+        let mallKeywords = ["家樂福", "大潤發", "Mall", "百貨"]
         let gasStationKeyword = ["加油"]
         let goStationKeyword = ["Gogoro"]
         

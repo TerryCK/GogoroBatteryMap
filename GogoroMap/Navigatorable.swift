@@ -58,9 +58,32 @@ extension Navigatorable where Self: MapViewController {
     }
 }
 
+typealias Distance = Double
+extension CustomPointAnnotation {
+    func getDistance(from userPosition: CLLocation) -> Distance {
+        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
+    }
+}
 
 
-
+extension Collection where Element: CustomPointAnnotation {
+    
+ 
+    func sortedByDistance(userPosition: CLLocation) -> [Element] {
+        return self.sorted { $0.getDistance(from: userPosition) < $1.getDistance(from: userPosition) }
+        
+        
+        
+//        let x = { (station) -> Bool in
+//
+//            let distance: Distance = CLLocation(latitude: station.coordinate.latitude, longitude: station.coordinate.longitude).distance(from: userPosition).km
+//
+//            return 40...50 ~= distance && !(station.title?.contains("建置中") ?? false)
+        
+            // TODO: Filter conditions
+//        }
+    }
+}
 
 
 

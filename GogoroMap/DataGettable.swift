@@ -86,7 +86,7 @@ extension DataGettable where Self: MapViewController {
             print("get data from romote")
             
             (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: annotationFromRemote)
-            
+
             }.resume()
         
         func dataFromDatabase() {

@@ -7,9 +7,11 @@
 //
 import UIKit
 
+
 class BaseCollectionViewCell: UICollectionViewCell {
     
-  
+ 
+    
     lazy var viewContainer: UIView = {
         let containerView = UIView()
         let blurEffect = UIBlurEffect(style: .extraLight)
@@ -29,11 +31,12 @@ class BaseCollectionViewCell: UICollectionViewCell {
         vibrancyEffectContentView.addSubview(containerView)
         
         var buttomAnchor = vibrancyEffectContentView.bottomAnchor
-        if #available(iOS 11.0, *) {
-        let safeAreaBottom: NSLayoutYAxisAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
-            buttomAnchor = safeAreaBottom
+        
+        if #available(iOS 11.0, *), UIDevice.isiPhoneX {
+            buttomAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
         }
-        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: buttomAnchor, right:  vibrancyEffectContentView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        
+        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: buttomAnchor, right:  vibrancyEffectContentView.rightAnchor)
         
         return containerView
        

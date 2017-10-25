@@ -10,6 +10,11 @@ import UIKit
 import StoreKit
 import Crashlytics
 
+protocol ManuDelegate: class {
+    func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
+    var  stationData: StationDatas { get }
+}
+
 final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
     // MARK: - Properties
     let cellid = "cellid"

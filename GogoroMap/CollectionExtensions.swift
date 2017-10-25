@@ -24,7 +24,7 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
     }
 }
 
- 
+
 extension Collection where Iterator.Element == Station {
     
     var customPointAnnotations: [CustomPointAnnotation] {
