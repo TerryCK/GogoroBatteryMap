@@ -9,11 +9,8 @@
 import Foundation
 import UIKit
 
-protocol MyCollectionViewCellDelegate: class { }
 
 final class MyCollectionViewCell: BaseCollectionViewCell {
-    
-    weak var delegate: MyCollectionViewCellDelegate?
     
     lazy var titleLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))

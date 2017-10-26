@@ -91,10 +91,9 @@ extension IAPPurchasable where Self: UIViewController {
     
     
     private func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
-        
-        let appleValidator = AppleReceiptValidator(service: .production)
-        let password = Keys.standard.secretKet
-        SwiftyStoreKit.verifyReceipt(using: appleValidator, password: password, completion: completion)
+        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: Keys.standard.secretKet)
+
+        SwiftyStoreKit.verifyReceipt(using: appleValidator,  completion: completion)
     }
     
     

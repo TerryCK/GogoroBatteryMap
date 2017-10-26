@@ -45,11 +45,7 @@ extension AnnotationHandleable {
         }
     }
     
-    typealias StationName = String
-    
-    
-    
-    
+    typealias StationName = String    
     func getImage(with name: StationName?) -> UIImage {
         
         let convenientKeywords = ["HiLife", "全聯", "7-ELEVEN", "全家"]
@@ -70,7 +66,7 @@ extension AnnotationHandleable {
         return isConvenientStore ? #imageLiteral(resourceName: "convenientStore") : isMall ? #imageLiteral(resourceName: "mallStore") : isGasStation ? #imageLiteral(resourceName: "gasStation") : isGoStation ? #imageLiteral(resourceName: "goStore") : #imageLiteral(resourceName: "pinFull")
     }
     
-    private func getImage(with annotation: CustomPointAnnotation) -> UIImage {
+     func getImage(with annotation: CustomPointAnnotation) -> UIImage {
         return !annotation.isOpening ? #imageLiteral(resourceName: "building") : getImage(with: annotation.title)
     }
     

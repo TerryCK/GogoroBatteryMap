@@ -141,6 +141,14 @@ final class StationsViewCell: BaseCollectionViewCell {
         return label
     }()
     
+     private let thanksLabel: UILabel = {
+        let label = UILabel()
+        label.text = "感謝您的贊助，您的贊助將會鼓勵作者開發更多的App，我們非常歡迎有趣的點子來使您生活更美好"
+        label.font = UIFont.boldSystemFont(ofSize: 11)
+        label.numberOfLines = 0
+        return label
+    }()
+    
     private lazy var dataUpdateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
@@ -247,7 +255,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
-    private lazy var buttonsStackView: UIStackView = {     
+    private lazy var buttonsStackView: UIStackView = {
         var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView,  self.copyrightLabel]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
@@ -264,7 +272,9 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
-
+    func setupThanksLabel() {
+        buttonsStackView.insertArrangedSubview(thanksLabel, at: 0)
+    }
     
     deinit {
         print("station view cell deinitialize")

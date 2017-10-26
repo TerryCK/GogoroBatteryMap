@@ -18,16 +18,14 @@ protocol ManuDelegate: class {
 final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
     // MARK: - Properties
     let cellid = "cellid"
-    let appID = Keys.standard.appID
+    
     
     weak var delegate: ManuDelegate?
     
     var timer: Timer?
     
     var products = [SKProduct]() {
-        didSet {
-            collectionView?.reloadData()
-        }
+        didSet { collectionView?.reloadData()  }
     }
     // MARK: - ViewController life cycles
     override func loadView() {
@@ -68,6 +66,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         }
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.removeFromSuperview()
+            cell.setupThanksLabel()
         }
         
         return cell
@@ -136,7 +135,7 @@ extension MenuController {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
-        let url = head + appID + foot
+        let url = head + Keys.standard.appID + foot
         open(url: url)
     }
     
@@ -147,7 +146,7 @@ extension MenuController {
     
     @objc func shareThisApp() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Share"])
-        guard let name = NSURL(string: "https://itunes.apple.com/tw/app/id\(appID)?l=zh&mt=8") else { return }
+        guard let name = NSURL(string: "https://itunes.apple.com/tw/app/id\(Keys.standard.appID)?l=zh&mt=8") else { return }
         let activityVC = UIActivityViewController(activityItems: [name], applicationActivities: nil)
         if UIDevice.current.userInterfaceIdiom == .pad {
             activityVC.popoverPresentationController?.sourceView = self.view

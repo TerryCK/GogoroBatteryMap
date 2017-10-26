@@ -10,6 +10,12 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 <img src="http://img.shields.io/badge/License-MIT-green.svg?style=flat">
 <img src="https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat"></nobr>
 
+### Screen Shots
+-----------
+!["ScreenShots"](/Screenshot/GogoroMapV1.6.png)
+
+!["ScreenShots"](/Screenshot/demo2.gif)
+
 
 
 ### 主要特色
@@ -36,15 +42,8 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 11. 新增列表模式： 已打卡、附近、建置中 
 
-12. 支援iPhone X及iPad 的畫面
+12. 支援iPhone X的畫面
 
-### Screen Shots
------------
-!["ScreenShots"](/Screenshot/demo2.png)
-
-!["ScreenShots"](/Screenshot/demo2.gif)
-
-!["ScreenShots"](/Screenshot/iPhoneX.png)
 
 
 ### Requirement

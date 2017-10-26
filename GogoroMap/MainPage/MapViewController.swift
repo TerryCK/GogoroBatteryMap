@@ -27,8 +27,29 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     let segmentItems: [SegmentStatus] = [.map , .checkin, .nearby, .building]
     
     var listToDisplay = [CustomPointAnnotation]() {
-        didSet { collectionView.reloadData() }
+        didSet {
+            if !listToDisplay.isEmpty {
+                cellEmptyGuideView.isHidden = true
+               collectionView.reloadData()
+            } else { showupEmptyGuide() }
+        }
     }
+    
+    private func showupEmptyGuide() {
+        mapView.isHidden = true
+        collectionView.isHidden = true
+        cellEmptyGuideView.isHidden = false
+    }
+    
+    let cellEmptyGuideView: UITextView = {
+       let myTextView = UITextView()
+        myTextView.text = "目前尚未有符合資料可顯示..."
+        myTextView.font = UIFont.systemFont(ofSize: 32)
+        myTextView.textAlignment = .center
+        myTextView.isEditable = false
+        myTextView.isHidden = true
+        return myTextView
+    }()
     
     private var selectedAnnotationView: MKAnnotationView? = MKAnnotationView()
     private var detailView = DetailAnnotationView()
@@ -97,11 +118,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
 //     MARK: - View Creators
-//     zoomLevel will be enabled with Min value is 2 (max zoom out), max is 20 (max zoom in).
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
-        myManager.zoomLevel = 14
-        myManager.minimumCountForCluster = 2
+        myManager.maxZoomLevel = 17
+        myManager.minCountForClustering = 2
         return myManager
     }()
     
@@ -227,7 +247,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     @objc func performMenu() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
-        if let sideManuController = SideMenuManager.menuLeftNavigationController {
+        if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
             self.setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
         }
@@ -239,9 +259,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let menuController = MenuController(collectionViewLayout: layout)
         menuController.delegate = self
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-        SideMenuManager.menuLeftNavigationController?.leftSide = true
-        SideMenuManager.menuLeftNavigationController = menuLeftNavigationController
-        SideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
+        let sideManuManager = SideMenuManager.default
+        sideManuManager.menuLeftNavigationController?.leftSide = true
+        sideManuManager.menuLeftNavigationController = menuLeftNavigationController
+        sideManuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
     
@@ -249,14 +270,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     private func setSideMenuDefalts() {
         let displayFactor: CGFloat = 0.80
-        
-        SideMenuManager.menuFadeStatusBar = true
-        SideMenuManager.menuShadowOpacity = 0.59
-        SideMenuManager.menuWidth = view.frame.width * displayFactor
-        SideMenuManager.menuAnimationTransformScaleFactor = 0.95
-        SideMenuManager.menuAnimationFadeStrength = 0.40
-        SideMenuManager.menuBlurEffectStyle = nil
-        SideMenuManager.menuPresentMode = .viewSlideInOut
+        let sideMenuManager = SideMenuManager.default
+        sideMenuManager.menuFadeStatusBar = true
+        sideMenuManager.menuShadowOpacity = 0.59
+        sideMenuManager.menuWidth = view.frame.width * displayFactor
+        sideMenuManager.menuAnimationTransformScaleFactor = 0.95
+        sideMenuManager.menuAnimationFadeStrength = 0.40
+        sideMenuManager.menuBlurEffectStyle = nil
+        sideMenuManager.menuPresentMode = .viewSlideInOut
     }
     
     private func setupView() {
@@ -304,6 +325,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     private func setupMainViews() {
         setupMainViews(with: mapView)
         setupMainViews(with: collectionView)
+        setupMainViews(with: cellEmptyGuideView)
     }
     
     private func setupSegmentControllerContainer() {
@@ -311,12 +333,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         view.addSubview(segmentControllerContainer)
         
         var topPadding: CGFloat = 64
-        
-        
+    
         if UIDevice.isiPhoneX {
             let safeAreaTopPadding: CGFloat = 80
             topPadding = safeAreaTopPadding
-            
         }
         
         segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
@@ -345,8 +365,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         
         view.bringSubview(toFront: adContainerView)
-        
-        
     }
     
     private func setupBottomBackgroundView() {
@@ -355,9 +373,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
     }
-
-    
-    
 }
 
 // MARK: - CollectionView
@@ -378,7 +393,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
         cell.distanceLabel.text = "距離: \(item.getDistance(from: currentUserLocation).km) km"
         
         cell.backgroundColor = .clear
-        cell.alpha = 1
+        cell.alpha = 0.98
         return cell
     }
     
@@ -410,6 +425,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
         segmentedControl.selectedSegmentIndex = 0
         mapView.isHidden = false
         collectionView.isHidden = !mapView.isHidden
+        cellEmptyGuideView.isHidden = !mapView.isHidden
         self.locationArrowView.isEnabled = true
     }
     
@@ -442,7 +458,8 @@ extension MapViewController {
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter - 1
     }
 }
-//TODO: - Lists of function annotations
+
+//MARK: - Lists of function annotations
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = segmentItems[sender.selectedSegmentIndex]
@@ -451,34 +468,35 @@ extension MapViewController {
         collectionView.isHidden =  !mapView.isHidden
         self.setTrackModeNone()
         self.locationArrowView.isEnabled = false
+        var eventName: String = ""
         
         switch segmentStatus {
+          
+        case .map:
+            eventName = "Map mode"
+            changeToMapview()
             
         case .checkin:
-            Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                                   customAttributes: [Log.sharedName.mapButton: "Checkin list"])
-            
-            
+            eventName = "Checkin list"
             listToDisplay = annotations.filter { $0.checkinCounter > 0 }
                 .sortedByDistance(userPosition: currentUserLocation)
             
+        case .nearby:
+            eventName =  "Nearby list"
+            listToDisplay = annotations.sortedByDistance(userPosition: currentUserLocation)
+                .filter { $0.getDistance(from: currentUserLocation).km < 45 }
             
+        
         case .building:
-            Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                                   customAttributes: [Log.sharedName.mapButton: "Building list"])
+            eventName = "Building list"
             listToDisplay = annotations.filter { $0.title?.contains("建置中") ?? false }
                 .sortedByDistance(userPosition: currentUserLocation)
             
-        case .map:
-            Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                                   customAttributes: [Log.sharedName.mapButton: "Map mode"])
-            changeToMapview()
-        case .nearby:
-            Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                                   customAttributes: [Log.sharedName.mapButton: "Nearby list"])
-            listToDisplay = annotations.sortedByDistance(userPosition: currentUserLocation)
-                .filter { $0.getDistance(from: currentUserLocation).km < 45 }
         }
+        
+        
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
+                               customAttributes: [Log.sharedName.mapButton: eventName])
     }
 }
 //MARK: - Present annotationView and Navigatorable
@@ -540,7 +558,6 @@ extension MapViewController: Navigatorable {
         self.selectedAnnotationView = nil
         
 //        MARK:  feature fo cluster
-        
         if let clusterAnnotation = annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
