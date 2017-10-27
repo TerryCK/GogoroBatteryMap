@@ -491,7 +491,6 @@ extension MapViewController {
             eventName = "Building list"
             listToDisplay = annotations.filter { $0.title?.contains("建置中") ?? false }
                 .sortedByDistance(userPosition: currentUserLocation)
-            
         }
         
         
