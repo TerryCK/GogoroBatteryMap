@@ -12,15 +12,18 @@ import SideMenu
 import Crashlytics
 import GoogleMobileAds
 import Cluster
-
+import CloudKit
 
 
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
     
+    //     var cloudRecords: CKRecord = CKRecord(forKey: recordType)
     
-//         MARK: - Properties
+    
+    
+    //         MARK: - Properties
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     let myCellid = "myCellid"
@@ -30,7 +33,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         didSet {
             if !listToDisplay.isEmpty {
                 cellEmptyGuideView.isHidden = true
-               collectionView.reloadData()
+                collectionView.reloadData()
             } else { showupEmptyGuide() }
         }
     }
@@ -42,7 +45,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     let cellEmptyGuideView: UITextView = {
-       let myTextView = UITextView()
+        let myTextView = UITextView()
         myTextView.text = "目前尚未有符合資料可顯示..."
         myTextView.font = UIFont.systemFont(ofSize: 32)
         myTextView.textAlignment = .center
@@ -58,13 +61,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var indexOfAnnotations: Int = 0
     var selectedPin: CustomPointAnnotation?
     
-     var counterOfcheckin: Int = 0 {
+    var counterOfcheckin: Int = 0 {
         didSet {
             var lastCheckinString: String = "最近的打卡日："
             let isChecking = counterOfcheckin > 0
             
             switch isChecking {
-            
+                
             case true:
                 selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
                 annotations[indexOfAnnotations].checkinDay = Date.today
@@ -88,7 +91,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     
-//     MARK: - Handler of Annotations on map with store property obsever
+    //     MARK: - Handler of Annotations on map with store property obsever
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async { self.mapView.removeAnnotations(self.willRemovedAnnotations) }
@@ -108,7 +111,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         clusterManager.add(annotations)
     }
     
-//     MARK: - Computed Properties
+    //     MARK: - Computed Properties
     var userLocationCoordinate: CLLocationCoordinate2D! {
         get { return currentUserLocation.coordinate }
         set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
@@ -117,7 +120,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return annotations.getStationData
     }
     
-//     MARK: - View Creators
+    //     MARK: - View Creators
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
         myManager.maxZoomLevel = 17
@@ -152,7 +155,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return button
     }()
     
-    private lazy var menuBarButton: UIButton = {  
+    private lazy var menuBarButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
@@ -200,12 +203,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return myButton
     }()
     
-
-//     MARK: - ViewController life cycle
+    
+    //     MARK: - ViewController life cycle
     override func loadView() {
         super.loadView()
         setupView()
         setupSideMenu()
+        
     }
     
     
@@ -217,7 +221,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         initializeData()
         setupPurchase()
         
-        testFunc()
+        testFunction()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -236,7 +240,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     
-//     MARK: - Perfrom
+    //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
         let guidePageController = GuidePageViewController()
@@ -253,7 +257,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         }
     }
     
-//     MARK: - View setups
+    //     MARK: - View setups
     private func setupSideMenu() {
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
@@ -266,7 +270,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setSideMenuDefalts()
     }
     
-   
+    
     
     private func setSideMenuDefalts() {
         let displayFactor: CGFloat = 0.80
@@ -294,7 +298,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         navigationController?.navigationBar.barTintColor = UIColor.lightGreen
         navigationController?.isNavigationBarHidden = false
         navigationController?.view.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-
+        
     }
     
     private func setupNavigationItems() {
@@ -333,7 +337,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         view.addSubview(segmentControllerContainer)
         
         var topPadding: CGFloat = 64
-    
+        
         if UIDevice.isiPhoneX {
             let safeAreaTopPadding: CGFloat = 80
             topPadding = safeAreaTopPadding
@@ -357,7 +361,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         view.addSubview(self.adContainerView)
         
         var bottomAnchor = view.bottomAnchor
-//         MARK:  iPhone X autolayout
+        //         MARK:  iPhone X autolayout
         if #available(iOS 11.0, *),
             UIDevice.isiPhoneX {
             bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
@@ -418,9 +422,9 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
             mapViewMove(to: seletedItem)
         }
         
-            mapView.selectAnnotation(seletedItem, animated: true)
+        mapView.selectAnnotation(seletedItem, animated: true)
     }
-
+    
     private func changeToMapview() {
         segmentedControl.selectedSegmentIndex = 0
         mapView.isHidden = false
@@ -471,7 +475,7 @@ extension MapViewController {
         var eventName: String = ""
         
         switch segmentStatus {
-          
+            
         case .map:
             eventName = "Map mode"
             changeToMapview()
@@ -486,7 +490,7 @@ extension MapViewController {
             listToDisplay = annotations.sortedByDistance(userPosition: currentUserLocation)
                 .filter { $0.getDistance(from: currentUserLocation).km < 45 }
             
-        
+            
         case .building:
             eventName = "Building list"
             listToDisplay = annotations.filter { $0.title?.contains("建置中") ?? false }
@@ -556,7 +560,7 @@ extension MapViewController: Navigatorable {
         guard let annotation = view.annotation else { return }
         self.selectedAnnotationView = nil
         
-//        MARK:  feature fo cluster
+        //        MARK:  feature fo cluster
         if let clusterAnnotation = annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
@@ -652,7 +656,7 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-//        print("visibleMapRect : \(mapView.visibleMapRect)")
+        //        print("visibleMapRect : \(mapView.visibleMapRect)")
         clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
     }
 }
@@ -675,18 +679,19 @@ extension MapViewController {
         #if DEBUG
             
             view.addSubview(testButton)
-            testButton.anchor(top: segmentControllerContainer.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+            testButton.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         #endif
         
     }
     @objc func testFunc() {
         print("test")
-        DispatchQueue.global().async {
-            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
-            predicated.forEach { (station) in
-                print(station.title as Any)
-            }
-        }
+        queryDatabase()
+        //        DispatchQueue.global().async {
+        //            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
+        //            predicated.forEach { (station) in
+        //                print(station.title as Any)
+        //            }
+        //        }
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

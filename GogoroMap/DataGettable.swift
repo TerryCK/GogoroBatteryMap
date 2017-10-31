@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CloudKit
 
 typealias CompleteHandle = () -> Void
 typealias Results<T: CustomPointAnnotation> = (reservesArray: [T], discardArray: [T])
@@ -20,6 +21,10 @@ protocol DataGettable {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
     
     func saveToDatabase(with annotations: [CustomPointAnnotation])
+    
+//    func saveToCloud(with: [CustomPointAnnotation])
+    
+//    func queryDatabase()
     
 }
 
@@ -35,6 +40,7 @@ extension DataGettable where Self: MapViewController {
             self.getAnnotationFromRemote()
         }
     }
+   
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {
         guard
@@ -97,14 +103,61 @@ extension DataGettable where Self: MapViewController {
     }
     
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: annotations), forKey: Keys.standard.annotationsKey)
+        let archiveData = NSKeyedArchiver.archivedData(withRootObject: annotations)
+        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
         UserDefaults.standard.synchronize()
+        saveToCloud(with: archiveData)
         post()
     }
     
     
     private func post() {
         NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
+    }
+    
+    private var database: CKDatabase { return CKContainer.default().privateCloudDatabase }
+    
+    var recordType: String  { return "CustomPointAnnotations"}
+    func saveToCloud(with annotations: Data) {
+        
+        let cloudRecode = CKRecord(recordType: recordType)
+        cloudRecode.setValue(annotations, forKey: recordType)
+        database.save(cloudRecode) { (record, error) in
+            guard error == nil,  record != nil else {
+                print("cloud error: \(String(describing: error))")
+                return
+            }
+            print("saved record to cloud")
+        }
+    }
+    // TODO: - Merge query Database and get annotatiaons
+    func queryDatabase() {
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        database.perform(query, inZoneWith: nil) { (records, _) in
+            guard let records = records else { return }
+            let sorted = records.sorted(by: { (record1, record2) -> Bool in
+                record1.creationDate?.timeIntervalSince1970 ?? 0.0 > record2.creationDate?.timeIntervalSince1970 ?? 0.0
+            })
+            guard let lastedRecord = sorted.first  else { return }
+            
+            guard let annotationsData = lastedRecord as? Data,
+                    let annotations = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {  return  }
+            
+            let result: [CustomPointAnnotation] = annotations.flatMap {
+                $0.value(forKey: self.recordType) as? CustomPointAnnotation  }
+            print("annotations:", result)
+        }
+        
+    }
+    
+    func getAnnotationsFromCloud() -> [CustomPointAnnotation] {
+        guard
+            let annotationsData = UserDefaults.standard.value(forKey: recordType) as? Data,
+            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
+                return getAnnotationFromFile()
+        }
+        print("get data from database")
+        return annotationFromDatabase
     }
 }
 

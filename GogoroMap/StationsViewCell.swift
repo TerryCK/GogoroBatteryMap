@@ -279,10 +279,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     deinit {
         print("station view cell deinitialize")
     }
-    
-    
-    
-    
+
     override func setupViews() {
         backgroundColor = .clear
         layer.cornerRadius = 10

@@ -30,6 +30,7 @@
 		A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A872054E1F4287D600E9F65D /* GoogleService-Info.plist */; };
 		A8742B021F449741002BA66B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8742B011F449741002BA66B /* Keys.swift */; };
 		A878E08D1F4482D000EF8394 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = A878E08C1F4482D000EF8394 /* Keys.plist */; };
+		A8AD02461FA86FE600F04049 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8AD02451FA86FE600F04049 /* CloudKit.framework */; };
 		A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B19D601F44032A0082283F /* IAPAlartable.swift */; };
 		A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B19D621F4406410082283F /* IAPPurchasable.swift */; };
 		A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */; };
@@ -92,6 +93,8 @@
 		A872054E1F4287D600E9F65D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A8742B011F449741002BA66B /* Keys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		A878E08C1F4482D000EF8394 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		A8AD02441FA86FE300F04049 /* GogoroMap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GogoroMap.entitlements; sourceTree = "<group>"; };
+		A8AD02451FA86FE600F04049 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A8B19D601F44032A0082283F /* IAPAlartable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPAlartable.swift; sourceTree = "<group>"; };
 		A8B19D621F4406410082283F /* IAPPurchasable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPPurchasable.swift; sourceTree = "<group>"; };
 		A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
@@ -135,6 +138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8AD02461FA86FE600F04049 /* CloudKit.framework in Frameworks */,
 				8D05EC5C8092244F4772117D /* Pods_GogoroMap.framework in Frameworks */,
 				A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */,
 			);
@@ -157,6 +161,7 @@
 		8A9B908657EC79E54659031F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A8AD02451FA86FE600F04049 /* CloudKit.framework */,
 				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 				5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */,
 				2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */,
@@ -274,6 +279,7 @@
 		A8D368691F3B435D0015F5F9 /* GogoroMap */ = {
 			isa = PBXGroup;
 			children = (
+				A8AD02441FA86FE300F04049 /* GogoroMap.entitlements */,
 				A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */,
 				A8CE224C1F3EA0A600A4EF6D /* Protocols */,
 				A8EACCBD1F8EF640000B12BF /* Pages */,
@@ -423,6 +429,12 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -843,6 +855,7 @@
 			baseConfigurationReference = E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -861,6 +874,7 @@
 			baseConfigurationReference = A513DD0607F82D57A2BDD52A /* Pods-GogoroMap.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
