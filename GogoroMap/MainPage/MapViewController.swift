@@ -194,16 +194,31 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return view
     }()
     
-    private lazy var testButton: UIButton = {
+    private lazy var testButton1 : UIButton = {
         let myButton = UIButton(type: .system)
-        myButton.setTitle("testButton", for: .normal)
+        myButton.setTitle("save", for: .normal)
         myButton.backgroundColor = .lightBlue
         myButton.titleLabel?.textColor = .white
-        myButton.addTarget(self, action: #selector(testFunc), for: .touchUpInside)
+        myButton.addTarget(self, action: #selector(saveTest), for: .touchUpInside)
         return myButton
     }()
     
-    
+    private lazy var testButton2 : UIButton = {
+        let myButton = UIButton(type: .system)
+        myButton.setTitle("query", for: .normal)
+        myButton.backgroundColor = .lightBlue
+        myButton.titleLabel?.textColor = .white
+        myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
+        return myButton
+    }()
+    private lazy var testStack: UIStackView = {
+       let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
+        myStack.axis = .horizontal
+        myStack.distribution = .fillEqually
+        myStack.alignment = .center
+        myStack.spacing = 10
+        return myStack
+    }()
     //     MARK: - ViewController life cycle
     override func loadView() {
         super.loadView()
@@ -678,20 +693,35 @@ extension MapViewController {
         
         #if DEBUG
             
-            view.addSubview(testButton)
-            testButton.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+            view.addSubview(testStack)
+            testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         #endif
         
     }
-    @objc func testFunc() {
-        print("test")
-        queryDatabase()
+    @objc func saveTest() {
+        
+//        print("test for annotation save to cloud")
+//        saveToCloud(with: self.annotations)
+//        
+        modify(with: self.annotations)
+//        saveToCloud(with: self.annotations)
+//        queryDatabase()
         //        DispatchQueue.global().async {
         //            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
         //            predicated.forEach { (station) in
         //                print(station.title as Any)
         //            }
         //        }
+    }
+    
+    @objc func queryTest() {
+        
+        //        print("test for annotation save to cloud")
+        //        saveToCloud(with: self.annotations)
+        //
+        
+        query()
+       
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

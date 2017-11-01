@@ -23,6 +23,8 @@
 		A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D81F4ECB3700633FC7 /* Taipei.gpx */; };
 		A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D421F947BC200AA28C2 /* SegmentStatus.swift */; };
 		A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */; };
+		A845A1CB1FA95E3100620FF9 /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */; };
+		A845A1CD1FA993BF00620FF9 /* Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A845A1CC1FA993BF00620FF9 /* Parsable.swift */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
@@ -81,6 +83,8 @@
 		A84209D81F4ECB3700633FC7 /* Taipei.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Taipei.gpx; sourceTree = "<group>"; };
 		A8422D421F947BC200AA28C2 /* SegmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentStatus.swift; sourceTree = "<group>"; };
 		A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
+		A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudBackupable.swift; sourceTree = "<group>"; };
+		A845A1CC1FA993BF00620FF9 /* Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parsable.swift; sourceTree = "<group>"; };
 		A846017B1F74E46D0089A588 /* Selector+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Selector+Extension.swift"; sourceTree = "<group>"; };
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
@@ -249,6 +253,8 @@
 				A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
 				A840F34D1F472A4900D33741 /* DataGettable.swift */,
+				A845A1CC1FA993BF00620FF9 /* Parsable.swift */,
+				A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */,
 				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
 				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
 			);
@@ -651,6 +657,8 @@
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
 				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
+				A845A1CD1FA993BF00620FF9 /* Parsable.swift in Sources */,
+				A845A1CB1FA95E3100620FF9 /* CloudBackupable.swift in Sources */,
 				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
 				A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */,

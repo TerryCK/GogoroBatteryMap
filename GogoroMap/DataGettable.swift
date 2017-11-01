@@ -7,12 +7,13 @@
 //
 
 import Foundation
-import CloudKit
+
 
 typealias CompleteHandle = () -> Void
+
 typealias Results<T: CustomPointAnnotation> = (reservesArray: [T], discardArray: [T])
 
-protocol DataGettable {
+protocol DataGettable: CloudBackupable {
     
     func initializeData()
     
@@ -45,12 +46,14 @@ extension DataGettable where Self: MapViewController {
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {
         guard
             let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
-            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
+            let annotationFromDatabase =  annotationsData.toAnnoatations else {
                 return getAnnotationFromFile()
         }
         print("get data from database")
         return annotationFromDatabase
     }
+    
+    
     
     
     private func getAnnotationFromFile() -> [CustomPointAnnotation] {
@@ -101,77 +104,29 @@ extension DataGettable where Self: MapViewController {
             }
         }
     }
-    
+
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-        let archiveData = NSKeyedArchiver.archivedData(withRootObject: annotations)
+        let archiveData = annotations.toData
         UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
         UserDefaults.standard.synchronize()
-        saveToCloud(with: archiveData)
         post()
     }
-    
     
     private func post() {
         NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
     }
     
-    private var database: CKDatabase { return CKContainer.default().privateCloudDatabase }
     
-    var recordType: String  { return "CustomPointAnnotations"}
-    func saveToCloud(with annotations: Data) {
-        
-        let cloudRecode = CKRecord(recordType: recordType)
-        cloudRecode.setValue(annotations, forKey: recordType)
-        database.save(cloudRecode) { (record, error) in
-            guard error == nil,  record != nil else {
-                print("cloud error: \(String(describing: error))")
-                return
-            }
-            print("saved record to cloud")
-        }
-    }
-    // TODO: - Merge query Database and get annotatiaons
-    func queryDatabase() {
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
-        database.perform(query, inZoneWith: nil) { (records, _) in
-            guard let records = records else { return }
-            let sorted = records.sorted(by: { (record1, record2) -> Bool in
-                record1.creationDate?.timeIntervalSince1970 ?? 0.0 > record2.creationDate?.timeIntervalSince1970 ?? 0.0
-            })
-            guard let lastedRecord = sorted.first  else { return }
-            
-            guard let annotationsData = lastedRecord as? Data,
-                    let annotations = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {  return  }
-            
-            let result: [CustomPointAnnotation] = annotations.flatMap {
-                $0.value(forKey: self.recordType) as? CustomPointAnnotation  }
-            print("annotations:", result)
-        }
-        
-    }
-    
-    func getAnnotationsFromCloud() -> [CustomPointAnnotation] {
-        guard
-            let annotationsData = UserDefaults.standard.value(forKey: recordType) as? Data,
-            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
-                return getAnnotationFromFile()
-        }
-        print("get data from database")
-        return annotationFromDatabase
+}
+//MARK: Parsed Data using model of CustomPointAnnotation
+
+
+extension Data {
+    var toAnnoatations: [CustomPointAnnotation]? {
+        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
     }
 }
 
-extension Data {
-    //MARK: Parsed Data using model of CustomPointAnnotation
-    var parsed: [CustomPointAnnotation]? {
-        guard
-            let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [String: Any],
-            let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else {
-                return nil
-        }
-        return jsonDic.map { Station(dictionary: $0) }.customPointAnnotations
-    }
-}
 
 
 /*
@@ -231,3 +186,4 @@ extension Array where Element: CustomPointAnnotation {
             }.count == count
     }
 }
+

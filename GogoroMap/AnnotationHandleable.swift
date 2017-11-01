@@ -10,6 +10,7 @@
 import MapKit
 import Foundation
 import CoreLocation
+import CloudKit
 
 protocol AnnotationHandleable {
     func getObjectArray(from stations: [Station], userLocation: CLLocation) -> [CustomPointAnnotation]
@@ -45,7 +46,9 @@ extension AnnotationHandleable {
         }
     }
     
-    typealias StationName = String    
+    
+    typealias StationName = String
+    
     func getImage(with name: StationName?) -> UIImage {
         
         let convenientKeywords = ["HiLife", "全聯", "7-ELEVEN", "全家"]
@@ -81,6 +84,13 @@ extension AnnotationHandleable {
     }
 }
 
-
+extension Collection where Element: CustomPointAnnotation {
+    var toRecordValue: CKRecordValue {
+        return toData as CKRecordValue
+    }
+    var toData: Data {
+        return NSKeyedArchiver.archivedData(withRootObject: self)
+    }
+}
 
 
