@@ -15,74 +15,100 @@ protocol CloudBackupable {
     
     var recordType: String { get }
     
-//    var predicated: String { get }
+    func uploadDataToCloud(with annotations: [CustomPointAnnotation])
     
-//    func accuntStatus()
-    
-//    func savaToCloud(with annotations: [CustomPointAnnotation])
-//
-//    func archive(with annotations: [CustomPointAnnotation]) -> Data
-//
-//    func recoverFromCloud() -> [CustomPointAnnotation]
-//
-//    func unarchive(with data: Data) -> [CustomPointAnnotation]
+    func getAnnoatationsFromCloud(completed: @escaping CloudCompleteHandler)
     
 }
 
-extension CloudBackupable  {
-   
-     var database: CKDatabase { return CKContainer.default().privateCloudDatabase }
+enum CloudStatus {
+    case create
+    case modify
+}
+
+extension Collection where Element: CustomPointAnnotation, Self: CloudBackupable {
+    func uploadToCloud(with annotations: [Element]) {
+        uploadDataToCloud(with: annotations)
+    }
+}
+
+extension CloudBackupable {
     
-     var recordType: String  { return "CustomPointAnnotations" }
+    var database: CKDatabase { return CKContainer.default().privateCloudDatabase }
     
-     var predicatedFormat: String { return "customPointAnnotations = %@" }
+    var recordType: String  { return "CustomPointAnnotations" }
     
     var recordKey: String { return "customPointAnnotations" }
     
-    //MARK: - add new record to cloud
-    func upadteToCloud(with annoatations: [CustomPointAnnotation]) {
-        var getTheRecordKey: String = ""
-        
-    }
+    typealias CloudHandler = (CloudStatus) -> Void
     
-    func saveToCloud(with annotations: [CustomPointAnnotation]) {
+    
+    func createdToCloud(with annotations: [CustomPointAnnotation]) {
+        
         print("saving data to cloud")
         let cloudRecode = CKRecord(recordType: recordType)
         let cloudObject = annotations.toRecordValue
-        
         cloudRecode.setObject(cloudObject, forKey: recordKey)
-
+        
         database.save(cloudRecode) { (record, error) in
-            guard error == nil,  record != nil else {
+            guard error == nil, record != nil else {
                 print("cloud error: \(String(describing: error))")
                 return
             }
-            
             print("saved record to cloud")
         }
     }
     
-   
     
-    func query(with keywords: String = "customPointAnnotations")  {
-
-        print("quering")
-
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
-        let operation = CKQueryOperation(query: query)
-        operation.recordFetchedBlock = { (record: CKRecord?) in
-            guard let record = record else { return }
+    
+    func uploadDataToCloud(with annotations: [CustomPointAnnotation]) {
+        
+        
+        checkTheCloudFileExist {  (cloudStatus) in
             
-            print(record.recordID.recordName)
-            
-            if let rawData = record.value(forKey: self.recordKey) as? Data
-            {
+            switch cloudStatus {
                 
-                print(type(of: rawData), rawData.toAnnoatations?.count)
+            case .create:
+                self.createdToCloud(with: annotations)
+                
+            case .modify:
+                self.modify(with: annotations)
             }
             
-            //TODO: -
         }
+        
+    }
+    
+    func checkTheCloudFileExist(completed: @escaping CloudHandler) {
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        database.perform(query, inZoneWith: nil) { (records, error) in
+            guard error == nil, let records = records else {
+                print("query error", error ?? "error")
+                return
+            }
+            
+            let cloudStatus: CloudStatus = records.isEmpty ? .create : .modify
+            
+            completed(cloudStatus)
+        }
+    }
+    typealias CloudCompleteHandler = ([CustomPointAnnotation]) -> Void
+    
+    func getAnnoatationsFromCloud(completed: @escaping CloudCompleteHandler) {
+        
+        print("quering")
+        
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        
+        let operation = CKQueryOperation(query: query)
+        
+        operation.recordFetchedBlock = { (record: CKRecord?) in
+            
+            guard let rawData = record?.value(forKey: self.recordKey) as? Data,
+                let annoatations = rawData.toAnnoatations else { return }
+            completed(annoatations)
+        }
+        
         operation.queryCompletionBlock = { (cursor, error) in
             guard error == nil else {
                 print(error?.localizedDescription ?? "Error")
@@ -92,19 +118,17 @@ extension CloudBackupable  {
             //TODO: - end todo
         }
         
-    database.add(operation)
+        database.add(operation)
     }
     
     func modify(with annotations: [CustomPointAnnotation]) {
-
-        print("modify Annoataions")
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         
-        
-        let operation = CKQueryOperation(query: query)
-        
-        operation.recordFetchedBlock = { (record : CKRecord?) in
-            guard let record = record else { return }
+        func modifyBlock(record : CKRecord?) -> Void {
+            print("record")
+            guard let record = record else {
+                print("can't get record")
+                return
+            }
             
             record[self.recordKey] = annotations.toRecordValue
             
@@ -113,14 +137,20 @@ extension CloudBackupable  {
             
             modifyOperation.perRecordCompletionBlock = { (record, error) in
                 if error == nil {
-                    print("資料修改完成")
+                    print("data succeed modified")
                 } else {
-                    print("資料修改失敗: \(String(describing: error))")
+                    print("data modified fallure: \(String(describing: error))")
                 }
             }
             
             self.database.add(modifyOperation)
         }
+        
+        
+        print("modify Annoataions")
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        let operation = CKQueryOperation(query: query)
+        operation.recordFetchedBlock = modifyBlock
         operation.queryCompletionBlock = { (cursor, error) in
             guard error == nil else {
                 print(error?.localizedDescription ?? "Error")
@@ -136,35 +166,35 @@ extension CloudBackupable  {
     
     
     
-    // TODO: - Merge query Database and get annotatiaons
-    func queryDatabase() {
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
-        database.perform(query, inZoneWith: nil) { (records, _) in
-            guard let records = records else { return }
-            let sorted = records.sorted(by: { (record1, record2) -> Bool in
-                record1.creationDate?.timeIntervalSince1970 ?? 0.0 > record2.creationDate?.timeIntervalSince1970 ?? 0.0
-            })
-            guard let lastedRecord = sorted.first  else { return }
-            
-            guard let annotationsData = lastedRecord as? Data,
-                let annotations = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {  return  }
-            
-            let result: [CustomPointAnnotation] = annotations.flatMap {
-                $0.value(forKey: self.recordType) as? CustomPointAnnotation  }
-            print("annotations:", result)
-        }
-        
-    }
-    
-//    func getAnnotationsFromCloud() -> [CustomPointAnnotation] {
-//        guard
-//            let annotationsData = UserDefaults.standard.value(forKey: recordType) as? Data,
-//            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
-//                return getAnnotationFromFile()
+//    // TODO: - Merge query Database and get annotatiaons
+//    func queryDatabase() {
+//        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+//        database.perform(query, inZoneWith: nil) { (records, _) in
+//            guard let records = records else { return }
+//            let sorted = records.sorted(by: { (record1, record2) -> Bool in
+//                record1.creationDate?.timeIntervalSince1970 ?? 0.0 > record2.creationDate?.timeIntervalSince1970 ?? 0.0
+//            })
+//            guard let lastedRecord = sorted.first else { return }
+//
+//            guard let annotationsData = lastedRecord as? Data,
+//                let annotations = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {  return  }
+//
+//            let result: [CustomPointAnnotation] = annotations.flatMap {
+//                $0.value(forKey: self.recordType) as? CustomPointAnnotation  }
+//            print("annotations:", result)
 //        }
-//        print("get data from database")
-//        return annotationFromDatabase
+//
 //    }
+    
+    //    func getAnnotationsFromCloud() -> [CustomPointAnnotation] {
+    //        guard
+    //            let annotationsData = UserDefaults.standard.value(forKey: recordType) as? Data,
+    //            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
+    //                return getAnnotationFromFile()
+    //        }
+    //        print("get data from database")
+    //        return annotationFromDatabase
+    //    }
 }
 
 
@@ -173,9 +203,7 @@ extension CKContainer {
     
     static func accuntStatus() {
         self.default().accountStatus { (status, error) in
-            if let error = error {
-                print("iCloud accunt error:",error)
-            }
+            if let error = error { print("iCloud accunt error:",error) }
             switch status {
                 
             case .available:

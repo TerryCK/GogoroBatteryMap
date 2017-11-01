@@ -23,23 +23,30 @@ protocol DataGettable: CloudBackupable {
     
     func saveToDatabase(with annotations: [CustomPointAnnotation])
     
-//    func saveToCloud(with: [CustomPointAnnotation])
-    
-//    func queryDatabase()
-    
 }
 
 
+
 extension DataGettable where Self: MapViewController {    
+    
+    
+    
     func initializeData() {
-        DispatchQueue.global().async {
-            if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {
-                self.annotations = self.getAnnotationFromFile()
-            } else if self.mapView.annotations.isEmpty {
-                self.annotations = self.getAnnotationFromDatabase()
-            }
-            self.getAnnotationFromRemote()
+        
+        let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && annotations.isEmpty
+        
+            if isFirstTimeLaunch {
+                
+                annotations = getAnnotationFromFile()
+                
+            } else if mapView.annotations.isEmpty {
+                
+                annotations = getAnnotationFromDatabase()
+           
         }
+        
+                getAnnotationFromRemote()
+        
     }
    
     
@@ -115,43 +122,15 @@ extension DataGettable where Self: MapViewController {
     private func post() {
         NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
     }
-    
-    
 }
+
+
 //MARK: Parsed Data using model of CustomPointAnnotation
-
-
 extension Data {
     var toAnnoatations: [CustomPointAnnotation]? {
         return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
     }
 }
-
-
-
-/*
- 
-extension DataGettable {
-    //MARK: Check if number of annotation Views not correct.
-    
-    func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
-        // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
-        // Mark: check for avoid add annotation at same location which case too closeing to find
-        
-        let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
-        if differential > 1 {
-            let errorMessage = """
-            error: annotation view count out of control!!
-            annotations:", \(annotationsCounter), " mapView:", \(mapViewsAnnotationsCounter)
-            """
-            print(errorMessage)
-            
-        } else {
-            print(" ** annotation view count currect ** ")
-        }
-    }
-}
- */
 
 // TODO:- Refactor for functional programming
 // MARK : get unique element Dictionary and reserve origin elements data

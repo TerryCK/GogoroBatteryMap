@@ -19,8 +19,6 @@ typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
     
-    //     var cloudRecords: CKRecord = CKRecord(forKey: recordType)
-    
     
     
     //         MARK: - Properties
@@ -61,20 +59,25 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var indexOfAnnotations: Int = 0
     var selectedPin: CustomPointAnnotation?
     
+    enum CheckinStatus {
+        case checkin
+        case unCheckin
+    }
+    
     var counterOfcheckin: Int = 0 {
         didSet {
             var lastCheckinString: String = "最近的打卡日："
-            let isChecking = counterOfcheckin > 0
+            let checkinStatus: CheckinStatus = counterOfcheckin > 0 ? .checkin : .unCheckin
             
-            switch isChecking {
+            switch checkinStatus {
                 
-            case true:
+            case .checkin:
                 selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
                 annotations[indexOfAnnotations].checkinDay = Date.today
                 detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
                 lastCheckinString = "最近的打卡日：\(Date.today)"
                 
-            case false:
+            case .unCheckin:
                 selectedAnnotationView?.image = getImage(with: selectedPin?.title)
                 annotations[indexOfAnnotations].checkinDay = ""
                 detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
@@ -123,7 +126,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     //     MARK: - View Creators
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
-        myManager.maxZoomLevel = 17
+        myManager.maxZoomLevel = 14
         myManager.minCountForClustering = 2
         return myManager
     }()
@@ -211,6 +214,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
         return myButton
     }()
+    
     private lazy var testStack: UIStackView = {
        let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
         myStack.axis = .horizontal
@@ -219,6 +223,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         myStack.spacing = 10
         return myStack
     }()
+    
     //     MARK: - ViewController life cycle
     override func loadView() {
         super.loadView()
@@ -235,7 +240,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         authrizationStatus()
         initializeData()
         setupPurchase()
-        
+
         testFunction()
     }
     
@@ -702,8 +707,9 @@ extension MapViewController {
         
 //        print("test for annotation save to cloud")
 //        saveToCloud(with: self.annotations)
-//        
-        modify(with: self.annotations)
+//
+        uploadDataToCloud(with: self.annotations)
+        
 //        saveToCloud(with: self.annotations)
 //        queryDatabase()
         //        DispatchQueue.global().async {
@@ -715,13 +721,7 @@ extension MapViewController {
     }
     
     @objc func queryTest() {
-        
-        //        print("test for annotation save to cloud")
-        //        saveToCloud(with: self.annotations)
-        //
-        
-        query()
-       
+        getAnnoatationsFromCloud { self.annotations = $0 }
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

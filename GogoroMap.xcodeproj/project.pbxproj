@@ -25,6 +25,7 @@
 		A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */; };
 		A845A1CB1FA95E3100620FF9 /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */; };
 		A845A1CD1FA993BF00620FF9 /* Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A845A1CC1FA993BF00620FF9 /* Parsable.swift */; };
+		A845A1CF1FA9A8EE00620FF9 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A845A1CE1FA9A8EE00620FF9 /* gogoro.json */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
@@ -50,7 +51,6 @@
 		A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689E1F3B54C80015F5F9 /* Station.swift */; };
 		A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DB8CE71F4153F40062FA7A /* StoreKit.framework */; };
 		A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */; };
-		A8E68F8C1F46D3BA00160388 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A8E68F8B1F46D3BA00160388 /* gogoro.json */; };
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
 		A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */; };
@@ -85,6 +85,7 @@
 		A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudBackupable.swift; sourceTree = "<group>"; };
 		A845A1CC1FA993BF00620FF9 /* Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parsable.swift; sourceTree = "<group>"; };
+		A845A1CE1FA9A8EE00620FF9 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 		A846017B1F74E46D0089A588 /* Selector+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Selector+Extension.swift"; sourceTree = "<group>"; };
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
@@ -120,7 +121,6 @@
 		A8D3689E1F3B54C80015F5F9 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		A8DB8CE71F4153F40062FA7A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
-		A8E68F8B1F46D3BA00160388 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 				A872054E1F4287D600E9F65D /* GoogleService-Info.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
 				A878E08C1F4482D000EF8394 /* Keys.plist */,
-				A8E68F8B1F46D3BA00160388 /* gogoro.json */,
+				A845A1CE1FA9A8EE00620FF9 /* gogoro.json */,
 				A8C060181F3C9AD20054DE01 /* Media.xcassets */,
 				A80660171F4419000036BE3B /* Playground */,
 				A8C8BAC71F3C558500E9E18C /* Boards */,
@@ -478,13 +478,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8E68F8C1F46D3BA00160388 /* gogoro.json in Resources */,
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
 				A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */,
 				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
 				A819F0711F45E43200F472CA /* Main.storyboard in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A878E08D1F4482D000EF8394 /* Keys.plist in Resources */,
+				A845A1CF1FA9A8EE00620FF9 /* gogoro.json in Resources */,
 				A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
 			);
