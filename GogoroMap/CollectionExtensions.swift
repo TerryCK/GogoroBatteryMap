@@ -14,7 +14,7 @@ typealias StationDatas = (total: Int, available: Int, hasFlags: Int, hasCheckins
 extension Collection where Iterator.Element: CustomPointAnnotation {
     //MARK: - Get the station informations count of total,available,hasFlags,hasCheckins
     var getStationData: StationDatas {
-        return reduce((0,0,0,0))  { (result, element) -> StationDatas in
+        return reduce((0,0,0,0)) { (result, element) -> StationDatas in
             return (result.total + 1,
                     result.available + (element.isOpening ? 1 : 0) ,
                     result.hasFlags + (element.checkinCounter > 0 ? 1 : 0),
@@ -46,14 +46,12 @@ extension Collection where Iterator.Element == Station {
             
             return CustomPointAnnotation(title: title,
                                          subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
-                coordinate: location,
-                placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
-                image: image,
-                address: address,
-                isOpening: station.state == 1 ? true : false
+                                         coordinate: location,
+                                         placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
+                                         image: image,
+                                         address: address,
+                                         isOpening: station.state == 1 ? true : false
             )
         }
     }
-    
-
 }

@@ -1,5 +1,5 @@
 //
-//  TestViewController.swift
+//  MenuController
 //  GogoroMap
 //
 //  Created by 陳 冠禎 on 2017/8/11.
@@ -19,6 +19,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     // MARK: - Properties
     let cellid = "cellid"
     
+    var refreshButton: UIButton?
     
     weak var delegate: ManuDelegate?
     
@@ -68,7 +69,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             cell.buyStoreButtonStackView.removeFromSuperview()
             cell.setupThanksLabel()
         }
-        
+        self.refreshButton = cell.dataUpdateButton
         return cell
     }
     
@@ -89,7 +90,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         return 1
     }
     
- 
+    
     // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
         
@@ -119,9 +120,6 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         UIApplication.shared.openURL(checkURL)
     }
     
-   
-    
-    
 }
 
 // MARK: - Perform target's events
@@ -131,13 +129,23 @@ extension MenuController {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
         present(GuidePageViewController(), animated: true, completion: nil)
     }
-
+    
     @objc func recommand() {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
         let url = head + Keys.standard.appID + foot
         open(url: url)
+    }
+    
+    @objc func uploedToCloud() {
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "uploedToCloud"])
+        
+    }
+    
+    @objc func recoverFromCloud() {
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "recoverFromCloud"])
+        
     }
     
     @objc func moreApp() {
@@ -169,6 +177,7 @@ extension MenuController {
     
     @objc func attempUpdate() {
         navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
+        refreshButton?.rotate360Degrees()
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
     }
@@ -176,6 +185,7 @@ extension MenuController {
     @objc func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
         print("\n data reflash\n")
+        
         delegate?.getAnnotationFromRemote {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()

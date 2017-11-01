@@ -11,9 +11,9 @@ import CloudKit
 
 protocol CloudBackupable {
     
-    var database: CKDatabase { get }
+     var database: CKDatabase { get }
     
-    var recordType: String { get }
+     var recordType: String { get }
     
     func uploadDataToCloud(with annotations: [CustomPointAnnotation])
     
@@ -32,6 +32,8 @@ extension Collection where Element: CustomPointAnnotation, Self: CloudBackupable
     }
 }
 
+// TODO: - check user login status of cloud accunt, Notifications for all of devices,
+
 extension CloudBackupable {
     
     var database: CKDatabase { return CKContainer.default().privateCloudDatabase }
@@ -46,6 +48,7 @@ extension CloudBackupable {
     func createdToCloud(with annotations: [CustomPointAnnotation]) {
         
         print("saving data to cloud")
+        
         let cloudRecode = CKRecord(recordType: recordType)
         let cloudObject = annotations.toRecordValue
         cloudRecode.setObject(cloudObject, forKey: recordKey)
@@ -67,14 +70,12 @@ extension CloudBackupable {
         checkTheCloudFileExist {  (cloudStatus) in
             
             switch cloudStatus {
-                
             case .create:
                 self.createdToCloud(with: annotations)
                 
             case .modify:
                 self.modify(with: annotations)
             }
-            
         }
         
     }
@@ -92,6 +93,7 @@ extension CloudBackupable {
             completed(cloudStatus)
         }
     }
+    
     typealias CloudCompleteHandler = ([CustomPointAnnotation]) -> Void
     
     func getAnnoatationsFromCloud(completed: @escaping CloudCompleteHandler) {

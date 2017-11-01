@@ -42,8 +42,8 @@ final class DetailAnnotationView: UIView {
         
         textField.text = "地址：彰化縣鹿港鎮鹿東路52之192號"
         textField.isEditable = false
-        textField.textColor = .lightGray
-        textField.font = UIFont.systemFont(ofSize: 10)
+        textField.textColor = .gray
+        textField.font = UIFont.systemFont(ofSize: 12)
         return textField
     }()
     
