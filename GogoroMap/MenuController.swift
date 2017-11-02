@@ -75,7 +75,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
+        return CGSize(width: view.frame.width - 20 , height: view.frame.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -108,7 +108,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         //            collectionLayout.sectionInset = UIEdgeInsets(top: 50, left: 10, bottom: 10, right: 10)
         //        }
         
-        collectionView?.isScrollEnabled = false
+        collectionView?.isScrollEnabled = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)
     }
@@ -126,9 +126,17 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
 extension MenuController {
     
     @objc func performGuidePage() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
-        present(GuidePageViewController(), animated: true, completion: nil)
+        navigationController?.pushViewController(BackupViewController(), animated: true)
+//        let controller = UINavigationController(rootViewController: BackupViewController())
+//        present(controller, animated: true, completion: nil)
     }
+    
+    
+//    @objc func performGuidePage() {
+//        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
+//
+//        present(GuidePageViewController(), animated: true, completion: nil)
+//    }
     
     @objc func recommand() {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])

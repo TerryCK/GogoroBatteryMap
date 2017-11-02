@@ -240,9 +240,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         authrizationStatus()
         initializeData()
         setupPurchase()
-
+        
+        setupRating()
+        
         testFunction()
     }
+    
+   
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -252,6 +256,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
             self.seupAdContainerView()
         }
         
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -259,6 +264,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         myLocationManager.stopUpdatingLocation()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        menuBarButton.isHidden = false
+        locationArrowView.isHidden = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        menuBarButton.isHidden = true
+        locationArrowView.isHidden = true
+    }
     
     //     MARK: - Perfrom
     func performGuidePage() {
@@ -345,7 +361,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         menuBarButton.anchor(top: topAnchor, left: navigationControllerView.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
     }
     
-    
+    private func setupRating() {
+        if #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview()
+        }
+    }
     private func setupMainViews() {
         setupMainViews(with: mapView)
         setupMainViews(with: collectionView)

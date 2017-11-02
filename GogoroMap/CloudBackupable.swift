@@ -11,9 +11,11 @@ import CloudKit
 
 protocol CloudBackupable {
     
-     var database: CKDatabase { get }
+    var database: CKDatabase { get }
     
-     var recordType: String { get }
+    var recordType: String { get }
+    
+    var recordKey: String { get }
     
     func uploadDataToCloud(with annotations: [CustomPointAnnotation])
     
@@ -165,7 +167,7 @@ extension CloudBackupable {
         // 執行
         database.add(operation)
     }
-    
+   
     
     
 //    // TODO: - Merge query Database and get annotatiaons
@@ -206,18 +208,20 @@ extension CKContainer {
     static func accuntStatus() {
         self.default().accountStatus { (status, error) in
             if let error = error { print("iCloud accunt error:",error) }
+            
+            
             switch status {
                 
             case .available:
                 print("iCloud account is logged in")
+            
             case .restricted:
-                
                 print("iCloud settings are restricted by parental controls or a configuration profile")
+            
             case .noAccount:
-                
                 print("the user not logged in")
+            
             case .couldNotDetermine:
-                
                 print("please try again")
             }
         }

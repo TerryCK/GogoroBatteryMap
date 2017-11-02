@@ -10,9 +10,7 @@ import SwiftyStoreKit
 import Foundation
 import UIKit
 
-protocol IAPAlartable  {
-    func alertWithTitle(_ title: String, message: String) -> UIAlertController
-    func showAlert(_ alert: UIAlertController?)
+protocol IAPAlartable: Alartable  {
     func alertForProductRetrievalInfo(_ result: RetrieveResults) -> UIAlertController
     func alertForPurchase(_ result: PurchaseResult) -> UIAlertController?
     func alertForRestore(_ results: RestoreResults) -> UIAlertController
@@ -21,9 +19,12 @@ protocol IAPAlartable  {
     
 }
 
-extension IAPAlartable where Self: UIViewController {
-    
-    
+protocol Alartable {
+    func alertWithTitle(_ title: String, message: String) -> UIAlertController
+    func showAlert(_ alert: UIAlertController?)
+}
+extension Alartable where Self: UIViewController {
+   
     func alertWithTitle(_ title: String, message: String) -> UIAlertController {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -39,6 +40,26 @@ extension IAPAlartable where Self: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
+}
+
+extension IAPAlartable where Self: UIViewController {
+    
+    
+//    func alertWithTitle(_ title: String, message: String) -> UIAlertController {
+//
+//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+//        return alert
+//    }
+//
+//
+//    func showAlert(_ alert: UIAlertController?) {
+//        guard
+//            let alert = alert,
+//            self.presentedViewController == nil else { return }
+//
+//        self.present(alert, animated: true, completion: nil)
+//    }
     
     
     func alertForProductRetrievalInfo(_ result: RetrieveResults) -> UIAlertController {
@@ -102,17 +123,6 @@ extension IAPAlartable where Self: UIViewController {
             return alertWithTitle("Nothing to restore", message: "No previous purchases were found")
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     func alertForVerifyReceipt(_ result: VerifyReceiptResult) -> UIAlertController {
         
         switch result {
@@ -162,3 +172,9 @@ extension IAPAlartable where Self: UIViewController {
 }
 
 
+protocol CloudBackupAlartable: Alartable {
+    func checkoutCloudAccuntStatus() -> UIAlertController?
+}
+extension CloudBackupAlartable where Self: UIViewController {
+    
+}

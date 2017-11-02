@@ -28,6 +28,7 @@ protocol IAPPurchasable: IAPAlartable {
     func verifyPurchase<T: PurchaseItem>(_ purchase: T)
     func handlePurchaseNotification(_ notification: Notification)
     
+    
     func setupObserver()
 }
 

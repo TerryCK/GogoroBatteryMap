@@ -47,7 +47,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     var product: SKProduct? {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
-            if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
+            if let index = buttonsStackView.subviews.index(of: feedBackButtonStackView) {
                 restoreButton.addTarget(delegate, action: .restorePurchase(), for: .touchUpInside)
                 removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
                 buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
@@ -208,10 +208,17 @@ final class StationsViewCell: BaseCollectionViewCell {
         return button
     }()
     
+    private let cloudBackupButton: UIButton = {
+        let button = CustomButton(type: .system)
+        button.setTitle(NSLocalizedString("backup", comment: ""), for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        return button
+    }()
+    
     private lazy var updateStackView: UIStackView = {     
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
         stackView.axis = .horizontal
-        stackView.alignment = .center
+        stackView.alignment = .fill
         stackView.spacing = 10
         return stackView
         }()
@@ -256,7 +263,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var buttonsStackView: UIStackView = {
-        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView,  self.copyrightLabel]
+        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
@@ -265,10 +272,11 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var bottomLabelStackView: UIStackView = {     
-        let stackView = UIStackView(arrangedSubviews: [self.copyrightLabel ,self.authorLabel])
+        let stackView = UIStackView(arrangedSubviews: [self.authorLabel])
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
-        stackView.spacing = 10
+        stackView.alignment = .center
+        stackView.spacing = 5
         return stackView
         }()
     
@@ -296,12 +304,18 @@ final class StationsViewCell: BaseCollectionViewCell {
         separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
         
         
-        viewContainer.addSubview(authorLabel)
-        authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 10, rightPadding: 0, width: 0, height: 20)
-        authorLabel.centerXAnchor.constraint(equalTo: viewContainer.centerXAnchor).isActive = true
+        viewContainer.addSubview(bottomLabelStackView)
+        
+        
+        bottomLabelStackView.anchor(top: nil, left: viewContainer.leftAnchor, bottom: viewContainer.bottomAnchor, right: viewContainer.rightAnchor, topPadding: 0, leftPadding: 20, bottomPadding: 10, rightPadding: 10, width: 0, height: 20)
+        bottomLabelStackView.centerXAnchor.constraint(equalTo: viewContainer.centerXAnchor).isActive = true
+        
+        viewContainer.addSubview(copyrightLabel)
+        copyrightLabel.anchor(top: nil, left: viewContainer.leftAnchor, bottom: bottomLabelStackView.topAnchor, right: viewContainer.rightAnchor, topPadding: 0, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 50)
+        copyrightLabel.centerXAnchor.constraint(equalTo: viewContainer.centerXAnchor).isActive = true
         
         viewContainer.addSubview(buttonsStackView)
-        buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: authorLabel.topAnchor, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 0)
+        buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 160)
         
     }
 }

@@ -10,7 +10,7 @@
 "here" = "目前位置";
 "Battery Station" = "電池站";
 "Open hours:" = "營業時間：";
-"Updating" = "資料更新中" ;
+"Updating" = "站點資訊同步中" ;
 "Information" = "更多資訊";
 
 // MARK: Guide Controller
@@ -24,7 +24,7 @@
 "Rating" =  "App評分";
 "Share" = "分    享";
 "FeedBack" = "回饋建議";
-"Last:" = "資料更新日期：";
+"Last:" = "站點資料同步日期：";
 "refresh" = "更新";
 "Building:" = "建置中：";
 "Total:" = "總站點數量：";

@@ -74,7 +74,7 @@ extension UIView {
         }
     }
 }
-
+// MARK: - Animation of infinity rotate 360˚
 extension UIView {
     func rotate360Degrees(duration: CFTimeInterval = 1.0) {
         let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")

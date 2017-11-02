@@ -17,6 +17,9 @@
 		A819F0711F45E43200F472CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D3686E1F3B435E0015F5F9 /* Main.storyboard */; };
 		A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D368731F3B435E0015F5F9 /* LaunchScreen.storyboard */; };
 		A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */; };
+		A81E10A21FAB01BC00B892E2 /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81E10A11FAB01BC00B892E2 /* BackupViewController.swift */; };
+		A81E10A41FAB166700B892E2 /* BasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81E10A31FAB166700B892E2 /* BasicTableViewCell.swift */; };
+		A81E10A61FAB171E00B892E2 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81E10A51FAB171E00B892E2 /* CustomTableViewCell.swift */; };
 		A840F34E1F472A4900D33741 /* DataGettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A840F34D1F472A4900D33741 /* DataGettable.swift */; };
 		A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84209D41F4EBCE800633FC7 /* OberserName.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
@@ -77,6 +80,9 @@
 		A8187E8D1F453458008E1558 /* LocationManageable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManageable.swift; sourceTree = "<group>"; };
 		A8187E8F1F453E22008E1558 /* Mailsendable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mailsendable.swift; sourceTree = "<group>"; };
 		A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedClusterAnnotationView.swift; sourceTree = "<group>"; };
+		A81E10A11FAB01BC00B892E2 /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
+		A81E10A31FAB166700B892E2 /* BasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTableViewCell.swift; sourceTree = "<group>"; };
+		A81E10A51FAB171E00B892E2 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		A840F34D1F472A4900D33741 /* DataGettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataGettable.swift; sourceTree = "<group>"; };
 		A84209D41F4EBCE800633FC7 /* OberserName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OberserName.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
@@ -363,6 +369,9 @@
 				A8EACCB91F8EF555000B12BF /* MainPage */,
 				A8EACCBB1F8EF628000B12BF /* ManuPage */,
 				A8EACCBC1F8EF632000B12BF /* GuidePage */,
+				A81E10A11FAB01BC00B892E2 /* BackupViewController.swift */,
+				A81E10A31FAB166700B892E2 /* BasicTableViewCell.swift */,
+				A81E10A51FAB171E00B892E2 /* CustomTableViewCell.swift */,
 			);
 			name = Pages;
 			sourceTree = "<group>";
@@ -652,11 +661,13 @@
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
 				A840F34E1F472A4900D33741 /* DataGettable.swift in Sources */,
 				A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */,
+				A81E10A21FAB01BC00B892E2 /* BackupViewController.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
 				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
+				A81E10A61FAB171E00B892E2 /* CustomTableViewCell.swift in Sources */,
 				A845A1CD1FA993BF00620FF9 /* Parsable.swift in Sources */,
 				A845A1CB1FA95E3100620FF9 /* CloudBackupable.swift in Sources */,
 				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
@@ -670,6 +681,7 @@
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
+				A81E10A41FAB166700B892E2 /* BasicTableViewCell.swift in Sources */,
 				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
