@@ -429,6 +429,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
         return listToDisplay.count
     }
     
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: myCellid, for: indexPath) as? MyCollectionViewCell ?? MyCollectionViewCell()
@@ -444,6 +445,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
         cell.alpha = 0.98
         return cell
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 70)
@@ -467,6 +469,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
         }
         
         mapView.selectAnnotation(seletedItem, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: false)
     }
     
     private func changeToMapview() {

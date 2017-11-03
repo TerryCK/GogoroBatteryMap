@@ -12,38 +12,24 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     let cellID = "CellID"
     
-    let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份資料備份，可以在你的機器損壞或遺失時，從iCloud雲端找回舊有資料")
+    let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當你的機器損壞或遺失時，iCloud雲端回復舊有資料")
     let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的資料備份，回復舊有狀態")
+    let backupfooterView = FooterView(title: "footTitle", subltitle: "最後更新日")
+    
+    let myCell = CustomTableViewCell(type: .custom, title: "自動備份")
+    let myCell2 = CustomTableViewCell(type: .none, title: "開始備份", titleColor: .grassGreen)
+    let myCell3 = CustomTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
+    let myCell4 = CustomTableViewCell(type: .backupData, title: "2017-11-03, 12:00:01", subtitle: "備份 - 31 KB")
+    
+    lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [myCell,myCell2], footView: backupfooterView, elementType: .backup)
+    lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: [myCell4, myCell3], footView: nil, elementType: .restore)
     
     
-    let myCell = CustomTableViewCell(type: .custom)
-    let myCell2 = CustomTableViewCell(type: .none)
-    let myCell3 = CustomTableViewCell(type: .none)
-    
-    lazy var backupElement = BackupElement(titleView: backupHeadView, cell: [myCell,myCell2], footView: backupFooterView, elementType: .backup)
-    lazy var restoreElement = BackupElement(titleView: restoreHeadView, cell: [myCell3], footView: restoreFooterView, elementType: .restore)
     lazy var elements: [BackupElement] = [backupElement, restoreElement]
     
     
     let fullScreenSize = UIScreen.main.bounds.size
 
-    lazy var backupFooterView: UILabel = {
-        let myLabel = UILabel()
-        myLabel.textAlignment = .center
-        myLabel.textColor = .gray
-        myLabel.font = UIFont.systemFont(ofSize: 14)
-        myLabel.text = "最後一次備份時間是在 2017.11.2 00:06"
-        return myLabel
-    }()
-    
-    lazy var restoreFooterView: UILabel = {
-        let myLabel = UILabel()
-        myLabel.textAlignment = .center
-        myLabel.textColor = .gray
-        myLabel.font = UIFont.systemFont(ofSize: 14)
-        myLabel.text = "刪除雲端備份"
-        return myLabel
-    }()
         
     lazy var tableView: UITableView = {
         let frame = CGRect(x: 0, y: 20, width: fullScreenSize.width, height: fullScreenSize.height - 20)
@@ -57,21 +43,15 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return myTableView
     }()
     
-   
-    
-//    lazy var descriptions: [String] = [restoreDescription, backupDescription]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .grassGreen
+        
     }
-    
-    
-    
-    
     
     override func loadView() {
         super.loadView()
+        view.backgroundColor = .grassGreen
         setupNavigationTitle()
         setupTableView()
 
@@ -79,8 +59,6 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     private func setupTableView() {
         view.addSubview(tableView)
-        
-        
     }
     private func setupNavigationTitle() {
         self.navigationController?.navigationBar.tintColor = .white
@@ -88,8 +66,9 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return elements[section].cell?.count ?? 1
+        return elements[section].cells?.count ?? 1
     }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return elements.count
     }
@@ -104,27 +83,33 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CustomTableViewCell
 //        cell = elements[indexPath.section].cell?[indexPath.row]
         
-        return elements[indexPath.section].cell?[indexPath.row] ?? CustomTableViewCell(type: .none)
+        return elements[indexPath.section].cells?[indexPath.row] ?? CustomTableViewCell(type: .none)
         
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = elements[indexPath.section].cell?[indexPath.row] ?? CustomTableViewCell(type: .none)
+        let cell = elements[indexPath.section].cells?[indexPath.row] ?? CustomTableViewCell(type: .none)
         let backupType = elements[indexPath.section].elementType
         let cellType = cell.cellType
-        
+        let cellTitleColor = cell.titleLabel.textColor
         switch (cellType, backupType) {
         case (.custom, _):
             
             print("custom cell")
         case (.none, .backup):
-//            cell.selectionStyle = .gray
+
             print(elements[indexPath.section].elementType)
+            cell.titleLabel.textColor = .white
         case (.none, .restore):
-//            cell.selectionStyle = .gray
+            cell.titleLabel.textColor = .white
             print("doing restore")
+            
+        case (.backupData, _):
+            print("downLoad")
         }
+        
         tableView.deselectRow(at: indexPath, animated: true)
+        cell.titleLabel.textColor = cellTitleColor
     }
     
    
@@ -136,17 +121,18 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         let elementType = elements[section].elementType
+        
         switch elementType {
         case .backup:
             return 100
         case .restore:
-            return 70
+            return 100
         }
         
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 40
+        return 100
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return elements[section].footView
@@ -155,13 +141,24 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
 struct BackupElement {
     let titleView: HeadCellView?
-    let cell: [CustomTableViewCell]?
+    let cells: [CustomTableViewCell]?
     let footView: UIView?
     let elementType: BackupStatus
 }
+
 enum BackupStatus {
     case backup
     case restore
+}
+
+class FooterView: HeadCellView {
+    override lazy var titleLabel: UILabel = {
+        let myLabel = UILabel()
+        myLabel.text = "title Label"
+        myLabel.font = UIFont.systemFont(ofSize: 16)
+        myLabel.textColor = .gray
+        return myLabel
+    }()
 }
 
 class HeadCellView: UIView {
@@ -169,11 +166,6 @@ class HeadCellView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        
-        addSubview(titleLabel)
-        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
-        addSubview(subtitleLabel)
-        subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
     
     init(title:String?, subltitle:String?) {
@@ -204,7 +196,10 @@ class HeadCellView: UIView {
     }()
     
     func setupView() {
-        
+        addSubview(titleLabel)
+        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
+        addSubview(subtitleLabel)
+        subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
     
 }

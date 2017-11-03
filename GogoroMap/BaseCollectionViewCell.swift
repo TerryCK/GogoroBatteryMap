@@ -18,7 +18,6 @@ class BaseCollectionViewCell: UICollectionViewCell {
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = self.bounds
         blurEffectView.alpha = 0.85
-        
         self.addSubview(blurEffectView)
         
         let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)

@@ -25,15 +25,10 @@ class BasicTableViewCell: UITableViewCell {
         switch type {
         case .custom:
             selectionStyle = .none
-            self.cellType = .custom
-            
-            
-        case .none:
-            
-            self.cellType = .none
-            
+        default:
+            break
         }
-        
+        self.cellType = type
         setupViews()
         
     }
