@@ -35,6 +35,44 @@ extension Collection where Element: CustomPointAnnotation, Self: CloudBackupable
 }
 
 // TODO: - check user login status of cloud accunt, Notifications for all of devices,
+extension UserDefaults: CloudBackupable {
+      func saveDataToCloudFromDatabase() {
+        guard let data = value(forKey: Keys.standard.annotationsKey) as? Data
+            else { return }
+        data.createdToCloud()
+    }
+    func saveNowTime(with string: String) {
+        set(string, forKey: Keys.standard.nowDateKey)
+        UserDefaults.standard.synchronize()
+    }
+    func getLastBackupTime() -> String {
+        return string(forKey: Keys.standard.nowDateKey) ?? ""
+    }
+}
+
+extension Data: CloudBackupable {
+    
+    func createdToCloud() {
+        print("saving data to cloud")
+        let cloudRecode = CKRecord(recordType: recordType)
+        let cloudObject = self.toRecordValue
+        cloudRecode.setObject(cloudObject, forKey: recordKey)
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        database.save(cloudRecode) { (record, error) in
+            guard error == nil, record != nil else {
+                print("cloud error: \(String(describing: error))")
+                return
+            }
+            print("saved record to cloud")
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+        }
+        
+    }
+    
+    var toRecordValue: CKRecordValue {
+        return self as CKRecordValue
+    }
+}
 
 extension CloudBackupable {
     
@@ -46,22 +84,8 @@ extension CloudBackupable {
     
     typealias CloudHandler = (CloudStatus) -> Void
     
-    
     func createdToCloud(with annotations: [CustomPointAnnotation]) {
-        
-        print("saving data to cloud")
-        
-        let cloudRecode = CKRecord(recordType: recordType)
-        let cloudObject = annotations.toRecordValue
-        cloudRecode.setObject(cloudObject, forKey: recordKey)
-        
-        database.save(cloudRecode) { (record, error) in
-            guard error == nil, record != nil else {
-                print("cloud error: \(String(describing: error))")
-                return
-            }
-            print("saved record to cloud")
-        }
+        annotations.toData.createdToCloud()
     }
     
     
@@ -80,6 +104,11 @@ extension CloudBackupable {
             }
         }
         
+    }
+    
+    func query(completed: @escaping ([CKRecord]?, Error?) -> ()) {
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        database.perform(query, inZoneWith: nil, completionHandler: completed)
     }
     
     func checkTheCloudFileExist(completed: @escaping CloudHandler) {
@@ -134,7 +163,7 @@ extension CloudBackupable {
                 return
             }
             
-            record[self.recordKey] = annotations.toRecordValue
+            record[self.recordKey] = annotations.toData.toRecordValue
             
             let records = [record]
             let modifyOperation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)

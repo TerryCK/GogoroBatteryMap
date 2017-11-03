@@ -44,7 +44,6 @@ extension DataGettable where Self: MapViewController {
                 annotations = getAnnotationFromDatabase()
            
         }
-        
                 getAnnotationFromRemote()
         
     }
@@ -129,6 +128,16 @@ extension DataGettable where Self: MapViewController {
 extension Data {
     var toAnnoatations: [CustomPointAnnotation]? {
         return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+    }
+
+    
+    
+    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
+        let bcf = ByteCountFormatter()
+        bcf.allowedUnits = units
+        bcf.countStyle = .file
+        
+        return bcf.string(fromByteCount: Int64(count))
     }
 }
 

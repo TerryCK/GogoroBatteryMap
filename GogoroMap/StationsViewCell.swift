@@ -67,11 +67,9 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private lazy var lastUpdateDateLabel: UILabel = {
         let label = UILabel()
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        let dateString = formatter.string(from: date)
-        label.text = "\(NSLocalizedString("Last:", comment: "")) " + dateString
+        let today = Date.today
+        
+        label.text = "\(NSLocalizedString("Last:", comment: "")) " + today
         label.font = UIFont.boldSystemFont(ofSize: 11)
         return label
     }()

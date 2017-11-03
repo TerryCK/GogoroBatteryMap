@@ -43,6 +43,7 @@ final class CustomTableViewCell: BasicTableViewCell {
             titleLabel.textColor = titleColor
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             titleLeftAnchor = nil
+            
         case .backupData:
             setupRightView(with: cloudImageView)
             addSubview(subtitleLabel)
@@ -64,7 +65,7 @@ final class CustomTableViewCell: BasicTableViewCell {
     }
     var titleColor: UIColor = .white
     
-    init(type: CellType, title: String = "",subtitle: String? = "", titleColor: UIColor = .red) {
+    init(type: CellType, title: String = "",subtitle: String = "", titleColor: UIColor = .red) {
         
         super.init(type: type)
         self.titleColor = titleColor

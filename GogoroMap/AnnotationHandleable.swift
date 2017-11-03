@@ -85,8 +85,8 @@ extension AnnotationHandleable {
 }
 
 extension Collection where Element: CustomPointAnnotation {
-    var toRecordValue: CKRecordValue {
-        return toData as CKRecordValue
+    var  toRecordValue: CKRecordValue {
+        return toData.toRecordValue
     }
     var toData: Data {
         return NSKeyedArchiver.archivedData(withRootObject: self)

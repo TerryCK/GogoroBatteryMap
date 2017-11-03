@@ -111,13 +111,19 @@ extension UIView {
 }
 
 extension Date {
-    static let today: String = {
+   
+    static private func getTime(with formatterString: String) -> String {
         let date = Date()
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
+        formatter.dateFormat = formatterString
         let dateString = formatter.string(from: date)
         return dateString
-    } ()
+    }
+    
+    static var today: String  { return getTime(with: "yyyy.MM.dd") }
+    
+    static var now: String { return getTime(with: "yyyy.MM.dd HH:mm:ss") }
+  
 }
 
 
@@ -146,6 +152,13 @@ extension Double {
         result += hours > 0 ? "\(hours) 小時 " : ""
         result += "\(minutes + 1) 分鐘 "
         return result
+    }
+    
+    var toTimeString: String {
+        let timestampDate = Date(timeIntervalSince1970: self)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd HH:mm:ss"
+        return dateFormatter.string(from: timestampDate)
     }
 
 }
