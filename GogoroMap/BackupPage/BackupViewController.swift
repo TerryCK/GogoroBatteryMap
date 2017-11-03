@@ -12,22 +12,36 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     let cellID = "CellID"
     
-    let fullScreenSize = UIScreen.main.bounds.size
-    lazy var headView: MyUIView = {
-        let myView = MyUIView()
-        myView.titleLabel.text = "這是客製化的Title Label"
-        return myView
-    }()
-    lazy var backupElement = BackupElement(titleView: headView, cell: CustomTableViewCell(), footView: footLabel)
-    lazy var backupElement2 = BackupElement(titleView: MyUIView(), cell: CustomTableViewCell(), footView: footLabel)
-    lazy var elements: [BackupElement] = [backupElement2, backupElement]
+    let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份資料備份，可以在你的機器損壞或遺失時，從iCloud雲端找回舊有資料")
+    let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的資料備份，回復舊有狀態")
     
-    lazy var footLabel: UILabel = {
+    
+    let myCell = CustomTableViewCell(type: .custom)
+    let myCell2 = CustomTableViewCell(type: .none)
+    let myCell3 = CustomTableViewCell(type: .none)
+    
+    lazy var backupElement = BackupElement(titleView: backupHeadView, cell: [myCell,myCell2], footView: backupFooterView, elementType: .backup)
+    lazy var restoreElement = BackupElement(titleView: restoreHeadView, cell: [myCell3], footView: restoreFooterView, elementType: .restore)
+    lazy var elements: [BackupElement] = [backupElement, restoreElement]
+    
+    
+    let fullScreenSize = UIScreen.main.bounds.size
+
+    lazy var backupFooterView: UILabel = {
         let myLabel = UILabel()
         myLabel.textAlignment = .center
         myLabel.textColor = .gray
-        myLabel.font = UIFont.systemFont(ofSize: 18)
-        myLabel.text = "this is footer"
+        myLabel.font = UIFont.systemFont(ofSize: 14)
+        myLabel.text = "最後一次備份時間是在 2017.11.2 00:06"
+        return myLabel
+    }()
+    
+    lazy var restoreFooterView: UILabel = {
+        let myLabel = UILabel()
+        myLabel.textAlignment = .center
+        myLabel.textColor = .gray
+        myLabel.font = UIFont.systemFont(ofSize: 14)
+        myLabel.text = "刪除雲端備份"
         return myLabel
     }()
         
@@ -37,18 +51,15 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
         myTableView.register(CustomTableViewCell.self, forCellReuseIdentifier: cellID)
         myTableView.delegate = self
         myTableView.dataSource = self
-        myTableView.separatorStyle = .singleLine
         myTableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
         myTableView.allowsSelection = true
         myTableView.allowsMultipleSelection = false
         return myTableView
     }()
     
+   
     
-    let backupDescription = "hi here is the tableView title"
-    let restoreDescription = "nice to see you"
-    
-    lazy var descriptions: [String] = [restoreDescription, backupDescription]
+//    lazy var descriptions: [String] = [restoreDescription, backupDescription]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,8 +74,7 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.loadView()
         setupNavigationTitle()
         setupTableView()
-        
-        
+
     }
     
     private func setupTableView() {
@@ -78,7 +88,7 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return elements[section].cell?.count ?? 1
     }
     func numberOfSections(in tableView: UITableView) -> Int {
         return elements.count
@@ -89,21 +99,54 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CustomTableViewCell
+//        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CustomTableViewCell
+//        cell = elements[indexPath.section].cell?[indexPath.row]
         
-        return cell
+        return elements[indexPath.section].cell?[indexPath.row] ?? CustomTableViewCell(type: .none)
         
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return descriptions[section]
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = elements[indexPath.section].cell?[indexPath.row] ?? CustomTableViewCell(type: .none)
+        let backupType = elements[indexPath.section].elementType
+        let cellType = cell.cellType
+        
+        switch (cellType, backupType) {
+        case (.custom, _):
+            
+            print("custom cell")
+        case (.none, .backup):
+//            cell.selectionStyle = .gray
+            print(elements[indexPath.section].elementType)
+        case (.none, .restore):
+//            cell.selectionStyle = .gray
+            print("doing restore")
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+   
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return elements[section].titleView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 144
+        
+        let elementType = elements[section].elementType
+        switch elementType {
+        case .backup:
+            return 100
+        case .restore:
+            return 70
+        }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 40
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return elements[section].footView
@@ -111,13 +154,17 @@ class BackupViewController: UIViewController, UITableViewDelegate, UITableViewDa
 }
 
 struct BackupElement {
-    let titleView: MyUIView?
-    let cell: UITableViewCell?
+    let titleView: HeadCellView?
+    let cell: [CustomTableViewCell]?
     let footView: UIView?
+    let elementType: BackupStatus
+}
+enum BackupStatus {
+    case backup
+    case restore
 }
 
-
-class MyUIView: UIView {
+class HeadCellView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -127,6 +174,12 @@ class MyUIView: UIView {
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
         addSubview(subtitleLabel)
         subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+    }
+    
+    init(title:String?, subltitle:String?) {
+        self.init()
+        self.titleLabel.text = title ?? ""
+        self.subtitleLabel.text = subltitle ?? ""
     }
     
     required init?(coder aDecoder: NSCoder) {

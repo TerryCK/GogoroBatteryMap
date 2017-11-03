@@ -209,7 +209,7 @@ extension MenuController {
 extension MenuController: IAPPurchasable {
     
     fileprivate func setupPurchaseItem() {
-        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) { return }
+        if UserDefaults.hasBuyItems { return }
         setupObserver()
         getInfo(.removeAds) { (success, products) in
             if success, let products = products {

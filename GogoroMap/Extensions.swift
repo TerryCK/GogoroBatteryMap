@@ -88,7 +88,25 @@ extension UIView {
     func stopRotating(){
         self.layer.sublayers?.removeAll()
         //or
-        self.layer.removeAllAnimations()
+//        self.layer.removeAllAnimations()
+    }
+    
+    private func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
+        
+        let hiddenAnimation = CABasicAnimation(keyPath: "opacity")
+        hiddenAnimation.fromValue = hidden ? 0 : 1
+        hiddenAnimation.toValue = hidden ? 1 : 0
+        hiddenAnimation.duration = duration
+        self.layer.add(hiddenAnimation, forKey: nil)
+        isHidden = hidden
+    }
+    
+    func willHidden(duration: CFTimeInterval = 0.75) {
+        opacityAnimation(duration: duration, hidden: true)
+    }
+    
+    func willDisplay(duration: CFTimeInterval = 0.75){
+        opacityAnimation(duration: duration, hidden: false)
     }
 }
 
@@ -189,5 +207,11 @@ extension MKMapPoint {
         let offsetCenterY: Double = Double(UIScreen.main.bounds.height / 2) * factorOfPixelToMapPoint
         
         return MKMapPoint(x: x - offsetCenterX, y: y - offsetCenterY)
+    }
+}
+
+extension UserDefaults {
+    static var hasBuyItems: Bool {
+        return standard.bool(forKey: Keys.standard.hasPurchesdKey)
     }
 }

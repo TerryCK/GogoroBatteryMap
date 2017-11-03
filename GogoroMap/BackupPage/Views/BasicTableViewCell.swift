@@ -9,20 +9,38 @@
 import UIKit
 
 class BasicTableViewCell: UITableViewCell {
-
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
-    }
-    
-    func setupViews() {
         
     }
-  
+    
+    var cellType = CellType.none
+    
+    func setupViews() { }
+    
+    init(type: CellType) {
+        self.init()
+        
+        switch type {
+        case .custom:
+            selectionStyle = .none
+            self.cellType = .custom
+            
+            
+        case .none:
+            
+            self.cellType = .none
+            
+        }
+        
+        setupViews()
+        
+    }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     

@@ -240,9 +240,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         authrizationStatus()
         initializeData()
         setupPurchase()
-        
+        #if REALEASE
         setupRating()
-        
+            #endif
         testFunction()
     }
     
@@ -255,7 +255,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.seupAdContainerView()
         }
-        
+        menuBarButton.isHidden = false
+        locationArrowView.isHidden = false
         
     }
     
@@ -266,14 +267,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        menuBarButton.isHidden = false
-        locationArrowView.isHidden = false
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        
         menuBarButton.isHidden = true
         locationArrowView.isHidden = true
+        
     }
     
     //     MARK: - Perfrom
@@ -325,6 +328,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setupNavigationItems()
         setupSegmentControllerContainer()
         setupMainViews()
+        
     }
     
     private func setupNavigationTitle() {
