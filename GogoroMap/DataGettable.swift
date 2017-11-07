@@ -11,7 +11,7 @@ import Foundation
 
 typealias CompleteHandle = () -> Void
 
-typealias Results<T: CustomPointAnnotation> = (reservesArray: [T], discardArray: [T])
+typealias Results<T> = (reservesArray: [T], discardArray: [T]) where T: CustomPointAnnotation
 
 protocol DataGettable: CloudBackupable {
     
@@ -119,7 +119,7 @@ extension DataGettable where Self: MapViewController {
     }
     
     private func post() {
-        NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
+        NotificationCenter.default.post(name: .manuContent, object: nil)
     }
 }
 

@@ -13,9 +13,11 @@ import Crashlytics
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
     var  stationData: StationDatas { get }
+    
 }
 
 final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
+
     // MARK: - Properties
     let cellid = "cellid"
     
@@ -40,11 +42,11 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Menu Page")
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeAds, object: nil)
         print("menu controller deinitialize")
     }
     
@@ -126,9 +128,8 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
 extension MenuController {
     
     @objc func performGuidePage() {
-        navigationController?.pushViewController(BackupViewController(), animated: true)
-//        let controller = UINavigationController(rootViewController: BackupViewController())
-//        present(controller, animated: true, completion: nil)
+       let backupController = BackupViewController()
+        navigationController?.pushViewController(backupController, animated: true)
     }
     
     
@@ -226,12 +227,12 @@ extension MenuController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.removeAds,
+                                               name: .removeAds,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.manuContent,
+                                               name: .manuContent,
                                                object: nil)
         
     }

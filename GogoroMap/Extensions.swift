@@ -105,7 +105,7 @@ extension UIView {
         opacityAnimation(duration: duration, hidden: true)
     }
     
-    func willDisplay(duration: CFTimeInterval = 0.75){
+    func willDisplay(duration: CFTimeInterval = 0.75) {
         opacityAnimation(duration: duration, hidden: false)
     }
 }
@@ -157,7 +157,7 @@ extension Double {
     var toTimeString: String {
         let timestampDate = Date(timeIntervalSince1970: self)
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy.MM.dd   HH:mm:ss"
         return dateFormatter.string(from: timestampDate)
     }
 

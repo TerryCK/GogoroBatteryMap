@@ -163,6 +163,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(performMenu), for: .touchUpInside)
+        button.isHidden = true
         return button
     }()
     
@@ -216,7 +217,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }()
     
     private lazy var testStack: UIStackView = {
-       let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
+        let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
         myStack.axis = .horizontal
         myStack.distribution = .fillEqually
         myStack.alignment = .center
@@ -243,40 +244,33 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         #if REALEASE
         setupRating()
             #endif
-        testFunction()
+//        testFunction()
     }
     
    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Map Page")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.seupAdContainerView()
         }
-        menuBarButton.isHidden = false
-        locationArrowView.isHidden = false
+        menuBarButton.willDisplay()
+        locationArrowView.willDisplay()
         
     }
     
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         myLocationManager.stopUpdatingLocation()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        
         menuBarButton.isHidden = true
         locationArrowView.isHidden = true
-        
     }
     
     //     MARK: - Perfrom
@@ -287,9 +281,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         present(guidePageController, animated: true, completion: nil)
     }
     
+    
+    
     @objc func performMenu() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
+        Answers.log(event: .mapButton, customAttributes: "Perform Menu")
         if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
             self.setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
@@ -321,6 +316,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         sideMenuManager.menuAnimationFadeStrength = 0.40
         sideMenuManager.menuBlurEffectStyle = nil
         sideMenuManager.menuPresentMode = .viewSlideInOut
+        menuBarButton.isHidden = false
     }
     
     private func setupView() {
@@ -371,9 +367,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         }
     }
     private func setupMainViews() {
-        setupMainViews(with: mapView)
-        setupMainViews(with: collectionView)
-        setupMainViews(with: cellEmptyGuideView)
+        setupMainViews(with: mapView, collectionView, cellEmptyGuideView)
     }
     
     private func setupSegmentControllerContainer() {
@@ -394,14 +388,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
     }
     
-    private func setupMainViews(with myView: UIView) {
-        view.addSubview(myView)
-        myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+    private func setupMainViews(with myViews: UIView...) {
+        myViews.forEach { (myView) in
+            view.addSubview(myView)
+            myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        }
+        
     }
     
     private func seupAdContainerView() {
         
-        Answers.logContentView(withName: "Ad View", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Ad View")
         view.addSubview(self.adContainerView)
         
         var bottomAnchor = view.bottomAnchor
@@ -459,8 +456,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
+        Answers.log(event: .mapButton, customAttributes: "Pressd CellView")
         let seletedItem = listToDisplay[indexPath.item]
         
         changeToMapview()
@@ -481,8 +477,7 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     private func mapViewMove(to station: CustomPointAnnotation) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "mapViewMove"])
+        Answers.log(event: .mapButton, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
         let factor = 0.7
         let height: Double = 20000
@@ -497,15 +492,13 @@ extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionVie
 extension MapViewController {
     
     @objc func checkin() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Check in"])
+        Answers.log(event: .mapButton, customAttributes: "Check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter + 1
     }
     
     
     @objc func unCheckin() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Remove check in"])
+        Answers.log(event: .mapButton, customAttributes: "Remove check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter - 1
     }
 }
@@ -545,8 +538,7 @@ extension MapViewController {
         }
         
         
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: eventName])
+        Answers.log(event: .mapButton, customAttributes: eventName)
     }
 }
 //MARK: - Present annotationView and Navigatorable
@@ -602,8 +594,7 @@ extension MapViewController: Navigatorable {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Display annotation view"])
+        Answers.log(event: .mapButton, customAttributes: "Display annotation view")
         guard let annotation = view.annotation else { return }
         self.selectedAnnotationView = nil
         
@@ -654,15 +645,13 @@ extension MapViewController: Navigatorable {
     }
     
     @objc func navigating() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Navigate"])
+        Answers.log(event: .mapButton, customAttributes: "Navigate")
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
     
     @objc func locationArrowPressed() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Changing tracking mode"])
+        Answers.log(event: .mapButton, customAttributes: "Changing tracking mode")
         locationArrowTapped()
     }
 }
@@ -675,8 +664,19 @@ extension MapViewController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.removeAds,
+                                               name: .removeAds,
                                                object: nil)
+       
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDataupdate(_:)),
+                                               name: .dataUpdata,
+                                               object: nil)
+    }
+    
+    @objc func handleDataupdate(_ notification: Notification) {
+        
+        guard let data = notification.object as? Data,
+            let annotations = data.toAnnoatations else { return }
+        self.annotations = annotations
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
@@ -685,8 +685,8 @@ extension MapViewController: IAPPurchasable {
         guard
             let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else { return }
+        Answers.log(event: .purchaseEvent, customAttributes: "Removed Ad")
         
-        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Removed Ad"])
         adContainerView.removeFromSuperview()
         mapView.layoutIfNeeded()
     }
@@ -735,7 +735,7 @@ extension MapViewController {
 //        print("test for annotation save to cloud")
 //        saveToCloud(with: self.annotations)
 //
-        uploadDataToCloud(with: self.annotations)
+//        self.annotations.toData.backupToCloud(completeHandler: )
         
 //        saveToCloud(with: self.annotations)
 //        queryDatabase()
@@ -748,7 +748,7 @@ extension MapViewController {
     }
     
     @objc func queryTest() {
-        getAnnoatationsFromCloud { self.annotations = $0 }
+//        getAnnoatationsFromCloud { self.annotations = $0 }
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

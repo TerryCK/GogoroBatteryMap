@@ -9,9 +9,9 @@
 import UIKit
 
 enum CellType {
-    case custom
+    case switchButton
     case none
-    case backupData
+    case backupButton
 }
 
 final class CustomTableViewCell: BasicTableViewCell {
@@ -19,6 +19,7 @@ final class CustomTableViewCell: BasicTableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
+    
     private func setupView() {
         addSubview(titleLabel)
         
@@ -30,7 +31,7 @@ final class CustomTableViewCell: BasicTableViewCell {
         
         switch cellType {
             
-        case .custom:
+        case .switchButton:
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             setupRightView(with: switchButton)
             
@@ -44,7 +45,7 @@ final class CustomTableViewCell: BasicTableViewCell {
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             titleLeftAnchor = nil
             
-        case .backupData:
+        case .backupButton:
             setupRightView(with: cloudImageView)
             addSubview(subtitleLabel)
             

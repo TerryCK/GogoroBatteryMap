@@ -23,7 +23,7 @@ class BasicTableViewCell: UITableViewCell {
         self.init()
         
         switch type {
-        case .custom:
+        case .switchButton:
             selectionStyle = .none
         default:
             break

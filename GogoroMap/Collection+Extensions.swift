@@ -8,7 +8,9 @@
 
 
 import MapKit
+import CloudKit
 import Foundation
+
 typealias StationDatas = (total: Int, available: Int, hasFlags: Int, hasCheckins: Int)
 
 extension Collection where Iterator.Element: CustomPointAnnotation {
@@ -20,6 +22,12 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
                     result.hasFlags + (element.checkinCounter > 0 ? 1 : 0),
                     result.hasCheckins + element.checkinCounter
             )
+        }
+    }
+    
+    var totalCheckin: Int {
+        return self.reduce(0) {
+            return $0 + $1.checkinCounter
         }
     }
 }
@@ -46,12 +54,28 @@ extension Collection where Iterator.Element == Station {
             
             return CustomPointAnnotation(title: title,
                                          subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
-                                         coordinate: location,
-                                         placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
-                                         image: image,
-                                         address: address,
-                                         isOpening: station.state == 1 ? true : false
+                coordinate: location,
+                placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
+                image: image,
+                address: address,
+                isOpening: station.state == 1 ? true : false
             )
         }
     }
+}
+
+
+extension Collection where Element == BackupData {
+    var toCustomTableViewCell: [CustomTableViewCell] {
+        let upperLimit = 10
+        return self.enumerated().flatMap { (index, element) -> CustomTableViewCell? in
+                guard index < upperLimit , let data = element.data else { return nil }
+                
+                let subtitle = "         \(data.sizeString())      打卡次數：\(data.toAnnoatations?.totalCheckin ?? 0)"
+                return CustomTableViewCell(type: .backupButton,
+                                           title: " \(index + 1). \(element.timeInterval?.toTimeString ?? "" )",
+                                           subtitle: subtitle )
+        }
+    }
+    
 }

@@ -24,6 +24,8 @@ struct Keys {
     let nowDateKey = "dateKey"
     let manuContentObserverName = "manuContentObserverName"
     let removeAdsObserverName = "removeAdsObserverName"
+    let dataUpdata = "dataUpdata"
+    
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""

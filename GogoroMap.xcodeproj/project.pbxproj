@@ -34,6 +34,7 @@
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
 		A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869AA191F44150A0085133C /* IAPProducts.swift */; };
 		A8742B021F449741002BA66B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8742B011F449741002BA66B /* Keys.swift */; };
+		A8763C551FB1B0F30078F750 /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8763C541FB1B0F30078F750 /* Answer+Entension.swift */; };
 		A878E08D1F4482D000EF8394 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = A878E08C1F4482D000EF8394 /* Keys.plist */; };
 		A886886D1FAC18080081D9EA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A886886C1FAC18080081D9EA /* GoogleService-Info.plist */; };
 		A8AD02461FA86FE600F04049 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8AD02451FA86FE600F04049 /* CloudKit.framework */; };
@@ -53,7 +54,7 @@
 		A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689A1F3B44D70015F5F9 /* Extensions.swift */; };
 		A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689E1F3B54C80015F5F9 /* Station.swift */; };
 		A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DB8CE71F4153F40062FA7A /* StoreKit.framework */; };
-		A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */; };
+		A8E0A7A61F70B90E0013C4C9 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E0A7A51F70B90E0013C4C9 /* Collection+Extensions.swift */; };
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
 		A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */; };
@@ -102,6 +103,7 @@
 		A866F6531F48205B009459B3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A869AA191F44150A0085133C /* IAPProducts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPProducts.swift; sourceTree = "<group>"; };
 		A8742B011F449741002BA66B /* Keys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		A8763C541FB1B0F30078F750 /* Answer+Entension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Answer+Entension.swift"; sourceTree = "<group>"; };
 		A878E08C1F4482D000EF8394 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		A886886C1FAC18080081D9EA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A8AD02441FA86FE300F04049 /* GogoroMap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GogoroMap.entitlements; sourceTree = "<group>"; };
@@ -126,7 +128,7 @@
 		A8D3689A1F3B44D70015F5F9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A8D3689E1F3B54C80015F5F9 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		A8DB8CE71F4153F40062FA7A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
+		A8E0A7A51F70B90E0013C4C9 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
@@ -279,8 +281,9 @@
 				A840F34D1F472A4900D33741 /* DataGettable.swift */,
 				A845A1CC1FA993BF00620FF9 /* Parsable.swift */,
 				A845A1CA1FA95E3100620FF9 /* CloudBackupable.swift */,
-				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
+				A8E0A7A51F70B90E0013C4C9 /* Collection+Extensions.swift */,
 				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
+				A8763C541FB1B0F30078F750 /* Answer+Entension.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -672,6 +675,7 @@
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
 				A8742B021F449741002BA66B /* Keys.swift in Sources */,
 				A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */,
+				A8763C551FB1B0F30078F750 /* Answer+Entension.swift in Sources */,
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
@@ -692,7 +696,7 @@
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
-				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
+				A8E0A7A61F70B90E0013C4C9 /* Collection+Extensions.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
