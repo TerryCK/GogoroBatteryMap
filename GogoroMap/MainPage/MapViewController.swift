@@ -20,8 +20,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 //         MARK: - Properties
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
-    let myCellid = "myCellid"
-    let segmentItems: [SegmentStatus] = [.map , .checkin, .nearby, .building]
     
     var listToDisplay = [CustomPointAnnotation]() {
         didSet {
@@ -157,15 +155,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
-        button.addTarget(self, action: #selector(performMenu), for: .touchUpInside)
+        button.addTarget(self, action: .performMenu, for: .touchUpInside)
         return button
     }()
     
     
     private lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl()
-        segmentItems.enumerated().forEach {
-            sc.insertSegment(withTitle: $1.rawValue, at: $0, animated: false)
+        
+        SegmentStatus.items.forEach { sc.insertSegment(withTitle: $0.name,
+                                                       at: $0.rawValue,
+                                                             animated: false)
         }
         sc.selectedSegmentIndex = 0
         sc.tintColor = .white
@@ -464,71 +464,48 @@ extension MapViewController {
 //MARK: - Lists of function annotations
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
-        let segmentStatus = segmentItems[sender.selectedSegmentIndex]
+        let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
+        
         
         mapView.isHidden = !(segmentStatus == .map)
-        collectionView.isHidden =  !mapView.isHidden
+        collectionView.isHidden = !mapView.isHidden
         self.setTrackModeNone()
         self.locationArrowView.isEnabled = false
-        var eventName: String = ""
         
-        switch segmentStatus {
-          
-        case .map:
-            eventName = "Map mode"
+        if .map ~= segmentStatus {
             changeToMapview()
-            
-        case .checkin:
-            eventName = "Checkin list"
-            listToDisplay = annotations.filter { $0.checkinCounter > 0 }
-                .sortedByDistance(userPosition: currentUserLocation)
-            
-        case .nearby:
-            eventName =  "Nearby list"
-            listToDisplay = annotations.sortedByDistance(userPosition: currentUserLocation)
-                .filter { $0.getDistance(from: currentUserLocation).km < 45 }
-            
-        
-        case .building:
-            eventName = "Building list"
-            listToDisplay = annotations.filter { $0.title?.contains("建置中") ?? false }
-                .sortedByDistance(userPosition: currentUserLocation)
         }
         
+        segmentStatus.getAnnotationToDisplay(annotations: annotations, currentUserLocation: currentUserLocation).map { listToDisplay = $0 }
         
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: eventName])
     }
 }
+
 //MARK: - Present annotationView and Navigatorable
 extension MapViewController: Navigatorable {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        if let annotation = annotation as? ClusterAnnotation {
+        guard let clusterAnnotation = annotation as? ClusterAnnotation else {
+            return getOriginalMKAnnotationView(mapView, viewFor: annotation)
+        }
             let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             
             if let view = view as? BorderedClusterAnnotationView {
-                view.annotation = annotation
+                view.annotation = clusterAnnotation
                 view.configure(with: style)
-            }
-            else {
-//                let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
-                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
-
+            } else {
+                view = ClusterAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier, style: style)
             }
             return view
-            
-        } else {
-            return getOriginalMKAnnotationView(mapView, viewFor: annotation)
-        }
     }
     
     
     //MARK: - Original MKAnnotationView
     private func getOriginalMKAnnotationView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
         if annotation.isKind(of: MKUserLocation.self) { return nil }
         let identifier = "station"
         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
@@ -542,7 +519,7 @@ extension MapViewController: Navigatorable {
         }
         
         guard let customAnnotation = annotation as? CustomPointAnnotation else { return nil }
-        let detailView: DetailAnnotationView = DetailAnnotationView(with: customAnnotation)
+        let detailView = DetailAnnotationView(with: customAnnotation)
         
         detailView.goButton.addTarget(self, action: .navigating, for: .touchUpInside)
         detailView.checkinButton.addTarget(self, action: .checkin, for: .touchUpInside)
@@ -569,8 +546,7 @@ extension MapViewController: Navigatorable {
         
         self.selectedAnnotationView = view
         
-        guard
-            let customPointannotation = annotation as? CustomPointAnnotation,
+        guard let customPointannotation = annotation as? CustomPointAnnotation,
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
             let index = annotations.index(of: customPointannotation) else { return }
         
@@ -627,17 +603,17 @@ extension MapViewController: Navigatorable {
 extension MapViewController: IAPPurchasable {
     
     func setupObserver() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.removeAds,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePurchaseNotification(_:)),
+            name: NotificationName.shared.removeAds,
+            object: nil)
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")
         
-        guard
-            let productID = notification.object as? String,
+        guard let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else { return }
         
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Removed Ad"])
@@ -651,9 +627,14 @@ extension MapViewController: IAPPurchasable {
 extension MapViewController {
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         views.forEach { $0.alpha = 0 }
-        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
-            views.forEach { $0.alpha = 1 }
-        }, completion: nil)
+        UIView.animate(withDuration: 0.35,
+                       delay: 0,
+                       usingSpringWithDamping: 1,
+                       initialSpringVelocity: 0,
+                       options: [],
+                       animations: {
+                        views.forEach { $0.alpha = 1 } },
+                       completion: nil)
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

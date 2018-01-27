@@ -13,6 +13,7 @@ extension Selector {
     static let checkin              =  #selector(MapViewController.checkin)
     static let unCheckin            =  #selector(MapViewController.unCheckin)
     static let navigating           =  #selector(MapViewController.navigating)
+    static let performMenu          =  #selector(MapViewController.performMenu)
 }
 
 // MARK: - ManuViewController
