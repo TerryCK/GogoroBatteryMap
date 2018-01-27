@@ -18,12 +18,12 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     weak var delegate: StationsViewCellDelegate? {
         didSet {
-            guideButton.addTarget(delegate, action: .performGuidePage(), for: .touchUpInside)
-            feedBackButton.addTarget(delegate, action: .presentMail(), for: .touchUpInside)
-            recommandButton.addTarget(delegate, action: .recommand(), for: .touchUpInside)
-            shareButton.addTarget(delegate, action: .shareThisApp(), for: .touchUpInside)
-            moreAppsButton.addTarget(delegate, action: .moreApp(), for: .touchUpInside)
-            dataUpdateButton.addTarget(delegate, action: .attempUpdate(), for: .touchUpInside)
+            guideButton.addTarget(delegate, action: .performGuidePage, for: .touchUpInside)
+            feedBackButton.addTarget(delegate, action: .presentMail, for: .touchUpInside)
+            recommandButton.addTarget(delegate, action: .recommand, for: .touchUpInside)
+            shareButton.addTarget(delegate, action: .shareThisApp, for: .touchUpInside)
+            moreAppsButton.addTarget(delegate, action: .moreApp, for: .touchUpInside)
+            dataUpdateButton.addTarget(delegate, action: .attempUpdate, for: .touchUpInside)
         }
     }
     
@@ -48,7 +48,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
             if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
-                restoreButton.addTarget(delegate, action: .restorePurchase(), for: .touchUpInside)
+                restoreButton.addTarget(delegate, action: .restorePurchase, for: .touchUpInside)
                 removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
                 buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
                 layoutIfNeeded()

@@ -17,22 +17,23 @@ extension UIColor {
         return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
     
-    class var lightBlue: UIColor {
+    static var lightBlue: UIColor {
         return UIColor.rgb(red: 149, green: 204, blue: 244)
     }
     
-    class var lightGreen: UIColor {
+    static var lightGreen: UIColor {
         return UIColor.rgb(red: 45, green: 149, blue: 64)
     }
-    class var heavyBlue: UIColor {
+    
+    static var heavyBlue: UIColor {
         return UIColor.rgb(red: 17, green: 154, blue: 237)
     }
     
-    class var grassGreen: UIColor {
+    static var grassGreen: UIColor {
         return UIColor.rgb(red: 85 , green: 177, blue: 114)
     }
     
-    class var lightRed: UIColor {
+    static var lightRed: UIColor {
         return UIColor.rgb(red: 218 , green: 52, blue: 53)
     }
     

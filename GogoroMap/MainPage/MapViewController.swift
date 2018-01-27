@@ -13,12 +13,9 @@ import Crashlytics
 import GoogleMobileAds
 import Cluster
 
-
-
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
-    
     
 //         MARK: - Properties
     var currentUserLocation: CLLocation!
@@ -91,13 +88,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 //     MARK: - Handler of Annotations on map with store property obsever
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
-            DispatchQueue.main.async { self.mapView.removeAnnotations(self.willRemovedAnnotations) }
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.willRemovedAnnotations)
+            }
         }
     }
     
     var annotations = [CustomPointAnnotation]() {
         didSet {
-            DispatchQueue.main.async { self.clusterUpdating(with: oldValue) }
+            DispatchQueue.main.async {
+                self.clusterUpdating(with: oldValue)
+            }
             saveToDatabase(with: annotations)
         }
     }
@@ -178,7 +179,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let myCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         myCollectionView.delegate = self
         myCollectionView.dataSource = self
-        myCollectionView.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: myCellid)
+        myCollectionView.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
         myCollectionView.isHidden = true
         myCollectionView.backgroundColor = .clear
         myCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
@@ -377,13 +378,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 
 // MARK: - CollectionView
 extension MapViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listToDisplay.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: myCellid, for: indexPath) as? MyCollectionViewCell ?? MyCollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: MyCollectionViewCell.self), for: indexPath) as? MyCollectionViewCell ?? MyCollectionViewCell()
         
         let item = listToDisplay[indexPath.item]
         
@@ -464,7 +466,7 @@ extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = segmentItems[sender.selectedSegmentIndex]
         
-        mapView.isHidden = segmentStatus == .map ? false : true
+        mapView.isHidden = !(segmentStatus == .map)
         collectionView.isHidden =  !mapView.isHidden
         self.setTrackModeNone()
         self.locationArrowView.isEnabled = false
@@ -504,15 +506,18 @@ extension MapViewController: Navigatorable {
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         if let annotation = annotation as? ClusterAnnotation {
-            let type = ClusterAnnotationType.color(.grassGreen, radius: 36)
+            let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             
             if let view = view as? BorderedClusterAnnotationView {
                 view.annotation = annotation
-                view.configure(with: type)
-            } else {
-                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type, borderColor: .white)
+                view.configure(with: style)
+            }
+            else {
+//                let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
+                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
+
             }
             return view
             
@@ -539,9 +544,9 @@ extension MapViewController: Navigatorable {
         guard let customAnnotation = annotation as? CustomPointAnnotation else { return nil }
         let detailView: DetailAnnotationView = DetailAnnotationView(with: customAnnotation)
         
-        detailView.goButton.addTarget(self, action: .navigating(), for: .touchUpInside)
-        detailView.checkinButton.addTarget(self, action: .checkin(), for: .touchUpInside)
-        detailView.unCheckinButton.addTarget(self, action: .unCheckin(), for: .touchUpInside)
+        detailView.goButton.addTarget(self, action: .navigating, for: .touchUpInside)
+        detailView.checkinButton.addTarget(self, action: .checkin, for: .touchUpInside)
+        detailView.unCheckinButton.addTarget(self, action: .unCheckin, for: .touchUpInside)
         
         annotationView?.image = customAnnotation.checkinCounter > 0 ? #imageLiteral(resourceName: "checkin") : customAnnotation.image
         annotationView?.detailCalloutAccessoryView = detailView
@@ -683,9 +688,7 @@ extension MapViewController {
         print("test")
         DispatchQueue.global().async {
             let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
-            predicated.forEach { (station) in
-                print(station.title as Any)
-            }
+           
         }
     }
     
