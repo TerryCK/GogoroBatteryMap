@@ -29,10 +29,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     
-    var clusterSwitcher =  ClusterStatus.off {
+    var clusterSwitcher = ClusterStatus.on {
         didSet {
             clusterManager.maxZoomLevel = self.clusterSwitcher == .on ?
-                8 : 17
+                17 : 8
+            let annotations = self.annotations
+            self.annotations = annotations
         } 
     }
     
@@ -102,7 +104,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.willRemovedAnnotations)
+
+            self.mapView.removeAnnotations(self.willRemovedAnnotations)
             }
         }
     }

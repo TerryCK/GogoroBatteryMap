@@ -87,7 +87,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private lazy var clusterSwitcher: UISwitch = {
         let switcher = UISwitch()
-        switcher.isOn = false
+        switcher.isOn = true
         return switcher
     }()
     
@@ -270,6 +270,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         clusterIconImageView.anchor(top: myView.topAnchor, left: myView.leftAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 43, height: 43)
         clusterDescribingLabel.anchor(top: myView.topAnchor, left: clusterIconImageView.rightAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        
         clusterSwitcher.anchor(top: myView.topAnchor, left: nil, bottom: myView.bottomAnchor, right: myView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 25, width: 0, height: 0)
         
         return myView
