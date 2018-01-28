@@ -20,7 +20,7 @@ extension Navigatorable where Self: MapViewController {
     
     func go(to destination: CustomPointAnnotation) {
         let mapItem = MKMapItem(placemark: destination.placemark)
-        mapItem.name = "\(destination.title!)(Gogoro \(NSLocalizedString("Battery Station", comment: "")))"
+        mapItem.name = "\(destination.title!)(Gogoro \("Battery Station".localize()))"
         print("mapItem.name \(String(describing: mapItem.name))")
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }

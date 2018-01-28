@@ -13,12 +13,13 @@ import Crashlytics
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
     var  stationData: StationDatas { get }
+    var  clusterSwitcher: ClusterStatus { set get }
 }
 
-final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
+final class MenuController: UICollectionViewController, StationsViewCellDelegate {
+    
     // MARK: - Properties
     let cellid = "cellid"
-    
     
     weak var delegate: ManuDelegate?
     
@@ -73,22 +74,6 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-    
  
     // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
@@ -96,7 +81,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
-        navigationItem.title = NSLocalizedString("Information", comment: "")
+        navigationItem.title = "Information".localize()
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
         
@@ -118,10 +103,6 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             UIApplication.shared.canOpenURL(checkURL) else { return }
         UIApplication.shared.openURL(checkURL)
     }
-    
-   
-    
-    
 }
 
 // MARK: - Perform target's events
@@ -157,6 +138,10 @@ extension MenuController {
         self.present(activityVC, animated: true, completion: nil)
     }
     
+    @objc func clusterSwitching(sender: AnyObject) {
+        delegate?.clusterSwitcher.change()
+    }
+    
     @objc func restorePurchase() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Restore purchase"])
         restore()
@@ -179,12 +164,33 @@ extension MenuController {
         delegate?.getAnnotationFromRemote {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
-                self.navigationItem.title = NSLocalizedString("Information", comment: "")
+                self.navigationItem.title = "Information".localize()
                 self.timer = nil
             }
         }
     }
 }
+
+extension MenuController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+}
+
 
 // MARK: - in-App purchase process
 

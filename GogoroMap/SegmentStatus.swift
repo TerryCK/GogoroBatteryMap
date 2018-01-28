@@ -11,7 +11,7 @@ import Crashlytics
 import CoreLocation
 
 enum SegmentStatus: Int {
-    case map, building, nearby, checkin
+    case map, checkin, nearby, building
     
     static let items: [SegmentStatus] = [map , checkin, nearby, building]
     

@@ -24,6 +24,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             shareButton.addTarget(delegate, action: .shareThisApp, for: .touchUpInside)
             moreAppsButton.addTarget(delegate, action: .moreApp, for: .touchUpInside)
             dataUpdateButton.addTarget(delegate, action: .attempUpdate, for: .touchUpInside)
+            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .valueChanged)
         }
     }
     
@@ -84,6 +85,20 @@ final class StationsViewCell: BaseCollectionViewCell {
         return button
     }()
     
+    private lazy var clusterSwitcher: UISwitch = {
+        let switcher = UISwitch()
+        switcher.isOn = false
+        return switcher
+    }()
+    
+    private lazy var clusterDescribingLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        label.text = "Cluster".localize()
+        label.font = UIFont.systemFont(ofSize: 16)
+        return label
+    }()
+    
+    
     private lazy var authorLabel: UILabel = {     
         let label = UILabel()
         label.text = "Chen, Guan-Jhen 2017 Copyright"
@@ -112,10 +127,11 @@ final class StationsViewCell: BaseCollectionViewCell {
         return label
         }() 
     
-    private lazy var completedRatioLabel: UILabel = {     
+    private lazy var completedRatioLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
         label.text = NSLocalizedString("completed ratio", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
+        
         return label
         }()
     
@@ -135,7 +151,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private let copyrightLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("Data provided by Gogoro, image: CC0 Public Domain", comment: "")
+        label.text = "Data provided by Gogoro, image: CC0 Public Domain".localize()
         label.font = UIFont.boldSystemFont(ofSize: 11)
         label.numberOfLines = 0
         return label
@@ -232,6 +248,13 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
+    private lazy var clusterIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "cluster")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
      lazy var buyStoreButtonStackView: UIStackView = {     
         let stackView = UIStackView(arrangedSubviews:  [self.restoreButton, self.removeAdsButton])
         stackView.axis = .horizontal
@@ -240,6 +263,17 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
+    private lazy var clusterView: UIView = {
+       let myView = UIView()
+        
+        [clusterIconImageView, clusterDescribingLabel, clusterSwitcher].forEach(myView.addSubview)
+        
+        clusterIconImageView.anchor(top: myView.topAnchor, left: myView.leftAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 43, height: 43)
+        clusterDescribingLabel.anchor(top: myView.topAnchor, left: clusterIconImageView.rightAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        clusterSwitcher.anchor(top: myView.topAnchor, left: nil, bottom: myView.bottomAnchor, right: myView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 25, width: 0, height: 0)
+        
+        return myView
+    }()
     private lazy var operationStatusStack: UIStackView = {     
         let stackView = UIStackView(arrangedSubviews:  [self.availableLabel, self.buildingLabel])
         stackView.axis = .horizontal
@@ -249,14 +283,24 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var headStackView: UIStackView = {     
-        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.operationStatusStack])
+        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.operationStatusStack, self.clusterView])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
         }()
     
+//    private lazy var clusterStackView: UIStackView = {
+//        var subViews: [UIView] = [self.clusterIconImageView ,self.clusterDescribingLabel ,self.clusterSwitcher]
+//        let stackView = UIStackView(arrangedSubviews: subViews)
+//        stackView.distribution = .fillEqually
+//        stackView.axis = .horizontal
+//        stackView.spacing = 10
+//        return stackView
+//    }()
     private lazy var buttonsStackView: UIStackView = {
-        var subviews: [UIView] = [self.pushShareStackView, self.feedBackButtonStackView,  self.copyrightLabel]
+        var subviews: [UIView] = [self.pushShareStackView,
+                                  self.feedBackButtonStackView,
+                                  self.copyrightLabel]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
@@ -279,9 +323,6 @@ final class StationsViewCell: BaseCollectionViewCell {
     deinit {
         print("station view cell deinitialize")
     }
-    
-    
-    
     
     override func setupViews() {
         backgroundColor = .clear

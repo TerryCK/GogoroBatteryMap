@@ -27,7 +27,8 @@ protocol DataGettable {
 extension DataGettable where Self: MapViewController {    
     func initializeData() {
         DispatchQueue.global().async {
-            if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && self.annotations.isEmpty {
+            if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
+                self.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromFile()
             } else if self.mapView.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
@@ -66,24 +67,23 @@ extension DataGettable where Self: MapViewController {
         URLSession.shared.dataTask(with: url) { (data, _, err) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                if let completeHandle = completeHandle {
-                    completeHandle()
+                completeHandle.map {
+                    $0()
                 }
             }
             
-            if let err = err {
+            err.map {
                 dataFromDatabase()
-                print("Failed: ", err)
+                print("Failed: ", $0)
                 return
             }
+            
             
             guard let annotationFromRemote = data?.parsed,
                 annotationFromRemote.count > 50 else {
                     dataFromDatabase()
                     return
             }
-            
-            print("get data from romote")
             
             (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: annotationFromRemote)
 
@@ -109,44 +109,19 @@ extension DataGettable where Self: MapViewController {
 }
 
 extension Data {
-    //MARK: Parsed Data using model of CustomPointAnnotation
+    
     var parsed: [CustomPointAnnotation]? {
         guard
             let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [String: Any],
             let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else {
                 return nil
         }
-        return jsonDic.map { Station(dictionary: $0) }.customPointAnnotations
-    }
-}
-
-
-/*
- 
-extension DataGettable {
-    //MARK: Check if number of annotation Views not correct.
-    
-    func matchForAnnotationCorrect(annotationsCounter: Int, mapViewsAnnotationsCounter: Int) {
-        // Mark: mapView remaind nil when annotations removed, so -1 to offset it.
-        // Mark: check for avoid add annotation at same location which case too closeing to find
         
-        let differential = Swift.abs(annotationsCounter - mapViewsAnnotationsCounter)
-        if differential > 1 {
-            let errorMessage = """
-            error: annotation view count out of control!!
-            annotations:", \(annotationsCounter), " mapView:", \(mapViewsAnnotationsCounter)
-            """
-            print(errorMessage)
-            
-        } else {
-            print(" ** annotation view count currect ** ")
-        }
+        return jsonDic.map(Station.init).customPointAnnotations
+     
     }
 }
- */
 
-// TODO:- Refactor for functional programming
-// MARK : get unique element Dictionary and reserve origin elements data
 extension Array where Element: CustomPointAnnotation {
     
     private func getDictionary(with array: Array) -> Dictionary<String, Element> {
@@ -169,12 +144,5 @@ extension Array where Element: CustomPointAnnotation {
             return reserveTable.contains(element.key) ? (result.reservesArray + [element.value], result.discardArray) :
                 (result.reservesArray, result.discardArray + [element.value])
         }
-    }
-    
-    func areArrayEqual(otherArray: [Element]) -> Bool {
-        guard count == otherArray.count else { return false }
-        return zip(sorted { $0.title! > $1.title! }, otherArray.sorted { $0.title! > $1.title! }).enumerated().filter() {
-            return $1.0 == $1.1
-            }.count == count
     }
 }

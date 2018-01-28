@@ -28,7 +28,7 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
 extension Collection where Iterator.Element == Station {
     
     var customPointAnnotations: [CustomPointAnnotation] {
-        return self.map { (station) -> CustomPointAnnotation in
+        return map { (station) -> CustomPointAnnotation in
             let isEnglish = NSLocale.preferredLanguages[0] == "en"
             let latitude: CLLocationDegrees = station.latitude ?? 0.0
             let longitude: CLLocationDegrees = station.longitude ?? 0.0
@@ -45,12 +45,12 @@ extension Collection where Iterator.Element == Station {
             
             
             return CustomPointAnnotation(title: title,
-                                         subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
+                                         subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
                 coordinate: location,
                 placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                 image: image,
                 address: address,
-                isOpening: station.state == 1 ? true : false
+                isOpening: station.state == 1 
             )
         }
     }

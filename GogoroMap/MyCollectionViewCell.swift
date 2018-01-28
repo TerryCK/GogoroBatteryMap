@@ -14,7 +14,7 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
     
     lazy var titleLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
-        label.text = NSLocalizedString("Total:", comment: "")
+        label.text = "Total:".localize()
         label.font = UIFont.boldSystemFont(ofSize: 16)
         return label
     }()

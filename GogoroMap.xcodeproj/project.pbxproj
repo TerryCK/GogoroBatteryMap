@@ -27,6 +27,8 @@
 		A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
+		A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */; };
+		A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FBB201D7D530008665B /* String+Extension.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
 		A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869AA191F44150A0085133C /* IAPProducts.swift */; };
 		A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A872054E1F4287D600E9F65D /* GoogleService-Info.plist */; };
@@ -87,6 +89,8 @@
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
 		A84AC8021F46EB71004F5E3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapLabel.swift; sourceTree = "<group>"; };
+		A85E9FBB201D7D530008665B /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		A866F64E1F481F5B009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
 		A866F64F1F481F5C009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		A866F6511F481FA6009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -249,6 +253,7 @@
 				A840F34D1F472A4900D33741 /* DataGettable.swift */,
 				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
 				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
+				A85E9FBB201D7D530008665B /* String+Extension.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -302,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */,
+				A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */,
 				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
 				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
 				A80759671F4C04430031D576 /* CheckinButton.swift */,
@@ -627,6 +633,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
+				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
@@ -652,6 +659,7 @@
 				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
 				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
+				A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
 				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,

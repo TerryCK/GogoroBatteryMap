@@ -14,6 +14,7 @@ extension Selector {
     static let unCheckin            =  #selector(MapViewController.unCheckin)
     static let navigating           =  #selector(MapViewController.navigating)
     static let performMenu          =  #selector(MapViewController.performMenu)
+    static let segmentChange        =  #selector(MapViewController.segmentChange)
 }
 
 // MARK: - ManuViewController
@@ -25,5 +26,6 @@ extension Selector {
     static let moreApp              =  #selector(MenuController.moreApp)
     static let attempUpdate         =  #selector(MenuController.attempUpdate)
     static let restorePurchase      =  #selector(MenuController.restorePurchase)
+    static let clusterSwitching     =  #selector(MenuController.clusterSwitching)
 }
  

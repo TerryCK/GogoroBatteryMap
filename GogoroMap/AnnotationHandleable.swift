@@ -35,7 +35,7 @@ extension AnnotationHandleable {
             let title = isEnglish ? engName : twName
             
             return CustomPointAnnotation(title: title,
-                                         subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
+                                         subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
                                          coordinate: location,
                                          placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                                          image: getImage(with: station),
