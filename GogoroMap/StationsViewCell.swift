@@ -24,7 +24,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             shareButton.addTarget(delegate, action: .shareThisApp, for: .touchUpInside)
             moreAppsButton.addTarget(delegate, action: .moreApp, for: .touchUpInside)
             dataUpdateButton.addTarget(delegate, action: .attempUpdate, for: .touchUpInside)
-            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .valueChanged)
+            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .touchUpInside)
         }
     }
     
@@ -91,6 +91,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         return switcher
     }()
     
+
     private lazy var clusterDescribingLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
         label.text = "Cluster".localize()
@@ -103,6 +104,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         let label = UILabel()
         label.text = "Chen, Guan-Jhen 2017 Copyright"
         label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .gray
         return label
         }()
     
@@ -266,9 +268,11 @@ final class StationsViewCell: BaseCollectionViewCell {
     private lazy var clusterView: UIView = {
        let myView = UIView()
         
-        [clusterIconImageView, clusterDescribingLabel, clusterSwitcher].forEach(myView.addSubview)
+        [clusterIconImageView, clusterDescribingLabel,
+         clusterSwitcher].forEach(myView.addSubview)
         
         clusterIconImageView.anchor(top: myView.topAnchor, left: myView.leftAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 43, height: 43)
+        
         clusterDescribingLabel.anchor(top: myView.topAnchor, left: clusterIconImageView.rightAnchor, bottom: myView.bottomAnchor, right: nil, topPadding: 0, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
         clusterSwitcher.anchor(top: myView.topAnchor, left: nil, bottom: myView.bottomAnchor, right: myView.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 25, width: 0, height: 0)
@@ -283,7 +287,8 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
-    private lazy var headStackView: UIStackView = {     
+    private lazy var headStackView: UIStackView = {
+        
         let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.operationStatusStack, self.clusterView])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
@@ -335,7 +340,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 200)
         
         let separatorView = UIView()
-        separatorView.backgroundColor = .white
+        separatorView.backgroundColor = .gray
         
         viewContainer.addSubview(separatorView)
         separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
@@ -347,6 +352,8 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         viewContainer.addSubview(buttonsStackView)
         buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: authorLabel.topAnchor, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 0)
+      
+        [totleLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
         
     }
 }

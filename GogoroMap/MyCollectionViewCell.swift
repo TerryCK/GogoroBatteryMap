@@ -58,34 +58,34 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
         subStackView.anchor(top: titleLabel.bottomAnchor, left: imageView.rightAnchor, bottom: viewContainer.bottomAnchor, right: viewContainer.rightAnchor, topPadding: 5, leftPadding: 12, bottomPadding: 12, rightPadding: 6, width: 0, height: 20)
     }
     
-    override lazy var viewContainer: UIView = {
-        let containerView = UIView()
-        let blurEffect = UIBlurEffect(style: .extraLight)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.bounds
-        blurEffectView.alpha = 0.87
-        
-        self.addSubview(blurEffectView)
-        
-        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
-        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
-        
-        vibrancyEffectView.frame = self.bounds
-        blurEffectView.contentView.addSubview(vibrancyEffectView)
-        
-        let vibrancyEffectContentView = vibrancyEffectView.contentView
-        vibrancyEffectContentView.addSubview(containerView)
-        
-        var buttomAnchor = vibrancyEffectContentView.bottomAnchor
-        if #available(iOS 11.0, *), UIDevice.isiPhoneX {
-            let safeAreaBottom: NSLayoutYAxisAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
-            buttomAnchor = safeAreaBottom
-        }
-        
-        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: buttomAnchor, right:  vibrancyEffectContentView.rightAnchor)
-        
-        return containerView
-    }()
+//    override lazy var viewContainer: UIView = {
+//        let containerView = UIView()
+//        let blurEffect = UIBlurEffect(style: .extraLight)
+//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurEffectView.frame = self.bounds
+//        blurEffectView.alpha = 0.87
+//
+//        self.addSubview(blurEffectView)
+//
+//        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+//        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+//
+//        vibrancyEffectView.frame = self.bounds
+//        blurEffectView.contentView.addSubview(vibrancyEffectView)
+//
+//        let vibrancyEffectContentView = vibrancyEffectView.contentView
+//        vibrancyEffectContentView.addSubview(containerView)
+//
+//        var buttomAnchor = vibrancyEffectContentView.bottomAnchor
+//        if #available(iOS 11.0, *), UIDevice.isiPhoneX {
+//            let safeAreaBottom: NSLayoutYAxisAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
+//            buttomAnchor = safeAreaBottom
+//        }
+//
+//        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: buttomAnchor, right:  vibrancyEffectContentView.rightAnchor)
+//
+//        return containerView
+//    }()
 }
 
 

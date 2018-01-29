@@ -9,15 +9,22 @@ import UIKit
 
 
 class BaseCollectionViewCell: UICollectionViewCell {
-    
+    lazy var viewContainer: UIView = {
+        let view = UIView()
+        self.addSubview(view)
+        view.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        view.backgroundColor = .white
+       return view
+    }()
  
     
-    lazy var viewContainer: UIView = {
+    lazy var viewContainer2: UIView = {
         let containerView = UIView()
-        let blurEffect = UIBlurEffect(style: .extraLight)
+        
+        let blurEffect = UIBlurEffect(style: .dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = self.bounds
-        blurEffectView.alpha = 0.85
+        blurEffectView.alpha = 1
         
         self.addSubview(blurEffectView)
         
@@ -36,7 +43,11 @@ class BaseCollectionViewCell: UICollectionViewCell {
             buttomAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
         }
         
-        containerView.anchor(top: vibrancyEffectContentView.topAnchor, left: vibrancyEffectContentView.leftAnchor, bottom: buttomAnchor, right:  vibrancyEffectContentView.rightAnchor)
+        containerView.anchor(top: vibrancyEffectContentView.topAnchor,
+                             left: vibrancyEffectContentView.leftAnchor,
+                             bottom: buttomAnchor,
+                             right:  vibrancyEffectContentView.rightAnchor)
+        
         
         return containerView
        
