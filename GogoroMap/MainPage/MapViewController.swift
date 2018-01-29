@@ -28,13 +28,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 //         MARK: - Properties
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
-    
+    var visibleMapRect: MKMapRect?
     var clusterSwitcher = ClusterStatus.on {
         didSet {
             clusterManager.maxZoomLevel = self.clusterSwitcher == .on ?
                 17 : 8
-            let annotations = self.annotations
-            self.annotations = annotations
+            
+            clusterManager.reload(mapView,
+                                  visibleMapRect: mapView.visibleMapRect)
         } 
     }
     

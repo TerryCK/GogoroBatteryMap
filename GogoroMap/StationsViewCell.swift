@@ -165,7 +165,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         return label
     }()
     
-    private lazy var dataUpdateButton: UIButton = {
+    lazy var dataUpdateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
         button.contentMode = .scaleAspectFit

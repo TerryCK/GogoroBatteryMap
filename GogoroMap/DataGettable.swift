@@ -111,9 +111,7 @@ extension DataGettable where Self: MapViewController {
 extension Data {
     
     var parsed: [CustomPointAnnotation]? {
-        guard
-            let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [String: Any],
-            let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else {
+        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
                 return nil
         }
         

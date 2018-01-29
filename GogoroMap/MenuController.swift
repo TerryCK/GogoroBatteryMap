@@ -23,6 +23,8 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     weak var delegate: ManuDelegate?
     
+    var refreshButton: UIButton?
+    
     var timer: Timer?
     
     var products = [SKProduct]() {
@@ -69,7 +71,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
             cell.buyStoreButtonStackView.removeFromSuperview()
             cell.setupThanksLabel()
         }
-        
+        self.refreshButton = cell.dataUpdateButton
         return cell
     }
     
@@ -139,6 +141,7 @@ extension MenuController {
     }
     
     @objc func clusterSwitching(sender: AnyObject) {
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "clusterSwitching"])
         delegate?.clusterSwitcher.change()
     }
     
@@ -154,6 +157,7 @@ extension MenuController {
     
     @objc func attempUpdate() {
         navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
+        refreshButton?.rotate360Degrees()
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
     }
