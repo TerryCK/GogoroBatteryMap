@@ -24,7 +24,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             shareButton.addTarget(delegate, action: .shareThisApp, for: .touchUpInside)
             moreAppsButton.addTarget(delegate, action: .moreApp, for: .touchUpInside)
             dataUpdateButton.addTarget(delegate, action: .attempUpdate, for: .touchUpInside)
-            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .touchUpInside)
+            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .valueChanged)
         }
     }
     

@@ -32,8 +32,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var clusterSwitcher = ClusterStatus.on {
         didSet {
             clusterManager.maxZoomLevel = self.clusterSwitcher == .on ?
-                17 : 12
-            clusterManager.minCountForClustering = self.clusterSwitcher == .on ? 2 : 7
+                16 : 8
+//            clusterManager.minCountForClustering = self.clusterSwitcher == .on ? 3 :
             
 //            clusterManager.visibleAnnotations.count
             reloadMapView()
@@ -146,8 +146,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 //     MARK: - View Creators
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
-        myManager.maxZoomLevel = 17
-        myManager.minCountForClustering = 2
+        myManager.maxZoomLevel = 16
+        myManager.minCountForClustering = 3
         
         return myManager
     }()
@@ -258,7 +258,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.reloadMapView()
+            
             self.seupAdContainerView()
         }
         

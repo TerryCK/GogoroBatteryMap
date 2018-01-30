@@ -16,6 +16,7 @@ protocol ManuDelegate: class {
     var  clusterSwitcher: ClusterStatus { set get }
 }
 
+
 final class MenuController: UICollectionViewController, StationsViewCellDelegate {
     
     // MARK: - Properties
