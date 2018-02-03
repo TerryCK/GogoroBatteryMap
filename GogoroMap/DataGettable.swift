@@ -27,24 +27,18 @@ protocol DataGettable: CloudBackupable {
 
 
 
-extension DataGettable where Self: MapViewController {    
-    
-    
-    
+extension DataGettable where Self: MapViewController {
     func initializeData() {
-        
-        let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) && annotations.isEmpty
-        
-            if isFirstTimeLaunch {
-                
-                annotations = getAnnotationFromFile()
-                
-            } else if mapView.annotations.isEmpty {
-                
-                annotations = getAnnotationFromDatabase()
-           
+
+        DispatchQueue.global().async {
+            if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
+                self.annotations.isEmpty {
+                self.annotations = self.getAnnotationFromFile()
+            } else if self.mapView.annotations.isEmpty {
+                self.annotations = self.getAnnotationFromDatabase()
+            }
+            self.getAnnotationFromRemote()
         }
-                getAnnotationFromRemote()
         
     }
    
@@ -58,9 +52,6 @@ extension DataGettable where Self: MapViewController {
         print("get data from database")
         return annotationFromDatabase
     }
-    
-    
-    
     
     private func getAnnotationFromFile() -> [CustomPointAnnotation] {
         guard
@@ -81,24 +72,23 @@ extension DataGettable where Self: MapViewController {
         URLSession.shared.dataTask(with: url) { (data, _, err) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                if let completeHandle = completeHandle {
-                    completeHandle()
+                completeHandle.map {
+                    $0()
                 }
             }
             
-            if let err = err {
+            err.map {
                 dataFromDatabase()
-                print("Failed: ", err)
+                print("Failed: ", $0)
                 return
             }
+            
             
             guard let annotationFromRemote = data?.parsed,
                 annotationFromRemote.count > 50 else {
                     dataFromDatabase()
                     return
             }
-            
-            print("get data from romote")
             
             (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: annotationFromRemote)
 
@@ -126,23 +116,18 @@ extension DataGettable where Self: MapViewController {
 
 //MARK: Parsed Data using model of CustomPointAnnotation
 extension Data {
-    var toAnnoatations: [CustomPointAnnotation]? {
-        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
-    }
-
     
-    
-    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
-        let bcf = ByteCountFormatter()
-        bcf.allowedUnits = units
-        bcf.countStyle = .file
+    var parsed: [CustomPointAnnotation]? {
+        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
+                return nil
+        }
         
-        return bcf.string(fromByteCount: Int64(count))
+        return jsonDic.map(Station.init).customPointAnnotations
+     
+
     }
 }
 
-// TODO:- Refactor for functional programming
-// MARK : get unique element Dictionary and reserve origin elements data
 extension Array where Element: CustomPointAnnotation {
     
     private func getDictionary(with array: Array) -> Dictionary<String, Element> {
@@ -165,13 +150,6 @@ extension Array where Element: CustomPointAnnotation {
             return reserveTable.contains(element.key) ? (result.reservesArray + [element.value], result.discardArray) :
                 (result.reservesArray, result.discardArray + [element.value])
         }
-    }
-    
-    func areArrayEqual(otherArray: [Element]) -> Bool {
-        guard count == otherArray.count else { return false }
-        return zip(sorted { $0.title! > $1.title! }, otherArray.sorted { $0.title! > $1.title! }).enumerated().filter() {
-            return $1.0 == $1.1
-            }.count == count
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  MenuController
+//  TestViewController.swift
 //  GogoroMap
 //
 //  Created by 陳 冠禎 on 2017/8/11.
@@ -13,17 +13,18 @@ import Crashlytics
 protocol ManuDelegate: class {
     func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
     var  stationData: StationDatas { get }
-    
+    var  clusterSwitcher: ClusterStatus { set get }
 }
 
-final class MenuController: UICollectionViewController, UICollectionViewDelegateFlowLayout, StationsViewCellDelegate {
 
+final class MenuController: UICollectionViewController, StationsViewCellDelegate {
+    
     // MARK: - Properties
     let cellid = "cellid"
     
-    var refreshButton: UIButton?
-    
     weak var delegate: ManuDelegate?
+    
+    var refreshButton: UIButton?
     
     var timer: Timer?
     
@@ -42,11 +43,11 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Answers.log(view: "Menu Page")
+        Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .removeAds, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
         print("menu controller deinitialize")
     }
     
@@ -76,30 +77,14 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 20 , height: view.frame.height)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    
+ 
     // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
         
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
-        navigationItem.title = NSLocalizedString("Information", comment: "")
+        navigationItem.title = "Information".localize()
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
         
@@ -110,7 +95,7 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
         //            collectionLayout.sectionInset = UIEdgeInsets(top: 50, left: 10, bottom: 10, right: 10)
         //        }
         
-        collectionView?.isScrollEnabled = true
+        collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)
     }
@@ -121,40 +106,22 @@ final class MenuController: UICollectionViewController, UICollectionViewDelegate
             UIApplication.shared.canOpenURL(checkURL) else { return }
         UIApplication.shared.openURL(checkURL)
     }
-    
 }
 
 // MARK: - Perform target's events
 extension MenuController {
     
     @objc func performGuidePage() {
-       let backupController = BackupViewController()
-        navigationController?.pushViewController(backupController, animated: true)
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
+        present(GuidePageViewController(), animated: true, completion: nil)
     }
-    
-    
-//    @objc func performGuidePage() {
-//        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
-//
-//        present(GuidePageViewController(), animated: true, completion: nil)
-//    }
-    
+
     @objc func recommand() {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
         let url = head + Keys.standard.appID + foot
         open(url: url)
-    }
-    
-    @objc func uploedToCloud() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "uploedToCloud"])
-        
-    }
-    
-    @objc func recoverFromCloud() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "recoverFromCloud"])
-        
     }
     
     @objc func moreApp() {
@@ -172,6 +139,11 @@ extension MenuController {
             activityVC.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         }
         self.present(activityVC, animated: true, completion: nil)
+    }
+    
+    @objc func clusterSwitching(sender: AnyObject) {
+        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "clusterSwitching"])
+        delegate?.clusterSwitcher.change()
     }
     
     @objc func restorePurchase() {
@@ -194,23 +166,43 @@ extension MenuController {
     @objc func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
         print("\n data reflash\n")
-        
         delegate?.getAnnotationFromRemote {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
-                self.navigationItem.title = NSLocalizedString("Information", comment: "")
+                self.navigationItem.title = "Information".localize()
                 self.timer = nil
             }
         }
     }
 }
 
+extension MenuController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+}
+
+
 // MARK: - in-App purchase process
 
 extension MenuController: IAPPurchasable {
     
     fileprivate func setupPurchaseItem() {
-        if UserDefaults.hasBuyItems { return }
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) { return }
         setupObserver()
         getInfo(.removeAds) { (success, products) in
             if success, let products = products {
@@ -227,12 +219,12 @@ extension MenuController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: .removeAds,
+                                               name: NotificationName.shared.removeAds,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: .manuContent,
+                                               name: NotificationName.shared.manuContent,
                                                object: nil)
         
     }

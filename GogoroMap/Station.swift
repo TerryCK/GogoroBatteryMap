@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+//TODO: - Codable
 struct Station {
     let id: String?
     let locName: LocName?
@@ -20,7 +20,6 @@ struct Station {
     let city: String?
     let availableTime: String?
     let availableTimeByte: String?
-    
     
     init(dictionary: [String: Any]) {
         self.id = dictionary["Id"] as? String ?? ""
