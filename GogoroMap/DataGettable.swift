@@ -116,6 +116,16 @@ extension DataGettable where Self: MapViewController {
 
 //MARK: Parsed Data using model of CustomPointAnnotation
 extension Data {
+    var toAnnoatations: [CustomPointAnnotation]? {
+        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+    }
+    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
+        let bcf = ByteCountFormatter()
+        bcf.allowedUnits = units
+        bcf.countStyle = .file
+        
+        return bcf.string(fromByteCount: Int64(count))
+    }
     
     var parsed: [CustomPointAnnotation]? {
         guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {

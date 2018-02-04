@@ -112,42 +112,6 @@ extension UIView {
 }
 
 
-// MARK: - Animation of infinity rotate 360˚
-extension UIView {
-    func rotate360Degrees(duration: CFTimeInterval = 1.0) {
-        let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
-        rotateAnimation.fromValue = 0.0
-        rotateAnimation.toValue = CGFloat.pi * 2
-        rotateAnimation.duration = duration
-        rotateAnimation.repeatCount = Float.infinity
-        self.layer.add(rotateAnimation, forKey: nil)
-    }
-    
-    func stopRotating(){
-        self.layer.sublayers?.removeAll()
-        //or
-        //        self.layer.removeAllAnimations()
-    }
-    
-    private func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
-        
-        let hiddenAnimation = CABasicAnimation(keyPath: "opacity")
-        hiddenAnimation.fromValue = hidden ? 0 : 1
-        hiddenAnimation.toValue = hidden ? 1 : 0
-        hiddenAnimation.duration = duration
-        self.layer.add(hiddenAnimation, forKey: nil)
-        isHidden = hidden
-    }
-    
-    func willHidden(duration: CFTimeInterval = 0.75) {
-        opacityAnimation(duration: duration, hidden: true)
-    }
-    
-    func willDisplay(duration: CFTimeInterval = 0.75){
-        opacityAnimation(duration: duration, hidden: false)
-    }
-}
-
 extension Date {
    
     static private func getTime(with formatterString: String) -> String {

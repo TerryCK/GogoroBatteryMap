@@ -20,9 +20,6 @@ import CloudKit
 
 
 class BackupViewController: UIViewController, CloudBackupable {
-    
-   
-    
     let cellID = "CellID"
     
     
@@ -37,6 +34,7 @@ class BackupViewController: UIViewController, CloudBackupable {
     
     
     lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, elementType: .backup)
+    
     lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: backupCells, footView: nil, elementType: .delete)
     
     
