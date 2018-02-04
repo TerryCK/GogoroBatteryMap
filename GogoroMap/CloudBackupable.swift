@@ -46,23 +46,25 @@ extension CloudBackupable {
     
     var container: CKContainer { return CKContainer.default() }
     
-    var database: CKDatabase { return container.privateCloudDatabase }
+    var database:  CKDatabase  { return container.privateCloudDatabase }
     
     var recordType: String  { return "CustomPointAnnotations" }
     
-    var recordKey: String { return "customPointAnnotations" }
+    var recordKey: String   { return "customPointAnnotations" }
     
+    typealias CompletedHandler = () -> ()
     
-   
-    
-    
-    func backupToCloud(with data: Data, completed: @escaping () -> ()) {
+    func backupToCloud(with data: Data, completed: @escaping CompletedHandler) {
         print("saving data to cloud")
-        let cloudRecode = CKRecord(recordType: recordType)
-        let cloudObject = data.toRecordValue
-        cloudRecode.setObject(cloudObject, forKey: recordKey)
+        
+        let cloudRecord = CKRecord(recordType: recordType)
+        let cloudObject = data as CKRecordValue
+        cloudRecord.setObject(cloudObject, forKey: recordKey)
+        
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        database.save(cloudRecode) { (record, error) in
+        
+        database.save(cloudRecord) { (record, error) in
+            
             guard error == nil, record != nil else {
                 print("cloud error: \(String(describing: error))")
                 return
@@ -98,7 +100,10 @@ extension CloudBackupable {
     
     
     func query(completed: @escaping ([CKRecord]?, Error?) -> ()) {
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        let date = NSDate(timeInterval: -60.0 * 120 * 60, since: Date())
+        let predicate = NSPredicate(format: "creationDate > %@", date)
+        let query = CKQuery(recordType: recordType, predicate: predicate)
+//        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         database.perform(query, inZoneWith: nil, completionHandler: completed)
     }
     
@@ -125,17 +130,19 @@ extension CloudBackupable {
         let operation = CKQueryOperation(query: query)
         
         operation.recordFetchedBlock = { (record: CKRecord?) in
-            
-            guard let rawData = record?.value(forKey: self.recordKey) as? Data,
-                let annoatations = rawData.toAnnoatations else { return }
-            completed(annoatations)
+//            NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+            let data = record?.value(forKey: self.recordKey) as? Data
+            if let annotations = data.map(NSKeyedUnarchiver.unarchiveObject) as? [CustomPointAnnotation] {
+                completed(annotations)
+            }
+//            guard let rawData = record?.value(forKey: self.recordKey) as? Data,
+//                let annoatations = rawData.toAnnoatations else { return }
+//            completed(annoatations)
         }
         
         operation.queryCompletionBlock = { (cursor, error) in
-            guard error == nil else {
-                print(error?.localizedDescription ?? "Error")
-                return
-            }
+            let _ = error.map { print($0.localizedDescription)  }
+            
             
             //TODO: - end todo
         }
@@ -275,31 +282,14 @@ extension CloudBackupable where Self == UILabel {
     func updateUserStatus(completed: @escaping (CKAccountStatus)->()) {
         
         container.accountStatus { (status, error) in
-            if let error = error { self.text = "\(error)" }
-            var statusString = ""
+            let _ = error.map { self.text = " \($0)"}
             
-            switch status {
-            case .available:
-                print("iCloud account is logged in")
-                self.requestPermission()
-                
-            case .restricted:
-                statusString = "iCloud settings are restricted by parental controls or a configuration profile"
-                
-                
-            case .noAccount:
-                statusString = "the user not logged in"
-                
-                
-            case .couldNotDetermine:
-                statusString = "please try again"
-                
+            if status == .available {
+                 self.requestPermission()
             }
             
-            if case .available = status {
-                DispatchQueue.main.async {
-                    self.text = statusString
-                }
+            DispatchQueue.main.async {
+                self.text = status.description
             }
             
             completed(status)
@@ -311,7 +301,7 @@ extension CloudBackupable where Self == BackupViewController {
     
     func queryingBackupData() {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        print("quering")
+        print("queryingBackupData")
         query { (records, error) in
             guard error == nil, let records = records else {
                 print("cloud query error:", error!)
@@ -364,6 +354,20 @@ extension UserDefaults: CloudBackupable {
     }
 }
 
+extension CKAccountStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .available:
+            return "iCloud is available"
+        case .restricted:
+            return "iCloud settings are restricted by parental controls or a configuration profile"
+        case .noAccount:
+            return "the user not logged in"
+        case .couldNotDetermine:
+            return "please try again"
+        }
+    }
+}
 
 extension Data: CloudBackupable {
     func backupToCloud(completeHandler: @escaping ()->()) {
