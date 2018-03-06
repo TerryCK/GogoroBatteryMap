@@ -8,10 +8,12 @@
 
 import Foundation
 
-typealias CompleteHandle = () -> Void
-typealias Results<T: CustomPointAnnotation> = (reservesArray: [T], discardArray: [T])
 
-protocol DataGettable {
+typealias CompleteHandle = () -> Void
+
+typealias Results<T> = (reservesArray: [T], discardArray: [T]) where T: CustomPointAnnotation
+
+protocol DataGettable: CloudBackupable {
     
     func initializeData()
     
@@ -24,8 +26,10 @@ protocol DataGettable {
 }
 
 
-extension DataGettable where Self: MapViewController {    
+
+extension DataGettable where Self: MapViewController {
     func initializeData() {
+
         DispatchQueue.global().async {
             if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
                 self.annotations.isEmpty {
@@ -35,18 +39,19 @@ extension DataGettable where Self: MapViewController {
             }
             self.getAnnotationFromRemote()
         }
+        
     }
+   
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {
         guard
             let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
-            let annotationFromDatabase = NSKeyedUnarchiver.unarchiveObject(with: annotationsData) as? [CustomPointAnnotation] else {
+            let annotationFromDatabase =  annotationsData.toAnnoatations else {
                 return getAnnotationFromFile()
         }
         print("get data from database")
         return annotationFromDatabase
     }
-    
     
     private func getAnnotationFromFile() -> [CustomPointAnnotation] {
         guard
@@ -95,20 +100,32 @@ extension DataGettable where Self: MapViewController {
             }
         }
     }
-    
+
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: annotations), forKey: Keys.standard.annotationsKey)
+        let archiveData = annotations.toData
+        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
         UserDefaults.standard.synchronize()
         post()
     }
     
-    
     private func post() {
-        NotificationCenter.default.post(name: NotificationName.shared.manuContent, object: nil)
+        NotificationCenter.default.post(name: .manuContent, object: nil)
     }
 }
 
+
+//MARK: Parsed Data using model of CustomPointAnnotation
 extension Data {
+    var toAnnoatations: [CustomPointAnnotation]? {
+        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+    }
+    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
+        let bcf = ByteCountFormatter()
+        bcf.allowedUnits = units
+        bcf.countStyle = .file
+        
+        return bcf.string(fromByteCount: Int64(count))
+    }
     
     var parsed: [CustomPointAnnotation]? {
         guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
@@ -117,6 +134,7 @@ extension Data {
         
         return jsonDic.map(Station.init).customPointAnnotations
      
+
     }
 }
 
@@ -144,3 +162,4 @@ extension Array where Element: CustomPointAnnotation {
         }
     }
 }
+

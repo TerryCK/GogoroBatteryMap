@@ -12,6 +12,7 @@ import SideMenu
 import Crashlytics
 import GoogleMobileAds
 import Cluster
+import CloudKit
 
 enum ClusterStatus {
     case on, off
@@ -21,11 +22,14 @@ enum ClusterStatus {
     }
 }
 
+
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
 final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
 
+
 //         MARK: - Properties
+
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     var visibleMapRect: MKMapRect?
@@ -51,7 +55,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         didSet {
             if !listToDisplay.isEmpty {
                 cellEmptyGuideView.isHidden = true
-               collectionView.reloadData()
+                collectionView.reloadData()
             } else { showupEmptyGuide() }
         }
     }
@@ -63,7 +67,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     let cellEmptyGuideView: UITextView = {
-       let myTextView = UITextView()
+        let myTextView = UITextView()
         myTextView.text = "目前尚未有符合資料可顯示..."
         myTextView.font = UIFont.systemFont(ofSize: 32)
         myTextView.textAlignment = .center
@@ -79,20 +83,25 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var indexOfAnnotations: Int = 0
     var selectedPin: CustomPointAnnotation?
     
-     var counterOfcheckin: Int = 0 {
+    enum CheckinStatus {
+        case checkin
+        case unCheckin
+    }
+    
+    var counterOfcheckin: Int = 0 {
         didSet {
             var lastCheckinString: String = "最近的打卡日："
-            let isChecking = counterOfcheckin > 0
+            let checkinStatus: CheckinStatus = counterOfcheckin > 0 ? .checkin : .unCheckin
             
-            switch isChecking {
-            
-            case true:
+            switch checkinStatus {
+                
+            case .checkin:
                 selectedAnnotationView?.image = #imageLiteral(resourceName: "checkin")
                 annotations[indexOfAnnotations].checkinDay = Date.today
                 detailView.buttonStackView.addArrangedSubview(detailView.unCheckinButton)
                 lastCheckinString = "最近的打卡日：\(Date.today)"
                 
-            case false:
+            case .unCheckin:
                 selectedAnnotationView?.image = getImage(with: selectedPin?.title)
                 annotations[indexOfAnnotations].checkinDay = ""
                 detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
@@ -109,7 +118,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     
-//     MARK: - Handler of Annotations on map with store property obsever
+    //     MARK: - Handler of Annotations on map with store property obsever
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
@@ -134,7 +143,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         clusterManager.add(annotations)
     }
     
-//     MARK: - Computed Properties
+    //     MARK: - Computed Properties
     var userLocationCoordinate: CLLocationCoordinate2D! {
         get { return currentUserLocation.coordinate }
         set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
@@ -143,12 +152,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return annotations.getStationData
     }
     
-//     MARK: - View Creators
+    //     MARK: - View Creators
     private let clusterManager: ClusterManager = {
         let myManager = ClusterManager()
+
         myManager.maxZoomLevel = 16
         myManager.minCountForClustering = 3
         
+
         return myManager
     }()
     
@@ -179,11 +190,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return button
     }()
     
-    private lazy var menuBarButton: UIButton = {  
+    private lazy var menuBarButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
+
         button.addTarget(self, action: .performMenu, for: .touchUpInside)
+
         return button
     }()
     
@@ -224,21 +237,39 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return view
     }()
     
-    private lazy var testButton: UIButton = {
+    private lazy var testButton1 : UIButton = {
         let myButton = UIButton(type: .system)
-        myButton.setTitle("testButton", for: .normal)
+        myButton.setTitle("save", for: .normal)
         myButton.backgroundColor = .lightBlue
         myButton.titleLabel?.textColor = .white
-        myButton.addTarget(self, action: #selector(testFunc), for: .touchUpInside)
+        myButton.addTarget(self, action: #selector(saveTest), for: .touchUpInside)
         return myButton
     }()
     
-
-//     MARK: - ViewController life cycle
+    private lazy var testButton2 : UIButton = {
+        let myButton = UIButton(type: .system)
+        myButton.setTitle("query", for: .normal)
+        myButton.backgroundColor = .lightBlue
+        myButton.titleLabel?.textColor = .white
+        myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
+        return myButton
+    }()
+    
+    private lazy var testStack: UIStackView = {
+        let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
+        myStack.axis = .horizontal
+        myStack.distribution = .fillEqually
+        myStack.alignment = .center
+        myStack.spacing = 10
+        return myStack
+    }()
+    
+    //     MARK: - ViewController life cycle
     override func loadView() {
         super.loadView()
         setupView()
         setupSideMenu()
+        
     }
     
     
@@ -249,45 +280,60 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         authrizationStatus()
         initializeData()
         setupPurchase()
-        
-        testFunc()
+        #if REALEASE
+        setupRating()
+            #endif
+//        testFunction()
     }
+    
+   
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Answers.logContentView(withName: "Map Page", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Map Page")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             
             self.seupAdContainerView()
         }
+        menuBarButton.willDisplay()
+        locationArrowView.willDisplay()
         
     }
     
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         myLocationManager.stopUpdatingLocation()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        menuBarButton.isHidden = true
+        locationArrowView.isHidden = true
+    }
     
-    
-//     MARK: - Perfrom
+    //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
+    
         let guidePageController = GuidePageViewController()
         guidePageController.delegate = self
+
         present(guidePageController, animated: true, completion: nil)
     }
     
+    
+    
     @objc func performMenu() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Perform Menu"])
+        Answers.log(event: .mapButton, customAttributes: "Perform Menu")
         if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
             self.setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
         }
     }
     
-//     MARK: - View setups
+    //     MARK: - View setups
     private func setupSideMenu() {
         let layout = UICollectionViewFlowLayout()
         let menuController = MenuController(collectionViewLayout: layout)
@@ -302,7 +348,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setSideMenuDefalts()
     }
     
-   
+    
     
     private func setSideMenuDefalts() {
         let displayFactor: CGFloat = 0.80
@@ -314,6 +360,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         sideMenuManager.menuAnimationFadeStrength = 0.40
         sideMenuManager.menuBlurEffectStyle = nil
         sideMenuManager.menuPresentMode = .viewSlideInOut
+        menuBarButton.isHidden = false
     }
     
     private func setupView() {
@@ -321,6 +368,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setupNavigationItems()
         setupSegmentControllerContainer()
         setupMainViews()
+        
     }
     
     private func setupNavigationTitle() {
@@ -356,9 +404,15 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         menuBarButton.anchor(top: topAnchor, left: navigationControllerView.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
     }
     
-    
+    private func setupRating() {
+        if #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview()
+        }
+    }
     private func setupMainViews() {
+
         [mapView, collectionView, cellEmptyGuideView].forEach(setupMainViews)
+
     }
     
     private func setupSegmentControllerContainer() {
@@ -366,7 +420,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         view.addSubview(segmentControllerContainer)
         
         var topPadding: CGFloat = 64
-    
+        
         if UIDevice.isiPhoneX {
             let safeAreaTopPadding: CGFloat = 80
             topPadding = safeAreaTopPadding
@@ -379,21 +433,32 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
     }
     
+/*
+    private func setupMainViews(with myViews: UIView...) {
+        myViews.forEach { (myView) in
+            view.addSubview(myView)
+            myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        }
+        
+*/
     private func setupMainViews(with myView: UIView) {
         view.addSubview(myView)
         myView.anchor(top: segmentControllerContainer.bottomAnchor,
                       left: view.leftAnchor,
                       bottom: view.bottomAnchor,
                       right: view.rightAnchor)
+
     }
     
     private func seupAdContainerView() {
         
-        Answers.logContentView(withName: "Ad View", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Ad View")
         view.addSubview(self.adContainerView)
         
         var bottomAnchor = view.bottomAnchor
+
 //         MARK: -  iPhone X autolayout
+
         if #available(iOS 11.0, *),
             UIDevice.isiPhoneX {
             bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
@@ -417,6 +482,7 @@ extension MapViewController: UICollectionViewDataSource {
         return listToDisplay.count
     }
     
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: MyCollectionViewCell.self), for: indexPath) as? MyCollectionViewCell ?? MyCollectionViewCell()
@@ -433,10 +499,27 @@ extension MapViewController: UICollectionViewDataSource {
         return cell
     }
     
+/*
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 70)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        Answers.log(event: .mapButton, customAttributes: "Pressd CellView")
+*/
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
         
+
         let seletedItem = listToDisplay[indexPath.item]
         
         changeToMapview()
@@ -449,6 +532,9 @@ extension MapViewController: UICollectionViewDataSource {
         }
         
         mapView.selectAnnotation(seletedItem, animated: true)
+
+        collectionView.deselectItem(at: indexPath, animated: false)
+
     }
     
     private func changeToMapview() {
@@ -460,8 +546,7 @@ extension MapViewController: UICollectionViewDataSource {
     }
     
     private func mapViewMove(to station: CustomPointAnnotation) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "mapViewMove"])
+        Answers.log(event: .mapButton, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
         let factor = 0.7
         let height: Double = 20000
@@ -496,15 +581,13 @@ extension MapViewController: UICollectionViewDelegateFlowLayout {
 extension MapViewController {
     
     @objc func checkin() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Check in"])
+        Answers.log(event: .mapButton, customAttributes: "Check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter + 1
     }
     
     
     @objc func unCheckin() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Remove check in"])
+        Answers.log(event: .mapButton, customAttributes: "Remove check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter - 1
     }
 }
@@ -519,13 +602,18 @@ extension MapViewController {
         mapView.isHidden =  !collectionView.isHidden
         self.setTrackModeNone()
         self.locationArrowView.isEnabled = false
+
         
         if .map ~= segmentStatus { changeToMapview() }
+
         
         segmentStatus.getAnnotationToDisplay(annotations: annotations,
                                              currentUserLocation: currentUserLocation)
             .map { listToDisplay = $0 }
         
+
+        Answers.log(event: .mapButton, customAttributes: segmentStatus.eventName)
+
     }
 }
 
@@ -533,21 +621,25 @@ extension MapViewController {
 extension MapViewController: Navigatorable {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+
     
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
             return getOriginalMKAnnotationView(mapView, viewFor: annotation)
         }
+
             let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
         
             if let view = view as? BorderedClusterAnnotationView {
+
                 view.annotation = clusterAnnotation
                 view.configure(with: style)
             } else {
                 view = ClusterAnnotationView(annotation: clusterAnnotation,
                                              reuseIdentifier: identifier,
                                              style: style)
+
             }
         
             return view
@@ -586,12 +678,11 @@ extension MapViewController: Navigatorable {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Display annotation view"])
+        Answers.log(event: .mapButton, customAttributes: "Display annotation view")
         guard let annotation = view.annotation else { return }
         self.selectedAnnotationView = nil
         
-//        MARK:  feature fo cluster
+        //        MARK:  feature fo cluster
         if let clusterAnnotation = annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
@@ -637,15 +728,13 @@ extension MapViewController: Navigatorable {
     }
     
     @objc func navigating() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Navigate"])
+        Answers.log(event: .mapButton, customAttributes: "Navigate")
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
     
     @objc func locationArrowPressed() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: "Changing tracking mode"])
+        Answers.log(event: .mapButton, customAttributes: "Changing tracking mode")
         locationArrowTapped()
     }
 }
@@ -656,11 +745,20 @@ extension MapViewController: Navigatorable {
 extension MapViewController: IAPPurchasable {
     
     func setupObserver() {
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePurchaseNotification(_:)),
-            name: NotificationName.shared.removeAds,
+            name:  .removeAds,
             object: nil)
+
+    }
+    
+    @objc func handleDataupdate(_ notification: Notification) {
+        
+        guard let data = notification.object as? Data,
+            let annotations = data.toAnnoatations else { return }
+        self.annotations = annotations
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
@@ -668,8 +766,8 @@ extension MapViewController: IAPPurchasable {
         
         guard let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else { return }
+        Answers.log(event: .purchaseEvent, customAttributes: "Removed Ad")
         
-        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Removed Ad"])
         adContainerView.removeFromSuperview()
         mapView.layoutIfNeeded()
     }
@@ -691,9 +789,11 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+
 //        print("visibleMapRect : \(mapView.visibleMapRect)")
         clusterManager.reload(mapView,
                               visibleMapRect: mapView.visibleMapRect)
+
     }
 }
 
@@ -714,17 +814,32 @@ extension MapViewController {
         
         #if DEBUG
             
-            view.addSubview(testButton)
-            testButton.anchor(top: segmentControllerContainer.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+            view.addSubview(testStack)
+            testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         #endif
         
     }
-    @objc func testFunc() {
-        print("test")
-        DispatchQueue.global().async {
-            let _ = self.annotations.getDistance(userPosition: self.currentUserLocation)
-           
-        }
+
+    @objc func saveTest() {
+        
+//        print("test for annotation save to cloud")
+//        saveToCloud(with: self.annotations)
+//
+//        self.annotations.toData.backupToCloud(completeHandler: )
+        
+//        saveToCloud(with: self.annotations)
+//        queryDatabase()
+        //        DispatchQueue.global().async {
+        //            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
+        //            predicated.forEach { (station) in
+        //                print(station.title as Any)
+        //            }
+        //        }
+    }
+    
+    @objc func queryTest() {
+//        getAnnoatationsFromCloud { self.annotations = $0 }
+
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

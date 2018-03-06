@@ -56,6 +56,7 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
         imageView.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: nil, right: nil, topPadding: 2 , leftPadding: 18, bottomPadding: 0, rightPadding: 0, width: 30, height: 30)
         viewContainer.addSubview(subStackView)
         subStackView.anchor(top: titleLabel.bottomAnchor, left: imageView.rightAnchor, bottom: viewContainer.bottomAnchor, right: viewContainer.rightAnchor, topPadding: 5, leftPadding: 12, bottomPadding: 12, rightPadding: 6, width: 0, height: 20)
+        
     }
     
 //    override lazy var viewContainer: UIView = {

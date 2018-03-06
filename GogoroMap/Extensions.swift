@@ -75,8 +75,6 @@ extension UIView {
         }
     }
 }
-
-
 // MARK: - Animation of infinity rotate 360˚
 extension UIView {
     func rotate360Degrees(duration: CFTimeInterval = 1.0) {
@@ -91,7 +89,7 @@ extension UIView {
     func stopRotating(){
         self.layer.sublayers?.removeAll()
         //or
-        //        self.layer.removeAllAnimations()
+//        self.layer.removeAllAnimations()
     }
     
     private func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
@@ -108,19 +106,26 @@ extension UIView {
         opacityAnimation(duration: duration, hidden: true)
     }
     
-    func willDisplay(duration: CFTimeInterval = 0.75){
+    func willDisplay(duration: CFTimeInterval = 0.75) {
         opacityAnimation(duration: duration, hidden: false)
     }
 }
 
+
 extension Date {
-    static let today: String = {
+   
+    static private func getTime(with formatterString: String) -> String {
         let date = Date()
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
+        formatter.dateFormat = formatterString
         let dateString = formatter.string(from: date)
         return dateString
-    } ()
+    }
+    
+    static var today: String  { return getTime(with: "yyyy.MM.dd") }
+    
+    static var now: String { return getTime(with: "yyyy.MM.dd HH:mm:ss") }
+  
 }
 
 
@@ -128,7 +133,10 @@ extension Double {
     var km: Double {
         return Double(String(format:"%.1f", self / 1000)) ?? 0
     }
-    
+    var toRadian: CGFloat {
+        get { return CGFloat(self * (Double.pi/180))
+        }
+    }
     var format: Double {
         return Double(String(format:"%.2f", self)) ?? 0
     }
@@ -146,6 +154,13 @@ extension Double {
         result += hours > 0 ? "\(hours) 小時 " : ""
         result += "\(minutes + 1) 分鐘 "
         return result
+    }
+    
+    var toTimeString: String {
+        let timestampDate = Date(timeIntervalSince1970: self)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd   HH:mm:ss"
+        return dateFormatter.string(from: timestampDate)
     }
 
 }
@@ -207,5 +222,11 @@ extension MKMapPoint {
         let offsetCenterY: Double = Double(UIScreen.main.bounds.height / 2) * factorOfPixelToMapPoint
         
         return MKMapPoint(x: x - offsetCenterX, y: y - offsetCenterY)
+    }
+}
+
+extension UserDefaults {
+    static var hasBuyItems: Bool {
+        return standard.bool(forKey: Keys.standard.hasPurchesdKey)
     }
 }

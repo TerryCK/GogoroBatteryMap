@@ -36,7 +36,7 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
 extension Collection where Iterator.Element == Station {
     
     var customPointAnnotations: [CustomPointAnnotation] {
-        return self.map { (station) -> CustomPointAnnotation in
+        return map { (station) -> CustomPointAnnotation in
             let isEnglish = NSLocale.preferredLanguages[0] == "en"
             let latitude: CLLocationDegrees = station.latitude ?? 0.0
             let longitude: CLLocationDegrees = station.longitude ?? 0.0
@@ -53,12 +53,12 @@ extension Collection where Iterator.Element == Station {
             
             
             return CustomPointAnnotation(title: title,
-                                         subtitle: "\(NSLocalizedString("Open hours:", comment: "")) \(station.availableTime ?? "")",
+                                         subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
                 coordinate: location,
                 placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                 image: image,
                 address: address,
-                isOpening: station.state == 1 ? true : false
+                isOpening: station.state == 1 
             )
         }
     }
@@ -69,12 +69,12 @@ extension Collection where Element == BackupData {
     var toCustomTableViewCell: [CustomTableViewCell] {
         let upperLimit = 10
         return self.enumerated().flatMap { (index, element) -> CustomTableViewCell? in
-            guard index < upperLimit , let data = element.data else { return nil }
-            
-            let subtitle = "         \(data.sizeString())      打卡次數：\(data.toAnnoatations?.totalCheckin ?? 0)"
-            return CustomTableViewCell(type: .backupButton,
-                                       title: " \(index + 1). \(element.timeInterval?.toTimeString ?? "" )",
-                subtitle: subtitle )
+                guard index < upperLimit , let data = element.data else { return nil }
+                
+                let subtitle = "         \(data.sizeString())      打卡次數：\(data.toAnnoatations?.totalCheckin ?? 0)"
+                return CustomTableViewCell(type: .backupButton,
+                                           title: " \(index + 1). \(element.timeInterval?.toTimeString ?? "" )",
+                                           subtitle: subtitle )
         }
     }
     

@@ -21,9 +21,11 @@ struct Keys {
     let hasPurchesdKey = "hasPurchesd"
     let dataKey = "dataKey"
     let annotationsKey = "annotationsKey"
-    
+    let nowDateKey = "dateKey"
     let manuContentObserverName = "manuContentObserverName"
     let removeAdsObserverName = "removeAdsObserverName"
+    let dataUpdata = "dataUpdata"
+    
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""

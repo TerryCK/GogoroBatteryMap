@@ -47,7 +47,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NotificationName.shared.removeAds, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeAds, object: nil)
         print("menu controller deinitialize")
     }
     
@@ -112,9 +112,14 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
 extension MenuController {
     
     @objc func performGuidePage() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
-        present(GuidePageViewController(), animated: true, completion: nil)
+      
+       navigationController?.pushViewController(BackupViewController(), animated: true)
     }
+    
+//    @objc func performGuidePage() {
+//        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
+//        present(GuidePageViewController(), animated: true, completion: nil)
+//    }
 
     @objc func recommand() {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
@@ -219,12 +224,12 @@ extension MenuController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.removeAds,
+                                               name: .removeAds,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: NotificationName.shared.manuContent,
+                                               name: .manuContent,
                                                object: nil)
         
     }

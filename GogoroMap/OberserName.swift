@@ -7,13 +7,12 @@
 //
 
 import Foundation
-struct NotificationName {
-    
-    static let shared = NotificationName()
-    
-    let manuContent = NSNotification.Name(rawValue: Keys.standard.manuContentObserverName)
-    
-    let removeAds = NSNotification.Name(rawValue: Keys.standard.removeAdsObserverName)
-    
-    private init() { }
+
+
+extension NSNotification.Name {
+    static var manuContent = NSNotification.Name(rawValue: Keys.standard.manuContentObserverName)
+    static var removeAds = NSNotification.Name(rawValue: Keys.standard.removeAdsObserverName)
+    static var dataUpdata = NSNotification.Name(rawValue: Keys.standard.dataUpdata)
 }
+
+
