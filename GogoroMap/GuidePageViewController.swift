@@ -35,7 +35,7 @@ final class GuidePageViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Answers.logContentView(withName: "Guide Page", contentType: nil, contentId: nil, customAttributes: nil)
+        Answers.log(view: "Guide Page")
     }
     
     override func viewDidLoad() {
