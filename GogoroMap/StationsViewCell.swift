@@ -102,7 +102,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private lazy var authorLabel: UILabel = {     
         let label = UILabel()
-        label.text = "Chen, Guan-Jhen 2017 Copyright"
+        label.text = "Chen, Guan-Jhen 2018 Copyright"
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .gray
         return label
