@@ -35,11 +35,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var visibleMapRect: MKMapRect?
     var clusterSwitcher = ClusterStatus.on {
         didSet {
-            clusterManager.maxZoomLevel = self.clusterSwitcher == .on ?
-                16 : 8
+            clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
 //            clusterManager.minCountForClustering = self.clusterSwitcher == .on ? 3 :
             
-//            clusterManager.visibleAnnotations.count
             reloadMapView()
             
         } 
@@ -158,8 +156,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 
         myManager.maxZoomLevel = 16
         myManager.minCountForClustering = 3
-        
-
         return myManager
     }()
     
@@ -271,8 +267,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         setupSideMenu()
         
     }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()

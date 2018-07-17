@@ -8,9 +8,6 @@
 
 import Foundation
 
-
-typealias CompleteHandle = () -> Void
-
 typealias Results<T> = (reservesArray: [T], discardArray: [T]) where T: CustomPointAnnotation
 
 protocol DataGettable: CloudBackupable {
@@ -19,7 +16,7 @@ protocol DataGettable: CloudBackupable {
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation]
     
-    func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
+    func getAnnotationFromRemote(_ completeHandle: (() -> Void)?)
     
     func saveToDatabase(with annotations: [CustomPointAnnotation])
     
@@ -64,25 +61,22 @@ extension DataGettable where Self: MapViewController {
         return annotationsFromFile
     }
     
-    func getAnnotationFromRemote(_ completeHandle: CompleteHandle? = nil) {
+    func getAnnotationFromRemote(_ completeHandle: (() -> Void)? = nil) {
         
         guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
-        URLSession.shared.dataTask(with: url) { (data, _, err) in
+        URLSession.shared.dataTask(with: url) { (data, _, error) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                completeHandle.map {
-                    $0()
-                }
+                completeHandle.map { $0() }
             }
             
-            err.map {
+            if let error = error {
                 dataFromDatabase()
-                print("Failed: ", $0)
+                print("Failed: ", error)
                 return
             }
-            
             
             guard let annotationFromRemote = data?.parsed,
                 annotationFromRemote.count > 50 else {
