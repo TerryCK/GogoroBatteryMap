@@ -11,7 +11,7 @@ import StoreKit
 import Crashlytics
 
 protocol ManuDelegate: class {
-    func getAnnotationFromRemote(_ completeHandle: CompleteHandle?)
+    func getAnnotationFromRemote(_ completeHandle: (() -> Void)?)
     var  stationData: StationDatas { get }
     var  clusterSwitcher: ClusterStatus { set get }
 }
