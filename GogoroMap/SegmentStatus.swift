@@ -54,7 +54,7 @@ enum SegmentStatus: Int {
                 .filter { $0.getDistance(from: currentUserLocation).km < 45 }
             
         case .building:
-            return annotations.filter { $0.title?.contains("建置中") ?? false }
+            return annotations.filter { !$0.isOpening }
                 .sortedByDistance(userPosition: currentUserLocation)
         }
     }
