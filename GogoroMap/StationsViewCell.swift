@@ -87,7 +87,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private lazy var clusterSwitcher: UISwitch = {
         let switcher = UISwitch()
-        switcher.isOn = true
+        switcher.isOn = UserDefaults.standard.bool(forKey: "cluster")
         return switcher
     }()
     

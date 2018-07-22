@@ -41,7 +41,7 @@ extension AnnotationHandleable {
                                          placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                                          image: getImage(with: station),
                                          address: address,
-                                         isOpening: station.state == 1 ? true : false
+                                         isOpening: station.state == 1
             )
         }
     }

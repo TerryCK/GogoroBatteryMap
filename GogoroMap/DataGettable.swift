@@ -65,6 +65,8 @@ extension DataGettable where Self: MapViewController {
         guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
+        
+        print("API: \(url)")
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
@@ -138,7 +140,10 @@ extension Array where Element: CustomPointAnnotation {
     private func getDictionary(with remoteArray: Array) -> Dictionary<String, Element> {
         var dic = [String: Element]()
         remoteArray.forEach { dic[$0.title ?? ""] = $0 }
-        forEach { dic[$0.title ?? ""]?.checkinCounter = $0.checkinCounter }
+        forEach {
+            dic[$0.title ?? ""]?.checkinCounter = $0.checkinCounter
+            dic[$0.title ?? ""]?.checkinDay = $0.checkinDay
+        }
         return dic
     }
     
