@@ -58,7 +58,7 @@ extension Collection where Iterator.Element == Station {
                 placemark: MKPlacemark(coordinate: location, addressDictionary: [title: ""]),
                 image: image,
                 address: address,
-                isOpening: station.state == 1 ? true : false
+                isOpening: station.state == 1
             )
         }
     }

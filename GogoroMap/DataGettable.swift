@@ -112,6 +112,7 @@ extension Data {
     var toAnnoatations: [CustomPointAnnotation]? {
         return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
     }
+    
     func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
         let bcf = ByteCountFormatter()
         bcf.allowedUnits = units
@@ -119,16 +120,17 @@ extension Data {
         
         return bcf.string(fromByteCount: Int64(count))
     }
+    ///* 
+    //    var parsed: [CustomPointAnnotation]? {
+    //        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
+    //                return nil
+    //        }
+    //
+    //        return jsonDic.map(Station.init).customPointAnnotations
     
-//    var parsed: [CustomPointAnnotation]? {
-//        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
-//                return nil
-//        }
-//
-//        return jsonDic.map(Station.init).customPointAnnotations
-//
-//
-//    }
+    
+    //    }
+    //*/
 }
 
 extension Array where Element: CustomPointAnnotation {

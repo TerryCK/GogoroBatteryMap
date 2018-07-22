@@ -20,9 +20,10 @@ extension Parsable {
             let jsonDic = jsonDictionary?["data"] as? [[String: Any]] else {
                 return nil
         }
-        return jsonDic.map { Station(dictionary: $0) }.customPointAnnotations
+        return jsonDic.map(Station.init(dictionary:)).customPointAnnotations
     }
 }
 
 extension Data: Parsable { }
 extension NSData: Parsable { }
+
