@@ -18,7 +18,9 @@ enum ClusterStatus {
     case on, off
     
     mutating func change() {
-        self = self == .on ? .off : .on
+        let willBe: ClusterStatus = self == .on ? .off : .on
+        UserDefaults.standard.set(willBe == .on, forKey: "cluster")
+        self = willBe
     }
 }
 
@@ -33,7 +35,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     var currentUserLocation: CLLocation!
     var myLocationManager: CLLocationManager!
     var visibleMapRect: MKMapRect?
-    var clusterSwitcher = ClusterStatus.on {
+    var clusterSwitcher: ClusterStatus = UserDefaults.standard.bool(forKey: "cluster") ? .on : .off {
         didSet {
             clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
 //            clusterManager.minCountForClustering = self.clusterSwitcher == .on ? 3 :
@@ -151,10 +153,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     }
     
     //     MARK: - View Creators
-    private let clusterManager: ClusterManager = {
+    private lazy var clusterManager: ClusterManager = {
         let myManager = ClusterManager()
-
-        myManager.maxZoomLevel = 16
+        myManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         myManager.minCountForClustering = 3
         return myManager
     }()
