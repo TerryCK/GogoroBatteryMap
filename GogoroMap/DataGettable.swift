@@ -52,7 +52,7 @@ extension DataGettable where Self: MapViewController {
     
     private func getAnnotationFromFile() -> [CustomPointAnnotation] {
         guard
-            let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json"),
+            let filePath = Bundle.main.path(forResource: "gogoro2", ofType: "json"),
             let data = try? NSData(contentsOfFile: filePath) as Data,
             let annotationsFromFile = data.parsed else {
                 return [CustomPointAnnotation]()
@@ -62,7 +62,6 @@ extension DataGettable where Self: MapViewController {
     }
     
     func getAnnotationFromRemote(_ completeHandle: (() -> Void)? = nil) {
-        
         guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
@@ -121,31 +120,27 @@ extension Data {
         return bcf.string(fromByteCount: Int64(count))
     }
     
-    var parsed: [CustomPointAnnotation]? {
-        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
-                return nil
-        }
-        
-        return jsonDic.map(Station.init).customPointAnnotations
-     
-
-    }
+//    var parsed: [CustomPointAnnotation]? {
+//        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
+//                return nil
+//        }
+//
+//        return jsonDic.map(Station.init).customPointAnnotations
+//
+//
+//    }
 }
 
 extension Array where Element: CustomPointAnnotation {
     
-    private func getDictionary(with array: Array) -> Dictionary<String, Element> {
+    private func getDictionary(with remoteArray: Array) -> Dictionary<String, Element> {
         var dic = [String: Element]()
-        
-        let setElementToDictionary = { (element: Element) in
-            dic[element.title ?? ""] = element
-        }
-        
-        array.forEach(setElementToDictionary)
-        forEach(setElementToDictionary)
-        
+        remoteArray.forEach { dic[$0.title ?? ""] = $0 }
+        forEach { dic[$0.title ?? ""]?.checkinCounter = $0.checkinCounter }
         return dic
     }
+    
+    
     
     
     func merge(from remote: Array) -> Results<Element> {
