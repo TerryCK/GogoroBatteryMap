@@ -1,24 +1,52 @@
 //
-//  BatteryStation.swift
+//  Response.swift
 //  GogoroMap
 //
 //  Created by 陳 冠禎 on 23/02/2019.
 //  Copyright © 2019 陳 冠禎. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-struct BatteryStation: Decodable {
-    let data: [Datum]
+protocol StationProtocol {
+    var state: Int { get }
+    var name: Response.Station.Detail { get }
+    var address: Response.Station.Detail { get }
+    var latitude : Double { get  }
+    var longitude: Double { get  }
+    var availableTime: String? { get }
+}
+
+extension StationProtocol {
+    var annotationImage: UIImage { return state != 1 ? #imageLiteral(resourceName: "building") : availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shortTime") }
+}
+
+extension Response.Station.Detail {
+    func localized() -> String? {
+        return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value 
+    }
+}
+
+struct Response: Decodable {
+    let stations: [Station]
     
-    struct Datum: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case stations = "data"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        stations = try container.decode([Station].self, forKey: .stations)
+    }
+    
+    struct Station: Decodable, StationProtocol {
         let state: Int
-        let locName, address : Detail
+        let name, address : Detail
         let latitude, longitude: Double
         let availableTime: String?
         
         enum CodingKeys: String, CodingKey {
-            case locName = "LocName"
+            case name = "LocName"
             case latitude = "Latitude"
             case longitude = "Longitude"
             case address = "Address"
@@ -28,23 +56,21 @@ struct BatteryStation: Decodable {
         
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            state          = try container.decode(Int.self, forKey: .state)
+            state         = try container.decode(Int.self, forKey: .state)
             latitude      = try container.decode(Double.self, forKey: .latitude)
             longitude     = try container.decode(Double.self, forKey: .longitude)
             availableTime = try container.decode(String?.self, forKey: .availableTime)
             
-            let locNameString = try container.decode(String.self, forKey: .locName)
+            let nameString = try container.decode(String.self, forKey: .name)
             let addressString = try container.decode(String.self, forKey: .address)
-            
             let jsonDecoder = JSONDecoder()
-            locName = try jsonDecoder.decode(Detail.self, from: locNameString.data(using: .utf8)!)
+            
+            name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
             address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
         }
-
+        
         struct Detail: Decodable {
             let list: [Localization]
-            var en: String?  { return list.first?.value }
-            var zh: String?  { return list.last?.value  }
             
             enum CodingKeys: String, CodingKey {
                 case list = "List"

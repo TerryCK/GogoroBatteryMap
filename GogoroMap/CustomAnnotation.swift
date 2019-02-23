@@ -18,6 +18,18 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
     var isOpening: Bool = false
     var checkinDay: String = ""
     
+    convenience init(station: StationProtocol) {
+        let location = CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude)
+        let name = station.name.localized() ?? ""
+        let address = station.address.localized() ?? ""
+        self.init(title: name,
+                  subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
+            coordinate: location,
+            placemark: MKPlacemark(coordinate: location, addressDictionary: [name: ""]),
+            image: station.annotationImage,
+            address: address,
+            isOpening: station.state == 1)
+    }
     
     init(title: String,
          subtitle: String,
@@ -30,7 +42,6 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
          checkinDay: String = " ") {
         
         super.init()
-        
         self.title = title
         self.subtitle = subtitle
         self.coordinate = coordinate
