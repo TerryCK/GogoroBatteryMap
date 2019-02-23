@@ -6,8 +6,10 @@
 //  Copyright © 2018 陳 冠禎. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 extension String {
     func localize() -> String { return NSLocalizedString(self, comment: "") }
 }
+
+

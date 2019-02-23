@@ -13,7 +13,7 @@
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
 		A80759681F4C04430031D576 /* CheckinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759671F4C04430031D576 /* CheckinButton.swift */; };
 		A808F0442220ED0E00761A31 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A808F0432220ED0E00761A31 /* gogoro.json */; };
-		A808F0462220ED3900761A31 /* BatteryStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A808F0452220ED3900761A31 /* BatteryStation.swift */; };
+		A808F0462220ED3900761A31 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = A808F0452220ED3900761A31 /* Response.swift */; };
 		A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8187E8D1F453458008E1558 /* LocationManageable.swift */; };
 		A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8187E8F1F453E22008E1558 /* Mailsendable.swift */; };
 		A819F0711F45E43200F472CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D3686E1F3B435E0015F5F9 /* Main.storyboard */; };
@@ -83,7 +83,7 @@
 		A80759651F4BD6480031D576 /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
 		A80759671F4C04430031D576 /* CheckinButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckinButton.swift; sourceTree = "<group>"; };
 		A808F0432220ED0E00761A31 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
-		A808F0452220ED3900761A31 /* BatteryStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStation.swift; sourceTree = "<group>"; };
+		A808F0452220ED3900761A31 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		A8187E8D1F453458008E1558 /* LocationManageable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManageable.swift; sourceTree = "<group>"; };
 		A8187E8F1F453E22008E1558 /* Mailsendable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mailsendable.swift; sourceTree = "<group>"; };
 		A81ADFEF2026DC0E008A757D /* GogoroMap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GogoroMap.entitlements; sourceTree = "<group>"; };
@@ -224,7 +224,7 @@
 				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
 				A8742B011F449741002BA66B /* Keys.swift */,
 				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
-				A808F0452220ED3900761A31 /* BatteryStation.swift */,
+				A808F0452220ED3900761A31 /* Response.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -714,7 +714,7 @@
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				A899BBBF2026C8310043EA57 /* Parsable.swift in Sources */,
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
-				A808F0462220ED3900761A31 /* BatteryStation.swift in Sources */,
+				A808F0462220ED3900761A31 /* Response.swift in Sources */,
 				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,

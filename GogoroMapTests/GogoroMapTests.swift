@@ -19,8 +19,8 @@ class GogoroMapTests: XCTestCase {
         }
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
-            let batteryStation = try JSONDecoder().decode(BatteryStation.self, from: data)
-            XCTAssertNotNil(batteryStation.data.first?.address.zh)
+            let response = try JSONDecoder().decode(Response.self, from: data)
+            XCTAssertNotNil(response.stations.first?.address.localized())
         } catch {
            XCTFail("\(error)")
         }
