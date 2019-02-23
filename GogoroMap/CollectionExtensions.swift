@@ -25,11 +25,7 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
         }
     }
     
-    var totalCheckin: Int {
-        return self.reduce(0) {
-            return $0 + $1.checkinCounter
-        }
-    }
+    var totalCheckin: Int { return reduce(0) {  $0 + $1.checkinCounter } }
 }
 
 

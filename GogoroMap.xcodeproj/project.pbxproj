@@ -20,6 +20,7 @@
 		A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D368731F3B435E0015F5F9 /* LaunchScreen.storyboard */; };
 		A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A81ADFF02026DC1B008A757D /* CloudKit.framework */; };
 		A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */; };
+		A83ACBF622211DF3003907FD /* Decorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF522211DF3003907FD /* Decorator.swift */; };
 		A840F34E1F472A4900D33741 /* DataGettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A840F34D1F472A4900D33741 /* DataGettable.swift */; };
 		A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84209D41F4EBCE800633FC7 /* OberserName.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
@@ -88,6 +89,7 @@
 		A81ADFEF2026DC0E008A757D /* GogoroMap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GogoroMap.entitlements; sourceTree = "<group>"; };
 		A81ADFF02026DC1B008A757D /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedClusterAnnotationView.swift; sourceTree = "<group>"; };
+		A83ACBF522211DF3003907FD /* Decorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decorator.swift; sourceTree = "<group>"; };
 		A840F34D1F472A4900D33741 /* DataGettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataGettable.swift; sourceTree = "<group>"; };
 		A84209D41F4EBCE800633FC7 /* OberserName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OberserName.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
 				A899BBBE2026C8310043EA57 /* Parsable.swift */,
 				A85E9FBB201D7D530008665B /* String+Extension.swift */,
+				A83ACBF522211DF3003907FD /* Decorator.swift */,
 				A899BBBA2026C8020043EA57 /* Answer+Entension.swift */,
 			);
 			name = Protocols;
@@ -680,6 +683,7 @@
 				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
+				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
