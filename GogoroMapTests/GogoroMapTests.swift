@@ -12,24 +12,17 @@ import XCTest
 
 class GogoroMapTests: XCTestCase {
     
-   
-    
-    override func setUp() {
-        super.setUp()
-        
+    func testParseJSONObject() {
+        guard let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json")  else {
+             XCTFail("JSON file not found")
+            return
+        }
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+            let batteryStation = try JSONDecoder().decode(BatteryStation.self, from: data)
+            XCTAssertNotNil(batteryStation.data.first?.address.zh)
+        } catch {
+           XCTFail("\(error)")
+        }
     }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        
-        
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    
 }
