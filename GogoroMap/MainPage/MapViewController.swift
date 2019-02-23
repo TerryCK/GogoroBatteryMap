@@ -141,6 +141,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         clusterManager.remove(oldValue)
         updataAnnotationImage(annotations: annotations)
         clusterManager.add(annotations)
+        reloadMapView()
     }
     
     //     MARK: - Computed Properties
@@ -321,7 +322,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     
     @objc func performMenu() {
-        Answers.log(event: .mapButton, customAttributes: "Perform Menu")
+        Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
         if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
             self.setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
@@ -541,7 +542,7 @@ extension MapViewController: UICollectionViewDataSource {
     }
     
     private func mapViewMove(to station: CustomPointAnnotation) {
-        Answers.log(event: .mapButton, customAttributes: "mapViewMove")
+        Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
         let factor = 0.7
         let height: Double = 20000
@@ -576,13 +577,13 @@ extension MapViewController: UICollectionViewDelegateFlowLayout {
 extension MapViewController {
     
     @objc func checkin() {
-        Answers.log(event: .mapButton, customAttributes: "Check in")
+        Answers.log(event: .MapButtons, customAttributes: "Check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter + 1
     }
     
     
     @objc func unCheckin() {
-        Answers.log(event: .mapButton, customAttributes: "Remove check in")
+        Answers.log(event: .MapButtons, customAttributes: "Remove check in")
         counterOfcheckin = annotations[indexOfAnnotations].checkinCounter - 1
     }
 }
@@ -607,7 +608,7 @@ extension MapViewController {
             .map { listToDisplay = $0 }
         
 
-        Answers.log(event: .mapButton, customAttributes: segmentStatus.eventName)
+        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
 
     }
 }
@@ -673,9 +674,9 @@ extension MapViewController: Navigatorable {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        Answers.log(event: .mapButton, customAttributes: "Display annotation view")
+        Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         guard let annotation = view.annotation else { return }
-        self.selectedAnnotationView = nil
+        selectedAnnotationView = nil
         
         //        MARK:  feature fo cluster
         if let clusterAnnotation = annotation as? ClusterAnnotation {
@@ -684,7 +685,7 @@ extension MapViewController: Navigatorable {
         }
         
         self.selectedAnnotationView = view
-        
+        print( annotations.contains(annotation as! CustomPointAnnotation),annotations.index(of: annotation as! CustomPointAnnotation))
         guard let customPointannotation = annotation as? CustomPointAnnotation,
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
             let index = annotations.index(of: customPointannotation) else { return }
@@ -723,13 +724,13 @@ extension MapViewController: Navigatorable {
     }
     
     @objc func navigating() {
-        Answers.log(event: .mapButton, customAttributes: "Navigate")
+        Answers.log(event: .MapButtons, customAttributes: "Navigate")
         guard let destination = self.selectedPin else { return }
         go(to: destination)
     }
     
     @objc func locationArrowPressed() {
-        Answers.log(event: .mapButton, customAttributes: "Changing tracking mode")
+        Answers.log(event: .MapButtons, customAttributes: "Changing tracking mode")
         locationArrowTapped()
     }
 }
@@ -761,7 +762,7 @@ extension MapViewController: IAPPurchasable {
         
         guard let productID = notification.object as? String,
             RegisteredPurchase.removedProductID == productID else { return }
-        Answers.log(event: .purchaseEvent, customAttributes: "Removed Ad")
+        Answers.log(event: .PurchaseEvents, customAttributes: "Removed Ad")
         
         adContainerView.removeFromSuperview()
         mapView.layoutIfNeeded()
