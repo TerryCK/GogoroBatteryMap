@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol StationProtocol {
+protocol ResponseStationProtocol {
     var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
@@ -16,8 +16,16 @@ protocol StationProtocol {
     var longitude: Double { get  }
     var availableTime: String? { get }
 }
+protocol StationDataSorce: ResponseStationProtocol {
+    var checkinDay: String  { get }
+    var isOpening: Bool     { get }
+    var checkinCounter: Int { get }
+}
 
-extension StationProtocol {
+extension StationDataSorce {
+    var isOpening: Bool { return state == 1 }
+}
+extension ResponseStationProtocol {
     var annotationImage: UIImage { return state != 1 ? #imageLiteral(resourceName: "building") : availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shortTime") }
 }
 
@@ -39,7 +47,7 @@ struct Response: Decodable {
         stations = try container.decode([Station].self, forKey: .stations)
     }
     
-    struct Station: Decodable, StationProtocol {
+    struct Station: Decodable, ResponseStationProtocol {
         let state: Int
         let name, address : Detail
         let latitude, longitude: Double

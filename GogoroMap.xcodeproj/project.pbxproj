@@ -21,6 +21,7 @@
 		A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A81ADFF02026DC1B008A757D /* CloudKit.framework */; };
 		A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */; };
 		A83ACBF622211DF3003907FD /* Decorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF522211DF3003907FD /* Decorator.swift */; };
+		A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */; };
 		A840F34E1F472A4900D33741 /* DataGettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A840F34D1F472A4900D33741 /* DataGettable.swift */; };
 		A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84209D41F4EBCE800633FC7 /* OberserName.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
@@ -90,6 +91,7 @@
 		A81ADFF02026DC1B008A757D /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedClusterAnnotationView.swift; sourceTree = "<group>"; };
 		A83ACBF522211DF3003907FD /* Decorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decorator.swift; sourceTree = "<group>"; };
+		A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationPointAnnotation.swift; sourceTree = "<group>"; };
 		A840F34D1F472A4900D33741 /* DataGettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataGettable.swift; sourceTree = "<group>"; };
 		A84209D41F4EBCE800633FC7 /* OberserName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OberserName.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				A8D3689E1F3B54C80015F5F9 /* Station.swift */,
 				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
+				A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */,
 				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
 				A8742B011F449741002BA66B /* Keys.swift */,
 				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
@@ -693,6 +696,7 @@
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
+				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
 				A840F34E1F472A4900D33741 /* DataGettable.swift in Sources */,
 				A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
