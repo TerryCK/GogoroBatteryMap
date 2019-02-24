@@ -12,11 +12,12 @@ import MapKit
 final class BatteryStationPointAnnotation: MKPointAnnotation {
     let image: UIImage,
     placemark: MKPlacemark,
-    checkinCounter: Int,
-    checkinDay, address: String,
+    checkinCounter: Int?,
+    checkinDay: String?,
+    address: String,
     isOpening: Bool
     
-    init(station: StationDataSorce) {
+    init(station: ResponseStationProtocol) {
         let name     = station.name.localized() ?? ""
         let location = CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude)
         placemark    = MKPlacemark(coordinate: location, addressDictionary: [name: ""])

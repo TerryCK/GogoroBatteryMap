@@ -35,7 +35,7 @@ enum SegmentStatus: Int {
     
     private func logWithAnswer() {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: self.eventName])
+                               customAttributes: [Log.sharedName.mapButton: eventName])
     }
     
     func getAnnotationToDisplay(annotations: [CustomPointAnnotation],

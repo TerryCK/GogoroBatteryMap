@@ -50,15 +50,10 @@ extension DataGettable where Self: MapViewController {
         return annotationFromDatabase
     }
     
-    private func getAnnotationFromFile() -> [CustomPointAnnotation] {
-        guard
-            let filePath = Bundle.main.path(forResource: "gogoro2", ofType: "json"),
-            let data = try? NSData(contentsOfFile: filePath) as Data,
-            let annotationsFromFile = data.parsed else {
-                return [CustomPointAnnotation]()
-        }
-        print("get data from local file")
-        return annotationsFromFile
+    
+    private func getAnnotationFromBundle() -> [ResponseStationProtocol] {
+        let data = try! Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gogoro", ofType: "json")!))
+        return (try! JSONDecoder().decode(Response.self, from: data)).stations
     }
     
     func getAnnotationFromRemote(_ completeHandle: (() -> Void)? = nil) {
@@ -75,7 +70,7 @@ extension DataGettable where Self: MapViewController {
             
             if let error = error {
                 dataFromDatabase()
-                print("Failed: ", error)
+                print("Failed: \(error)")
                 return
             }
             
@@ -122,17 +117,6 @@ extension Data {
         
         return bcf.string(fromByteCount: Int64(count))
     }
-    ///* 
-    //    var parsed: [CustomPointAnnotation]? {
-    //        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: self) as? [[String: Any]], let jsonDic = jsonDictionary else {
-    //                return nil
-    //        }
-    //
-    //        return jsonDic.map(Station.init).customPointAnnotations
-    
-    
-    //    }
-    //*/
 }
 
 extension Array where Element: CustomPointAnnotation {

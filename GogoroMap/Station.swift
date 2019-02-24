@@ -6,9 +6,12 @@
 //  Copyright © 2017年 陳 冠禎. All rights reserved.
 //
 
-import Foundation
+import UIKit
 //TODO: - Codable
+
+
 struct Station {
+    
     let id: String?
     let locName: LocName?
     let latitude: Double?
@@ -20,6 +23,7 @@ struct Station {
     let city: String?
     let availableTime: String?
     let availableTimeByte: String?
+    
     
     init(dictionary: [String: Any]) {
         self.id = dictionary["Id"] as? String ?? ""
@@ -57,3 +61,4 @@ struct Station {
     }
     
 }
+
