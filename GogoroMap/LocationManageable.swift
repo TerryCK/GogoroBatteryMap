@@ -31,8 +31,8 @@ extension LocationManageable where Self: MapViewController {
         switch authrizationStatus {
             
         case .notDetermined:
-            myLocationManager.requestWhenInUseAuthorization()
-            myLocationManager.startUpdatingLocation()
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
             
         case .denied: //提示可以在設定中打開
             
@@ -46,7 +46,7 @@ extension LocationManageable where Self: MapViewController {
             present(alertController, animated: true, completion: nil)
             
         case .authorizedWhenInUse:
-            myLocationManager.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
             
         default:
             print("Location authrization error")
@@ -59,17 +59,17 @@ extension LocationManageable where Self: MapViewController {
     }
     
     private func initializeLocationManager() {
-        myLocationManager = CLLocationManager()
-        myLocationManager.delegate = self
-        myLocationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters
-        myLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
     }
     
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
         let currentLocationSpan = MKCoordinateSpanMake(latDelta, longDelta)
         
-        if let current = myLocationManager.location {
+        if let current = locationManager.location {
             self.userLocationCoordinate = current.coordinate
             print("取得使用者GPS位置")
         } else {
@@ -150,7 +150,7 @@ extension MapViewController: LocationManageable {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
-            myLocationManager.requestLocation()
+            locationManager.requestLocation()
         }
     }
     

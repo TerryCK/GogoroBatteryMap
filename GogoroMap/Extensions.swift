@@ -18,23 +18,23 @@ extension UIColor {
     }
     
     static var lightBlue: UIColor {
-        return UIColor.rgb(red: 149, green: 204, blue: 244)
+        return .rgb(red: 149, green: 204, blue: 244)
     }
     
     static var lightGreen: UIColor {
-        return UIColor.rgb(red: 45, green: 149, blue: 64)
+        return .rgb(red: 45, green: 149, blue: 64)
     }
     
     static var heavyBlue: UIColor {
-        return UIColor.rgb(red: 17, green: 154, blue: 237)
+        return .rgb(red: 17, green: 154, blue: 237)
     }
     
     static var grassGreen: UIColor {
-        return UIColor.rgb(red: 85 , green: 177, blue: 114)
+        return .rgb(red: 85 , green: 177, blue: 114)
     }
     
     static var lightRed: UIColor {
-        return UIColor.rgb(red: 218 , green: 52, blue: 53)
+        return .rgb(red: 218 , green: 52, blue: 53)
     }
     
 }
@@ -50,55 +50,54 @@ extension UIView {
         
         translatesAutoresizingMaskIntoConstraints = false
         
+        
         if let top = top {
-            self.topAnchor.constraint(equalTo: top, constant: topPadding).isActive = true
+            topAnchor.constraint(equalTo: top, constant: topPadding).isActive = true
         }
         
         if let left = left {
-            self.leftAnchor.constraint(equalTo: left, constant: leftPadding).isActive = true
+            leftAnchor.constraint(equalTo: left, constant: leftPadding).isActive = true
         }
         
         if let bottom = bottom {
-            self.bottomAnchor.constraint(equalTo: bottom, constant: -bottomPadding).isActive = true
+            bottomAnchor.constraint(equalTo: bottom, constant: -bottomPadding).isActive = true
         }
         
         if let right = right {
-            self.rightAnchor.constraint(equalTo: right, constant: -rightPadding).isActive = true
+            rightAnchor.constraint(equalTo: right, constant: -rightPadding).isActive = true
         }
         
         if width != 0 {
-            self.widthAnchor.constraint(equalToConstant: width).isActive = true
+            widthAnchor.constraint(equalToConstant: width).isActive = true
         }
         
         if height != 0 {
-            self.heightAnchor.constraint(equalToConstant: height).isActive = true
+            heightAnchor.constraint(equalToConstant: height).isActive = true
         }
     }
 }
 // MARK: - Animation of infinity rotate 360˚
 extension UIView {
+    
     func rotate360Degrees(duration: CFTimeInterval = 1.0) {
         let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
         rotateAnimation.fromValue = 0.0
         rotateAnimation.toValue = CGFloat.pi * 2
         rotateAnimation.duration = duration
         rotateAnimation.repeatCount = Float.infinity
-        self.layer.add(rotateAnimation, forKey: nil)
+        layer.add(rotateAnimation, forKey: nil)
     }
     
-    func stopRotating(){
-        self.layer.sublayers?.removeAll()
-        //or
-//        self.layer.removeAllAnimations()
+    func stopRotating() {
+        layer.sublayers?.removeAll()
     }
     
     private func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
-        
         let hiddenAnimation = CABasicAnimation(keyPath: "opacity")
         hiddenAnimation.fromValue = hidden ? 0 : 1
         hiddenAnimation.toValue = hidden ? 1 : 0
         hiddenAnimation.duration = duration
-        self.layer.add(hiddenAnimation, forKey: nil)
+        layer.add(hiddenAnimation, forKey: nil)
         isHidden = hidden
     }
     
@@ -218,15 +217,12 @@ extension UIDevice {
 extension MKMapPoint {
     var centerOfScreen: MKMapPoint {
         let factorOfPixelToMapPoint = 12000.0 / 320
-        let offsetCenterX: Double = Double(UIScreen.main.bounds.width / 2) * factorOfPixelToMapPoint
-        let offsetCenterY: Double = Double(UIScreen.main.bounds.height / 2) * factorOfPixelToMapPoint
-        
+        let offsetCenterX  = Double(UIScreen.main.bounds.width / 2) * factorOfPixelToMapPoint
+        let offsetCenterY  = Double(UIScreen.main.bounds.height / 2) * factorOfPixelToMapPoint
         return MKMapPoint(x: x - offsetCenterX, y: y - offsetCenterY)
     }
 }
 
 extension UserDefaults {
-    static var hasBuyItems: Bool {
-        return standard.bool(forKey: Keys.standard.hasPurchesdKey)
-    }
+    static var hasBuyItems: Bool { return standard.bool(forKey: Keys.standard.hasPurchesdKey) }
 }

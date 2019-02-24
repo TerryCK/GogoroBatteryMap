@@ -15,18 +15,23 @@ protocol ResponseStationProtocol {
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-}
-protocol StationDataSorce: ResponseStationProtocol {
-    var checkinDay: String  { get }
+    var checkinDay: String?  { get }
+    var checkinCounter: Int? { get }
     var isOpening: Bool     { get }
-    var checkinCounter: Int { get }
 }
 
-extension StationDataSorce {
-    var isOpening: Bool { return state == 1 }
-}
 extension ResponseStationProtocol {
-    var annotationImage: UIImage { return state != 1 ? #imageLiteral(resourceName: "building") : availableTime?.contains("24") ?? false ? #imageLiteral(resourceName: "pinFull") : #imageLiteral(resourceName: "shortTime") }
+    var isOpening: Bool { return state == 1 }
+    var annotationImage: UIImage { return isOpening ? Self.makePoiontAnnotationImage(with: name.list.last?.value) : #imageLiteral(resourceName: "building") }
+    
+    static func makePoiontAnnotationImage(with name: String?) -> UIImage {
+        guard let name = name else { return  #imageLiteral(resourceName: "pinFull") }
+        if name.contains("加油")                                { return #imageLiteral(resourceName: "gasStation") }
+        if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
+        if ["家樂福", "大潤發", "Mall", "百貨"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
+        if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
+        return #imageLiteral(resourceName: "pinFull")
+    }
 }
 
 extension Response.Station.Detail {
@@ -41,24 +46,22 @@ struct Response: Decodable {
     enum CodingKeys: String, CodingKey {
         case stations = "data"
     }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        stations = try container.decode([Station].self, forKey: .stations)
-    }
-    
+
     struct Station: Decodable, ResponseStationProtocol {
+        var checkinDay: String?
+        var checkinCounter: Int?
+        
         let state: Int
         let name, address : Detail
         let latitude, longitude: Double
         let availableTime: String?
         
         enum CodingKeys: String, CodingKey {
-            case name = "LocName"
-            case latitude = "Latitude"
-            case longitude = "Longitude"
-            case address = "Address"
-            case state = "State"
+            case name          = "LocName"
+            case latitude      = "Latitude"
+            case longitude     = "Longitude"
+            case address       = "Address"
+            case state         = "State"
             case availableTime = "AvailableTime"
         }
         
@@ -77,14 +80,14 @@ struct Response: Decodable {
             address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
         }
         
-        struct Detail: Decodable {
+        struct Detail: Codable {
             let list: [Localization]
             
             enum CodingKeys: String, CodingKey {
                 case list = "List"
             }
             
-            struct Localization: Decodable {
+            struct Localization: Codable {
                 let value, lang: String?
                 
                 enum CodingKeys: String, CodingKey {
