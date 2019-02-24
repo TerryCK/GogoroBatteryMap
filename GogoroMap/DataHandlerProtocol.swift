@@ -1,5 +1,5 @@
 //
-//  DataGettable.swift
+//  DataHandlerProtocol.swift
 //  GogoroMap
 //
 //  Created by 陳 冠禎 on 2017/8/18.
@@ -10,7 +10,7 @@ import Foundation
 
 typealias Results<T> = (reservesArray: [T], discardArray: [T]) where T: CustomPointAnnotation
 
-protocol DataGettable: CloudBackupable {
+protocol DataHandlerProtocol: CloudBackupable {
     
     func initializeData()
     
@@ -22,15 +22,47 @@ protocol DataGettable: CloudBackupable {
     
 }
 
+enum Result<T> {
+    case success(T)
+    case fail(Error?)
+}
+//
+//final class DataManager {
+//    private static func fetchData(withURL url: URL = URL(string: Keys.standard.gogoroAPI)!, onCompletion handler: @escaping (Result<Data>) -> Void) {
+//        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+//        print("*** API: \(url) ***")
+//        URLSession.shared.dataTask(with: url) { (data, _, error) in
+//            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+//            switch data {
+//            case .some(let data): handler(.success(data))
+//            case .none          : handler(.fail(error))
+//            }
+//        }.resume()
+//    }
+//    
+//    private init() {
+//        switch UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) {
+//        case false:
+//            data = try! Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gogoro", ofType: "json")!))
+//        }
+//        
+//        
+//        
+//    }
+//    static let shared = DataManager()
+//    var data: Data
+//    
+//}
 
 
-extension DataGettable where Self: MapViewController {
+extension DataHandlerProtocol where Self: MapViewController {
+    
     func initializeData() {
-
+        
         DispatchQueue.global().async {
             if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
                 self.annotations.isEmpty {
-                self.annotations = self.getAnnotationFromFile()
+                //                self.annotations = self.getAnnotationFromBundle()
             } else if self.mapView.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
             }
@@ -38,13 +70,15 @@ extension DataGettable where Self: MapViewController {
         }
         
     }
-   
+    
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {
+        
         guard
-            let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
+            let annotationsData = UserDefaults.standard.data(forKey: Keys.standard.annotationsKey),
             let annotationFromDatabase =  annotationsData.toAnnoatations else {
-                return getAnnotationFromFile()
+                return [CustomPointAnnotation]()
+                //                return getAnnotationFromBundle()
         }
         print("get data from database")
         return annotationFromDatabase
@@ -60,12 +94,12 @@ extension DataGettable where Self: MapViewController {
         guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
+        print("*** API: \(url) ***")
         
-        print("API: \(url)")
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             defer {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                completeHandle.map { $0() }
+                completeHandle?()
             }
             
             if let error = error {
@@ -74,14 +108,13 @@ extension DataGettable where Self: MapViewController {
                 return
             }
             
-            guard let annotationFromRemote = data?.parsed,
-                annotationFromRemote.count > 50 else {
+            guard let data = data,
+                let response = try? JSONDecoder().decode(Response.self, from: data),
+                response.stations.count > 50 else {
                     dataFromDatabase()
                     return
             }
             
-            (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: annotationFromRemote)
-
             }.resume()
         
         func dataFromDatabase() {
@@ -90,11 +123,10 @@ extension DataGettable where Self: MapViewController {
             }
         }
     }
-
+    
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-        let archiveData = annotations.toData
-        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
-        UserDefaults.standard.synchronize()
+//        let archiveData = annotations.toData
+//        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
         post()
     }
     
@@ -107,7 +139,8 @@ extension DataGettable where Self: MapViewController {
 //MARK: Parsed Data using model of CustomPointAnnotation
 extension Data {
     var toAnnoatations: [CustomPointAnnotation]? {
-        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+        return [CustomPointAnnotation]()
+        //        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
     }
     
     func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {

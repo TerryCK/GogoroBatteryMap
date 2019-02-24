@@ -27,21 +27,15 @@ enum ClusterStatus {
 
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
-final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHandleable, DataGettable, ManuGuideDelegate {
-
-
-//         MARK: - Properties
+final class MapViewController: UIViewController, MKMapViewDelegate, DataHandlerProtocol, ManuGuideDelegate {
 
     var currentUserLocation: CLLocation!
-    var myLocationManager: CLLocationManager!
+    var locationManager: CLLocationManager!
     var visibleMapRect: MKMapRect?
     var clusterSwitcher: ClusterStatus = UserDefaults.standard.bool(forKey: "cluster") ? .on : .off {
         didSet {
             clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
-//            clusterManager.minCountForClustering = self.clusterSwitcher == .on ? 3 :
-            
             reloadMapView()
-            
         } 
     }
     
@@ -66,15 +60,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         cellEmptyGuideView.isHidden = false
     }
     
-    let cellEmptyGuideView: UITextView = {
-        let myTextView = UITextView()
-        myTextView.text = "目前尚未有符合資料可顯示..."
-        myTextView.font = UIFont.systemFont(ofSize: 32)
-        myTextView.textAlignment = .center
-        myTextView.isEditable = false
-        myTextView.isHidden = true
-        return myTextView
-    }()
+    let cellEmptyGuideView = UITextView {
+        $0.text = "目前尚未有符合資料可顯示..."
+        $0.font = .systemFont(ofSize: 32)
+        $0.textAlignment = .center
+        $0.isEditable = false
+        $0.isHidden = true
+    }
     
     private var selectedAnnotationView: MKAnnotationView? = MKAnnotationView()
     private var detailView = DetailAnnotationView()
@@ -102,7 +94,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
                 lastCheckinString = "最近的打卡日：\(Date.today)"
                 
             case .unCheckin:
-                selectedAnnotationView?.image = getImage(with: selectedPin?.title)
+                selectedAnnotationView?.image = makePoiontAnnotationImage(with: selectedPin?.title)
                 annotations[indexOfAnnotations].checkinDay = ""
                 detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
                 
@@ -117,6 +109,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         }
     }
     
+   
     
     //     MARK: - Handler of Annotations on map with store property obsever
     var willRemovedAnnotations = [CustomPointAnnotation]() {
@@ -139,7 +132,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     
     private func clusterUpdating(with oldValue: [CustomPointAnnotation]) {
         clusterManager.remove(oldValue)
-        updataAnnotationImage(annotations: annotations)
+//        updataAnnotationImage(annotations: annotations)
         clusterManager.add(annotations)
         reloadMapView()
     }
@@ -161,23 +154,20 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         return myManager
     }()
     
-    lazy var mapView: MKMapView = {
-        let mapView = MKMapView()
-        mapView.delegate = self
-        mapView.mapType = .standard
-        mapView.showsUserLocation = true
-        mapView.isZoomEnabled = true
-        mapView.showsCompass = true
-        mapView.showsScale = true
-        mapView.showsTraffic = false
-        return mapView
-    }()
+    lazy var mapView = MKMapView {
+        $0.delegate = self
+        $0.mapType = .standard
+        $0.showsUserLocation = true
+        $0.isZoomEnabled = true
+        $0.showsCompass = true
+        $0.showsScale = true
+        $0.showsTraffic = false
+    }
     
     lazy var adContainerView: AdContainerView = {
-        let containerView = AdContainerView.shared
-        containerView.nativeAdView.delegate = self
-        containerView.nativeAdView.rootViewController = self
-        return containerView
+        AdContainerView.shared.nativeAdView.delegate = self
+        AdContainerView.shared.nativeAdView.rootViewController = self
+        return AdContainerView.shared
     }()
     
     lazy var locationArrowView: UIButton = {
@@ -192,12 +182,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
-
         button.addTarget(self, action: .performMenu, for: .touchUpInside)
-
         return button
     }()
-    
     
     private lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl()
@@ -289,18 +276,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         Answers.log(view: "Map Page")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            
             self.seupAdContainerView()
         }
+        
         menuBarButton.willDisplay()
         locationArrowView.willDisplay()
-        
     }
     
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        myLocationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -312,14 +298,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
     //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
-    
         let guidePageController = GuidePageViewController()
         guidePageController.delegate = self
-
         present(guidePageController, animated: true, completion: nil)
     }
-    
-    
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
@@ -338,8 +320,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
         let sideManuManager = SideMenuManager.default
         sideManuManager.menuLeftNavigationController?.leftSide = true
         sideManuManager.menuLeftNavigationController = menuLeftNavigationController
-        
-//        sideManuManager.menuAnimationBackgroundColor = .white
         sideManuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         setSideMenuDefalts()
     }
@@ -495,22 +475,6 @@ extension MapViewController: UICollectionViewDataSource {
         return cell
     }
     
-/*
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 70)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        Answers.log(event: .mapButton, customAttributes: "Pressd CellView")
-*/
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
                                customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
