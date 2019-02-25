@@ -1,31 +1,60 @@
 PODS:
-  - Cluster (2.1.0)
-  - Crashlytics (3.9.3):
-    - Fabric (~> 1.7.2)
-  - Fabric (1.7.2)
-  - Firebase/Core (4.8.2):
-    - FirebaseAnalytics (= 4.0.9)
-    - FirebaseCore (= 4.0.14)
-  - FirebaseAnalytics (4.0.9):
-    - FirebaseCore (~> 4.0)
-    - FirebaseInstanceID (~> 2.0)
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+  - Cluster (2.4.4)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
+  - Fabric (1.9.0)
+  - Firebase/Core (5.17.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.6.0)
+  - Firebase/CoreOnly (5.17.0):
+    - FirebaseCore (= 5.3.0)
+  - FirebaseAnalytics (5.6.0):
+    - FirebaseCore (~> 5.3)
+    - FirebaseInstanceID (~> 3.5)
+    - GoogleAppMeasurement (= 5.6.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.14):
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseInstanceID (2.0.8):
-    - FirebaseCore (~> 4.0)
-  - Google-Mobile-Ads-SDK (7.27.0)
-  - GoogleToolboxForMac/Defines (2.1.3)
-  - GoogleToolboxForMac/NSData+zlib (2.1.3):
-    - GoogleToolboxForMac/Defines (= 2.1.3)
-  - nanopb (0.3.8):
-    - nanopb/decode (= 0.3.8)
-    - nanopb/encode (= 0.3.8)
-  - nanopb/decode (0.3.8)
-  - nanopb/encode (0.3.8)
-  - SideMenu (3.1.5)
-  - SwiftyStoreKit (0.12.1)
+  - FirebaseCore (5.3.0):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.5.0):
+    - FirebaseCore (~> 5.3)
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
+  - Google-Mobile-Ads-SDK (7.40.0)
+  - GoogleAppMeasurement (5.6.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - GoogleUtilities/AppDelegateSwizzler (5.3.7):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (5.3.7)
+  - GoogleUtilities/Logger (5.3.7):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (5.3.7):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (5.3.7)"
+  - GoogleUtilities/Reachability (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (5.3.7):
+    - GoogleUtilities/Logger
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
+  - SideMenu (5.0.1)
+  - SwiftyStoreKit (0.14.2)
 
 DEPENDENCIES:
   - Cluster
@@ -36,20 +65,37 @@ DEPENDENCIES:
   - SideMenu
   - SwiftyStoreKit
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Cluster
+    - Crashlytics
+    - Fabric
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
+    - Google-Mobile-Ads-SDK
+    - GoogleAppMeasurement
+    - GoogleUtilities
+    - nanopb
+    - SideMenu
+    - SwiftyStoreKit
+
 SPEC CHECKSUMS:
-  Cluster: b1b363bb4b6991c73f5da2f4ab175fc7424f9900
-  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
-  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
-  Firebase: 7d3b8cd837ad9fcd391657734c0d56dab8e9a5a3
-  FirebaseAnalytics: 388b630c15713f5dbf364071f5f3d6077fb52f4e
-  FirebaseCore: 2e0b98fb2d64ca8140136beff15772bdd14d2dd7
-  FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
-  Google-Mobile-Ads-SDK: 83f7f890e638ce8f1debd440ea363338c9f6be3b
-  GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  SideMenu: 47dbf9e4d878062d8994aed43f6e4bf6c1fea30b
-  SwiftyStoreKit: 98742f9d7941ecaca0f248de0f49c5ecf585bc95
+  Cluster: 8ef65b5030c511be24a250b4489a7cf074a3cebe
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
+  Firebase: 59d557e064217fab6a03ff00baa73c06e73832e6
+  FirebaseAnalytics: 75e4bbc6417d190cc98ec1f17c41a4fad4c2c976
+  FirebaseCore: c0c4befb82374d6aef64d800e569f47625352edc
+  FirebaseInstanceID: 4522aad88f69297622062c0e9ffccdee3dd9b151
+  Google-Mobile-Ads-SDK: 9d1c38a83febea769470aa514a9c7954e2d1483d
+  GoogleAppMeasurement: 008e04ecd8efedd97a693aea8634aefe220bd26e
+  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  SideMenu: 87efd943737bb83aedf0358884d09fcf5576636d
+  SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
 
 PODFILE CHECKSUM: b3db12e10e961212f5bbe901789af258ac18e0fb
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.5.2
