@@ -27,7 +27,9 @@ enum ClusterStatus {
 
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
-final class MapViewController: UIViewController, MKMapViewDelegate, DataHandlerProtocol, ManuGuideDelegate {
+final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDelegate, DataGettable {
+   
+    
 
     var currentUserLocation: CLLocation!
     var locationManager: CLLocationManager!
@@ -68,7 +70,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, DataHandlerP
         $0.isHidden = true
     }
     
-    private var selectedAnnotationView: MKAnnotationView? = MKAnnotationView()
+    private var selectedAnnotationView: MKAnnotationView? = nil
     private var detailView = DetailAnnotationView()
     
     
@@ -94,7 +96,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, DataHandlerP
                 lastCheckinString = "最近的打卡日：\(Date.today)"
                 
             case .unCheckin:
-                selectedAnnotationView?.image = makePoiontAnnotationImage(with: selectedPin?.title)
+                selectedAnnotationView?.image = Response.Station.makePoiontAnnotationImage(with: selectedPin?.title)
                 annotations[indexOfAnnotations].checkinDay = ""
                 detailView.buttonStackView.removeArrangedSubview(detailView.unCheckinButton)
                 
@@ -596,7 +598,7 @@ extension MapViewController: Navigatorable {
                 view.annotation = clusterAnnotation
                 view.configure(with: style)
             } else {
-                view = StyledClusterAnnotationView(annotation: clusterAnnotation,
+                view = ClusterAnnotationView(annotation: clusterAnnotation,
                                                    reuseIdentifier: identifier,
                                                    style: style)
 

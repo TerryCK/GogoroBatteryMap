@@ -1,5 +1,5 @@
 PODS:
-  - Cluster (2.4.4)
+  - Cluster (2.1.0)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
@@ -53,21 +53,20 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
-  - SideMenu (5.0.1)
+  - SideMenu (3.1.5)
   - SwiftyStoreKit (0.14.2)
 
 DEPENDENCIES:
-  - Cluster
+  - Cluster (from `https://github.com/efremidze/Cluster.git`, tag `2.1.0`)
   - Crashlytics
   - Fabric
   - Firebase/Core
   - Google-Mobile-Ads-SDK
-  - SideMenu
+  - SideMenu (from `https://github.com/jonkykong/SideMenu.git`, tag `3.1.5`)
   - SwiftyStoreKit
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - Cluster
     - Crashlytics
     - Fabric
     - Firebase
@@ -78,11 +77,26 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - nanopb
-    - SideMenu
     - SwiftyStoreKit
 
+EXTERNAL SOURCES:
+  Cluster:
+    :git: https://github.com/efremidze/Cluster.git
+    :tag: 2.1.0
+  SideMenu:
+    :git: https://github.com/jonkykong/SideMenu.git
+    :tag: 3.1.5
+
+CHECKOUT OPTIONS:
+  Cluster:
+    :git: https://github.com/efremidze/Cluster.git
+    :tag: 2.1.0
+  SideMenu:
+    :git: https://github.com/jonkykong/SideMenu.git
+    :tag: 3.1.5
+
 SPEC CHECKSUMS:
-  Cluster: 8ef65b5030c511be24a250b4489a7cf074a3cebe
+  Cluster: e15179fd2a36c15650a7c3d1b36a2e9760b6d0b9
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Firebase: 59d557e064217fab6a03ff00baa73c06e73832e6
@@ -93,9 +107,9 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 008e04ecd8efedd97a693aea8634aefe220bd26e
   GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
-  SideMenu: 87efd943737bb83aedf0358884d09fcf5576636d
+  SideMenu: 73ba451e8866dbece12e6dc450269057000aba2c
   SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
 
-PODFILE CHECKSUM: b3db12e10e961212f5bbe901789af258ac18e0fb
+PODFILE CHECKSUM: b5211d2549297f3ab68de36695b0624316a0bbf1
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.6.1

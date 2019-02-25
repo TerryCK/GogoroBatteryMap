@@ -1,4 +1,5 @@
 import Foundation
+import Myplayground_Sources
 func fetchData(onCompletion: (Response) -> Void) {
     do {
         let filePath = Bundle.main.path(forResource: "gogoro", ofType: "json")!
@@ -43,12 +44,17 @@ dic.forEach {
 
 struct Weather: Hashable {
     let id: String
-    let speed: Int
-    
+    let speed: Int?
+    static func ==(lhs: Weather, rhs: Weather) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
     var hashValue: Int {  return id.hashValue  }
 }
 
-let array1 = [Weather(id: "123", speed: 10), .init(id: "234", speed: 20)]
-let array2 = [Weather(id: "123", speed: 30), .init(id: "456", speed: 20)]
-//let result = Set<Response.Station>(station1!).intersection(<#T##other: Set<Response.Station>##Set<Response.Station>#>)
+let old = [Weather(id: "123", speed: 10), .init(id: "234", speed: 20)]
+let new = [Weather(id: "123", speed: 30), .init(id: "456", speed: 20)]
 
+let result = Set<Weather>(old).intersection(new).union(new)
+result.forEach {
+    print($0)
+}

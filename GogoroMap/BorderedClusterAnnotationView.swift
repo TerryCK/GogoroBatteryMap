@@ -10,7 +10,7 @@ import MapKit
 import UIKit
 import Cluster
 
-final class BorderedClusterAnnotationView: StyledClusterAnnotationView {
+final class BorderedClusterAnnotationView: ClusterAnnotationView {
     
     override func configure(with style: ClusterAnnotationStyle) {
         super.configure(with: style)
