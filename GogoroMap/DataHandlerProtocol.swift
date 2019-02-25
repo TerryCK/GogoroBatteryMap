@@ -29,32 +29,32 @@ final class DataManager {
         let data: Data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
         stations = (try? jsonDecoder.decode(Response.self, from: data))?.stations
         
+        
         DataManager.fetchData { (result) in
             if case let .success(data) = result {
-                self.stations = (try? self.jsonDecoder.decode(Response.self, from: data))?.stations
+                self.stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations
             }
         }
     }
     
-    func merge(newStations: [Response.Station], oldStations:  [Response.Station]) ->  [Response.Station] {
-        
-//        let dic = Dictionary(uniqueKeysWithValues: newStations)
+    func merge(newStations: [Response.Station], oldStations: [Response.Station]) -> [Response.Station] {
+        return Array(Set<Response.Station>(oldStations).intersection(newStations).union(newStations))
     }
-    let shared = DataManager()
+    static let shared = DataManager()
     
-    var rawData: Data {
-        willSet {
-            let newStations = try? jsonDecoder.decode(Response.self, from: newValue)
-            
-        }
-    }
+//    var rawData: Data {
+//        willSet {
+//            let newStations = try? jsonDecoder.decode(Response.self, from: newValue)
+//
+//        }
+//    }
     
     
-    private(set) var stations: [Response.Station]? {
-        willSet {
-            newValue =
-        }
-    }
+    private(set) var stations: [Response.Station]?// {
+//        willSet {
+//            newValue =
+//        }
+    //}
 
     enum Approach {
         case bundle, database
@@ -146,8 +146,8 @@ extension DataGettable where Self: MapViewController {
     }
 
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-        let archiveData = annotations.toData
-        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
+//        let archiveData = annotations.toData
+//        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
         UserDefaults.standard.synchronize()
         post()
     }

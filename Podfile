@@ -4,13 +4,13 @@
 def shared_pods
 use_frameworks!
 
-pod 'SideMenu'
+pod 'SideMenu', :git => 'https://github.com/jonkykong/SideMenu.git', :tag => '3.1.5'
 pod 'Google-Mobile-Ads-SDK'
 pod 'Fabric'
 pod 'Crashlytics'
 pod 'Firebase/Core'
 pod 'SwiftyStoreKit'
-pod 'Cluster'
+pod 'Cluster', :git => 'https://github.com/efremidze/Cluster.git', :tag => '2.1.0'
 
 end
 
