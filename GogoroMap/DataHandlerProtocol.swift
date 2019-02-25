@@ -22,6 +22,77 @@ protocol DataGettable: CloudBackupable {
     
 }
 
+final class DataManager {
+    
+    private let jsonDecoder = JSONDecoder()
+    private init() {
+        let data: Data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
+        stations = (try? jsonDecoder.decode(Response.self, from: data))?.stations
+        
+        DataManager.fetchData { (result) in
+            if case let .success(data) = result {
+                self.stations = (try? self.jsonDecoder.decode(Response.self, from: data))?.stations
+            }
+        }
+    }
+    
+    func merge(newStations: [Response.Station], oldStations:  [Response.Station]) ->  [Response.Station] {
+        
+//        let dic = Dictionary(uniqueKeysWithValues: newStations)
+    }
+    let shared = DataManager()
+    
+    var rawData: Data {
+        willSet {
+            let newStations = try? jsonDecoder.decode(Response.self, from: newValue)
+            
+        }
+    }
+    
+    
+    private(set) var stations: [Response.Station]? {
+        willSet {
+            newValue =
+        }
+    }
+
+    enum Approach {
+        case bundle, database
+    }
+
+    static func fetchData(from apporach: Approach) -> Data? {
+        switch apporach {
+        case .bundle:
+            return Bundle.main.path(forResource: "gogoro", ofType: "json").flatMap { try? Data(contentsOf: URL(fileURLWithPath: $0)) }
+        case .database:
+            return UserDefaults.standard.data(forKey: Keys.standard.annotationsKey)
+        }
+    }
+ 
+    
+    static func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        guard let url = URL(string: Keys.standard.gogoroAPI) else {
+            completionHandler(.fail(nil))
+            return
+        }
+        
+        print("API: \(url)")
+        URLSession.shared.dataTask(with: url) { (data, _, error) in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            switch data {
+            case .some(let response):  completionHandler(.success(response))
+            case .none: completionHandler(.fail(error))
+            }
+            }.resume()
+    }
+}
+
+
+enum Result<T> {
+    case success(T)
+    case fail(Error?)
+}
 
 
 extension DataGettable where Self: MapViewController {
@@ -30,7 +101,7 @@ extension DataGettable where Self: MapViewController {
         DispatchQueue.global().async {
             if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
                 self.annotations.isEmpty {
-                self.annotations = self.getAnnotationFromFile()
+                self.annotations = self.getAnnotationFromBundle()
             } else if self.mapView.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
             }
@@ -44,46 +115,29 @@ extension DataGettable where Self: MapViewController {
         guard
             let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
             let annotationFromDatabase =  annotationsData.toAnnoatations else {
-                return getAnnotationFromFile()
+                return getAnnotationFromBundle()
         }
         print("get data from database")
         return annotationFromDatabase
     }
     
     
-    private func getAnnotationFromBundle() -> [ResponseStationProtocol] {
+    private func getAnnotationFromBundle() -> [CustomPointAnnotation] {
         let data = try! Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gogoro", ofType: "json")!))
-        return (try! JSONDecoder().decode(Response.self, from: data)).stations
+        return (try! JSONDecoder().decode(Response.self, from: data)).stations.map(CustomPointAnnotation.init)
     }
     
     func getAnnotationFromRemote(_ completeHandle: (() -> Void)? = nil) {
-        guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
-        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        
-        
-        print("API: \(url)")
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
-            defer {
-                NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                completeHandle.map { $0() }
-            }
-            
-            if let error = error {
-                dataFromDatabase()
-                print("Failed: \(error)")
-                return
-            }
-            
-            guard let annotationFromRemote = data?.parsed,
-                annotationFromRemote.count > 50 else {
+        DataManager.fetchData { result in
+            switch result {
+            case .fail(let error): dataFromDatabase()
+            case .success(let data):
+                guard let response = try? JSONDecoder().decode(Response.self, from: data) else {
                     dataFromDatabase()
-                    return
+                    return }
+                (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: response.stations.map(CustomPointAnnotation.init))
             }
-            
-            (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: annotationFromRemote)
-
-            }.resume()
-        
+        }
         func dataFromDatabase() {
             if self.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()

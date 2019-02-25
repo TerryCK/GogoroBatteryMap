@@ -48,7 +48,9 @@ public struct Response: Decodable {
     }
     
     public struct Station: Decodable, ResponseStationProtocol, Hashable {
-        public var hashValue: Int { return longitude.hashValue ^ latitude.hashValue }
+        public var hashValue: Int { return
+            longitude 
+            longitude.hashValue ^ latitude.hashValue }
         
         public static func == (lhs: Response.Station, rhs: Response.Station) -> Bool {
             return lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
