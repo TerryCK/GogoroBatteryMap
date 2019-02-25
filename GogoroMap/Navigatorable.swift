@@ -76,21 +76,7 @@ extension Collection where Element: CustomPointAnnotation {
 
 
 // TODO: - Route for Travel
-extension Collection where Iterator.Element: CustomPointAnnotation {
-    
-    ////    func getRouteStations(from start: CLLocation , to end: CustomPointAnnotation , maxDistance: Double) -> [CustomPointAnnotation] {
-    ////
-    ////    }
-    //    
-    //    func getTerminalStation(from start: CustomPointAnnotation , to end: CustomPointAnnotation , maxDistance: Double) -> [CustomPointAnnotation] {
-    //        
-    //        if start.toCLLocation.distance(from: end.toCLLocation) <= maxDistance {
-    //            
-    //        }
-    //        
-    //    }
-    
-    
+extension Collection where Iterator.Element: CustomPointAnnotation {    
     
     typealias Distance = Double
     func getDistance(userPosition: CLLocation) -> [CustomPointAnnotation] {

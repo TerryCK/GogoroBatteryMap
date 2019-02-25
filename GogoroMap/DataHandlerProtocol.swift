@@ -1,5 +1,5 @@
 //
-//  DataHandlerProtocol.swift
+//  DataGettable.swift
 //  GogoroMap
 //
 //  Created by 陳 冠禎 on 2017/8/18.
@@ -10,7 +10,7 @@ import Foundation
 
 typealias Results<T> = (reservesArray: [T], discardArray: [T]) where T: CustomPointAnnotation
 
-protocol DataHandlerProtocol: CloudBackupable {
+protocol DataGettable: CloudBackupable {
     
     func initializeData()
     
@@ -22,47 +22,86 @@ protocol DataHandlerProtocol: CloudBackupable {
     
 }
 
+final class DataManager {
+    
+    private let jsonDecoder = JSONDecoder()
+    private init() {
+        let data: Data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
+        stations = (try? jsonDecoder.decode(Response.self, from: data))?.stations
+        
+        DataManager.fetchData { (result) in
+            if case let .success(data) = result {
+                self.stations = (try? self.jsonDecoder.decode(Response.self, from: data))?.stations
+            }
+        }
+    }
+    
+    func merge(newStations: [Response.Station], oldStations:  [Response.Station]) ->  [Response.Station] {
+        
+//        let dic = Dictionary(uniqueKeysWithValues: newStations)
+    }
+    let shared = DataManager()
+    
+    var rawData: Data {
+        willSet {
+            let newStations = try? jsonDecoder.decode(Response.self, from: newValue)
+            
+        }
+    }
+    
+    
+    private(set) var stations: [Response.Station]? {
+        willSet {
+            newValue =
+        }
+    }
+
+    enum Approach {
+        case bundle, database
+    }
+
+    static func fetchData(from apporach: Approach) -> Data? {
+        switch apporach {
+        case .bundle:
+            return Bundle.main.path(forResource: "gogoro", ofType: "json").flatMap { try? Data(contentsOf: URL(fileURLWithPath: $0)) }
+        case .database:
+            return UserDefaults.standard.data(forKey: Keys.standard.annotationsKey)
+        }
+    }
+ 
+    
+    static func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        guard let url = URL(string: Keys.standard.gogoroAPI) else {
+            completionHandler(.fail(nil))
+            return
+        }
+        
+        print("API: \(url)")
+        URLSession.shared.dataTask(with: url) { (data, _, error) in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            switch data {
+            case .some(let response):  completionHandler(.success(response))
+            case .none: completionHandler(.fail(error))
+            }
+            }.resume()
+    }
+}
+
+
 enum Result<T> {
     case success(T)
     case fail(Error?)
 }
-//
-//final class DataManager {
-//    private static func fetchData(withURL url: URL = URL(string: Keys.standard.gogoroAPI)!, onCompletion handler: @escaping (Result<Data>) -> Void) {
-//        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-//        print("*** API: \(url) ***")
-//        URLSession.shared.dataTask(with: url) { (data, _, error) in
-//            NetworkActivityIndicatorManager.shared.networkOperationFinished()
-//            switch data {
-//            case .some(let data): handler(.success(data))
-//            case .none          : handler(.fail(error))
-//            }
-//        }.resume()
-//    }
-//    
-//    private init() {
-//        switch UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) {
-//        case false:
-//            data = try! Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gogoro", ofType: "json")!))
-//        }
-//        
-//        
-//        
-//    }
-//    static let shared = DataManager()
-//    var data: Data
-//    
-//}
 
 
-extension DataHandlerProtocol where Self: MapViewController {
-    
+extension DataGettable where Self: MapViewController {
     func initializeData() {
-        
+
         DispatchQueue.global().async {
             if !UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey),
                 self.annotations.isEmpty {
-                //                self.annotations = self.getAnnotationFromBundle()
+                self.annotations = self.getAnnotationFromBundle()
             } else if self.mapView.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
             }
@@ -70,63 +109,46 @@ extension DataHandlerProtocol where Self: MapViewController {
         }
         
     }
-    
+   
     
     func getAnnotationFromDatabase() -> [CustomPointAnnotation] {
-        
         guard
-            let annotationsData = UserDefaults.standard.data(forKey: Keys.standard.annotationsKey),
+            let annotationsData = UserDefaults.standard.value(forKey: Keys.standard.annotationsKey) as? Data,
             let annotationFromDatabase =  annotationsData.toAnnoatations else {
-                return [CustomPointAnnotation]()
-                //                return getAnnotationFromBundle()
+                return getAnnotationFromBundle()
         }
         print("get data from database")
         return annotationFromDatabase
     }
     
     
-    private func getAnnotationFromBundle() -> [ResponseStationProtocol] {
+    private func getAnnotationFromBundle() -> [CustomPointAnnotation] {
         let data = try! Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gogoro", ofType: "json")!))
-        return (try! JSONDecoder().decode(Response.self, from: data)).stations
+        return (try! JSONDecoder().decode(Response.self, from: data)).stations.map(CustomPointAnnotation.init)
     }
     
     func getAnnotationFromRemote(_ completeHandle: (() -> Void)? = nil) {
-        guard let url = URL(string: Keys.standard.gogoroAPI) else { return }
-        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        
-        print("*** API: \(url) ***")
-        
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
-            defer {
-                NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                completeHandle?()
-            }
-            
-            if let error = error {
-                dataFromDatabase()
-                print("Failed: \(error)")
-                return
-            }
-            
-            guard let data = data,
-                let response = try? JSONDecoder().decode(Response.self, from: data),
-                response.stations.count > 50 else {
+        DataManager.fetchData { result in
+            switch result {
+            case .fail(let error): dataFromDatabase()
+            case .success(let data):
+                guard let response = try? JSONDecoder().decode(Response.self, from: data) else {
                     dataFromDatabase()
-                    return
+                    return }
+                (self.annotations, self.willRemovedAnnotations) = self.annotations.merge(from: response.stations.map(CustomPointAnnotation.init))
             }
-            
-            }.resume()
-        
+        }
         func dataFromDatabase() {
             if self.annotations.isEmpty {
                 self.annotations = self.getAnnotationFromDatabase()
             }
         }
     }
-    
+
     func saveToDatabase(with annotations: [CustomPointAnnotation]) {
-//        let archiveData = annotations.toData
-//        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
+        let archiveData = annotations.toData
+        UserDefaults.standard.set(archiveData, forKey: Keys.standard.annotationsKey)
+        UserDefaults.standard.synchronize()
         post()
     }
     
@@ -139,8 +161,7 @@ extension DataHandlerProtocol where Self: MapViewController {
 //MARK: Parsed Data using model of CustomPointAnnotation
 extension Data {
     var toAnnoatations: [CustomPointAnnotation]? {
-        return [CustomPointAnnotation]()
-        //        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
+        return NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
     }
     
     func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {

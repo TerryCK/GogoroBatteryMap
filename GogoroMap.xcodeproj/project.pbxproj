@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		42B57E665539D12848DC1419 /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */; };
+		7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9A002B22238FC200D5150D /* Answer+Entension.swift */; };
 		8D05EC5C8092244F4772117D /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */; };
 		A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */; };
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
@@ -36,8 +37,6 @@
 		A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869AA191F44150A0085133C /* IAPProducts.swift */; };
 		A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A872054E1F4287D600E9F65D /* GoogleService-Info.plist */; };
 		A8742B021F449741002BA66B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8742B011F449741002BA66B /* Keys.swift */; };
-		A878E08D1F4482D000EF8394 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = A878E08C1F4482D000EF8394 /* Keys.plist */; };
-		A899BBBB2026C8020043EA57 /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBA2026C8020043EA57 /* Answer+Entension.swift */; };
 		A899BBBD2026C81C0043EA57 /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */; };
 		A899BBBF2026C8310043EA57 /* Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBE2026C8310043EA57 /* Parsable.swift */; };
 		A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B19D601F44032A0082283F /* IAPAlartable.swift */; };
@@ -79,6 +78,8 @@
 		2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F31B1F947CE3BD09D69D383 /* Pods-GogoroMapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C9A002B22238FC200D5150D /* Answer+Entension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Answer+Entension.swift"; sourceTree = "<group>"; };
+		7C9A002D222391CD00D5150D /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		A513DD0607F82D57A2BDD52A /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
 		A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidePageViewController.swift; sourceTree = "<group>"; };
 		A80759651F4BD6480031D576 /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
@@ -111,8 +112,6 @@
 		A869AA191F44150A0085133C /* IAPProducts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPProducts.swift; sourceTree = "<group>"; };
 		A872054E1F4287D600E9F65D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A8742B011F449741002BA66B /* Keys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
-		A878E08C1F4482D000EF8394 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
-		A899BBBA2026C8020043EA57 /* Answer+Entension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Answer+Entension.swift"; path = "../../../GogoroBatteryMap OLD/GogoroMap/Answer+Entension.swift"; sourceTree = "<group>"; };
 		A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudBackupable.swift; sourceTree = "<group>"; };
 		A899BBBE2026C8310043EA57 /* Parsable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parsable.swift; sourceTree = "<group>"; };
 		A8B19D601F44032A0082283F /* IAPAlartable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPAlartable.swift; sourceTree = "<group>"; };
@@ -184,9 +183,9 @@
 			isa = PBXGroup;
 			children = (
 				A81ADFF02026DC1B008A757D /* CloudKit.framework */,
-				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 				5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */,
 				2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */,
+				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -211,9 +210,9 @@
 		A869AA181F4414B20085133C /* IAPs */ = {
 			isa = PBXGroup;
 			children = (
-				A8B19D621F4406410082283F /* IAPPurchasable.swift */,
-				A869AA191F44150A0085133C /* IAPProducts.swift */,
 				A8B19D601F44032A0082283F /* IAPAlartable.swift */,
+				A869AA191F44150A0085133C /* IAPProducts.swift */,
+				A8B19D621F4406410082283F /* IAPPurchasable.swift */,
 			);
 			name = IAPs;
 			sourceTree = "<group>";
@@ -221,13 +220,13 @@
 		A8C8BAC51F3C556400E9E18C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A8D3689E1F3B54C80015F5F9 /* Station.swift */,
-				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
 				A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */,
-				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
+				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
 				A8742B011F449741002BA66B /* Keys.swift */,
-				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
+				A84209D41F4EBCE800633FC7 /* OberserName.swift */,
 				A808F0452220ED3900761A31 /* Response.swift */,
+				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
+				A8D3689E1F3B54C80015F5F9 /* Station.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -235,14 +234,14 @@
 		A8C8BAC61F3C557B00E9E18C /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				A8C8BAC71F3C558500E9E18C /* Boards */,
 				A8EACCBA1F8EF5E2000B12BF /* GPS */,
+				A80660171F4419000036BE3B /* Playground */,
+				A808F0432220ED0E00761A31 /* gogoro.json */,
 				A872054E1F4287D600E9F65D /* GoogleService-Info.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
-				A808F0432220ED0E00761A31 /* gogoro.json */,
-				A878E08C1F4482D000EF8394 /* Keys.plist */,
+				7C9A002D222391CD00D5150D /* Keys.plist */,
 				A8C060181F3C9AD20054DE01 /* Media.xcassets */,
-				A80660171F4419000036BE3B /* Playground */,
-				A8C8BAC71F3C558500E9E18C /* Boards */,
 			);
 			name = Resource;
 			sourceTree = "<group>";
@@ -250,8 +249,8 @@
 		A8C8BAC71F3C558500E9E18C /* Boards */ = {
 			isa = PBXGroup;
 			children = (
-				A8D3686E1F3B435E0015F5F9 /* Main.storyboard */,
 				A8D368731F3B435E0015F5F9 /* LaunchScreen.storyboard */,
+				A8D3686E1F3B435E0015F5F9 /* Main.storyboard */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -268,18 +267,18 @@
 			isa = PBXGroup;
 			children = (
 				A869AA181F4414B20085133C /* IAPs */,
-				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */,
-				A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */,
-				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
-				A840F34D1F472A4900D33741 /* DataHandlerProtocol.swift */,
-				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
+				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
-				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
-				A899BBBE2026C8310043EA57 /* Parsable.swift */,
-				A85E9FBB201D7D530008665B /* String+Extension.swift */,
+				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
+				A840F34D1F472A4900D33741 /* DataHandlerProtocol.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
-				A899BBBA2026C8020043EA57 /* Answer+Entension.swift */,
+				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
+				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
+				A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */,
+				A899BBBE2026C8310043EA57 /* Parsable.swift */,
+				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
+				A85E9FBB201D7D530008665B /* String+Extension.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -287,12 +286,12 @@
 		A8D3685E1F3B435D0015F5F9 = {
 			isa = PBXGroup;
 			children = (
-				A866F6521F481FA6009459B3 /* Localizable.strings */,
+				8A9B908657EC79E54659031F /* Frameworks */,
 				A8D368691F3B435D0015F5F9 /* GogoroMap */,
 				A84AC7FF1F46EB71004F5E3B /* GogoroMapTests */,
-				A8D368681F3B435D0015F5F9 /* Products */,
 				3E2705D11D025301FE44D99B /* Pods */,
-				8A9B908657EC79E54659031F /* Frameworks */,
+				A8D368681F3B435D0015F5F9 /* Products */,
+				A866F6521F481FA6009459B3 /* Localizable.strings */,
 			);
 			sourceTree = "<group>";
 		};
@@ -308,13 +307,13 @@
 		A8D368691F3B435D0015F5F9 /* GogoroMap */ = {
 			isa = PBXGroup;
 			children = (
-				A81ADFEF2026DC0E008A757D /* GogoroMap.entitlements */,
-				A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */,
-				A8CE224C1F3EA0A600A4EF6D /* Protocols */,
-				A8EACCBD1F8EF640000B12BF /* Pages */,
 				A8C8BAC51F3C556400E9E18C /* Models */,
-				A8D368991F3B44A00015F5F9 /* Utilitys */,
+				A8EACCBD1F8EF640000B12BF /* Pages */,
+				A8CE224C1F3EA0A600A4EF6D /* Protocols */,
 				A8C8BAC61F3C557B00E9E18C /* Resource */,
+				A8D368991F3B44A00015F5F9 /* Utilitys */,
+				A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */,
+				A81ADFEF2026DC0E008A757D /* GogoroMap.entitlements */,
 			);
 			path = GogoroMap;
 			sourceTree = "<group>";
@@ -324,8 +323,8 @@
 			children = (
 				A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */,
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
-				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
+				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 			);
 			name = Utilitys;
 			sourceTree = "<group>";
@@ -334,13 +333,13 @@
 			isa = PBXGroup;
 			children = (
 				A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */,
-				A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */,
-				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
-				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
-				A80759671F4C04430031D576 /* CheckinButton.swift */,
-				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
 				A81C33AD1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift */,
+				A80759671F4C04430031D576 /* CheckinButton.swift */,
+				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
+				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
+				A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */,
 				A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */,
+				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
 			);
 			name = Views;
 			path = ..;
@@ -349,8 +348,8 @@
 		A8EACCB91F8EF555000B12BF /* MainPage */ = {
 			isa = PBXGroup;
 			children = (
-				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
 				A8EACCB81F8EF534000B12BF /* Views */,
+				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
 			);
 			path = MainPage;
 			sourceTree = "<group>";
@@ -367,8 +366,8 @@
 		A8EACCBB1F8EF628000B12BF /* ManuPage */ = {
 			isa = PBXGroup;
 			children = (
-				A8E71FD41F3D4B7300C8E34D /* MenuController.swift */,
 				A8C8BACA1F3C5AF700E9E18C /* View */,
+				A8E71FD41F3D4B7300C8E34D /* MenuController.swift */,
 			);
 			name = ManuPage;
 			sourceTree = "<group>";
@@ -384,10 +383,10 @@
 		A8EACCBD1F8EF640000B12BF /* Pages */ = {
 			isa = PBXGroup;
 			children = (
-				A8EACCB91F8EF555000B12BF /* MainPage */,
-				A8EACCBB1F8EF628000B12BF /* ManuPage */,
 				A8F7503420260D1C00E2206D /* BackupPage */,
 				A8EACCBC1F8EF632000B12BF /* GuidePage */,
+				A8EACCB91F8EF555000B12BF /* MainPage */,
+				A8EACCBB1F8EF628000B12BF /* ManuPage */,
 			);
 			name = Pages;
 			sourceTree = "<group>";
@@ -395,8 +394,8 @@
 		A8F7503420260D1C00E2206D /* BackupPage */ = {
 			isa = PBXGroup;
 			children = (
-				A8F7503520260D1C00E2206D /* BackupViewController.swift */,
 				A8F7503620260D1C00E2206D /* Views */,
+				A8F7503520260D1C00E2206D /* BackupViewController.swift */,
 			);
 			path = BackupPage;
 			sourceTree = "<group>";
@@ -422,7 +421,6 @@
 				A84AC7FB1F46EB70004F5E3B /* Frameworks */,
 				A84AC7FC1F46EB70004F5E3B /* Resources */,
 				FA005F113CE0D61E649B790C /* [CP] Embed Pods Frameworks */,
-				0BAA1862604D80386AF19E8A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -443,7 +441,6 @@
 				A8D368641F3B435D0015F5F9 /* Frameworks */,
 				A8D368651F3B435D0015F5F9 /* Resources */,
 				501A4B98FF6B3E1A62E6C9CD /* [CP] Embed Pods Frameworks */,
-				2E0B2317A83A6106604AF581 /* [CP] Copy Pods Resources */,
 				A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */,
 			);
 			buildRules = (
@@ -462,7 +459,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "陳 冠禎";
 				TargetAttributes = {
 					A84AC7FD1F46EB70004F5E3B = {
@@ -518,51 +515,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
-				A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */,
-				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
-				A819F0711F45E43200F472CA /* Main.storyboard in Resources */,
-				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
-				A878E08D1F4482D000EF8394 /* Keys.plist in Resources */,
 				A808F0442220ED0E00761A31 /* gogoro.json in Resources */,
 				A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */,
+				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
+				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
+				A819F0711F45E43200F472CA /* Main.storyboard in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
+				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
+				A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0BAA1862604D80386AF19E8A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2E0B2317A83A6106604AF581 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		501A4B98FF6B3E1A62E6C9CD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -571,7 +537,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Cluster-iOS9.3/Cluster.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS9.3/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS9.3/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS9.3/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS9.3/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb-iOS9.3/nanopb.framework",
@@ -579,7 +545,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -647,7 +613,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Cluster-iOS10.3/Cluster.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS10.3/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS10.3/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.3/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS10.3/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb-iOS10.3/nanopb.framework",
@@ -655,7 +621,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -680,48 +646,48 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8F7504420261C0600E2206D /* BasicTableViewCell.swift in Sources */,
-				A8F7504520261C0600E2206D /* CustomTableViewCell.swift in Sources */,
-				A8F7504320261C0000E2206D /* BackupViewController.swift in Sources */,
-				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
-				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
-				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
-				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
-				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
-				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
-				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
-				A899BBBD2026C81C0043EA57 /* CloudBackupable.swift in Sources */,
-				A8742B021F449741002BA66B /* Keys.swift in Sources */,
-				A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */,
-				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
-				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
-				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
-				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
-				A840F34E1F472A4900D33741 /* DataHandlerProtocol.swift in Sources */,
-				A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */,
-				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
-				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
-				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
-				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
-				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
-				A899BBBB2026C8020043EA57 /* Answer+Entension.swift in Sources */,
-				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
-				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
-				A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */,
-				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
-				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
-				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
-				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
-				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
-				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
-				A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */,
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
-				A899BBBF2026C8310043EA57 /* Parsable.swift in Sources */,
-				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
-				A808F0462220ED3900761A31 /* Response.swift in Sources */,
-				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,
-				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
+				A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */,
+				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
+				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
+				A8F7504320261C0000E2206D /* BackupViewController.swift in Sources */,
+				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
+				A8F7504420261C0600E2206D /* BasicTableViewCell.swift in Sources */,
+				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
+				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
+				A899BBBD2026C81C0043EA57 /* CloudBackupable.swift in Sources */,
+				A8E0A7A61F70B90E0013C4C9 /* CollectionExtensions.swift in Sources */,
+				A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */,
+				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
+				A8F7504520261C0600E2206D /* CustomTableViewCell.swift in Sources */,
+				A840F34E1F472A4900D33741 /* DataHandlerProtocol.swift in Sources */,
+				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
+				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
+				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
+				A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */,
+				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
+				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
+				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
+				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
+				A8742B021F449741002BA66B /* Keys.swift in Sources */,
+				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
+				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
+				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
+				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
+				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
+				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
+				A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */,
+				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
+				A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */,
+				A899BBBF2026C8310043EA57 /* Parsable.swift in Sources */,
+				A808F0462220ED3900761A31 /* Response.swift in Sources */,
+				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
+				A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */,
+				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
+				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
+				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
+				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,8 +705,8 @@
 		A866F6521F481FA6009459B3 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A866F6511F481FA6009459B3 /* zh-Hant */,
 				A866F6531F48205B009459B3 /* en */,
+				A866F6511F481FA6009459B3 /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -813,6 +779,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -820,6 +787,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -853,6 +821,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -871,6 +840,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -878,6 +848,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -903,6 +874,7 @@
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
