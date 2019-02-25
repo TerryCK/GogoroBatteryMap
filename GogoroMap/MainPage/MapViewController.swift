@@ -33,7 +33,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 //         MARK: - Properties
 
     var currentUserLocation: CLLocation!
-    var myLocationManager: CLLocationManager!
+    var locationManager: CLLocationManager!
     var visibleMapRect: MKMapRect?
     var clusterSwitcher: ClusterStatus = UserDefaults.standard.bool(forKey: "cluster") ? .on : .off {
         didSet {
@@ -300,7 +300,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, AnnotationHa
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        myLocationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -622,7 +622,7 @@ extension MapViewController: Navigatorable {
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
             return getOriginalMKAnnotationView(mapView, viewFor: annotation)
         }
-
+        
             let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
@@ -632,9 +632,9 @@ extension MapViewController: Navigatorable {
                 view.annotation = clusterAnnotation
                 view.configure(with: style)
             } else {
-                view = ClusterAnnotationView(annotation: clusterAnnotation,
-                                             reuseIdentifier: identifier,
-                                             style: style)
+                view = StyledClusterAnnotationView(annotation: clusterAnnotation,
+                                                   reuseIdentifier: identifier,
+                                                   style: style)
 
             }
         
