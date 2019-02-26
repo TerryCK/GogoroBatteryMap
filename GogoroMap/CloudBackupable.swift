@@ -379,4 +379,14 @@ extension Data: CloudBackupable {
     func updataNotifiy() {
         NotificationCenter.default.post(name: .dataUpdata, object: self)
     }
+
+    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
+        let bcf = ByteCountFormatter()
+        bcf.allowedUnits = units
+        bcf.countStyle = .file
+        
+        return bcf.string(fromByteCount: Int64(count))
+    }
 }
+
+

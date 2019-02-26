@@ -16,6 +16,7 @@ enum SegmentStatus: Int {
     static let items: [SegmentStatus] = [map , checkin, nearby, building]
     
     var name: String {
+        
         switch self {
         case .map       : return "地圖模式"
         case .building  : return "建置中列表"
