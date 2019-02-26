@@ -64,7 +64,7 @@ extension Collection where Iterator.Element == Station {
 extension Collection where Element == BackupData {
     var toCustomTableViewCell: [CustomTableViewCell] {
         let upperLimit = 10
-        return self.enumerated().flatMap { (index, element) -> CustomTableViewCell? in
+        return enumerated().flatMap { (index, element) -> CustomTableViewCell? in
             guard index < upperLimit , let data = element.data else { return nil }
             
             let subtitle = "         \(data.sizeString())      打卡次數：\(data.toAnnoatations?.totalCheckin ?? 0)"

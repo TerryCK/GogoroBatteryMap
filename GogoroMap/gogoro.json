@@ -14991,19 +14991,19 @@
       "AvailableTime": "24HR",
       "AvailableTimeByte": null
     },
-    {
-      "Id": "2dd85045-4247-4999-8189-0b750811d91d",
-      "LocName": "{\"List\": [{\"Value\": \"HiLife TN Donghuan Store\",\"Lang\": \"en-US\"},{\"Value\": \"HiLife 台南東環店站\",\"Lang\": \"zh-TW\"}]}",
-      "Latitude": 22.987495,
-      "Longitude": 120.211382,
-      "ZipCode": "70150",
-      "Address": "{\"List\": [{\"Value\": \"No.59, Sec. 1, Datong Rd., East Dist., Tainan City\",\"Lang\": \"en-US\"},{\"Value\": \"台南市東區大同路一段59號(近東門圓環)\",\"Lang\": \"zh-TW\"}]}",
-      "District": "{\"List\": [{\"Value\": \"East Dist.\",\"Lang\": \"en-US\"},{\"Value\": \"東區\",\"Lang\": \"zh-TW\"}]}",
-      "State": 1,
-      "City": "{\"List\":[{\"Value\":\"Tainan City\",\"Lang\":\"en-US\"},{\"Value\":\"台南市\",\"Lang\":\"zh-TW\"}]}",
-      "AvailableTime": "24HR",
-      "AvailableTimeByte": null
-    }
-  ],
-  "error_code": null
+           {
+           "Id": "2dd85045-4247-4999-8189-0b750811d91d",
+           "LocName": "{\"List\": [{\"Value\": \"HiLife TN Donghuan Store\",\"Lang\": \"en-US\"},{\"Value\": \"HiLife 台南東環店站\",\"Lang\": \"zh-TW\"}]}",
+           "Latitude": 22.987495,
+           "Longitude": 120.211382,
+           "ZipCode": "70150",
+           "Address": "{\"List\": [{\"Value\": \"No.59, Sec. 1, Datong Rd., East Dist., Tainan City\",\"Lang\": \"en-US\"},{\"Value\": \"台南市東區大同路一段59號(近東門圓環)\",\"Lang\": \"zh-TW\"}]}",
+           "District": "{\"List\": [{\"Value\": \"East Dist.\",\"Lang\": \"en-US\"},{\"Value\": \"東區\",\"Lang\": \"zh-TW\"}]}",
+           "State": 1,
+           "City": "{\"List\":[{\"Value\":\"Tainan City\",\"Lang\":\"en-US\"},{\"Value\":\"台南市\",\"Lang\":\"zh-TW\"}]}",
+           "AvailableTime": "24HR",
+           "AvailableTimeByte": null
+           }
+           ],
+    "error_code": null
 }

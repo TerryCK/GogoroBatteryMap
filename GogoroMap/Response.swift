@@ -15,8 +15,6 @@ public protocol ResponseStationProtocol {
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-    var checkinDay: String?  { get }
-    var checkinCounter: Int? { get }
     var isOpening: Bool     { get }
 }
 
@@ -48,14 +46,12 @@ public struct Response: Decodable {
     }
     
     public struct Station: Decodable, ResponseStationProtocol, Hashable {
-        public var hashValue: Int { return longitude.hashValue ^ latitude.hashValue }
+        public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
         
         public static func == (lhs: Response.Station, rhs: Response.Station) -> Bool {
-            return lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
+            return lhs.hashValue == rhs.hashValue
         }
         
-        public var checkinDay: String?
-        public var checkinCounter: Int?
         public let state: Int
         public let name, address : Detail
         public let latitude, longitude: Double

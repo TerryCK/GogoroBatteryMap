@@ -27,7 +27,7 @@ enum ClusterStatus {
 
 typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
-final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDelegate, DataGettable {
+final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDelegate {
    
     
 
@@ -107,7 +107,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
             annotations[indexOfAnnotations].checkinCounter = counterOfcheckin
             annotations[indexOfAnnotations].image = selectedAnnotationView?.image
             
-            saveToDatabase(with: annotations)
+            
+            DataManager.saveToDatabase(with: batteryStationAnnotations)
+//            saveToDatabase(with: annotations)
         }
     }
     
@@ -117,9 +119,15 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
     var willRemovedAnnotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
-
             self.mapView.removeAnnotations(self.willRemovedAnnotations)
             }
+        }
+    }
+    var batteryStationAnnotations = DataManager.shared.batteryStationPointAnnotatios ?? [] {
+        willSet {
+            clusterManager.remove(batteryStationAnnotations)
+            clusterManager.add(newValue)
+            DataManager.saveToDatabase(with: newValue)
         }
     }
     
@@ -139,7 +147,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
         reloadMapView()
     }
     
-    //     MARK: - Computed Properties
     var userLocationCoordinate: CLLocationCoordinate2D! {
         get { return currentUserLocation.coordinate }
         set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
@@ -150,10 +157,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
     
     //     MARK: - View Creators
     private lazy var clusterManager: ClusterManager = {
-        let myManager = ClusterManager()
-        myManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
-        myManager.minCountForClustering = 3
-        return myManager
+        let cm = ClusterManager()
+        cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
+        cm.minCountForClustering = 3
+        return cm
     }()
     
     lazy var mapView = MKMapView {
@@ -263,8 +270,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
         setupObserver()
         performGuidePage()
         authrizationStatus()
-        initializeData()
+       
         setupPurchase()
+        
+        
         #if REALEASE
         setupRating()
             #endif
@@ -715,13 +724,13 @@ extension MapViewController: IAPPurchasable {
             object: nil)
 
     }
-    
-    @objc func handleDataupdate(_ notification: Notification) {
-        
-        guard let data = notification.object as? Data,
-            let annotations = data.toAnnoatations else { return }
-        self.annotations = annotations
-    }
+//    
+//    @objc func handleDataupdate(_ notification: Notification) {
+//        
+//        guard let data = notification.object as? Data,
+//            let annotations = data.toAnnoatations else { return }
+//        self.annotations = annotations
+//    }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")

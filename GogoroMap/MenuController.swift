@@ -11,7 +11,6 @@ import StoreKit
 import Crashlytics
 
 protocol ManuDelegate: class {
-    func getAnnotationFromRemote(_ completeHandle: (() -> Void)?)
     var  stationData: StationDatas { get }
     var  clusterSwitcher: ClusterStatus { set get }
 }
@@ -90,11 +89,6 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
         
         collectionView?.backgroundColor = .clear
         collectionView?.contentInset = UIEdgeInsetsMake( 10, 0, 10, 0)
-        
-        //        if let collectionLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
-        //            collectionLayout.sectionInset = UIEdgeInsets(top: 50, left: 10, bottom: 10, right: 10)
-        //        }
-        
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)
@@ -162,7 +156,7 @@ extension MenuController {
     }
     
     @objc func attempUpdate() {
-        navigationItem.title = "\(NSLocalizedString("Updating", comment: ""))..."
+        navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
@@ -170,14 +164,22 @@ extension MenuController {
     
     @objc func dataUpdate() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
-        print("\n data reflash\n")
-        delegate?.getAnnotationFromRemote {
+        print("\n*** data reflash ***\n")
+        
+        DataManager.fetchData { (result) in
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = "Information".localize()
                 self.timer = nil
             }
         }
+//        delegate?.getAnnotationFromRemote {
+//            DispatchQueue.main.async {
+//                self.collectionView?.reloadData()
+//                self.navigationItem.title = "Information".localize()
+//                self.timer = nil
+//            }
+//        }
     }
 }
 
