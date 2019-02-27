@@ -27,7 +27,7 @@ final class DataManager {
     private let jsonDecoder = JSONDecoder()
     
     private init() {
-        let data: Data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
+        let data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
         batteryStationPointAnnotatios = (try? jsonDecoder.decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
         DataManager.fetchData { (result) in
             if case let .success(data) = result {

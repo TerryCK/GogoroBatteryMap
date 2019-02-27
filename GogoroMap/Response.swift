@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol ResponseStationProtocol {
+public protocol ResponseStationProtocol: Hashable {
     var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
@@ -16,6 +16,9 @@ public protocol ResponseStationProtocol {
     var longitude: Double { get  }
     var availableTime: String? { get }
     var isOpening: Bool     { get }
+    var checkinCounter: Int? { get }
+    var checkinDay: String? { get }
+    
 }
 
 public extension ResponseStationProtocol {
@@ -30,6 +33,13 @@ public extension ResponseStationProtocol {
         if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
         return #imageLiteral(resourceName: "pinFull")
     }
+    
+    public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
+    
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+   
 }
 
 public extension Response.Station.Detail {
@@ -38,6 +48,7 @@ public extension Response.Station.Detail {
     }
 }
 
+
 public struct Response: Decodable {
     public let stations: [Station]
     
@@ -45,12 +56,8 @@ public struct Response: Decodable {
         case stations = "data"
     }
     
-    public struct Station: Decodable, ResponseStationProtocol, Hashable {
-        public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
-        
-        public static func == (lhs: Response.Station, rhs: Response.Station) -> Bool {
-            return lhs.hashValue == rhs.hashValue
-        }
+    public struct Station: Decodable, ResponseStationProtocol {
+        public var checkinCounter: Int? = nil, checkinDay: String? = nil
         
         public let state: Int
         public let name, address : Detail
@@ -63,7 +70,9 @@ public struct Response: Decodable {
             case longitude     = "Longitude"
             case address       = "Address"
             case state         = "State"
+            case checkinDay    = "checkinDay"
             case availableTime = "AvailableTime"
+            case checkinCounter = "checkinCounter"
         }
         
         public init(from decoder: Decoder) throws {
@@ -72,10 +81,11 @@ public struct Response: Decodable {
             latitude      = try container.decode(Double.self, forKey: .latitude)
             longitude     = try container.decode(Double.self, forKey: .longitude)
             availableTime = try container.decode(String?.self, forKey: .availableTime)
+            checkinCounter = try container.decode(Int?.self, forKey: .checkinCounter)
+            checkinDay = try container.decode(String?.self, forKey: .checkinDay)
             let nameString = try container.decode(String.self, forKey: .name)
             let addressString = try container.decode(String.self, forKey: .address)
             let jsonDecoder = JSONDecoder()
-            
             name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
             address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
         }

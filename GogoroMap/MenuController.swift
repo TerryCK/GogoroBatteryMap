@@ -11,8 +11,12 @@ import StoreKit
 import Crashlytics
 
 protocol ManuDelegate: class {
-    var  stationData: StationDatas { get }
     var  clusterSwitcher: ClusterStatus { set get }
+}
+
+protocol MenuDataSource: class {
+    associatedtype Element: ResponseStationProtocol
+    var dataSource: [Element] { get }
 }
 
 

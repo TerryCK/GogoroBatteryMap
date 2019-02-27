@@ -25,12 +25,10 @@ enum ClusterStatus {
 }
 
 
-typealias ManuGuideDelegate = ManuDelegate & GuidePageViewControllerDelegate
 
-final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDelegate {
-   
+final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, MenuDataSource, GuidePageViewControllerDelegate {
     
-
+   
     var currentUserLocation: CLLocation!
     var locationManager: CLLocationManager!
     var visibleMapRect: MKMapRect?
@@ -131,12 +129,15 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
         }
     }
     
+    
+    var dataSource: [Response.Station] = []
+    
     var annotations = [CustomPointAnnotation]() {
         didSet {
             DispatchQueue.main.async {
                 self.clusterUpdating(with: oldValue)
             }
-            saveToDatabase(with: annotations)
+//            saveToDatabase(with: annotations)
         }
     }
     
@@ -150,9 +151,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
     var userLocationCoordinate: CLLocationCoordinate2D! {
         get { return currentUserLocation.coordinate }
         set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
-    }
-    var stationData: StationDatas {
-        return annotations.getStationData
     }
     
     //     MARK: - View Creators
@@ -213,16 +211,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
         return sc
     }()
     
+    
     lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let myCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        myCollectionView.delegate = self
-        myCollectionView.dataSource = self
-        myCollectionView.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
-        myCollectionView.isHidden = true
-        myCollectionView.backgroundColor = .clear
-        myCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
-        return myCollectionView
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        cv.delegate = self
+        cv.dataSource = self
+        cv.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
+        cv.isHidden = true
+        cv.backgroundColor = .clear
+        cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
+        return cv
     }()
     
     private lazy var segmentControllerContainer: UIView = {
@@ -317,7 +315,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
         if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
-            self.setTrackModeNone()
+            setTrackModeNone()
             present(sideManuController, animated: true, completion: nil)
         }
     }
@@ -355,7 +353,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuGuideDel
         setupNavigationItems()
         setupSegmentControllerContainer()
         setupMainViews()
-        
     }
     
     private func setupNavigationTitle() {
@@ -513,7 +510,7 @@ extension MapViewController: UICollectionViewDataSource {
         mapView.isHidden = false
         collectionView.isHidden = !mapView.isHidden
         cellEmptyGuideView.isHidden = !mapView.isHidden
-        self.locationArrowView.isEnabled = true
+        locationArrowView.isEnabled = true
     }
     
     private func mapViewMove(to station: CustomPointAnnotation) {

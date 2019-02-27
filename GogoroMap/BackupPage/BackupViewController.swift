@@ -181,8 +181,7 @@ extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
             
         case (.none, .backup):
 
-            
-            UserDefaults.standard.databaseToData?.backupToCloud(completeHandler: queryingBackupData)
+            DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
             
             print("doing backup")
 //            backupfooterView.subtitleLabel.text = "最新備份時間: \(Date.now)"
@@ -311,5 +310,10 @@ class HeadCellView: UIView {
 struct BackupData {
     let timeInterval: TimeInterval?
     let data: Data?
-    var checkinCount: Int { return data?.toAnnoatations?.totalCheckin ?? 0 }
+    
+    var checkinCount: Int {
+        guard let data = data,
+        let stations = (try? JSONDecoder().decode([Response.Station].self, from: data)) else { return 0 }
+        return stations.reduce(0) {  $0 + ($1.checkinCounter ?? 0)  }
+    }
 }
