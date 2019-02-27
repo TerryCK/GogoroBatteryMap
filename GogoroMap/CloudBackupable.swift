@@ -341,14 +341,14 @@ extension UserDefaults: CloudBackupable {
 //            else { return }
 //        data.backupToCloud()
 //    }
-    var databaseToData: Data? {
-        return value(forKey: Keys.standard.annotationsKey) as? Data
-    }
+//    var databaseToData: Data? {
+//        return value(forKey: Keys.standard.annotationsKey) as? Data
+//    }
     
     func saveNowTime() {
         set(Date.now, forKey: Keys.standard.nowDateKey)
-        UserDefaults.standard.synchronize()
     }
+    
     func getLastBackupTime() -> String {
         return string(forKey: Keys.standard.nowDateKey) ?? ""
     }
@@ -357,14 +357,10 @@ extension UserDefaults: CloudBackupable {
 extension CKAccountStatus: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .available:
-            return "iCloud is available"
-        case .restricted:
-            return "iCloud settings are restricted by parental controls or a configuration profile"
-        case .noAccount:
-            return "the user not logged in"
-        case .couldNotDetermine:
-            return "please try again"
+        case .available:         return "iCloud is available"
+        case .noAccount:         return "the user not logged in"
+        case .restricted:        return "iCloud settings are restricted by parental controls or a configuration profile"
+        case .couldNotDetermine: return "please try again"
         }
     }
 }
@@ -378,14 +374,6 @@ extension Data: CloudBackupable {
     
     func updataNotifiy() {
         NotificationCenter.default.post(name: .dataUpdata, object: self)
-    }
-
-    func sizeString(units: ByteCountFormatter.Units = [.useAll], countStyle: ByteCountFormatter.CountStyle = .file) -> String {
-        let bcf = ByteCountFormatter()
-        bcf.allowedUnits = units
-        bcf.countStyle = .file
-        
-        return bcf.string(fromByteCount: Int64(count))
     }
 }
 

@@ -18,7 +18,7 @@ final class CustomPointAnnotation: MKPointAnnotation {
     var isOpening: Bool = false
     var checkinDay: String = ""
     
-    convenience init(station: ResponseStationProtocol) {
+    convenience init<T: ResponseStationProtocol>(station: T) {
         let location = CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude)
         let name = station.name.localized() ?? ""
         let address = station.address.localized() ?? ""
