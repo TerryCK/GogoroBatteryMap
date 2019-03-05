@@ -155,13 +155,11 @@ final class DetailAnnotationView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        
         anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 170, height: 210)
         setup()
         backgroundColor = .white
         layer.cornerRadius = 10
         layer.masksToBounds = true
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -169,18 +167,18 @@ final class DetailAnnotationView: UIView {
     }
     
     
-    init(with annotation: CustomPointAnnotation) {
-        self.init()
+    func configure(annotation: BatteryStationPointAnnotation) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressTextView.text = "地址：\(annotation.address)"
-        timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter) 次"
-        lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay)"
-        if annotation.checkinCounter > 0 { self.buttonStackView.addArrangedSubview(unCheckinButton) }
-        
-        guard annotation.isOpening else { return }
-        isAvailableLabel.text = "營運中"
-        isAvailableLabel.backgroundColor = .lightGreen
-        checkinButton.isEnabled = true
+        timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter ?? 0) 次"
+        lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
+        if (annotation.checkinCounter ?? 0) > 0 { buttonStackView.addArrangedSubview(unCheckinButton) }
+        if annotation.isOpening {
+            isAvailableLabel.text = "營運中"
+            isAvailableLabel.backgroundColor = .lightGreen
+            checkinButton.isEnabled = true
+        }
+        return self
     }
 }
 

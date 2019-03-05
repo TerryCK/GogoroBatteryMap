@@ -21,6 +21,16 @@ import Foundation
 //    func saveToDatabase(with annotations: [CustomPointAnnotation])
 //
 //}
+//protocol DataManagerProtocol {
+//    static func saveToDatabase(with annotations: [BatteryStationPointAnnotation])
+//    static func restoreFromDatabase() -> [BatteryStationPointAnnotation]?
+//    static func fetchData(from apporach: Approach) -> Data?
+//    static func fetchData(completionHandler: @escaping (Result<Data>) -> Void)
+//}
+
+enum Approach {
+    case bundle, database
+}
 
 final class DataManager {
     
@@ -37,27 +47,27 @@ final class DataManager {
     }
     
     static func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: annotations), forKey: Keys.standard.annotationsKey)
+        guard let data = try? JSONEncoder().encode(annotations) else { return }
+        UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
         NotificationCenter.default.post(name: .manuContent, object: nil)
     }
     
     static func restoreFromDatabase() -> [BatteryStationPointAnnotation]? {
         guard let data = DataManager.fetchData(from: .database) else { return nil }
-        return NSKeyedUnarchiver.unarchiveObject(with: data) as? [BatteryStationPointAnnotation]
+        return try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
     }
     
     static let shared = DataManager()
+    
     private(set) var batteryStationPointAnnotatios: [BatteryStationPointAnnotation]? {
         willSet {
             if let batteryStationPointAnnotatios = batteryStationPointAnnotatios, let newValue = newValue {
-               self.batteryStationPointAnnotatios = batteryStationPointAnnotatios.merge(new: newValue)
+                self.batteryStationPointAnnotatios = batteryStationPointAnnotatios.merge(new: newValue)
             }             
         }
     }
     
-    enum Approach {
-        case bundle, database
-    }
+    
     
     static func fetchData(from apporach: Approach) -> Data? {
         switch apporach {

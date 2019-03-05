@@ -16,7 +16,6 @@ enum SegmentStatus: Int {
     static let items: [SegmentStatus] = [map , checkin, nearby, building]
     
     var name: String {
-        
         switch self {
         case .map       : return "地圖模式"
         case .building  : return "建置中列表"
@@ -34,30 +33,27 @@ enum SegmentStatus: Int {
         }
     }
     
-    private func logWithAnswer() {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons,
-                               customAttributes: [Log.sharedName.mapButton: eventName])
-    }
-    
-    func getAnnotationToDisplay(annotations: [CustomPointAnnotation],
-                                currentUserLocation: CLLocation) -> [CustomPointAnnotation]? {
+    func annotationsToDisplay(annotations: [BatteryStationPointAnnotation], currentUserLocation: CLLocation) -> [BatteryStationPointAnnotation] {
         
-        logWithAnswer()
+        Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
         
+        let result: [BatteryStationPointAnnotation]?
         switch self {
-        case .map: return nil
-        case .checkin:
-            return annotations.filter { $0.checkinCounter > 0 }
-                .sortedByDistance(userPosition: currentUserLocation)
-            
-        case .nearby:
-            return annotations.sortedByDistance(userPosition: currentUserLocation)
-                .filter { $0.getDistance(from: currentUserLocation).km < 45 }
-            
-        case .building:
-            return annotations.filter { !$0.isOpening }
-                .sortedByDistance(userPosition: currentUserLocation)
+        case .map       : result = nil
+        case .checkin   : result = annotations.filter { $0.checkinCounter ?? 0 > 0 }
+        case .nearby    : result = annotations.filter { $0.distance(from: currentUserLocation).km < 45 }
+        case .building  : result = annotations.filter { !$0.isOpening }
         }
+        
+        return result?.sorted { $0.distance(from: currentUserLocation) < $1.distance(from: currentUserLocation) } ?? []
     }
+}
+
+
+
+extension BatteryStationPointAnnotation {
     
+    func distance(from userPosition: CLLocation) -> Double {
+        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
+    }
 }
