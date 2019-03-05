@@ -138,11 +138,7 @@ final class DetailAnnotationView: UIView {
     
     //    MARK: - View's setup & initialize with autolayout
     private func setup() {
-        addSubview(goButtonStackView)
-        addSubview(mainStackView)
-        addSubview(addressTextView)
-        addSubview(buttonStackView)
-        addSubview(separatorView)
+        [goButtonStackView, mainStackView, addressTextView, buttonStackView, separatorView].forEach(addSubview)
         
         separatorView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 5, bottomPadding: 0, rightPadding: 5, width: 0, height: 0.75)
         
@@ -161,7 +157,6 @@ final class DetailAnnotationView: UIView {
         super.init(frame: frame)
         
         anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 170, height: 210)
-        
         setup()
         backgroundColor = .white
         layer.cornerRadius = 10
@@ -176,21 +171,16 @@ final class DetailAnnotationView: UIView {
     
     init(with annotation: CustomPointAnnotation) {
         self.init()
+        opneHourLabel.text = "\(annotation.subtitle ?? "")"
+        addressTextView.text = "地址：\(annotation.address)"
+        timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter) 次"
+        lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay)"
+        if annotation.checkinCounter > 0 { self.buttonStackView.addArrangedSubview(unCheckinButton) }
         
-        if annotation.isOpening {
-            self.isAvailableLabel.text = "營運中"
-            self.isAvailableLabel.backgroundColor = .lightGreen
-            self.checkinButton.isEnabled = true
-            
-        }
-        
-        self.opneHourLabel.text = "\(annotation.subtitle ?? "")"
-        self.addressTextView.text = "地址：\(annotation.address)"
-        self.timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter) 次"
-        self.lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay)"
-        if annotation.checkinCounter > 0 {
-            self.buttonStackView.addArrangedSubview(unCheckinButton)
-        }
+        guard annotation.isOpening else { return }
+        isAvailableLabel.text = "營運中"
+        isAvailableLabel.backgroundColor = .lightGreen
+        checkinButton.isEnabled = true
     }
 }
 
