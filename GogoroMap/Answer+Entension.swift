@@ -16,10 +16,10 @@ extension Answers {
 }
 
 extension Answers {
-    class func log(event eventName: Name, customAttributes funcName: String? = nil) {
+    static func log(event eventName: Name, customAttributes funcName: String? = nil) {
         Answers.logCustomEvent(withName: "\(eventName.rawValue)s", customAttributes: [eventName.rawValue: funcName ?? "" ])
     }
-    class func log(view contentNameOrNil: String? = nil, contentType contentTypeOrNil: String? = nil ,contentId contentIdOrNil: String? = nil, customAttributes customAttributesOrNil: [String : Any]? = nil) {
+    static func log(view contentNameOrNil: String? = nil, contentType contentTypeOrNil: String? = nil ,contentId contentIdOrNil: String? = nil, customAttributes customAttributesOrNil: [String : Any]? = nil) {
         Answers.logContentView(withName: contentNameOrNil, contentType: contentTypeOrNil, contentId: contentIdOrNil, customAttributes: customAttributesOrNil)
     }    
 }
