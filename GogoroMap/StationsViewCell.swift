@@ -9,7 +9,6 @@
 import UIKit
 import StoreKit
 
-typealias PurchaseFunc = (_ product: SKProduct) -> ()
 
 protocol StationsViewCellDelegate: class { }
 
@@ -58,7 +57,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }
     
     
-    var purchaseHandler: (PurchaseFunc)?
+    var purchaseHandler: ((SKProduct) -> ())?
     
     @objc func buyButtonTapped() {
         if let product = product, let purchaseing = purchaseHandler {

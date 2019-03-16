@@ -58,23 +58,6 @@ extension Navigatorable where Self: MapViewController {
     }
 }
 
-typealias Distance = Double
-extension CustomPointAnnotation {
-    func getDistance(from userPosition: CLLocation) -> Distance {
-        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
-    }
-}
-
-
-extension Collection where Element: CustomPointAnnotation {
-    
-    func sortedByDistance(userPosition: CLLocation) -> [Element] {
-        return self.sorted { $0.getDistance(from: userPosition) < $1.getDistance(from: userPosition) }
-    }
-}
-
-
-
 // TODO: - Route for Travel
 extension Collection where Iterator.Element: CustomPointAnnotation {    
     

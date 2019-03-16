@@ -7,7 +7,7 @@
 //
 
 import UIKit
-//TODO: - Codable
+
 
 
 struct Station {

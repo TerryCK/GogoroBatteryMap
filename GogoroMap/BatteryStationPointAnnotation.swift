@@ -11,9 +11,9 @@ import MapKit
 
 public final class BatteryStationPointAnnotation: MKPointAnnotation {
     public let address: String, status: Int
+
     public var placemark: MKPlacemark { return MKPlacemark(coordinate: coordinate, addressDictionary: [title ?? "": ""]) }
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
-    
     public var iconImage: UIImage {
         guard checkinCounter != nil else { return #imageLiteral(resourceName: "checkin") }
         guard let name = title, status == 1 else { return #imageLiteral(resourceName: "building") }
@@ -31,7 +31,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation {
             address: station.address.localized() ?? "",
             status: station.status)
     }
-    
+
     init(title: String, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, status: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
         self.address      = address
         self.status    = status
@@ -45,5 +45,15 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation {
 extension Array where Element: Hashable {
     func merge(new: Array<Element>) -> Array<Element> {
         return Array(Set<Element>(self).intersection(new).union(new))
+    }
+}
+
+protocol Serializable: Encodable {
+    func serialize() -> Data?
+}
+
+extension Serializable {
+    func serialize() -> Data? {
+        return try? JSONEncoder().encode(self)
     }
 }

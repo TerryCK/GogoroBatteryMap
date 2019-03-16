@@ -34,13 +34,10 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     var products = [SKProduct]() {
         didSet { collectionView?.reloadData()  }
     }
-    // MARK: - ViewController life cycles
-    override func loadView() {
-        super.loadView()
-        setupNaviagtionAndCollectionView()
-    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+          setupNaviagtionAndCollectionView()
         setupPurchaseItem()
     }
     
@@ -56,21 +53,18 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     // MARK: - CollectionView logics
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as? StationsViewCell ?? StationsViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as! StationsViewCell
         
         cell.delegate = self
         
-        if let stationData = delegate?.stationData {
-            cell.stationData = stationData
-        }
+//        if let stationData = delegate?.stationData { cell.stationData = stationData }
         
         if !self.products.isEmpty {
             cell.product = self.products.first
         }
         
-        cell.purchaseHandler = { product in
-            self.purchase(product)
-        }
+        cell.purchaseHandler = self.purchase
+        
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.removeFromSuperview()
             cell.setupThanksLabel()
