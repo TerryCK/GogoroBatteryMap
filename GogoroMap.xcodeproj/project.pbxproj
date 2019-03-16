@@ -30,7 +30,6 @@
 		A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */; };
 		A846017C1F74E46D0089A588 /* Selector+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A846017B1F74E46D0089A588 /* Selector+Extension.swift */; };
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
-		A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */; };
 		A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FBB201D7D530008665B /* String+Extension.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
 		A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869AA191F44150A0085133C /* IAPProducts.swift */; };
@@ -44,7 +43,6 @@
 		A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8C060181F3C9AD20054DE01 /* Media.xcassets */; };
 		A8C8BAC41F3C1FF900E9E18C /* CustomAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */; };
 		A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */; };
-		A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */; };
 		A8CE224F1F3EA11800A4EF6D /* Navigatorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */; };
 		A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */; };
 		A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */; };
@@ -102,7 +100,6 @@
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
 		A84AC8021F46EB71004F5E3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapLabel.swift; sourceTree = "<group>"; };
 		A85E9FBB201D7D530008665B /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		A866F64F1F481F5C009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		A866F6511F481FA6009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -118,7 +115,6 @@
 		A8C060181F3C9AD20054DE01 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnnotation.swift; sourceTree = "<group>"; };
 		A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdContainerView.swift; sourceTree = "<group>"; };
-		A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationHandleable.swift; sourceTree = "<group>"; };
 		A8CE224E1F3EA11800A4EF6D /* Navigatorable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigatorable.swift; sourceTree = "<group>"; };
 		A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -263,7 +259,6 @@
 			isa = PBXGroup;
 			children = (
 				A869AA181F4414B20085133C /* IAPs */,
-				A8CE224A1F3EA09F00A4EF6D /* AnnotationHandleable.swift */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
 				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
@@ -333,7 +328,6 @@
 				A80759671F4C04430031D576 /* CheckinButton.swift */,
 				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
 				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
-				A85E9FB9201D78E30008665B /* GogoroMapLabel.swift */,
 				A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */,
 				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
 			);
@@ -642,7 +636,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
-				A8CE224B1F3EA09F00A4EF6D /* AnnotationHandleable.swift in Sources */,
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
 				A8F7504320261C0000E2206D /* BackupViewController.swift in Sources */,
@@ -660,7 +653,6 @@
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
-				A85E9FBA201D78E30008665B /* GogoroMapLabel.swift in Sources */,
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
