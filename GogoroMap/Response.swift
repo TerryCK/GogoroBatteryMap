@@ -9,30 +9,19 @@
 import UIKit
 
 public protocol ResponseStationProtocol: Hashable {
-    var state: Int { get }
+    var status: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-    var isOpening: Bool     { get }
     var checkinCounter: Int? { get }
     var checkinDay: String? { get }
     
 }
 
 public extension ResponseStationProtocol {
-    var isOpening: Bool { return state == 1 }
-    var annotationImage: UIImage { return isOpening ? Self.makePoiontAnnotationImage(with: name.list.last?.value) : #imageLiteral(resourceName: "building") }
-    
-    static func makePoiontAnnotationImage(with name: String?) -> UIImage {
-        guard let name = name else { return  #imageLiteral(resourceName: "pinFull") }
-        if name.contains("加油")                                { return #imageLiteral(resourceName: "gasStation") }
-        if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
-        if ["家樂福", "大潤發", "Mall", "百貨"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
-        if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
-        return #imageLiteral(resourceName: "pinFull")
-    }
+
     
     public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
     
