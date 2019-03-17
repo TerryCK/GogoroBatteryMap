@@ -8,53 +8,38 @@
 
 import MapKit
 
-typealias ETARequestCompleted = (_ distance: String, _ expectedTravelTime: String) -> Void
-
 protocol Navigable {
-    func go(to destination: MKPointAnnotation)
-    
-    func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping ETARequestCompleted)
-    
-    func getETAData(completionHandler: @escaping ETARequestCompleted)
+    static func go(to destination: MKPointAnnotation)
+    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirectionsResponse>)-> Void)
 }
 
-
-extension Navigable where Self: MapViewController {
-    
-    func go(to destination: MKPointAnnotation) {
-        guard let name = title else { return }
+struct Navigator: Navigable {
+    static func go(to destination: MKPointAnnotation) {
+        guard let name = destination.title else { return }
         let placemark = MKPlacemark(coordinate: destination.coordinate, addressDictionary: [name: ""])
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = "\(name)(Gogoro \("Battery Station".localize()))"
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }
     
-    func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping ETARequestCompleted) {
+    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirectionsResponse>)-> Void) {
         let request = MKDirectionsRequest {
             $0.source = MKMapItem(placemark: MKPlacemark(coordinate: source, addressDictionary: nil))
             $0.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination, addressDictionary: nil))
             $0.transportType = .automobile
             $0.requestsAlternateRoutes = true
         }
-        
+
         MKDirections(request: request).calculate { response, error in
-            if let route = response?.routes.first {
-                completionHandler("\(route.distance.km)", route.expectedTravelTime.convertToHMS)
+            if let response = response {
+                completionHandler(.success(response))
             } else {
-                completionHandler("無法取得資料", "無法取得資料")
-                print("Error: \(error!)")
+                completionHandler(.fail(error))
             }
         }
     }
-    
-    
-    // MARK :- deprecated
-    func getETAData(completionHandler: @escaping ETARequestCompleted) {
-        guard let destinationCoordinate = selectedPin?.coordinate else { return }
-        let source = currentUserLocation.coordinate
-       travelETA(from: source, to: destinationCoordinate, completionHandler: completionHandler)
-    }
 }
+
 
 /*
 // TODO: - Route for Travel

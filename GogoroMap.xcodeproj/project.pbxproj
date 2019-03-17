@@ -42,7 +42,7 @@
 		A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */; };
 		A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8C060181F3C9AD20054DE01 /* Media.xcassets */; };
 		A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */; };
-		A8CE224F1F3EA11800A4EF6D /* Navigable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224E1F3EA11800A4EF6D /* Navigable.swift */; };
+		A8CE224F1F3EA11800A4EF6D /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE224E1F3EA11800A4EF6D /* Navigator.swift */; };
 		A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */; };
 		A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */; };
 		A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */; };
@@ -94,7 +94,6 @@
 		A84209D81F4ECB3700633FC7 /* Taipei.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Taipei.gpx; sourceTree = "<group>"; };
 		A8422D421F947BC200AA28C2 /* SegmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentStatus.swift; sourceTree = "<group>"; };
 		A8422D441F9490CC00AA28C2 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
-		A846017B1F74E46D0089A588 /* Selector+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Selector+Extension.swift"; sourceTree = "<group>"; };
 		A84AC7FE1F46EB71004F5E3B /* GogoroMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GogoroMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GogoroMapTests.swift; sourceTree = "<group>"; };
 		A84AC8021F46EB71004F5E3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -113,7 +112,7 @@
 		A8C060181F3C9AD20054DE01 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnnotation.swift; sourceTree = "<group>"; };
 		A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdContainerView.swift; sourceTree = "<group>"; };
-		A8CE224E1F3EA11800A4EF6D /* Navigable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigable.swift; sourceTree = "<group>"; };
+		A8CE224E1F3EA11800A4EF6D /* Navigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnCheckInButton.swift; sourceTree = "<group>"; };
@@ -265,8 +264,7 @@
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
 				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
-				A8CE224E1F3EA11800A4EF6D /* Navigable.swift */,
-				A846017B1F74E46D0089A588 /* Selector+Extension.swift */,
+				A8CE224E1F3EA11800A4EF6D /* Navigator.swift */,
 				A85E9FBB201D7D530008665B /* String+Extension.swift */,
 			);
 			name = Protocols;
@@ -661,7 +659,7 @@
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,
-				A8CE224F1F3EA11800A4EF6D /* Navigable.swift in Sources */,
+				A8CE224F1F3EA11800A4EF6D /* Navigator.swift in Sources */,
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
 				A84209D51F4EBCE800633FC7 /* OberserName.swift in Sources */,
 				A808F0462220ED3900761A31 /* Response.swift in Sources */,

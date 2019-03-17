@@ -28,112 +28,94 @@ final class DetailAnnotationView: UIView {
     }()
     
     lazy var buttonStackView: UIStackView = {   
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.checkinButton])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [checkinButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .center
         stackView.spacing = 10
-        
         return stackView
-        }()
-    
-    private let addressTextView: UITextView = {
-        let textField = UITextView()
-        
-        textField.text = "地址：彰化縣鹿港鎮鹿東路52之192號"
-        textField.isEditable = false
-        textField.textColor = .gray
-        textField.font = UIFont.systemFont(ofSize: 12)
-        return textField
     }()
     
-    let etaLabel: UILabel = {
-        let label = UILabel()
-        label.text = "約需：120 分鐘"
-        label.font = UIFont.systemFont(ofSize: 11)
-        return label
-    }()
+    private let addressTextView = UITextView {
+        $0.text = "地址"
+        $0.isEditable = false
+        $0.textColor = .gray
+        $0.font = .systemFont(ofSize: 12)
+    }
     
-    let distanceLabel: UILabel = {
-        let label = UILabel()
-        label.text = "100 km"
-        label.font = UIFont.systemFont(ofSize: 12)
-        return label
-    }()
+    let etaLabel = UILabel {
+        $0.text = "約需：120 分鐘"
+        $0.font = .systemFont(ofSize: 11)
+    }
+    
+    let distanceLabel = UILabel {
+        $0.text = "100 km"
+        $0.font = .systemFont(ofSize: 12)
+    }
     
     private lazy var etaStackview: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [self.distanceLabel, self.etaLabel])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [distanceLabel, etaLabel])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     private lazy var goButtonStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [self.goButton, self.etaStackview])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [goButton, etaStackview])
         stackView.axis = .horizontal
         stackView.alignment = .leading
         stackView.spacing = 10
         return stackView
-        }()
-    
-    let lastCheckTimeLabel: UILabel = {
-        let label = UILabel()
-        label.text = "最近的打卡日："
-        label.font = UIFont.systemFont(ofSize: 12)
-        return label
     }()
     
-    let timesOfCheckinLabel: UILabel = {
-        let label = UILabel()
-        label.text = "打卡： 0  次"
-        label.font = UIFont.systemFont(ofSize: 12)
-        return label
-    }()
+    let lastCheckTimeLabel = UILabel {
+        $0.text = "最近的打卡日："
+        $0.font = .systemFont(ofSize: 12)
+    }
     
-    private let isAvailableLabel: UILabel = {
-        let label = UILabel()
-        label.text = "關閉中"
-        label.backgroundColor = .lightGray
-        label.textColor = .white
-        label.layer.cornerRadius = 6
-        label.layer.masksToBounds = true
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 9)
-        label.anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 40, height: 12)
-        return label
-    }()
+    let timesOfCheckinLabel = UILabel {
+        $0.text = "打卡： 0  次"
+        $0.font = .systemFont(ofSize: 12)
+    }
     
-    private let opneHourLabel: UILabel = {
-        let label = UILabel()
-        label.text = "營業時間：24hr"
-        label.font = UIFont.systemFont(ofSize: 12)
-        return label
-    }()
+    private let isAvailableLabel = UILabel {
+        $0.text = "關閉中"
+        $0.backgroundColor = .lightGray
+        $0.textColor = .white
+        $0.layer.cornerRadius = 6
+        $0.layer.masksToBounds = true
+        $0.textAlignment = .center
+        $0.font = .systemFont(ofSize: 9)
+        $0.anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 40, height: 12)
+    }
+    
+    private let opneHourLabel = UILabel {
+        $0.text = "營業時間：24hr"
+        $0.font = .systemFont(ofSize: 12)
+    }
     
     private lazy var openStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [self.opneHourLabel])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [opneHourLabel])
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     
     private lazy var mainStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [self.isAvailableLabel, self.openStackView, self.timesOfCheckinLabel,  self.lastCheckTimeLabel])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [isAvailableLabel, openStackView, timesOfCheckinLabel,  lastCheckTimeLabel])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .equalCentering
         stackView.spacing = 6
         return stackView
-        }()
-    
-    private let separatorView: UIView = {
-        let view = UIView ()
-        view.backgroundColor = .lightGray
-        return view
     }()
+    
+    private let separatorView = UIView {
+        $0.backgroundColor = .lightGray
+    }
     
     
     //    MARK: - View's setup & initialize with autolayout
@@ -166,6 +148,12 @@ final class DetailAnnotationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setup(with counterOfcheckin: Int) {
+        (counterOfcheckin > 0 ? buttonStackView.addArrangedSubview : buttonStackView.removeArrangedSubview)(unCheckinButton)
+        lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
+        timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
+        layoutIfNeeded()
+    }
     
     func configure(annotation: BatteryStationPointAnnotation) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
