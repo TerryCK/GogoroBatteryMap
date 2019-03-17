@@ -55,33 +55,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.isEditable = false
         $0.isHidden = true
     }
-    
+    //MARK:- Use this for selected View
     private var selectedAnnotationView: MKAnnotationView? = nil
     private var detailView = DetailAnnotationView()
     
     
-    var indexOfAnnotations: Int = 0
     var selectedPin: MKPointAnnotation?
-    
-    
-    var selectedAnnotation: BatteryStationPointAnnotation?
-    
-    var counterOfcheckin: Int = 0 {
-        didSet {
-            selectedAnnotationView?.image = selectedAnnotation?.iconImage
-            (counterOfcheckin > 0 ? detailView.buttonStackView.addArrangedSubview : detailView.buttonStackView.removeArrangedSubview)(detailView.unCheckinButton)
-            detailView.lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
-            detailView.timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
-            
-            batteryStationPointAnnotations[indexOfAnnotations].checkinDay = counterOfcheckin > 0 ? Date.today : ""
-            batteryStationPointAnnotations[indexOfAnnotations].checkinCounter = counterOfcheckin
-            DataManager.saveToDatabase(with: batteryStationAnnotations)
-        }
-    }
-    
-    
-    
-
     
  
     
@@ -429,7 +408,7 @@ extension MapViewController: UICollectionViewDataSource {
         cell.titleLabel.text = "\(indexPath.item + 1 ). \(title)"
         cell.dateLabel.text = item.checkinCounter ?? 0 > 0 ? "打卡日期: \(item.checkinDay ?? "")" : ""
         cell.imageView.image = item.iconImage
-        cell.distanceLabel.text = "距離: \(item.distance(from: currentUserLocation).km) km"
+        cell.distanceLabel.text = "距離: \(String(format:"%.1f", item.distance(from: currentUserLocation) / 1000)) km"
         cell.backgroundColor = .clear
         cell.alpha = 0.98
         return cell
@@ -464,23 +443,27 @@ extension MapViewController: UICollectionViewDataSource {
     }
 }
 
-
-
-
-
-
 //MARK: - Checkin functions
 extension MapViewController {
+    private func checkinCount(with calculate: (Int, Int) -> Int) {
+        defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
+        
+        guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation  else { return }
+        let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
+        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
+        batteryAnnotation.checkinCounter = counterOfcheckin
+        selectedAnnotationView?.image = batteryAnnotation.iconImage
+        (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.setup(with: counterOfcheckin)
+    }
     
     @objc func checkin() {
         Answers.log(event: .MapButtons, customAttributes: "Check in")
-        counterOfcheckin = batteryStationPointAnnotations[indexOfAnnotations].checkinCounter ?? 0 + 1
+        checkinCount(with: +)
     }
-    
     
     @objc func unCheckin() {
         Answers.log(event: .MapButtons, customAttributes: "Remove check in")
-        counterOfcheckin = batteryStationPointAnnotations[indexOfAnnotations].checkinCounter ?? 0 - 1
+        checkinCount(with: -)
     }
 }
 
@@ -504,7 +487,7 @@ extension MapViewController {
 }
 
 //MARK: - Present annotationView and Navigatorable
-extension MapViewController: Navigatorable {
+extension MapViewController {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
@@ -552,32 +535,32 @@ extension MapViewController: Navigatorable {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
-        guard let annotation = view.annotation else { return }
-        selectedAnnotationView = nil
-        
-        //        MARK:  feature fo cluster
-        if let clusterAnnotation = annotation as? ClusterAnnotation {
+        if let clusterAnnotation = view.annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
+            selectedAnnotationView = nil
             return
         }
+        
+        Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         selectedAnnotationView = view
-        guard let batteryAnnotation = annotation as? BatteryStationPointAnnotation,
-            let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
-            let index = batteryStationPointAnnotations.index(of: batteryAnnotation) else { return }
         
-        selectedAnnotation = batteryAnnotation
-        indexOfAnnotations = index
-        
+        guard let destination = view.annotation?.coordinate,
+        let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
+            return
+        }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         detailCalloutView.distanceLabel.text = "計算中..."
         detailCalloutView.etaLabel.text = "計算中..."
-        detailView = detailCalloutView
-        getETAData { (distance, travelTime) in
+        Navigator.travelETA(from: userLocationCoordinate, to: destination) { (result) in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
-                detailCalloutView.distanceLabel.text = "距離：\(distance) km "
-                detailCalloutView.etaLabel.text = "約：\(travelTime)"
-                NetworkActivityIndicatorManager.shared.networkOperationFinished()
+                if case .success(let response) = result, let route = response.routes.first {
+                    distance = "距離：\(String(format: "%.1f", route.distance/1000)) km "
+                    travelTime = "約：\(route.expectedTravelTime.convertToHMS)"
+                }
+                detailCalloutView.distanceLabel.text = distance
+                detailCalloutView.etaLabel.text = travelTime
             }
         }
     }
@@ -602,8 +585,7 @@ extension MapViewController: Navigatorable {
     @objc func navigating() {
         Answers.log(event: .MapButtons, customAttributes: "Navigate")
         guard let destination = selectedPin else { return }
-        
-        go(to: destination)
+        Navigator.go(to: destination)
     }
     
     @objc func locationArrowPressed() {
