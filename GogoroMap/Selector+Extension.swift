@@ -16,16 +16,4 @@ extension Selector {
     static let performMenu          =  #selector(MapViewController.performMenu)
     static let segmentChange        =  #selector(MapViewController.segmentChange)
 }
-
-// MARK: - ManuViewController
-extension Selector {
-    static let performGuidePage     =  #selector(MenuController.performGuidePage)
-    static let presentMail          =  #selector(MenuController.presentMail)
-    static let recommand            =  #selector(MenuController.recommand)
-    static let shareThisApp         =  #selector(MenuController.shareThisApp)
-    static let moreApp              =  #selector(MenuController.moreApp)
-    static let attempUpdate         =  #selector(MenuController.attempUpdate)
-    static let restorePurchase      =  #selector(MenuController.restorePurchase)
-    static let clusterSwitching     =  #selector(MenuController.clusterSwitching)
-}
  

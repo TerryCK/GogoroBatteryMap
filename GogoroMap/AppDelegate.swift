@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import GoogleMobileAds
 import Fabric
 import Crashlytics
 import Firebase
@@ -27,11 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if RELEASE
         FirebaseApp.configure()
-        GADMobileAds.configure(withApplicationID: Keys.standard.applicationID)
+            Bundle.main.infoDictionary["GADApplicationIdentifier"] = Keys.standard.applicationID
+            GADMobileAds.sharedInstance().start(completionHandler: nil)
         Fabric.sharedSDK().debug = true
         Fabric.with([Crashlytics.self])
         print("test release mode ")
         #endif
+
         return true
     }
     

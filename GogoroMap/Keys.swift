@@ -40,13 +40,11 @@ struct Keys {
     
     static let standard: Keys = {
         guard
-            let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
-            var dictionary = NSDictionary(contentsOfFile: path) as? [String: Any] else {
+            let url = Bundle.main.url(forResource: "Keys", withExtension: "plist"),
+            let dictionary = NSDictionary(contentsOf: url) as? [String: Any] else {
                 return Keys()
         }
         return Keys(dictionary: dictionary)
     }()
-    
-    
 }
 

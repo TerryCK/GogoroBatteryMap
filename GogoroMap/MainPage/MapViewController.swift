@@ -14,20 +14,8 @@ import GoogleMobileAds
 import Cluster
 import CloudKit
 
-enum ClusterStatus {
-    case on, off
-    init() {
-        self = UserDefaults.standard.bool(forKey: "cluster") ? .on : .off
-    }
-    mutating func change() {
-        let willBe: ClusterStatus = self == .on ? .off : .on
-        UserDefaults.standard.set(willBe == .on, forKey: "cluster")
-        self = willBe
-    }
-}
 
 final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, MenuDataSource, GuidePageViewControllerDelegate {
-    
     
     var currentUserLocation: CLLocation!
     var locationManager: CLLocationManager!
@@ -44,6 +32,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             self.clusterManager.reload(self.mapView, visibleMapRect: self.mapView.visibleMapRect)
         }
     }
+    
     var listToDisplay = [BatteryStationPointAnnotation]() {
         didSet {
             if !listToDisplay.isEmpty {
@@ -72,60 +61,29 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     
     var indexOfAnnotations: Int = 0
-    var selectedPin: CustomPointAnnotation?
+    var selectedPin: MKPointAnnotation?
     
     
     var selectedAnnotation: BatteryStationPointAnnotation?
     
     var counterOfcheckin: Int = 0 {
         didSet {
-            selectedAnnotationView?.image = counterOfcheckin > 0 ?  #imageLiteral(resourceName: "checkin") : Response.Station.makePoiontAnnotationImage(with: selectedPin?.title)
-            
+            selectedAnnotationView?.image = selectedAnnotation?.iconImage
             (counterOfcheckin > 0 ? detailView.buttonStackView.addArrangedSubview : detailView.buttonStackView.removeArrangedSubview)(detailView.unCheckinButton)
             detailView.lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
             detailView.timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
             
-            annotations[indexOfAnnotations].checkinDay = counterOfcheckin > 0 ? Date.today : ""
-            annotations[indexOfAnnotations].checkinCounter = counterOfcheckin
+            batteryStationPointAnnotations[indexOfAnnotations].checkinDay = counterOfcheckin > 0 ? Date.today : ""
+            batteryStationPointAnnotations[indexOfAnnotations].checkinCounter = counterOfcheckin
             DataManager.saveToDatabase(with: batteryStationAnnotations)
         }
     }
     
     
     
-    //     MARK: - Handler of Annotations on map with store property obsever
-    var willRemovedAnnotations = [CustomPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.willRemovedAnnotations)
-            }
-        }
-    }
+
     
-    var batteryStationAnnotations = DataManager.shared.batteryStationPointAnnotatios ?? [] {
-        willSet {
-            clusterManager.remove(batteryStationAnnotations)
-            clusterManager.add(newValue)
-            DataManager.saveToDatabase(with: newValue)
-        }
-    }
-    
-    
-    var dataSource: [Response.Station] = []
-    
-    var annotations = [BatteryStationPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async { self.clusterUpdating(with: oldValue) }
-            DataManager.saveToDatabase(with: annotations)
-        }
-    }
-    
-    private func clusterUpdating(with oldValue: [BatteryStationPointAnnotation]) {
-        clusterManager.remove(oldValue)
-        //        updataAnnotationImage(annotations: annotations)
-        clusterManager.add(annotations)
-        reloadMapView()
-    }
+ 
     
     var userLocationCoordinate: CLLocationCoordinate2D! {
         get { return currentUserLocation.coordinate }
@@ -168,7 +126,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
         button.tintColor = .white
-        button.addTarget(self, action: .performMenu, for: .touchUpInside)
+        button.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
         return button
     }()
     
@@ -185,7 +143,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         sc.selectedSegmentIndex = 0
         sc.tintColor = .white
         sc.addTarget(self,
-                     action: .segmentChange,
+                     action: #selector(MapViewController.segmentChange),
                      for: .valueChanged)
         return sc
     }()
@@ -244,6 +202,42 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupSideMenu()
         
     }
+    
+    
+    //     MARK: - Handler of Annotations on map with store property obsever
+    var willRemovedAnnotations = [MKPointAnnotation]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.willRemovedAnnotations)
+            }
+        }
+    }
+    
+    var batteryStationAnnotations = DataManager.shared.batteryStationPointAnnotatios ?? [] {
+        willSet {
+            clusterManager.remove(batteryStationAnnotations)
+            clusterManager.add(newValue)
+            DataManager.saveToDatabase(with: newValue)
+        }
+    }
+    
+    private func clusterUpdating(with oldValue: [BatteryStationPointAnnotation]) {
+        clusterManager.remove(oldValue)
+        //        updataAnnotationImage(annotations: annotations)
+        clusterManager.add(batteryStationPointAnnotations)
+        reloadMapView()
+    }
+    
+    var dataSource: [Response.Station] = []
+    
+    var batteryStationPointAnnotations = [BatteryStationPointAnnotation]() {
+        didSet {
+            DispatchQueue.main.async { self.clusterUpdating(with: oldValue) }
+            DataManager.saveToDatabase(with: batteryStationPointAnnotations)
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -252,7 +246,15 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
         setupPurchase()
         
+        DataManager.fetchData { (result) in
+            
+            if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init){
+                self.batteryStationPointAnnotations = stations
+            }
+        }
         
+        
+//        batteryStationPointAnnotations = DataManager.fetchData(from: .database)
         #if REALEASE
         setupRating()
         #endif
@@ -262,7 +264,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Answers.log(view: "Map Page")
-        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: seupAdContainerView)
+//        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
         menuBarButton.willDisplay()
         locationArrowView.willDisplay()
     }
@@ -296,20 +298,19 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     //     MARK: - View setups
-    private func setupSideMenu() {
-        let menuController = MenuController(collectionViewLayout: UICollectionViewFlowLayout())
+    private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
+        
+        let flowLyout = UICollectionViewFlowLayout {
+            $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
+            $0.minimumLineSpacing = 0
+            $0.minimumInteritemSpacing = 0
+        }
+        let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
-        let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-        let sideManuManager = SideMenuManager.default
-        sideManuManager.menuLeftNavigationController?.leftSide = true
-        sideManuManager.menuLeftNavigationController = menuLeftNavigationController
-        sideManuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-        setSideMenuDefalts()
-    }
-    
-    private func setSideMenuDefalts() {
-        let displayFactor: CGFloat = 0.80
-        let sideMenuManager = SideMenuManager.default
+        menuController.dataSource = self
+        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+        sideMenuManager.menuLeftNavigationController?.leftSide = true
+        sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         sideMenuManager.menuFadeStatusBar = true
         sideMenuManager.menuShadowOpacity = 0.59
         sideMenuManager.menuWidth = view.frame.width * displayFactor
@@ -362,9 +363,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     private func setupMainViews() {
-        [mapView, collectionView, cellEmptyGuideView].forEach {
-            view.addSubview($0)
-            $0.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        [mapView, collectionView, cellEmptyGuideView].forEach { (myView: UIView) in
+            view.addSubview(myView)
+            myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
         }
     }
     
@@ -386,7 +387,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
     }
     
-    private func seupAdContainerView() {
+    private func setupAdContainerView() {
         
         Answers.log(view: "Ad View")
         view.addSubview(adContainerView)
@@ -427,7 +428,7 @@ extension MapViewController: UICollectionViewDataSource {
         let title = item.title ?? ""
         cell.titleLabel.text = "\(indexPath.item + 1 ). \(title)"
         cell.dateLabel.text = item.checkinCounter ?? 0 > 0 ? "打卡日期: \(item.checkinDay ?? "")" : ""
-        cell.imageView.image = Response.Station.makePoiontAnnotationImage(with: title)
+        cell.imageView.image = item.iconImage
         cell.distanceLabel.text = "距離: \(item.distance(from: currentUserLocation).km) km"
         cell.backgroundColor = .clear
         cell.alpha = 0.98
@@ -473,13 +474,13 @@ extension MapViewController {
     
     @objc func checkin() {
         Answers.log(event: .MapButtons, customAttributes: "Check in")
-        counterOfcheckin = annotations[indexOfAnnotations].checkinCounter ?? 0 + 1
+        counterOfcheckin = batteryStationPointAnnotations[indexOfAnnotations].checkinCounter ?? 0 + 1
     }
     
     
     @objc func unCheckin() {
         Answers.log(event: .MapButtons, customAttributes: "Remove check in")
-        counterOfcheckin = annotations[indexOfAnnotations].checkinCounter ?? 0 - 1
+        counterOfcheckin = batteryStationPointAnnotations[indexOfAnnotations].checkinCounter ?? 0 - 1
     }
 }
 
@@ -493,8 +494,12 @@ extension MapViewController {
         mapView.isHidden        = !collectionView.isHidden
         setTrackModeNone()
         locationArrowView.isEnabled = false
-        if .map ~= segmentStatus { changeToMapview() }
-        listToDisplay = segmentStatus.annotationsToDisplay(annotations: annotations, currentUserLocation: currentUserLocation)
+        switch segmentStatus {
+        case .map:  changeToMapview()
+        case .building, .checkin, .nearby:
+            listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations, currentUserLocation: currentUserLocation)
+        }
+        
     }
 }
 
@@ -535,12 +540,11 @@ extension MapViewController: Navigatorable {
         }
         
         guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
-        
-        annotationView?.image = (batteryStation.checkinCounter ?? 0) > 0 ? #imageLiteral(resourceName: "checkin") : Response.Station.makePoiontAnnotationImage(with: batteryStation.title)
+        annotationView?.image = batteryStation.iconImage
         annotationView?.detailCalloutAccessoryView = DetailAnnotationView {
-            $0.goButton.addTarget(self, action: .navigating, for: .touchUpInside)
-            $0.checkinButton.addTarget(self, action: .checkin, for: .touchUpInside)
-            $0.unCheckinButton.addTarget(self, action: .unCheckin, for: .touchUpInside)
+            $0.goButton.addTarget(self, action: #selector(MapViewController.navigating), for: .touchUpInside)
+            $0.checkinButton.addTarget(self, action: #selector(MapViewController.checkin), for: .touchUpInside)
+            $0.unCheckinButton.addTarget(self, action: #selector(MapViewController.unCheckin), for: .touchUpInside)
             }.configure(annotation: batteryStation)
         
         return annotationView
@@ -560,7 +564,7 @@ extension MapViewController: Navigatorable {
         selectedAnnotationView = view
         guard let batteryAnnotation = annotation as? BatteryStationPointAnnotation,
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView,
-            let index = annotations.index(of: batteryAnnotation) else { return }
+            let index = batteryStationPointAnnotations.index(of: batteryAnnotation) else { return }
         
         selectedAnnotation = batteryAnnotation
         indexOfAnnotations = index
@@ -597,7 +601,8 @@ extension MapViewController: Navigatorable {
     
     @objc func navigating() {
         Answers.log(event: .MapButtons, customAttributes: "Navigate")
-        guard let destination = self.selectedPin else { return }
+        guard let destination = selectedPin else { return }
+        
         go(to: destination)
     }
     

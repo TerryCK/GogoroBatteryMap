@@ -8,56 +8,55 @@
 
 import MapKit
 
-typealias MapRequestCompleted = (_ distance: String, _ expectedTravelTime: String) -> Void
+typealias ETARequestCompleted = (_ distance: String, _ expectedTravelTime: String) -> Void
 
-protocol Navigatorable {
-    func go(to destination: CustomPointAnnotation)
-    func getETAData(completeHandler: @escaping MapRequestCompleted)
+protocol Navigable {
+    func go(to destination: MKPointAnnotation)
+    
+    func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping ETARequestCompleted)
+    
+    func getETAData(completionHandler: @escaping ETARequestCompleted)
 }
 
 
-extension Navigatorable where Self: MapViewController {
+extension Navigable where Self: MapViewController {
     
-    func go(to destination: CustomPointAnnotation) {
-        let mapItem = MKMapItem(placemark: destination.placemark)
-        mapItem.name = "\(destination.title!)(Gogoro \("Battery Station".localize()))"
-        print("mapItem.name \(String(describing: mapItem.name))")
+    func go(to destination: MKPointAnnotation) {
+        guard let name = title else { return }
+        let placemark = MKPlacemark(coordinate: destination.coordinate, addressDictionary: [name: ""])
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "\(name)(Gogoro \("Battery Station".localize()))"
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }
     
-    func getETAData(completeHandler: @escaping MapRequestCompleted) {
-        // Get current position
-        let sourcePlacemark = MKPlacemark(coordinate: currentUserLocation.coordinate, addressDictionary: nil)
-        let sourceMapItem = MKMapItem(placemark: sourcePlacemark)
+    func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping ETARequestCompleted) {
+        let request = MKDirectionsRequest {
+            $0.source = MKMapItem(placemark: MKPlacemark(coordinate: source, addressDictionary: nil))
+            $0.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination, addressDictionary: nil))
+            $0.transportType = .automobile
+            $0.requestsAlternateRoutes = true
+        }
         
-        // Get destination position
-        guard let coordinate = selectedPin?.coordinate else { return }
-        
-        let destinationCoordinates = CLLocationCoordinate2DMake(coordinate.latitude, coordinate.longitude)
-        let destinationPlacemark = MKPlacemark(coordinate: destinationCoordinates, addressDictionary: nil)
-        let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
-        
-        // Create request
-        let request = MKDirectionsRequest()
-        request.source = sourceMapItem
-        request.destination = destinationMapItem
-        request.transportType = MKDirectionsTransportType.automobile
-        request.requestsAlternateRoutes = true
-        let directions = MKDirections(request: request)
-        
-        
-        directions.calculate { response, error in
+        MKDirections(request: request).calculate { response, error in
             if let route = response?.routes.first {
-                completeHandler("\(route.distance.km)", route.expectedTravelTime.convertToHMS)
+                completionHandler("\(route.distance.km)", route.expectedTravelTime.convertToHMS)
             } else {
-                completeHandler("無法取得資料", "無法取得資料")
+                completionHandler("無法取得資料", "無法取得資料")
                 print("Error: \(error!)")
             }
         }
-        
+    }
+    
+    
+    // MARK :- deprecated
+    func getETAData(completionHandler: @escaping ETARequestCompleted) {
+        guard let destinationCoordinate = selectedPin?.coordinate else { return }
+        let source = currentUserLocation.coordinate
+       travelETA(from: source, to: destinationCoordinate, completionHandler: completionHandler)
     }
 }
 
+/*
 // TODO: - Route for Travel
 extension Collection where Iterator.Element: CustomPointAnnotation {    
     
@@ -130,3 +129,4 @@ extension Collection where Iterator.Element: CustomPointAnnotation {
         
     }
 }
+*/

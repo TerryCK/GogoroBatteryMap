@@ -10,53 +10,44 @@ import UIKit
 import StoreKit
 
 
-protocol StationsViewCellDelegate: class { }
+protocol StationsViewCellDelegate: AnyObject { }
 
 
 final class StationsViewCell: BaseCollectionViewCell {
     
     weak var delegate: StationsViewCellDelegate? {
         didSet {
-            guideButton.addTarget(delegate, action: .performGuidePage, for: .touchUpInside)
-            feedBackButton.addTarget(delegate, action: .presentMail, for: .touchUpInside)
-            recommandButton.addTarget(delegate, action: .recommand, for: .touchUpInside)
-            shareButton.addTarget(delegate, action: .shareThisApp, for: .touchUpInside)
-            moreAppsButton.addTarget(delegate, action: .moreApp, for: .touchUpInside)
-            dataUpdateButton.addTarget(delegate, action: .attempUpdate, for: .touchUpInside)
-            clusterSwitcher.addTarget(delegate, action: .clusterSwitching, for: .valueChanged)
+            guideButton.addTarget(delegate, action: #selector(MenuController.performGuidePage), for: .touchUpInside)
+            feedBackButton.addTarget(delegate, action: #selector(MenuController.presentMail), for: .touchUpInside)
+            recommandButton.addTarget(delegate, action: #selector(MenuController.recommand), for: .touchUpInside)
+            shareButton.addTarget(delegate, action: #selector(MenuController.shareThisApp), for: .touchUpInside)
+            moreAppsButton.addTarget(delegate, action: #selector(MenuController.moreApp), for: .touchUpInside)
+            dataUpdateButton.addTarget(delegate, action: #selector(MenuController.dataUpdate), for: .touchUpInside)
+            clusterSwitcher.addTarget(delegate, action: #selector(MenuController.clusterSwitching(sender:)), for: .valueChanged)
         }
     }
     
-    var stationData: StationDatas = (0,0,0,0) {
+    var analytics: StationAnalyticsModel = .init(total: 0, availables: 0, flags: 0, checkins: 0) {
         didSet {
-            availableLabel.text = "\(NSLocalizedString("Opening:", comment: "")) \(stationData.available)"
-            buildingLabel.text = "\(NSLocalizedString("Building:", comment: "")) \(stationData.total - stationData.available)"
-            haveBeenLabel.text = "\(NSLocalizedString("Have been:", comment: "")) \(stationData.hasFlags)"
-            completedRatioLabel.text = "\(NSLocalizedString("Completed ratio:", comment: "")) \(completedPercentage) %"
-            hasCheckinsLabel.text = "\(NSLocalizedString("Total checkins:", comment: "")) \(stationData.hasCheckins)"
-             //            totleLabel.text = "\(NSLocalizedString("Total:", comment: "")) \(stationData.totle)"
-        }
-    }
-    
-    private var completedPercentage: String {
-        get {
-            return (Double(stationData.hasFlags) / Double(stationData.available)).percentage
+            buildingLabel.text = "\("Building:".localize()) \(analytics.buildings)"
+            haveBeenLabel.text = "\("Have been:".localize()) \(analytics.flags)"
+            availableLabel.text = "\("Opening:".localize()) \(analytics.availables)"
+            hasCheckinsLabel.text = "\("Total checkins:".localize()) \(analytics.checkins)"
+            completedRatioLabel.text = "\("Completed ratio:".localize()) \(analytics.completedPercentage) %"
         }
     }
     
     var product: SKProduct? {
         didSet {
             removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
-            if let index = buttonsStackView.subviews.index(of: copyrightLabel) {
-                restoreButton.addTarget(delegate, action: .restorePurchase, for: .touchUpInside)
-                removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
-                buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
-                layoutIfNeeded()
-            }
+            guard let index = buttonsStackView.subviews.index(of: copyrightLabel) else { return }
+            restoreButton.addTarget(delegate, action: #selector(MenuController.restorePurchase), for: .touchUpInside)
+            removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
+            buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
+            layoutIfNeeded()
         }
     }
-    
-    
+
     var purchaseHandler: ((SKProduct) -> ())?
     
     @objc func buyButtonTapped() {
@@ -65,16 +56,10 @@ final class StationsViewCell: BaseCollectionViewCell {
         }
     }
     
-    private lazy var lastUpdateDateLabel: UILabel = {
-        let label = UILabel()
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        let dateString = formatter.string(from: date)
-        label.text = "\(NSLocalizedString("Last:", comment: "")) " + dateString
-        label.font = UIFont.boldSystemFont(ofSize: 11)
-        return label
-    }()
+    private lazy var lastUpdateDateLabel: UILabel = UILabel {
+        $0.text = "\("Last:".localize()) " + DateFormatter { $0.dateFormat = "yyyy.MM.dd" }.string(from: Date())
+        $0.font = .boldSystemFont(ofSize: 11)
+    }
     
     private lazy var hasBeenList: UIButton = {
         let button = UIButton(type: .system)
@@ -92,7 +77,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
 
     private lazy var clusterDescribingLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = "Cluster".localize()
         label.font = UIFont.systemFont(ofSize: 16)
         return label
@@ -108,43 +93,43 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var availableLabel: UILabel = {     
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = ""
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
         }()
     
     private lazy var haveBeenLabel: UILabel = {     
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Have been:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }()
     
     private lazy var hasCheckinsLabel: UILabel = {     
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Total checkins:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
         }() 
     
     private lazy var completedRatioLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
-        label.text = NSLocalizedString("completed ratio", comment: "")
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
+        label.text = NSLocalizedString("Completed ratio:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         
         return label
         }()
     
-    private lazy var totleLabel: UILabel = {     
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+    private lazy var totalLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Total:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
         }()
     
     private lazy var buildingLabel: UILabel = {     
-        let label = UILabel(frame: CGRect(x: 20, y: 50, width: self.frame.width, height: 16))
+        let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Building:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
@@ -226,7 +211,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }()
     
     private lazy var updateStackView: UIStackView = {     
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.lastUpdateDateLabel, self.dataUpdateButton])
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [lastUpdateDateLabel, dataUpdateButton])
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 10
@@ -234,7 +219,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var pushShareStackView: UIStackView = {     
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.shareButton, self.recommandButton])
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [shareButton, recommandButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -242,7 +227,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var feedBackButtonStackView: UIStackView = {     
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [self.guideButton, self.feedBackButton])
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [guideButton, feedBackButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -257,7 +242,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }()
     
      lazy var buyStoreButtonStackView: UIStackView = {     
-        let stackView = UIStackView(arrangedSubviews:  [self.restoreButton, self.removeAdsButton])
+        let stackView = UIStackView(arrangedSubviews:  [restoreButton, removeAdsButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -278,8 +263,9 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         return myView
     }()
+    
     private lazy var operationStatusStack: UIStackView = {     
-        let stackView = UIStackView(arrangedSubviews:  [self.availableLabel, self.buildingLabel])
+        let stackView = UIStackView(arrangedSubviews:  [availableLabel, buildingLabel])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -287,8 +273,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var headStackView: UIStackView = {
-        
-        let stackView = UIStackView(arrangedSubviews: [self.updateStackView, self.completedRatioLabel, self.haveBeenLabel, self.hasCheckinsLabel, self.operationStatusStack, self.clusterView])
+        let stackView = UIStackView(arrangedSubviews: [updateStackView, completedRatioLabel, haveBeenLabel, hasCheckinsLabel, operationStatusStack, clusterView])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
@@ -303,9 +288,9 @@ final class StationsViewCell: BaseCollectionViewCell {
 //        return stackView
 //    }()
     private lazy var buttonsStackView: UIStackView = {
-        var subviews: [UIView] = [self.pushShareStackView,
-                                  self.feedBackButtonStackView,
-                                  self.copyrightLabel]
+        var subviews: [UIView] = [pushShareStackView,
+                                  feedBackButtonStackView,
+                                  copyrightLabel]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
@@ -314,7 +299,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }()
     
     private lazy var bottomLabelStackView: UIStackView = {     
-        let stackView = UIStackView(arrangedSubviews: [self.copyrightLabel ,self.authorLabel])
+        let stackView = UIStackView(arrangedSubviews: [copyrightLabel, authorLabel])
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         stackView.spacing = 10
@@ -323,10 +308,6 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     func setupThanksLabel() {
         buttonsStackView.insertArrangedSubview(thanksLabel, at: 0)
-    }
-    
-    deinit {
-        print("station view cell deinitialize")
     }
     
     override func setupViews() {
@@ -338,8 +319,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 200)
         
-        let separatorView = UIView()
-        separatorView.backgroundColor = .gray
+        let separatorView = UIView { $0.backgroundColor = .gray }
         
         viewContainer.addSubview(separatorView)
         separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
@@ -352,7 +332,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         viewContainer.addSubview(buttonsStackView)
         buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: authorLabel.topAnchor, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 0)
       
-        [totleLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
+        [totalLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
         
     }
 }
