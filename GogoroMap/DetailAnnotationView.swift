@@ -173,7 +173,7 @@ final class DetailAnnotationView: UIView {
         timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter ?? 0) 次"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
         if (annotation.checkinCounter ?? 0) > 0 { buttonStackView.addArrangedSubview(unCheckinButton) }
-        if annotation.isOpening {
+        if annotation.state == 1 {
             isAvailableLabel.text = "營運中"
             isAvailableLabel.backgroundColor = .lightGreen
             checkinButton.isEnabled = true

@@ -10,22 +10,25 @@ import UIKit
 import StoreKit
 import Crashlytics
 
-protocol ManuDelegate: class {
+protocol ManuDelegate: AnyObject {
     var  clusterSwitcher: ClusterStatus { set get }
+    
 }
 
-protocol MenuDataSource: class {
-    associatedtype Element: ResponseStationProtocol
-    var dataSource: [Element] { get }
+protocol MenuDataSource: AnyObject {
+    var batteryStationPointAnnotations: [BatteryStationPointAnnotation] { get }
 }
 
+extension MenuController {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+}
 
 final class MenuController: UICollectionViewController, StationsViewCellDelegate {
     
-    // MARK: - Properties
-    let cellid = "cellid"
-    
     weak var delegate: ManuDelegate?
+    weak var dataSource: MenuDataSource?
     
     var refreshButton: UIButton?
     
@@ -37,7 +40,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-          setupNaviagtionAndCollectionView()
+        setupNaviagtionAndCollectionView()
         setupPurchaseItem()
     }
     
@@ -48,33 +51,33 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .removeAds, object: nil)
-        print("menu controller deinitialize")
     }
     
     // MARK: - CollectionView logics
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellid, for: indexPath) as! StationsViewCell
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: type(of: self)), for: indexPath) as! StationsViewCell
         
         cell.delegate = self
+        cell.analytics = StationAnalyticsModel(dataSource?.batteryStationPointAnnotations ?? [])
         
-//        if let stationData = delegate?.stationData { cell.stationData = stationData }
-        
-        if !self.products.isEmpty {
-            cell.product = self.products.first
+        if !products.isEmpty {
+            cell.product = products.first
         }
         
-        cell.purchaseHandler = self.purchase
+        cell.purchaseHandler = purchase
         
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.removeFromSuperview()
             cell.setupThanksLabel()
         }
-        self.refreshButton = cell.dataUpdateButton
+        
+        refreshButton = cell.dataUpdateButton
         return cell
     }
     
     
- 
+    
     // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
         
@@ -84,18 +87,16 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
         navigationItem.title = "Information".localize()
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
-        
         collectionView?.backgroundColor = .clear
-        collectionView?.contentInset = UIEdgeInsetsMake( 10, 0, 10, 0)
+        collectionView?.contentInset = UIEdgeInsetsMake( 0, 0, 10, 0)
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
-        collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: cellid)
+        collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: String(describing: type(of: self)))
     }
     
     // MARK: - Events
     private func open(url: String) {
-        guard let checkURL = URL(string: url),
-            UIApplication.shared.canOpenURL(checkURL) else { return }
+        guard let checkURL = URL(string: url), UIApplication.shared.canOpenURL(checkURL) else { return }
         UIApplication.shared.openURL(checkURL)
     }
 }
@@ -104,15 +105,15 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
 extension MenuController {
     
     @objc func performGuidePage() {
-      
-       navigationController?.pushViewController(BackupViewController(), animated: true)
+        
+        //       navigationController?.pushViewController(BackupViewController(), animated: true)
     }
     
-//    @objc func performGuidePage() {
-//        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
-//        present(GuidePageViewController(), animated: true, completion: nil)
-//    }
-
+    //    @objc func performGuidePage() {
+    //        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Guide"])
+    //        present(GuidePageViewController(), animated: true, completion: nil)
+    //    }
+    
     @objc func recommand() {
         Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
@@ -128,14 +129,14 @@ extension MenuController {
     
     @objc func shareThisApp() {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Share"])
-        guard let name = NSURL(string: "https://itunes.apple.com/tw/app/id\(Keys.standard.appID)?l=zh&mt=8") else { return }
-        let activityVC = UIActivityViewController(activityItems: [name], applicationActivities: nil)
+        guard let url = URL(string: "https://itunes.apple.com/tw/app/id\(Keys.standard.appID)?l=zh&mt=8") else { return }
+        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         if UIDevice.current.userInterfaceIdiom == .pad {
-            activityVC.popoverPresentationController?.sourceView = self.view
+            activityVC.popoverPresentationController?.sourceView = view
             activityVC.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
             activityVC.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         }
-        self.present(activityVC, animated: true, completion: nil)
+        present(activityVC, animated: true, completion: nil)
     }
     
     @objc func clusterSwitching(sender: AnyObject) {
@@ -164,41 +165,21 @@ extension MenuController {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
         print("\n*** data reflash ***\n")
         
-        DataManager.fetchData { (result) in
+        DataManager.fetchData { (_) in
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
                 self.navigationItem.title = "Information".localize()
                 self.timer = nil
             }
         }
-//        delegate?.getAnnotationFromRemote {
-//            DispatchQueue.main.async {
-//                self.collectionView?.reloadData()
-//                self.navigationItem.title = "Information".localize()
-//                self.timer = nil
-//            }
-//        }
+        //        delegate?.getAnnotationFromRemote {
+        //            DispatchQueue.main.async {
+        //                self.collectionView?.reloadData()
+        //                self.navigationItem.title = "Information".localize()
+        //                self.timer = nil
+        //            }
+        //        }
     }
-}
-
-extension MenuController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 20 , height: view.frame.height - 90)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-    
 }
 
 

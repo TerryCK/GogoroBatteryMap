@@ -35,15 +35,17 @@ enum Approach {
 final class DataManager {
     
     private let jsonDecoder = JSONDecoder()
+    private func oldDatabaseForMigration() -> [CustomPointAnnotation]? {
+        let datafromdatabase = DataManager.fetchData(from: .database)
+        return NSKeyedUnarchiver.unarchiveObject(with: datafromdatabase!) as? [CustomPointAnnotation]
+    }
+    
+    
     
     private init() {
-        let data = DataManager.fetchData(from: .database) ?? DataManager.fetchData(from: .bundle)!
+        let data = DataManager.fetchData(from: .bundle)! //?? let DataManager.fetchData(from: .bundle)!
         batteryStationPointAnnotatios = (try? jsonDecoder.decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
-        DataManager.fetchData { (result) in
-            if case let .success(data) = result {
-                self.batteryStationPointAnnotatios = (try? self.jsonDecoder.decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
-            }
-        }
+       
     }
     
     static func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
@@ -81,8 +83,9 @@ final class DataManager {
     
     static func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        guard let url = URL(string: Keys.standard.gogoroAPI) else {
+        guard let url = URL(string: "https://wapi.gogoro.com/tw/api/vm/list") else {
             completionHandler(.fail(nil))
+            print("failure")
             return
         }
         

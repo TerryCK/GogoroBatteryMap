@@ -9,26 +9,20 @@
 import UIKit
 
 public protocol ResponseStationProtocol: Hashable {
-    var status: Int { get }
+    var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-    var checkinCounter: Int? { get }
-    var checkinDay: String? { get }
-    
 }
 
 public extension ResponseStationProtocol {
-
-    
     public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
-   
 }
 
 public extension Response.Station.Detail {
@@ -46,7 +40,6 @@ public struct Response: Decodable {
     }
     
     public struct Station: Decodable, ResponseStationProtocol {
-        public var checkinCounter: Int? = nil, checkinDay: String? = nil
         
         public let state: Int
         public let name, address : Detail
@@ -59,9 +52,7 @@ public struct Response: Decodable {
             case longitude     = "Longitude"
             case address       = "Address"
             case state         = "State"
-            case checkinDay    = "checkinDay"
             case availableTime = "AvailableTime"
-            case checkinCounter = "checkinCounter"
         }
         
         public init(from decoder: Decoder) throws {
@@ -70,8 +61,6 @@ public struct Response: Decodable {
             latitude      = try container.decode(Double.self, forKey: .latitude)
             longitude     = try container.decode(Double.self, forKey: .longitude)
             availableTime = try container.decode(String?.self, forKey: .availableTime)
-            checkinCounter = try container.decode(Int?.self, forKey: .checkinCounter)
-            checkinDay = try container.decode(String?.self, forKey: .checkinDay)
             let nameString = try container.decode(String.self, forKey: .name)
             let addressString = try container.decode(String.self, forKey: .address)
             let jsonDecoder = JSONDecoder()

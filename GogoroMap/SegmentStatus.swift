@@ -42,7 +42,7 @@ enum SegmentStatus: Int {
         case .map       : result = nil
         case .checkin   : result = annotations.filter { $0.checkinCounter ?? 0 > 0 }
         case .nearby    : result = annotations.filter { $0.distance(from: currentUserLocation).km < 45 }
-        case .building  : result = annotations.filter { !$0.isOpening }
+        case .building  : result = annotations.filter { $0.state != 1 }
         }
         
         return result?.sorted { $0.distance(from: currentUserLocation) < $1.distance(from: currentUserLocation) } ?? []

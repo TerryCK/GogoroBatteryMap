@@ -9,16 +9,15 @@
 import UIKit
 import MapKit
 
-public final class BatteryStationPointAnnotation: MKPointAnnotation {
-    public let address: String, status: Int
-
-    public var placemark: MKPlacemark { return MKPlacemark(coordinate: coordinate, addressDictionary: [title ?? "": ""]) }
+public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
+    public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
+   
     public var iconImage: UIImage {
-        guard checkinCounter != nil else { return #imageLiteral(resourceName: "checkin") }
-        guard let name = title, status == 1 else { return #imageLiteral(resourceName: "building") }
-        if name.contains("加油")                                { return #imageLiteral(resourceName: "gasStation") }
+        guard checkinCounter == nil else { return #imageLiteral(resourceName: "checkin") }
+        guard let name = title, state == 1 else { return #imageLiteral(resourceName: "building") }
         if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
+        if ["加油", "中油"].reduce(false, { $0 || name.contains($1) })   { return #imageLiteral(resourceName: "gasStation") }
         if ["家樂福", "大潤發", "Mall", "百貨"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
         if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
         return #imageLiteral(resourceName: "pinFull")
@@ -29,12 +28,12 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation {
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
             coordinate: CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude),
             address: station.address.localized() ?? "",
-            status: station.status)
+            state: station.state)
     }
 
-    init(title: String, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, status: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
+    init(title: String, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
         self.address      = address
-        self.status    = status
+        self.state    = state
         super.init()
         self.title      = title
         self.subtitle   = subtitle
