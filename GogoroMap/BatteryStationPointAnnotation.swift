@@ -14,7 +14,8 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
    
     public var iconImage: UIImage {
-        guard checkinCounter == nil else { return #imageLiteral(resourceName: "checkin") }
+        
+        guard checkinCounter ?? 0 <= 0 else { return #imageLiteral(resourceName: "checkin") }
         guard let name = title, state == 1 else { return #imageLiteral(resourceName: "building") }
         if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
         if ["加油", "中油"].reduce(false, { $0 || name.contains($1) })   { return #imageLiteral(resourceName: "gasStation") }
