@@ -57,7 +57,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     //MARK:- Use this for selected View
     private var selectedAnnotationView: MKAnnotationView? = nil
-    private var detailView = DetailAnnotationView()
+//    private var detailView = DetailAnnotationView()
     
     
     var selectedPin: MKPointAnnotation?
@@ -448,7 +448,7 @@ extension MapViewController {
     private func checkinCount(with calculate: (Int, Int) -> Int) {
         defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
         
-        guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation  else { return }
+        guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
         batteryAnnotation.checkinCounter = counterOfcheckin

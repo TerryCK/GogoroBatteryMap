@@ -27,8 +27,8 @@ final class DetailAnnotationView: UIView {
         return button
     }()
     
-    lazy var buttonStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [checkinButton])
+    lazy var buttonStackView: UIStackView = {
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [checkinButton, unCheckinButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .center
@@ -149,7 +149,7 @@ final class DetailAnnotationView: UIView {
     }
     
     func setup(with counterOfcheckin: Int) {
-        (counterOfcheckin > 0 ? buttonStackView.addArrangedSubview : buttonStackView.removeArrangedSubview)(unCheckinButton)
+        unCheckinButton.isHidden = counterOfcheckin <= 0
         lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
         timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
         layoutIfNeeded()
@@ -160,7 +160,9 @@ final class DetailAnnotationView: UIView {
         addressTextView.text = "地址：\(annotation.address)"
         timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter ?? 0) 次"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
-        if (annotation.checkinCounter ?? 0) > 0 { buttonStackView.addArrangedSubview(unCheckinButton) }
+        
+        unCheckinButton.isHidden = (annotation.checkinCounter ?? 0) <= 0
+        
         if annotation.state == 1 {
             isAvailableLabel.text = "營運中"
             isAvailableLabel.backgroundColor = .lightGreen
