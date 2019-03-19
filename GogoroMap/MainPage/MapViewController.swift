@@ -323,8 +323,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         var topAnchor: NSLayoutYAxisAnchor = navigationController.view.topAnchor
         var topPadding: CGFloat = 23
         
-        if UIDevice.isiPhoneX,
-            #available(iOS 11.0, *) {
+        if #available(iOS 11.0, *) {
             topAnchor = navigationController.view.safeAreaLayoutGuide.topAnchor
             topPadding = 0
             setupBottomBackgroundView()
@@ -354,10 +353,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
         var topPadding: CGFloat = 64
         
-        if UIDevice.isiPhoneX {
-            let safeAreaTopPadding: CGFloat = 80
-            topPadding = safeAreaTopPadding
-        }
+        
+        if #available(iOS 11, *) { topPadding += 16 }
         
         segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
         
@@ -367,16 +364,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     private func setupAdContainerView() {
-        
         Answers.log(view: "Ad View")
         view.addSubview(adContainerView)
         
         var bottomAnchor = view.bottomAnchor
         
-        //         MARK: -  iPhone X autolayout
-        
-        if #available(iOS 11.0, *),
-            UIDevice.isiPhoneX {
+        if #available(iOS 11.0, *)  {
             bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
         }
         adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
