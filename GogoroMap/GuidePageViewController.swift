@@ -9,7 +9,7 @@
 import UIKit
 import Crashlytics
 
-protocol GuidePageViewControllerDelegate: class {
+protocol GuidePageViewControllerDelegate: AnyObject {
     func setCurrentLocation(latDelta: Double, longDelta: Double)
 }
 
