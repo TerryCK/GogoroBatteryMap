@@ -145,7 +145,6 @@ extension IAPPurchasable where Self: UIViewController {
                 
             case .error:
                 UserDefaults.standard.set(false, forKey: Keys.standard.hasPurchesdKey)
-                UserDefaults.standard.synchronize()
                 break
             }
         }
@@ -159,7 +158,6 @@ extension IAPPurchasable where Self: UIViewController {
         
         NetworkActivityIndicatorManager.shared.networkOperationFinished()
         UserDefaults.standard.set(true, forKey: Keys.standard.hasPurchesdKey)
-        UserDefaults.standard.synchronize()
         NotificationCenter.default.post(name: .removeAds, object: identifier)
     }
     
