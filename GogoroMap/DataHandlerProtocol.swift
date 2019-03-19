@@ -51,7 +51,7 @@ final class DataManager {
     static func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
         guard let data = try? JSONEncoder().encode(annotations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
-        NotificationCenter.default.post(name: .manuContent, object: nil)
+        NotificationCenter.default.post(name: .init(rawValue: Keys.standard.manuContentObserverName), object: nil)
     }
     
     static func restoreFromDatabase() -> [BatteryStationPointAnnotation]? {

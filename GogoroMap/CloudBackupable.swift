@@ -373,7 +373,7 @@ extension Data: CloudBackupable {
     var toRecordValue: CKRecordValue { return self as CKRecordValue }
     
     func updataNotifiy() {
-        NotificationCenter.default.post(name: .dataUpdata, object: self)
+        NotificationCenter.default.post(name: .init(rawValue: Keys.standard.dataUpdata), object: self)
     }
 }
 
