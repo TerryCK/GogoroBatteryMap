@@ -52,7 +52,6 @@ final class GuidePageViewController: UIViewController {
     
     @objc func dismissController() {
         UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)
-        UserDefaults.standard.synchronize()
         delegate?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
         dismiss(animated: true, completion: nil)
     }
