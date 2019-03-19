@@ -50,7 +50,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .removeAds, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .init(rawValue: Keys.standard.removeAdsObserverName), object: nil)
     }
     
     // MARK: - CollectionView logics
@@ -205,12 +205,12 @@ extension MenuController: IAPPurchasable {
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: .removeAds,
+                                               name: .init(rawValue: Keys.standard.removeAdsObserverName),
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
-                                               name: .manuContent,
+                                               name: .init(rawValue: Keys.standard.manuContentObserverName),
                                                object: nil)
         
     }

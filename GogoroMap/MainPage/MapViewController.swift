@@ -604,7 +604,7 @@ extension MapViewController: IAPPurchasable {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePurchaseNotification(_:)),
-            name:  .removeAds,
+            name:  .init(rawValue: Keys.standard.removeAdsObserverName),
             object: nil)
         
     }
