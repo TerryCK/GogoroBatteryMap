@@ -9,13 +9,13 @@
 import MapKit
 
 protocol Navigable {
-    static func go(to destination: MKPointAnnotation)
+    static func go(to destination: MKAnnotation)
     static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirectionsResponse>)-> Void)
 }
 
 struct Navigator: Navigable {
-    static func go(to destination: MKPointAnnotation) {
-        guard let name = destination.title else { return }
+    static func go(to destination: MKAnnotation) {
+        guard let name = destination.title ?? "" else { return }
         let placemark = MKPlacemark(coordinate: destination.coordinate, addressDictionary: [name: ""])
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = "\(name)(Gogoro \("Battery Station".localize()))"

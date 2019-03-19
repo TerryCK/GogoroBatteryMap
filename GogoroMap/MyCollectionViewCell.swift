@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 final class MyCollectionViewCell: BaseCollectionViewCell {
     
@@ -55,7 +56,19 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
         viewContainer.addSubview(subStackView)
         subStackView.anchor(top: titleLabel.bottomAnchor, left: imageView.rightAnchor, bottom: viewContainer.bottomAnchor, right: viewContainer.rightAnchor, topPadding: 5, leftPadding: 12, bottomPadding: 12, rightPadding: 6, width: 0, height: 20)
         
+        backgroundColor = .clear
+        alpha = 0.98
     }
+    
+    func configure(index: Int, station: BatteryStationPointAnnotation, userLocation: CLLocation) -> Self {
+        titleLabel.text = "\(index + 1 ). \(station.title ?? "")"
+        dateLabel.text = station.checkinCounter ?? 0 > 0 ? "打卡日期: \(station.checkinDay ?? "")" : ""
+        imageView.image = station.iconImage
+        distanceLabel.text = "距離: \(String(format:"%.1f", station.distance(from: userLocation) / 1000)) km"
+        return self
+    }
+    
+    
 }
 
 
