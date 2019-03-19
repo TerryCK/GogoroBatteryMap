@@ -40,7 +40,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
         
         var buttomAnchor = vibrancyEffectContentView.bottomAnchor
         
-        if #available(iOS 11.0, *), UIDevice.isiPhoneX {
+        if #available(iOS 11.0, *) {
             buttomAnchor = vibrancyEffectContentView.safeAreaLayoutGuide.bottomAnchor
         }
         
