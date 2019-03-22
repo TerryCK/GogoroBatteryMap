@@ -43,9 +43,7 @@ final class DataManager {
     
     
     private init() {
-        let data = DataManager.fetchData(from: .bundle)! //?? let DataManager.fetchData(from: .bundle)!
-        batteryStationPointAnnotatios = (try? jsonDecoder.decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
-       
+        let data = DataManager.fetchData(from: .database) ??  DataManager.fetchData(from: .bundle)!
     }
     
     static func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
@@ -60,15 +58,6 @@ final class DataManager {
     }
     
     static let shared = DataManager()
-    
-    private(set) var batteryStationPointAnnotatios: [BatteryStationPointAnnotation]? {
-        willSet {
-            if let batteryStationPointAnnotatios = batteryStationPointAnnotatios, let newValue = newValue {
-                self.batteryStationPointAnnotatios = batteryStationPointAnnotatios.merge(new: newValue)
-            }             
-        }
-    }
-    
     
     
     static func fetchData(from apporach: Approach) -> Data? {
