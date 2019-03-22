@@ -18,7 +18,7 @@ final class GuidePageViewController: UIViewController {
     weak var delegate: GuidePageViewControllerDelegate?
     
     private lazy var guideImageView: UIImageView = {
-        let imageView: UIImageView = UIImageView(frame: self.view.frame)
+        let imageView: UIImageView = UIImageView(frame: view.frame)
         imageView.image = #imageLiteral(resourceName: "guidePage")
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
@@ -45,10 +45,7 @@ final class GuidePageViewController: UIViewController {
         okButton.anchor(top: nil, left: guideImageView.leftAnchor, bottom: guideImageView.bottomAnchor, right: guideImageView.rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 20, rightPadding: 10, width: 0, height: 35)
         okButton.centerXAnchor.constraint(equalTo: guideImageView.centerXAnchor).isActive = true
     }
-    
-    deinit {
-        print("guide page controller deinitialize")
-    }
+
     
     @objc func dismissController() {
         UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)

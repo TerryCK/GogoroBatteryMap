@@ -46,11 +46,9 @@ final class CheckinButton: UIButton {
             tintColor = slaveColor
             let title = isEnabled ? "打  卡" : "關閉中"
             setTitle(title, for: .normal)
-            titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            titleLabel?.font = .boldSystemFont(ofSize: 14)
             layer.borderColor = isEnabled ? mainColor.cgColor : unableColor.cgColor
 
         }
     }
-    
-    
 }

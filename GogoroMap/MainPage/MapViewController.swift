@@ -14,7 +14,6 @@ import GoogleMobileAds
 import Cluster
 import CloudKit
 
-
 final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, MenuDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate {
     
     var currentUserLocation: CLLocation!
@@ -40,18 +39,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     var listToDisplay = [BatteryStationPointAnnotation]() {
         didSet {
-            if !listToDisplay.isEmpty {
+            if listToDisplay.isEmpty {
+                mapView.isHidden = true
+                collectionView.isHidden = true
+                cellEmptyGuideView.isHidden = false
+            } else {
                 cellEmptyGuideView.isHidden = true
                 collectionView.reloadData()
-            } else { showupEmptyGuide() }
+            }
         }
     }
     
-    private func showupEmptyGuide() {
-        mapView.isHidden = true
-        collectionView.isHidden = true
-        cellEmptyGuideView.isHidden = false
-    }
     
     let cellEmptyGuideView = UITextView {
         $0.text = "目前尚未有符合資料可顯示..."
@@ -168,44 +166,20 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         return myStack
     }()
     
-    //     MARK: - ViewController life cycle
+
     override func loadView() {
         super.loadView()
         setupView()
         setupSideMenu()
     }
     
-    
-    //     MARK: - Handler of Annotations on map with store property obsever
-    var willRemovedAnnotations = [MKPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.willRemovedAnnotations)
-            }
-        }
-    }
-    
-    var batteryStationAnnotations = DataManager.shared.batteryStationPointAnnotatios ?? [] {
-        willSet {
-            clusterManager.remove(batteryStationAnnotations)
-            clusterManager.add(newValue)
-            DataManager.saveToDatabase(with: newValue)
-        }
-    }
-    
-    private func clusterUpdating(with oldValue: [BatteryStationPointAnnotation]) {
-        clusterManager.remove(oldValue)
-        //        updataAnnotationImage(annotations: annotations)
-        clusterManager.add(batteryStationPointAnnotations)
-        reloadMapView()
-    }
-    
-    var dataSource: [Response.Station] = []
-    
     var batteryStationPointAnnotations = [BatteryStationPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async { self.clusterUpdating(with: oldValue) }
-            DataManager.saveToDatabase(with: batteryStationPointAnnotations)
+        willSet {
+            let (new, removes) = batteryStationPointAnnotations.merge(new: newValue)
+            self.batteryStationPointAnnotations = new
+            clusterManager.add(batteryStationPointAnnotations)
+            clusterManager.remove(removes)
+            reloadMapView()
         }
     }
     
@@ -223,8 +197,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             }
         }
         
-        
         //        batteryStationPointAnnotations = DataManager.fetchData(from: .database)
+        
         #if REALEASE
         setupRating()
         #endif
@@ -275,6 +249,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             $0.minimumLineSpacing = 0
             $0.minimumInteritemSpacing = 0
         }
+        
         let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
         menuController.dataSource = self
@@ -343,8 +318,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         view.addSubview(segmentControllerContainer)
         
         var topPadding: CGFloat = 64
-        
-        
         if #available(iOS 11, *) { topPadding += 16 }
         
         segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
@@ -418,7 +391,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 //MARK: - Checkin functions
 extension MapViewController {
     private func checkinCount(with calculate: (Int, Int) -> Int) {
-        defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
+        defer { DataManager.saveToDatabase(with: batteryStationPointAnnotations) }
         
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
@@ -442,7 +415,6 @@ extension MapViewController {
 //MARK: - Lists of function annotations
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
-        
         let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
         Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
         collectionView.isHidden = segmentStatus ~= .map
@@ -454,7 +426,6 @@ extension MapViewController {
         case .building, .checkin, .nearby:
             listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations, currentUserLocation: currentUserLocation)
         }
-        
     }
 }
 
@@ -613,10 +584,7 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        
-        //        print("visibleMapRect : \(mapView.visibleMapRect)")
         clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
-        
     }
 }
 
@@ -673,13 +641,9 @@ extension MapViewController {
     
     
     func getRadius(centralLocation: CLLocation) -> Double {
-        let topCentralLat:Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
+        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
         let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
         let radius = centralLocation.distance(from: topCentralLocation)
         return radius / 1000.0 // to convert radius to meters
     }
-    
 }
-
-
-
