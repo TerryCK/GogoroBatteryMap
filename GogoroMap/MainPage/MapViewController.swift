@@ -344,12 +344,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     private func setupSegmentControllerContainer() {
-        
         view.addSubview(segmentControllerContainer)
-        
         var topPadding: CGFloat = 64
-        
-        
         if #available(iOS 11, *) { topPadding += 16 }
         
         segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
@@ -370,13 +366,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
         adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         
-        view.bringSubview(toFront: adContainerView)
+//        view.bringSubview(toFront: adContainerView)
     }
     
     private func setupBottomBackgroundView() {
-        let backgroundView = UIView {
-            $0.backgroundColor = .lightGreen
-        }
+        let backgroundView = UIView { $0.backgroundColor = .lightGreen }
         
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
@@ -398,7 +392,7 @@ extension MapViewController: UICollectionViewDataSource {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
         let seletedItem = listToDisplay[indexPath.item]
         changeToMapview()
-        if !mapView.annotations.contains { $0.title  == seletedItem.title } { mapViewMove(to: seletedItem) }
+        if !mapView.annotations.contains { $0.title ?? "" == seletedItem.title } { mapViewMove(to: seletedItem) }
         mapView.selectAnnotation(seletedItem, animated: true)
         collectionView.deselectItem(at: indexPath, animated: false)
     }
@@ -424,9 +418,9 @@ extension MapViewController: UICollectionViewDataSource {
 
 //MARK: - Checkin functions
 extension MapViewController {
-    private func checkinCount(with calculate: (Int, Int) -> Int) {
+    private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
         defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
-        
+        Answers.log(event: .MapButtons, customAttributes: log)
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
@@ -435,15 +429,9 @@ extension MapViewController {
         (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.setup(with: counterOfcheckin)
     }
     
-    @objc func checkin() {
-        Answers.log(event: .MapButtons, customAttributes: "Check in")
-        checkinCount(with: +)
-    }
+    @objc func checkin()   {    checkinCount(with: +, log: "Check in") }
     
-    @objc func unCheckin() {
-        Answers.log(event: .MapButtons, customAttributes: "Remove check in")
-        checkinCount(with: -)
-    }
+    @objc func unCheckin() {    checkinCount(with: -, log: "Remove check in") }
 }
 
 //MARK: - Lists of function annotations
