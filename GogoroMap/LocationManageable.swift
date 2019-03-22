@@ -44,10 +44,9 @@ extension MapViewController: LocationManageable  {
 
     
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
-        userLocationCoordinate = locationManager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 25.047908, longitude: 121.517315)
+        currentUserLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
         mapView.setRegion(MKCoordinateRegion(center: currentUserLocation.coordinate,
                                              span: MKCoordinateSpanMake(latDelta, longDelta)), animated: false)
-        print("user location: latitude：\(userLocationCoordinate.latitude) longitude：\(userLocationCoordinate.longitude)")
     }
     
     func locationArrowTapped() {
