@@ -15,9 +15,8 @@ final class BorderedClusterAnnotationView: ClusterAnnotationView {
     override func configure(with style: ClusterAnnotationStyle) {
         super.configure(with: style)
         switch style {
-
         case .image:
-            layer.borderWidth = 0
+            layer.borderWidth = 5
         case let .color(color, radius):
             layer.borderColor = color.cgColor
             layer.borderWidth = radius
