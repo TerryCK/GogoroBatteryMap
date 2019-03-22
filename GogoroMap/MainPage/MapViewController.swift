@@ -14,7 +14,6 @@ import GoogleMobileAds
 import Cluster
 import CloudKit
 
-
 final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, MenuDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate {
     
     var currentUserLocation: CLLocation!
@@ -38,20 +37,19 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    var listToDisplay = [BatteryStationPointAnnotation]() {
+    var listToDisplay = [BatteryStationPointAnnotation]? {
         didSet {
-            if !listToDisplay.isEmpty {
+            if listToDisplay?.isEmpty {
+                mapView.isHidden = true
+                collectionView.isHidden = true
+                cellEmptyGuideView.isHidden = false
+            } else {
                 cellEmptyGuideView.isHidden = true
                 collectionView.reloadData()
-            } else { showupEmptyGuide() }
+            }
         }
     }
     
-    private func showupEmptyGuide() {
-        mapView.isHidden = true
-        collectionView.isHidden = true
-        cellEmptyGuideView.isHidden = false
-    }
     
     let cellEmptyGuideView = UITextView {
         $0.text = "目前尚未有符合資料可顯示..."
@@ -60,13 +58,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.isEditable = false
         $0.isHidden = true
     }
+    
     private var selectedAnnotationView: MKAnnotationView? = nil
-    
-    
-    var userLocationCoordinate: CLLocationCoordinate2D {
-        get { return currentUserLocation.coordinate }
-        set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
-    }
     
     //     MARK: - View Creators
     private lazy var clusterManager: ClusterManager = {
@@ -135,7 +128,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
         
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        //                cv.delegate = self
+        cv.delegate = self
         cv.dataSource = self
         cv.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
         cv.isHidden = true
@@ -173,44 +166,20 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         return myStack
     }()
     
-    //     MARK: - ViewController life cycle
+
     override func loadView() {
         super.loadView()
         setupView()
         setupSideMenu()
     }
     
-    
-    //     MARK: - Handler of Annotations on map with store property obsever
-    var willRemovedAnnotations = [MKPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.willRemovedAnnotations)
-            }
-        }
-    }
-    
-    var batteryStationAnnotations = DataManager.shared.batteryStationPointAnnotatios ?? [] {
-        willSet {
-            clusterManager.remove(batteryStationAnnotations)
-            clusterManager.add(newValue)
-            DataManager.saveToDatabase(with: newValue)
-        }
-    }
-    
-    private func clusterUpdating(with oldValue: [BatteryStationPointAnnotation]) {
-        clusterManager.remove(oldValue)
-        //        updataAnnotationImage(annotations: annotations)
-        clusterManager.add(batteryStationPointAnnotations)
-        reloadMapView()
-    }
-    
-    var dataSource: [Response.Station] = []
-    
     var batteryStationPointAnnotations = [BatteryStationPointAnnotation]() {
-        didSet {
-            DispatchQueue.main.async { self.clusterUpdating(with: oldValue) }
-            DataManager.saveToDatabase(with: batteryStationPointAnnotations)
+        willSet {
+            let (new, removes) = batteryStationPointAnnotations.merge(new: newValue)
+            self.batteryStationPointAnnotations = new
+            clusterManager.add(batteryStationPointAnnotations)
+            clusterManager.remove(removes)
+            reloadMapView()
         }
     }
     
@@ -228,8 +197,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             }
         }
         
-        
         //        batteryStationPointAnnotations = DataManager.fetchData(from: .database)
+        
         #if REALEASE
         setupRating()
         #endif
@@ -280,6 +249,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             $0.minimumLineSpacing = 0
             $0.minimumInteritemSpacing = 0
         }
+        
         let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
         menuController.dataSource = self
@@ -370,7 +340,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     private func setupBottomBackgroundView() {
-        let backgroundView = UIView { $0.backgroundColor = .lightGreen }
+        let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
+
         
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
@@ -378,7 +349,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
 }
 // MARK: - UICollectionViewDataSource
 
-extension MapViewController: UICollectionViewDataSource {
+extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listToDisplay.count
@@ -391,19 +362,16 @@ extension MapViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
         let seletedItem = listToDisplay[indexPath.item]
-        changeToMapview()
-        if !mapView.annotations.contains { $0.title ?? "" == seletedItem.title } { mapViewMove(to: seletedItem) }
+        
+        segmentedControl.selectedSegmentIndex = 0
+        segmentChange(sender: segmentedControl)
+        if !mapView.annotations.contains { $0.title  == seletedItem.title } { mapViewMove(to: seletedItem) }
+
         mapView.selectAnnotation(seletedItem, animated: true)
         collectionView.deselectItem(at: indexPath, animated: false)
     }
     
-    private func changeToMapview() {
-        segmentedControl.selectedSegmentIndex = 0
-        mapView.isHidden = false
-        collectionView.isHidden = !mapView.isHidden
-        cellEmptyGuideView.isHidden = !mapView.isHidden
-        locationArrowView.isEnabled = true
-    }
+  
     
     private func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
@@ -418,9 +386,11 @@ extension MapViewController: UICollectionViewDataSource {
 
 //MARK: - Checkin functions
 extension MapViewController {
+
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
         defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
         Answers.log(event: .MapButtons, customAttributes: log)
+
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
@@ -437,19 +407,19 @@ extension MapViewController {
 //MARK: - Lists of function annotations
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
-        
         let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
         Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-        collectionView.isHidden = segmentStatus ~= .map
-        mapView.isHidden        = !collectionView.isHidden
+        mapView.isHidden            = segmentStatus != .map
+        collectionView.isHidden     = segmentStatus == .map
+        locationArrowView.isEnabled = segmentStatus == .map
+        cellEmptyGuideView.isHidden = segmentStatus == .map
         setTracking(mode: .none)
-        locationArrowView.isEnabled = false
+        
         switch segmentStatus {
-        case .map:  changeToMapview()
+        case .map:  break
         case .building, .checkin, .nearby:
             listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations, currentUserLocation: currentUserLocation)
         }
-        
     }
 }
 
@@ -490,6 +460,7 @@ extension MapViewController {
         
         guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
         annotationView?.image = batteryStation.iconImage
+        
         annotationView?.detailCalloutAccessoryView = DetailAnnotationView {
             $0.goButton.addTarget(self, action: #selector(MapViewController.navigating), for: .touchUpInside)
             $0.checkinButton.addTarget(self, action: #selector(MapViewController.checkin), for: .touchUpInside)
@@ -514,10 +485,13 @@ extension MapViewController {
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
                 return
         }
+        
+        
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        
         detailCalloutView.distanceLabel.text = "計算中..."
         detailCalloutView.etaLabel.text = "計算中..."
-        Navigator.travelETA(from: userLocationCoordinate, to: destination) { (result) in
+        Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
@@ -604,10 +578,7 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        
-        //        print("visibleMapRect : \(mapView.visibleMapRect)")
         clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
-        
     }
 }
 
@@ -657,20 +628,16 @@ extension MapViewController {
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-        self.userLocationCoordinate = mapView.centerCoordinate
-        print("Radius - \(self.getRadius(centralLocation: centralLocation))")
+        currentUserLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+//        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+//        print("Radius - \(getRadius(centralLocation: centralLocation))")
     }
     
     
     func getRadius(centralLocation: CLLocation) -> Double {
-        let topCentralLat:Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
+        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
         let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
         let radius = centralLocation.distance(from: topCentralLocation)
         return radius / 1000.0 // to convert radius to meters
     }
-    
 }
-
-
-

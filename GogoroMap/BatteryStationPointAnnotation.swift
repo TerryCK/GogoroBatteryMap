@@ -43,8 +43,11 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
 }
 
 extension Array where Element: Hashable {
-    func merge(new: Array<Element>) -> Array<Element> {
-        return Array(Set<Element>(self).intersection(new).union(new))
+    func merge(new: Array) -> (updates: Array, remove: Array) {
+        let set = Set<Element>(self)
+        let updates = Array(set.intersection(new).union(new))
+        let remove = Array(set.subtracting(updates))
+        return (updates, remove)
     }
 }
 
@@ -54,6 +57,5 @@ protocol Serializable: Encodable {
 
 extension Serializable {
     func serialize() -> Data? {
-        return try? JSONEncoder().encode(self)
-    }
+        return try? JSONEncoder().encode(self)    }
 }

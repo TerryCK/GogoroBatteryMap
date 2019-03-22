@@ -26,7 +26,7 @@ final class UnCheckInButton: UIButton {
         layer.cornerRadius = 5
         layer.masksToBounds = true
         setTitle("移除打卡", for: .normal)
-        titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel?.font = .boldSystemFont(ofSize: 16)
     }
     
     required init?(coder aDecoder: NSCoder) {

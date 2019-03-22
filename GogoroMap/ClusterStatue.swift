@@ -7,8 +7,10 @@
 //
 
 import Foundation
+
 enum ClusterStatus {
     case on, off
+    
     init(_ bool: Bool = UserDefaults.standard.bool(forKey: "cluster")) {
         self = bool ? .on : .off
     }
@@ -18,4 +20,5 @@ enum ClusterStatus {
         UserDefaults.standard.set(willBe == .on, forKey: "cluster")
         self = willBe
     }
+    
 }
