@@ -102,6 +102,6 @@ extension MKUserTrackingMode: CustomStringConvertible {
     }
     
     public var nextMode: MKUserTrackingMode {
-        return MKUserTrackingMode(rawValue: (rawValue + 1) % 2)!
+        return MKUserTrackingMode(rawValue: (rawValue + 1) % 3)!
     }
 }
