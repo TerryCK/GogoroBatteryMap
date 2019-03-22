@@ -37,9 +37,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    var listToDisplay = [BatteryStationPointAnnotation]() {
+    var listToDisplay = [BatteryStationPointAnnotation]? {
         didSet {
-            if listToDisplay.isEmpty {
+            if listToDisplay?.isEmpty {
                 mapView.isHidden = true
                 collectionView.isHidden = true
                 cellEmptyGuideView.isHidden = false
@@ -363,19 +363,15 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
         let seletedItem = listToDisplay[indexPath.item]
-        changeToMapview()
+        
+        segmentedControl.selectedSegmentIndex = 0
+        segmentChange(sender: segmentedControl)
         if !mapView.annotations.contains { $0.title  == seletedItem.title } { mapViewMove(to: seletedItem) }
         mapView.selectAnnotation(seletedItem, animated: true)
         collectionView.deselectItem(at: indexPath, animated: false)
     }
     
-    private func changeToMapview() {
-        segmentedControl.selectedSegmentIndex = 0
-        mapView.isHidden = false
-        collectionView.isHidden = !mapView.isHidden
-        cellEmptyGuideView.isHidden = !mapView.isHidden
-        locationArrowView.isEnabled = true
-    }
+  
     
     private func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
@@ -417,12 +413,14 @@ extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
         Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-        collectionView.isHidden = segmentStatus ~= .map
-        mapView.isHidden        = !collectionView.isHidden
+        mapView.isHidden            = segmentStatus != .map
+        collectionView.isHidden     = segmentStatus == .map
+        locationArrowView.isEnabled = segmentStatus == .map
+        cellEmptyGuideView.isHidden = segmentStatus == .map
         setTracking(mode: .none)
-        locationArrowView.isEnabled = false
+        
         switch segmentStatus {
-        case .map:  changeToMapview()
+        case .map:  break
         case .building, .checkin, .nearby:
             listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations, currentUserLocation: currentUserLocation)
         }
