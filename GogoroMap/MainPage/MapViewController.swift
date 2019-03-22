@@ -60,13 +60,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.isEditable = false
         $0.isHidden = true
     }
+    
     private var selectedAnnotationView: MKAnnotationView? = nil
-    
-    
-    var userLocationCoordinate: CLLocationCoordinate2D {
-        get { return currentUserLocation.coordinate }
-        set { currentUserLocation = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude) }
-    }
     
     //     MARK: - View Creators
     private lazy var clusterManager: ClusterManager = {
@@ -531,7 +526,7 @@ extension MapViewController {
         
         detailCalloutView.distanceLabel.text = "計算中..."
         detailCalloutView.etaLabel.text = "計算中..."
-        Navigator.travelETA(from: userLocationCoordinate, to: destination) { (result) in
+        Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
@@ -671,9 +666,9 @@ extension MapViewController {
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-        self.userLocationCoordinate = mapView.centerCoordinate
-        print("Radius - \(self.getRadius(centralLocation: centralLocation))")
+        currentUserLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+//        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+//        print("Radius - \(getRadius(centralLocation: centralLocation))")
     }
     
     
