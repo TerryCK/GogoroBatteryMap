@@ -109,11 +109,11 @@ final class DetailAnnotationView: UIView {
         
         goButtonStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0)
         
-        mainStackView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        mainStackView.anchor(top: separatorView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
-        addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 5, rightPadding: 10, width: 0, height: 0)
+        addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
         
-        buttonStackView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        buttonStackView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
     }
     
@@ -121,10 +121,9 @@ final class DetailAnnotationView: UIView {
     private override init(frame: CGRect) {
         super.init(frame: frame)
         anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 210, height: 0)
-//        [widthAnchor.constraint(greaterThanOrEqualToConstant: 210),
-//         heightAnchor.constraint(greaterThanOrEqualToConstant: 215)].forEach { $0.isActive = true }
+
         setup()
-        backgroundColor = .red
+        backgroundColor = .clear
         layer.cornerRadius = 10
         layer.masksToBounds = true
     }

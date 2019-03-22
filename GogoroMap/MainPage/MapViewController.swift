@@ -135,7 +135,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
         
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        //                cv.delegate = self
+        cv.delegate = self
         cv.dataSource = self
         cv.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
         cv.isHidden = true
@@ -374,9 +374,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     private func setupBottomBackgroundView() {
-        let backgroundView = UIView {
-            $0.backgroundColor = .lightGreen
-        }
+        let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
         
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
@@ -384,7 +382,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
 }
 // MARK: - UICollectionViewDataSource
 
-extension MapViewController: UICollectionViewDataSource {
+extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listToDisplay.count
