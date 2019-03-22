@@ -24,6 +24,7 @@ final class DetailAnnotationView: UIView {
     
     let unCheckinButton: UIButton = {
         let button = UnCheckInButton(type: .system)
+        button.isHidden = true
         return button
     }()
     
@@ -36,22 +37,16 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    private let addressTextView = UITextView {
-        $0.text = "地址"
-        $0.isEditable = false
+    private let addressLabel = UILabel {
         $0.textColor = .gray
         $0.font = .systemFont(ofSize: 12)
+        $0.backgroundColor = .clear
+        $0.numberOfLines = 0
     }
     
-    let etaLabel = UILabel {
-        $0.text = "約需：120 分鐘"
-        $0.font = .systemFont(ofSize: 11)
-    }
+    let etaLabel = UILabel {  $0.font = .systemFont(ofSize: 11) }
     
-    let distanceLabel = UILabel {
-        $0.text = "100 km"
-        $0.font = .systemFont(ofSize: 12)
-    }
+    let distanceLabel = UILabel {  $0.font = .systemFont(ofSize: 12)  }
     
     private lazy var etaStackview: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [distanceLabel, etaLabel])
@@ -69,15 +64,9 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    let lastCheckTimeLabel = UILabel {
-        $0.text = "最近的打卡日："
-        $0.font = .systemFont(ofSize: 12)
-    }
+    let lastCheckTimeLabel = UILabel { $0.font = .systemFont(ofSize: 12) }
     
-    let timesOfCheckinLabel = UILabel {
-        $0.text = "打卡： 0  次"
-        $0.font = .systemFont(ofSize: 12)
-    }
+    let timesOfCheckinLabel = UILabel {  $0.font = .systemFont(ofSize: 12)  }
     
     private let isAvailableLabel = UILabel {
         $0.text = "關閉中"
@@ -90,10 +79,7 @@ final class DetailAnnotationView: UIView {
         $0.anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 40, height: 12)
     }
     
-    private let opneHourLabel = UILabel {
-        $0.text = "營業時間：24hr"
-        $0.font = .systemFont(ofSize: 12)
-    }
+    private let opneHourLabel = UILabel { $0.font = .systemFont(ofSize: 12) }
     
     private lazy var openStackView: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [opneHourLabel])
@@ -113,33 +99,32 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    private let separatorView = UIView {
-        $0.backgroundColor = .lightGray
-    }
-    
+    private let separatorView = UIView { $0.backgroundColor = .lightGray }
     
     //    MARK: - View's setup & initialize with autolayout
     private func setup() {
-        [goButtonStackView, mainStackView, addressTextView, buttonStackView, separatorView].forEach(addSubview)
+        [goButtonStackView, mainStackView, addressLabel, buttonStackView, separatorView].forEach(addSubview)
         
         separatorView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 5, bottomPadding: 0, rightPadding: 5, width: 0, height: 0.75)
         
-        goButtonStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 40)
+        goButtonStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0)
         
-        mainStackView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 20, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 72)
+        mainStackView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
-        addressTextView.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 50)
+        addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 5, rightPadding: 10, width: 0, height: 0)
         
-        buttonStackView.anchor(top: nil, left: mainStackView.leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 35)
+        buttonStackView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
     }
     
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 170, height: 210)
+        anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 210, height: 0)
+//        [widthAnchor.constraint(greaterThanOrEqualToConstant: 210),
+//         heightAnchor.constraint(greaterThanOrEqualToConstant: 215)].forEach { $0.isActive = true }
         setup()
-        backgroundColor = .white
+        backgroundColor = .red
         layer.cornerRadius = 10
         layer.masksToBounds = true
     }
@@ -148,20 +133,23 @@ final class DetailAnnotationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(with counterOfcheckin: Int) {
-        unCheckinButton.isHidden = counterOfcheckin <= 0
-        lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
-        timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
-        layoutIfNeeded()
+    private var counterOfcheckin: Int = 0 {
+        didSet {
+            unCheckinButton.isHidden = counterOfcheckin <= 0
+            timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
+        }
     }
+    func setup(with counterOfcheckin: Int) {
+        self.counterOfcheckin = counterOfcheckin
+        lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
+    }
+    
     
     func configure(annotation: BatteryStationPointAnnotation) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
-        addressTextView.text = "地址：\(annotation.address)"
-        timesOfCheckinLabel.text = "打卡：\(annotation.checkinCounter ?? 0) 次"
+        addressLabel.text = "地址：\(annotation.address)"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
-        
-        unCheckinButton.isHidden = (annotation.checkinCounter ?? 0) <= 0
+        counterOfcheckin = annotation.checkinCounter ?? 0
         
         if annotation.state == 1 {
             isAvailableLabel.text = "營運中"

@@ -502,6 +502,7 @@ extension MapViewController {
         
         guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
         annotationView?.image = batteryStation.iconImage
+        
         annotationView?.detailCalloutAccessoryView = DetailAnnotationView {
             $0.goButton.addTarget(self, action: #selector(MapViewController.navigating), for: .touchUpInside)
             $0.checkinButton.addTarget(self, action: #selector(MapViewController.checkin), for: .touchUpInside)
@@ -526,7 +527,10 @@ extension MapViewController {
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
                 return
         }
+        
+        
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        
         detailCalloutView.distanceLabel.text = "計算中..."
         detailCalloutView.etaLabel.text = "計算中..."
         Navigator.travelETA(from: userLocationCoordinate, to: destination) { (result) in
