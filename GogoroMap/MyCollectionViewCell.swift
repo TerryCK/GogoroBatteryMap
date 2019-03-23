@@ -60,15 +60,13 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
         alpha = 0.98
     }
     
-    func configure(index: Int, station: BatteryStationPointAnnotation, userLocation: CLLocation) -> Self {
+    func configure(index: Int, station: BatteryDataModal, userLocation: CLLocation) -> Self {
         titleLabel.text = "\(index + 1 ). \(station.title ?? "")"
         dateLabel.text = station.checkinCounter ?? 0 > 0 ? "打卡日期: \(station.checkinDay ?? "")" : ""
         imageView.image = station.iconImage
         distanceLabel.text = "距離: \(String(format:"%.1f", station.distance(from: userLocation) / 1000)) km"
         return self
     }
-    
-    
 }
 
 

@@ -33,11 +33,11 @@ enum SegmentStatus: Int {
         }
     }
     
-    func annotationsToDisplay(annotations: [BatteryStationPointAnnotation], currentUserLocation: CLLocation) -> [BatteryStationPointAnnotation] {
+    func annotationsToDisplay<T: BatteryDataModal>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
         
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
         
-        let result: [BatteryStationPointAnnotation]?
+        let result: [T]?
         switch self {
         case .map       : result = nil
         case .checkin   : result = annotations.filter { $0.checkinCounter ?? 0 > 0 }
@@ -49,11 +49,3 @@ enum SegmentStatus: Int {
     }
 }
 
-
-
-extension BatteryStationPointAnnotation {
-    
-    func distance(from userPosition: CLLocation) -> Double {
-        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
-    }
-}

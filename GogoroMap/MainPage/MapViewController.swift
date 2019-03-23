@@ -37,16 +37,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    var listToDisplay = [BatteryStationPointAnnotation]? {
+    var listToDisplay = [BatteryStationPointAnnotation]() {
         didSet {
-            if listToDisplay?.isEmpty {
-                mapView.isHidden = true
-                collectionView.isHidden = true
-                cellEmptyGuideView.isHidden = false
-            } else {
-                cellEmptyGuideView.isHidden = true
-                collectionView.reloadData()
-            }
+            cellEmptyGuideView.isHidden = !listToDisplay.isEmpty
+            collectionView.isHidden = listToDisplay.isEmpty
+            if !listToDisplay.isEmpty { collectionView.reloadData() }
         }
     }
     
@@ -139,6 +134,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
+/*
     private lazy var testButton1 : UIButton = {
         let myButton = UIButton(type: .system)
         myButton.setTitle("save", for: .normal)
@@ -165,15 +161,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         myStack.spacing = 10
         return myStack
     }()
-    
-
+    */
     override func loadView() {
         super.loadView()
         setupView()
         setupSideMenu()
     }
     
-    var batteryStationPointAnnotations = [BatteryStationPointAnnotation]() {
+    var batteryStationPointAnnotations = DataManager.shared.initialData ?? []  {
         willSet {
             let (new, removes) = batteryStationPointAnnotations.merge(new: newValue)
             self.batteryStationPointAnnotations = new
@@ -191,11 +186,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         authrizationStatus()
         setupPurchase()
         
-        DataManager.fetchData { (result) in
-            if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init){
-                self.batteryStationPointAnnotations = stations
-            }
+        DataManager.shared.fetchStations { (result) in
+            if case let .success(stations) = result { self.batteryStationPointAnnotations = stations }
         }
+        
         
         //        batteryStationPointAnnotations = DataManager.fetchData(from: .database)
         
@@ -209,8 +203,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         super.viewDidAppear(animated)
         Answers.log(view: "Map Page")
         //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
-        menuBarButton.willDisplay()
-        locationArrowView.willDisplay()
     }
     
     
@@ -219,18 +211,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         locationManager.stopUpdatingLocation()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        menuBarButton.isHidden = true
-        locationArrowView.isHidden = true
-    }
-    
     //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
-        let guidePageController = GuidePageViewController()
-        guidePageController.delegate = self
-        present(guidePageController, animated: true, completion: nil)
+        present(GuidePageViewController { $0.delegate = self }, animated: true)
     }
     
     @objc func performMenu() {
@@ -365,7 +349,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
         
         segmentedControl.selectedSegmentIndex = 0
         segmentChange(sender: segmentedControl)
-        if !mapView.annotations.contains { $0.title  == seletedItem.title } { mapViewMove(to: seletedItem) }
+        if !mapView.annotations.contains { $0.title ?? ""  == seletedItem.title } { mapViewMove(to: seletedItem) }
 
         mapView.selectAnnotation(seletedItem, animated: true)
         collectionView.deselectItem(at: indexPath, animated: false)
@@ -388,7 +372,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 extension MapViewController {
 
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
-        defer { DataManager.saveToDatabase(with: batteryStationAnnotations) }
+        defer { DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations) }
         Answers.log(event: .MapButtons, customAttributes: log)
 
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
@@ -399,9 +383,9 @@ extension MapViewController {
         (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.setup(with: counterOfcheckin)
     }
     
-    @objc func checkin()   {    checkinCount(with: +, log: "Check in") }
+    @objc func checkin()   { checkinCount(with: +, log: "Check in") }
     
-    @objc func unCheckin() {    checkinCount(with: -, log: "Remove check in") }
+    @objc func unCheckin() { checkinCount(with: -, log: "Remove check in") }
 }
 
 //MARK: - Lists of function annotations
@@ -597,11 +581,11 @@ extension MapViewController {
         //
         //                #endif
         
-        #if DEBUG
-        
-        view.addSubview(testStack)
-        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-        #endif
+//        #if DEBUG
+//        
+//        view.addSubview(testStack)
+//        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+//        #endif
         
     }
     

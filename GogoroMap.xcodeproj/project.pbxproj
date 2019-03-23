@@ -24,7 +24,6 @@
 		A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */; };
 		A83ACBF622211DF3003907FD /* Decorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF522211DF3003907FD /* Decorator.swift */; };
 		A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */; };
-		A840F34E1F472A4900D33741 /* DataHandlerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A840F34D1F472A4900D33741 /* DataHandlerProtocol.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
 		A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D81F4ECB3700633FC7 /* Taipei.gpx */; };
 		A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D421F947BC200AA28C2 /* SegmentStatus.swift */; };
@@ -32,6 +31,8 @@
 		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84CA4FA223E55530048D451 /* StationAnalyticsModel.swift */; };
 		A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FBB201D7D530008665B /* String+Extension.swift */; };
+		A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8646FCB22461C7F00A96934 /* DataManager.swift */; };
+		A8646FCE22461CBC00A96934 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8646FCD22461CBC00A96934 /* Result.swift */; };
 		A866F6501F481FA6009459B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A866F6521F481FA6009459B3 /* Localizable.strings */; };
 		A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869AA191F44150A0085133C /* IAPProducts.swift */; };
 		A872054F1F4287D600E9F65D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A872054E1F4287D600E9F65D /* GoogleService-Info.plist */; };
@@ -87,7 +88,6 @@
 		A833AC67223DE5F900016284 /* ClusterStatue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterStatue.swift; sourceTree = "<group>"; };
 		A83ACBF522211DF3003907FD /* Decorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decorator.swift; sourceTree = "<group>"; };
 		A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationPointAnnotation.swift; sourceTree = "<group>"; };
-		A840F34D1F472A4900D33741 /* DataHandlerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataHandlerProtocol.swift; sourceTree = "<group>"; };
 		A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TainanTW.gpx; sourceTree = "<group>"; };
 		A84209D81F4ECB3700633FC7 /* Taipei.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Taipei.gpx; sourceTree = "<group>"; };
 		A8422D421F947BC200AA28C2 /* SegmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentStatus.swift; sourceTree = "<group>"; };
@@ -97,6 +97,8 @@
 		A84AC8021F46EB71004F5E3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A84CA4FA223E55530048D451 /* StationAnalyticsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationAnalyticsModel.swift; sourceTree = "<group>"; };
 		A85E9FBB201D7D530008665B /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		A8646FCB22461C7F00A96934 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		A8646FCD22461CBC00A96934 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		A866F64F1F481F5C009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		A866F6511F481FA6009459B3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		A866F6531F48205B009459B3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -257,7 +259,6 @@
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
 				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
-				A840F34D1F472A4900D33741 /* DataHandlerProtocol.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
 				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
@@ -307,9 +308,11 @@
 			children = (
 				A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */,
 				A833AC67223DE5F900016284 /* ClusterStatue.swift */,
+				A8646FCB22461C7F00A96934 /* DataManager.swift */,
 				A8D3689A1F3B44D70015F5F9 /* Extensions.swift */,
 				A8E68F8D1F46D78400160388 /* Log.swift */,
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
+				A8646FCD22461CBC00A96934 /* Result.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -518,7 +521,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Cluster-iOS9.3/Cluster.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS9.3/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS9.3/SideMenu.framework",
@@ -535,7 +538,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7650B4F2FE10B95535AD218A /* [CP] Check Pods Manifest.lock */ = {
@@ -594,7 +597,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Cluster-iOS10.3/Cluster.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS10.3/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.3/SideMenu.framework",
@@ -611,7 +614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -641,7 +644,7 @@
 				A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
 				A8F7504520261C0600E2206D /* CustomTableViewCell.swift in Sources */,
-				A840F34E1F472A4900D33741 /* DataHandlerProtocol.swift in Sources */,
+				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
@@ -659,6 +662,7 @@
 				A8CE224F1F3EA11800A4EF6D /* Navigator.swift in Sources */,
 				A8B19D651F4409620082283F /* NetworkActivityIndicatorManager.swift in Sources */,
 				A808F0462220ED3900761A31 /* Response.swift in Sources */,
+				A8646FCE22461CBC00A96934 /* Result.swift in Sources */,
 				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
 				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
 				A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */,
@@ -857,7 +861,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMap;
@@ -879,7 +883,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";

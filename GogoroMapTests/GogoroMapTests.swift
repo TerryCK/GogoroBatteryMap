@@ -7,7 +7,8 @@
 //
 
 import XCTest
-
+import MapKit
+import CoreLocation
 @testable import GogoroMap
 
 class GogoroMapTests: XCTestCase {
@@ -24,5 +25,19 @@ class GogoroMapTests: XCTestCase {
         } catch {
            XCTFail("\(error)")
         }
+    }
+    
+    func testBridge() {
+        let image = UIImage(named: "pinFull")!
+        let coordinate = CLLocationCoordinate2D(latitude: 100.0, longitude: 100.0)
+        let placemark = MKPlacemark(coordinate: coordinate)
+        
+        let custom = [CustomPointAnnotation(title: "x", subtitle: "x", coordinate: coordinate, placemark: placemark, image: image, address: "x", isOpening: true)]
+
+        let archiveData = NSKeyedArchiver.archivedData(withRootObject: custom)
+        let element = DataManager.shared.dataBridge(data: archiveData)?.first
+        XCTAssert(element?.title == "x")
+        XCTAssert(element! is BatteryStationPointAnnotation)
+      
     }
 }

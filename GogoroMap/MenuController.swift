@@ -60,15 +60,11 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
         
         cell.delegate = self
         cell.analytics = StationAnalyticsModel(dataSource?.batteryStationPointAnnotations ?? [])
-        
-        if !products.isEmpty {
-            cell.product = products.first
-        }
-        
+        cell.product = products.first
         cell.purchaseHandler = purchase
         
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            cell.buyStoreButtonStackView.removeFromSuperview()
+            cell.buyStoreButtonStackView.isHidden = true
             cell.setupThanksLabel()
         }
         
@@ -165,13 +161,13 @@ extension MenuController {
         Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
         print("\n*** data reflash ***\n")
         
-        DataManager.fetchData { (_) in
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-                self.navigationItem.title = "Information".localize()
-                self.timer = nil
-            }
-        }
+//        DataManager.fetchData { (_) in
+//            DispatchQueue.main.async {
+//                self.collectionView?.reloadData()
+//                self.navigationItem.title = "Information".localize()
+//                self.timer = nil
+//            }
+//        }
         //        delegate?.getAnnotationFromRemote {
         //            DispatchQueue.main.async {
         //                self.collectionView?.reloadData()

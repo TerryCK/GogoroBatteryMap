@@ -120,11 +120,11 @@ final class DetailAnnotationView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 210, height: 0)
-
+        widthAnchor.constraint(greaterThanOrEqualToConstant: 210).isActive = true
+//        widthAnchor.constraint(equalToConstant: 210).isActive = true
         setup()
         backgroundColor = .clear
-        layer.cornerRadius = 10
+        layer.cornerRadius = 5
         layer.masksToBounds = true
     }
     
@@ -138,13 +138,14 @@ final class DetailAnnotationView: UIView {
             timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
         }
     }
+    
     func setup(with counterOfcheckin: Int) {
         self.counterOfcheckin = counterOfcheckin
         lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
     }
     
     
-    func configure(annotation: BatteryStationPointAnnotation) -> Self {
+    func configure(annotation: BatteryDataModal) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
