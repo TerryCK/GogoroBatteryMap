@@ -9,12 +9,8 @@
 import UIKit
 import MapKit
 
-public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
-    public let address: String, state: Int
-    public var checkinCounter: Int? = nil, checkinDay: String? = nil
-   
+extension BatteryStationPointAnnotation {
     public var iconImage: UIImage {
-        
         guard checkinCounter ?? 0 <= 0 else { return #imageLiteral(resourceName: "checkin") }
         guard let name = title, state == 1 else { return #imageLiteral(resourceName: "building") }
         if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
@@ -24,6 +20,22 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
         return #imageLiteral(resourceName: "pinFull")
     }
     
+    
+    convenience init(_ customPointAnnotation: CustomPointAnnotation) {
+        self.init(title         : customPointAnnotation.title,
+                  subtitle      : customPointAnnotation.subtitle,
+                  coordinate    : customPointAnnotation.coordinate,
+                  address       : customPointAnnotation.address,
+                  state         : customPointAnnotation.isOpening ? 1 : 0,
+                  checkinCounter: customPointAnnotation.checkinCounter,
+                  checkinDay    : customPointAnnotation.checkinDay)
+    } 
+}
+
+public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
+    public let address: String, state: Int
+    public var checkinCounter: Int? = nil, checkinDay: String? = nil
+   
     public convenience init<T: ResponseStationProtocol>(station: T) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
@@ -31,8 +43,10 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
             address: station.address.localized() ?? "",
             state: station.state)
     }
+    
 
-    init(title: String, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
+
+    init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
         self.address      = address
         self.state    = state
         super.init()
