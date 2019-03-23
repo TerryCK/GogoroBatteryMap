@@ -10,18 +10,14 @@ import UIKit
 import MessageUI
 
 protocol Mailsendable: MFMailComposeViewControllerDelegate {
-    func configuredMailComposeViewController() -> MFMailComposeViewController
-    func showSendMailErrorAlert()
     func presentErrorMailReport()
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
 }
 
 // Extremely important to set the --mailComposeDelegate-- property, NOT the --delegate-- property
 extension Mailsendable where Self: UIViewController {
     
-    func configuredMailComposeViewController() -> MFMailComposeViewController {
-        let mailComposerVC = MFMailComposeViewController()
-        mailComposerVC.mailComposeDelegate = self
+    private func configuredMailComposeViewController() -> MFMailComposeViewController {
+        let mailComposerVC = MFMailComposeViewController { $0.mailComposeDelegate = self }
         let currentDevice = UIDevice.current
 
         var systemInfo = "傳送自：\(currentDevice.model), \(currentDevice.systemName): \(currentDevice.systemVersion)  \n"
@@ -37,26 +33,14 @@ extension Mailsendable where Self: UIViewController {
         return mailComposerVC
     }
     
-    func showSendMailErrorAlert() {
-        let alertController = UIAlertController(title: "無法傳送Email", message: "目前無法傳送郵件，請檢查E-mail設定並在重試", preferredStyle: UIAlertControllerStyle.alert)
-        //Replace UIAlertControllerStyle.Alert by UIAlertControllerStyle.alert
-        let DestructiveAction = UIAlertAction(title: "OK",
-                                              style: UIAlertActionStyle.destructive) {
-            (_ : UIAlertAction) -> Void in
-            print("Destructive")
-        }
-        
-        alertController.addAction(DestructiveAction)
-        
+    private func showSendMailErrorAlert() -> UIAlertController {
+        let alertController = UIAlertController(title: "無法傳送Email", message: "目前無法傳送郵件，請檢查E-mail設定並在重試", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .destructive))
+        return alertController
     }
     
     func presentErrorMailReport() {
-        let mailComposeViewController = configuredMailComposeViewController()
-        if MFMailComposeViewController.canSendMail() {
-            present(mailComposeViewController, animated: true, completion: nil)
-        } else {
-            showSendMailErrorAlert()
-        }
+            present(MFMailComposeViewController.canSendMail() ? configuredMailComposeViewController() : showSendMailErrorAlert(), animated: true)
     }
     
     
@@ -64,6 +48,6 @@ extension Mailsendable where Self: UIViewController {
 
 extension MenuController: Mailsendable {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true)
     }
 }

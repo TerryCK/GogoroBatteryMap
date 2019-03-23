@@ -92,7 +92,7 @@ extension UIView {
         layer.sublayers?.removeAll()
     }
     
-    private func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
+    func opacityAnimation(duration: CFTimeInterval = 0.75, hidden: Bool) {
         let hiddenAnimation = CABasicAnimation(keyPath: "opacity")
         hiddenAnimation.fromValue = hidden ? 0 : 1
         hiddenAnimation.toValue = hidden ? 1 : 0

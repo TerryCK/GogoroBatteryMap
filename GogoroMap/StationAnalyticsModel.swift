@@ -16,7 +16,7 @@ struct StationAnalyticsModel {
 }
 
 extension StationAnalyticsModel {
-    init(_ stations: [BatteryStationPointAnnotation]) {
+    init<T: BatteryDataModal>(_ stations: [T]) {
         total       = stations.count
         availables  = stations.reduce(0) { $0 +  $1.state == 1 ? 1 : 0 }
         flags       = stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) > 0 ? 1 : 0 }

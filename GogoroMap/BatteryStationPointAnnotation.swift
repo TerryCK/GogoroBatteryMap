@@ -32,7 +32,25 @@ extension BatteryStationPointAnnotation {
     } 
 }
 
-public final class BatteryStationPointAnnotation: MKPointAnnotation, Codable {
+protocol BatteryDataModal: Codable {
+    var title: String? { get }
+    var subtitle: String? { get }
+    var coordinate: CLLocationCoordinate2D { get }
+    var address: String { get }
+    var state: Int { get }
+    var checkinCounter: Int? { set get }
+    var checkinDay: String? { set get }
+    var iconImage: UIImage { get }
+    func distance(from userPosition: CLLocation) -> Double
+}
+
+extension BatteryDataModal {
+    func distance(from userPosition: CLLocation) -> Double {
+        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
+    }
+}
+
+public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModal {
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
    

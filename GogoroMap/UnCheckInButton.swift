@@ -8,9 +8,8 @@
 
 import UIKit
 
-final class UnCheckInButton: UIButton {
-
-    let mainColor = UIColor.lightRed
+class UnCheckInButton: UIButton {
+    var mainColor: UIColor {  return .lightRed }
     let slaveColor = UIColor.white
     
     override init(frame: CGRect) {
