@@ -61,6 +61,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         let cm = ClusterManager()
         cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         cm.minCountForClustering = 3
+        cm.clusterPosition = .average
         return cm
     }()
     
@@ -95,8 +96,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         button.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
         return button
     }()
-    
-    
     
     private lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl()
@@ -162,19 +161,29 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         return myStack
     }()
     */
+    
     override func loadView() {
         super.loadView()
-        setupView()
+        setupNavigationTitle()
+        setupNavigationItems()
+        setupSegmentControllerContainer()
+        setupMainViews()
         setupSideMenu()
     }
+
     
-    var batteryStationPointAnnotations = DataManager.shared.initialData ?? []  {
-        willSet {
-            let (new, removes) = batteryStationPointAnnotations.merge(new: newValue)
-            self.batteryStationPointAnnotations = new
-            clusterManager.add(batteryStationPointAnnotations)
-            clusterManager.remove(removes)
-            reloadMapView()
+    func dataUpdate(onCompletion: (() -> Void)? = nil) {
+        DataManager.shared.fetchStations { [weak self] (result) in
+            guard let `self` = self else { return }
+            if case let .success(remote) = result {
+                let (new, deprecated) = self.batteryStationPointAnnotations.merge(new: remote)
+                self.batteryStationPointAnnotations.remove(annotations: deprecated)
+                self.batteryStationPointAnnotations.append(contentsOf: new)
+                self.clusterManager.remove(deprecated)
+                self.clusterManager.add(new)
+                self.reloadMapView()
+                 }
+            onCompletion?()
         }
     }
     
@@ -185,13 +194,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         performGuidePage()
         authrizationStatus()
         setupPurchase()
+        clusterManager.add(batteryStationPointAnnotations)
         
-        DataManager.shared.fetchStations { (result) in
-            if case let .success(stations) = result { self.batteryStationPointAnnotations = stations }
-        }
+        reloadMapView()
         
         
-        //        batteryStationPointAnnotations = DataManager.fetchData(from: .database)
+//        dataUpdate()
+        
+        
+        Answers.log(view: "Map Page")
+//        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
         
         #if REALEASE
         setupRating()
@@ -199,17 +211,24 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         //        testFunction()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        Answers.log(view: "Map Page")
-        //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    @objc func resignApp(_ notification: Notification) {
+        guard case .UIApplicationDidEnterBackground = notification.name else { return }
         locationManager.stopUpdatingLocation()
+        DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations)
     }
+    
+    
+    
+    var batteryStationPointAnnotations = DataManager.shared.initialData ?? [] {
+        didSet {
+            print("didSet")
+        }
+    }
+    
     
     //     MARK: - Perfrom
     func performGuidePage() {
@@ -247,21 +266,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         sideMenuManager.menuAnimationFadeStrength = 0.40
         sideMenuManager.menuBlurEffectStyle = nil
         sideMenuManager.menuPresentMode = .viewSlideInOut
-        menuBarButton.isHidden = false
-    }
-    
-    private func setupView() {
-        setupNavigationTitle()
-        setupNavigationItems()
-        setupSegmentControllerContainer()
-        setupMainViews()
     }
     
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.barStyle = .blackTranslucent
-        navigationController?.navigationBar.barTintColor = UIColor.lightGreen
+        navigationController?.navigationBar.barTintColor = .lightGreen
         navigationController?.isNavigationBarHidden = false
         navigationController?.view.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
     }
@@ -299,25 +310,18 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     private func setupSegmentControllerContainer() {
         view.addSubview(segmentControllerContainer)
-        var topPadding: CGFloat = 64
-        if #available(iOS 11, *) { topPadding += 16 }
-        
-        segmentControllerContainer.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
-        
+        var topAnchor = view.topAnchor
+        if #available(iOS 11, *) { topAnchor = view.safeAreaLayoutGuide.topAnchor }
+        segmentControllerContainer.anchor(top: topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
         segmentControllerContainer.addSubview(segmentedControl)
-        
         segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
     }
     
     private func setupAdContainerView() {
         Answers.log(view: "Ad View")
         view.addSubview(adContainerView)
-        
         var bottomAnchor = view.bottomAnchor
-        
-        if #available(iOS 11.0, *)  {
-            bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
-        }
+        if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
         adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         
 //        view.bringSubview(toFront: adContainerView)
@@ -325,14 +329,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     private func setupBottomBackgroundView() {
         let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
-
-        
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
     }
 }
-// MARK: - UICollectionViewDataSource
 
+// MARK: - UICollectionViewDataSource
 extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -346,11 +348,9 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
         let seletedItem = listToDisplay[indexPath.item]
-        
         segmentedControl.selectedSegmentIndex = 0
         segmentChange(sender: segmentedControl)
         if !mapView.annotations.contains { $0.title ?? ""  == seletedItem.title } { mapViewMove(to: seletedItem) }
-
         mapView.selectAnnotation(seletedItem, animated: true)
         collectionView.deselectItem(at: indexPath, animated: false)
     }
@@ -360,8 +360,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     private func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
-        let factor = 0.7
-        let height: Double = 20000
+        let factor = 0.7, height = 20000.0
         let width = factor * height
         let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, width, height)
         mapView.setVisibleMapRect(pointRect, animated: false)
@@ -473,8 +472,8 @@ extension MapViewController {
         
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
-        detailCalloutView.distanceLabel.text = "計算中..."
-        detailCalloutView.etaLabel.text = "計算中..."
+        detailCalloutView.distanceLabel.text = "距離計算中..."
+        detailCalloutView.etaLabel.text = "時間計算中..."
         Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             var distance = "無法取得資料", travelTime = "無法取得資料"
@@ -518,12 +517,14 @@ extension MapViewController {
 extension MapViewController: IAPPurchasable {
     
     func setupObserver() {
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handlePurchaseNotification(_:)),
-            name:  .init(rawValue: Keys.standard.removeAdsObserverName),
-            object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePurchaseNotification(_:)),
+                                               name:  .init(rawValue: Keys.standard.removeAdsObserverName),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(resignApp(_:)),
+                                               name: .UIApplicationDidEnterBackground,
+                                               object: nil)
         
     }
     //

@@ -25,7 +25,6 @@ final class DataManager {
     func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
         guard let data = try? JSONEncoder().encode(annotations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
-        //        NotificationCenter.default.post(name: .init(rawValue: Keys.standard.manuContentObserverName), object: nil)
     }
     
     func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
@@ -36,7 +35,7 @@ final class DataManager {
     
     var initialData: [BatteryStationPointAnnotation]? {
         return fetchData(from: .database).flatMap(dataBridge) ?? fetchData(from: .bundle).flatMap {
-            try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: $0)
+            try? JSONDecoder().decode(Response.self, from: $0).stations.map(BatteryStationPointAnnotation.init)
         }
     }
     
