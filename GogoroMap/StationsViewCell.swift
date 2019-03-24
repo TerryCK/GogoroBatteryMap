@@ -22,7 +22,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             recommandButton.addTarget(delegate, action: #selector(MenuController.recommand), for: .touchUpInside)
             shareButton.addTarget(delegate, action: #selector(MenuController.shareThisApp), for: .touchUpInside)
             moreAppsButton.addTarget(delegate, action: #selector(MenuController.moreApp), for: .touchUpInside)
-            dataUpdateButton.addTarget(delegate, action: #selector(MenuController.dataUpdate), for: .touchUpInside)
+            dataUpdateButton.addTarget(delegate, action: #selector(MenuController.attempUpdate), for: .touchUpInside)
             clusterSwitcher.addTarget(delegate, action: #selector(MenuController.clusterSwitching(sender:)), for: .valueChanged)
         }
     }
@@ -80,18 +80,16 @@ final class StationsViewCell: BaseCollectionViewCell {
     }()
     
     
-    private lazy var authorLabel: UILabel = {     
-        let label = UILabel()
-        label.text = "Chen, Guan-Jhen 2018 Copyright"
-        label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = .gray
-        return label
-        }()
+    private let authorLabel = UILabel {
+        $0.text = "Chen, Guan-Jhen \(DateFormatter { $0.dateFormat = "yyyy" }.string(from: Date())) Copyright"
+        $0.font = .systemFont(ofSize: 12)
+        $0.textColor = .gray
+        }
     
     private lazy var availableLabel: UILabel = {     
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = ""
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = .boldSystemFont(ofSize: 14)
         return label
         }()
     
