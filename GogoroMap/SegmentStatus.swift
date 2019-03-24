@@ -34,18 +34,19 @@ enum SegmentStatus: Int {
     }
     
     func annotationsToDisplay<T: BatteryDataModal>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
-        
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
+        let operating: (T) -> Bool
         
-        let result: [T]?
         switch self {
-        case .map       : result = nil
-        case .checkin   : result = annotations.filter { $0.checkinCounter ?? 0 > 0 }
-        case .nearby    : result = annotations.filter { $0.distance(from: currentUserLocation).km < 45 }
-        case .building  : result = annotations.filter { $0.state != 1 }
+        case .map       : return []
+        case .checkin   : operating =  { $0.checkinCounter ?? 0 > 0 }
+        case .nearby    : operating =  { $0.distance(from: currentUserLocation).km < 45 }
+        case .building  : operating =  { $0.state != 1 }
         }
         
-        return result?.sorted { $0.distance(from: currentUserLocation) < $1.distance(from: currentUserLocation) } ?? []
+        return annotations
+            .filter(operating)
+            .sorted { $0.distance(from: currentUserLocation) < $1.distance(from: currentUserLocation) }
     }
 }
 

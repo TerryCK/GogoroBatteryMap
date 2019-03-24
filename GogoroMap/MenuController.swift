@@ -11,8 +11,8 @@ import StoreKit
 import Crashlytics
 
 protocol ManuDelegate: AnyObject {
-    var  clusterSwitcher: ClusterStatus { set get }
-    
+    var clusterSwitcher: ClusterStatus { set get }
+    func dataUpdate(onCompletion: (() -> Void)?)
 }
 
 protocol MenuDataSource: AnyObject {
@@ -31,8 +31,6 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     weak var dataSource: MenuDataSource?
     
     var refreshButton: UIButton?
-    
-    var timer: Timer?
     
     var products = [SKProduct]() {
         didSet { collectionView?.reloadData()  }
@@ -84,7 +82,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
         collectionView?.backgroundColor = .clear
-        collectionView?.contentInset = UIEdgeInsetsMake( 0, 0, 10, 0)
+        collectionView?.contentInset = UIEdgeInsetsMake(0, 0, 10, 0)
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: String(describing: type(of: self)))
@@ -92,8 +90,8 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     // MARK: - Events
     private func open(url: String) {
-        guard let checkURL = URL(string: url), UIApplication.shared.canOpenURL(checkURL) else { return }
-        UIApplication.shared.openURL(checkURL)
+        guard let url = URL(string: url) else { return }
+        UIApplication.shared.open(url)
     }
 }
 
@@ -111,7 +109,7 @@ extension MenuController {
     //    }
     
     @objc func recommand() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Recommand"])
+        log(#function)
         let head = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
         let foot = "&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8"
         let url = head + Keys.standard.appID + foot
@@ -119,12 +117,12 @@ extension MenuController {
     }
     
     @objc func moreApp() {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "MoreApp"])
+        log(#function)
         open(url: "https://itunes.apple.com/tw/app/id1192891004?l=zh&mt=8")
     }
     
     @objc func shareThisApp() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "Share"])
+        log(#function)
         guard let url = URL(string: "https://itunes.apple.com/tw/app/id\(Keys.standard.appID)?l=zh&mt=8") else { return }
         let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -136,45 +134,36 @@ extension MenuController {
     }
     
     @objc func clusterSwitching(sender: AnyObject) {
-        Answers.logCustomEvent(withName: Log.sharedName.manuButtons, customAttributes: [ Log.sharedName.manuButton: "clusterSwitching"])
+        log(#function)
         delegate?.clusterSwitcher.change()
     }
     
     @objc func restorePurchase() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Restore purchase"])
+        log(#function)
         restore()
     }
     
     @objc func presentMail() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "SendMail"])
+        log(#function)
         presentErrorMailReport()
     }
-    
+
     @objc func attempUpdate() {
+        log(#function)
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dataUpdate), userInfo: nil, repeats: false)
+        refreshButton?.isUserInteractionEnabled = false
+        delegate?.dataUpdate { [weak self] in
+            DispatchQueue.main.async {
+                self?.navigationItem.title = "Information".localize()
+                self?.collectionView?.reloadData()
+                self?.refreshButton?.isUserInteractionEnabled = true
+            }
+        }
     }
     
-    @objc func dataUpdate() {
-        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: "Data update"])
-        print("\n*** data reflash ***\n")
-        
-//        DataManager.fetchData { (_) in
-//            DispatchQueue.main.async {
-//                self.collectionView?.reloadData()
-//                self.navigationItem.title = "Information".localize()
-//                self.timer = nil
-//            }
-//        }
-        //        delegate?.getAnnotationFromRemote {
-        //            DispatchQueue.main.async {
-        //                self.collectionView?.reloadData()
-        //                self.navigationItem.title = "Information".localize()
-        //                self.timer = nil
-        //            }
-        //        }
+    private func log(_ event: String) {
+        Answers.logCustomEvent(withName:  Log.sharedName.manuButtons, customAttributes: [Log.sharedName.manuButton: event])
     }
 }
 
@@ -194,7 +183,6 @@ extension MenuController: IAPPurchasable {
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
-        print("MenuController recieved notify")
         DispatchQueue.main.async { self.collectionView?.reloadData() }
     }
     

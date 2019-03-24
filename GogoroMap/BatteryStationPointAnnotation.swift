@@ -54,6 +54,11 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
    
+    public override func isEqual(_ object: Any?) -> Bool {
+        return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
+    }
+    public override var hashValue: Int { return coordinate.hashValue }
+
     public convenience init<T: ResponseStationProtocol>(station: T) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
@@ -75,11 +80,20 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
 }
 
 extension Array where Element: Hashable {
-    func merge(new: Array) -> (updates: Array, remove: Array) {
-        let set = Set<Element>(self)
-        let updates = Array(set.intersection(new).union(new))
-        let remove = Array(set.subtracting(updates))
-        return (updates, remove)
+     func merge(new: Array) -> (add: Array, deprecated: Array) {
+        let oldSet = Set<Element>(self), newSet = Set<Element>(new)
+        let add = Array(newSet.subtracting(oldSet)), deprecated = Array(oldSet.subtracting(newSet))
+        return (add, deprecated)
+    }
+}
+
+extension Array where Element: MKAnnotation {
+    mutating func remove(annotations: Array) {
+        annotations.forEach {  remove(annotation: $0) }
+    }
+    
+    mutating func remove(annotation: Element) {
+        _ = map { $0.coordinate }.index(of: annotation.coordinate).map { remove(at: $0) }
     }
 }
 

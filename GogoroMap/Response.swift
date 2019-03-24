@@ -8,21 +8,13 @@
 
 import UIKit
 
-public protocol ResponseStationProtocol: Hashable {
+public protocol ResponseStationProtocol {
     var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-}
-
-public extension ResponseStationProtocol {
-    public var hashValue: Int { return (longitude * 10000 + latitude).hashValue }
-    
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.hashValue == rhs.hashValue
-    }
 }
 
 public extension Response.Station.Detail {
