@@ -61,7 +61,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         let cm = ClusterManager()
         cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         cm.minCountForClustering = 3
-        cm.clusterPosition = .average
         return cm
     }()
     
