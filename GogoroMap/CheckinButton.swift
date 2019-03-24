@@ -15,9 +15,8 @@ final class CheckinButton: UnCheckInButton {
     override var isEnabled: Bool {
         didSet {
             backgroundColor = isEnabled ? mainColor : .lightGray
-            setTitle(isEnabled ? "打  卡" : "關閉中", for: .normal)
+            setTitle(isEnabled ? "打  卡" : "敬請期待", for: .normal)
             layer.borderColor = isEnabled ? mainColor.cgColor : UIColor.lightGray.cgColor
-
         }
     }
 }

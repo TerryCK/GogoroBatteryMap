@@ -8,17 +8,19 @@
 
 import UIKit
 
-final class CustomButton: UIButton {
+class CustomButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setup()
+    }
+    
+    func setup() {
         layer.borderWidth = 1
         layer.borderColor = UIColor.lightGray.cgColor
         layer.cornerRadius = 10
         layer.masksToBounds = true
-        
     }
-    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

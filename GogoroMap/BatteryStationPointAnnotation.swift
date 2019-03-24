@@ -57,8 +57,10 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     public override func isEqual(_ object: Any?) -> Bool {
         return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
     }
+    
     public override var hashValue: Int { return coordinate.hashValue }
 
+    
     public convenience init<T: ResponseStationProtocol>(station: T) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",

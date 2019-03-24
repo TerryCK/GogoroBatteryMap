@@ -69,8 +69,6 @@ final class DetailAnnotationView: UIView {
     let timesOfCheckinLabel = UILabel {  $0.font = .systemFont(ofSize: 12)  }
     
     private let isAvailableLabel = UILabel {
-        $0.text = "關閉中"
-        $0.backgroundColor = .lightGray
         $0.textColor = .white
         $0.layer.cornerRadius = 6
         $0.layer.masksToBounds = true
@@ -120,8 +118,7 @@ final class DetailAnnotationView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        widthAnchor.constraint(greaterThanOrEqualToConstant: 210).isActive = true
-//        widthAnchor.constraint(equalToConstant: 210).isActive = true
+        widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
         setup()
         backgroundColor = .clear
         layer.cornerRadius = 5
@@ -150,12 +147,9 @@ final class DetailAnnotationView: UIView {
         addressLabel.text = "地址：\(annotation.address)"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
         counterOfcheckin = annotation.checkinCounter ?? 0
-        
-        if annotation.state == 1 {
-            isAvailableLabel.text = "營運中"
-            isAvailableLabel.backgroundColor = .lightGreen
-            checkinButton.isEnabled = true
-        }
+        checkinButton.isEnabled = annotation.state == 1
+        isAvailableLabel.backgroundColor = annotation.state == 1 ? .lightGreen : .lightGray
+        isAvailableLabel.text = annotation.state == 1 ? "營運中" : "關閉中"
         return self
     }
 }
