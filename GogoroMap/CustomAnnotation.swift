@@ -56,38 +56,6 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
     private static let latitudeKey = "latitudeKey"
     private static let longtitudeKey = "longitudeKey"
     
-    
-//    // MARK:- Bridge
-//    convenience init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        let isOpening = try container.decode(Bool.self, forKey: .isOpeningKey)
-//        let image =  #imageLiteral(resourceName: "pinFull")
-//
-//        let title = try container.decode(String.self, forKey: .titleKey)
-//        let subtitle = try container.decode(String.self, forKey: .subtitleKey)
-//        let latitude = try container.decode(String.self, forKey: .latitudeKey)
-//        let longitude = try container.decode(String.self, forKey: .longtitudeKey)
-//
-//        let address = try container.decode(String.self, forKey: .addressKey)
-//
-//        let coordinate = CLLocationCoordinate2D(latitude: Double(latitude) ?? 0, longitude: Double(longitude) ?? 0)
-//
-//        let placemark = MKPlacemark()
-//
-//        let checkinDay = try container.decode(String.self, forKey: .checkinDayKey)
-//        let checkinCounterStr = try container.decode(String.self, forKey: .checkinCounterKey)
-//        let checkinCounter = Int(checkinCounterStr) ?? 0
-//
-//        self.init(title: title,
-//                  subtitle: subtitle,
-//                  coordinate: coordinate,
-//                  placemark: placemark,
-//                  image: image,
-//                  address: address,
-//                  isOpening: isOpening,
-//                  checkinCounter: checkinCounter,
-//                  checkinDay: checkinDay)
-//    }
     required convenience init?(coder aDecoder: NSCoder) {
         
         let isOpening = aDecoder.decodeBool(forKey: CustomPointAnnotation.isOpeningKey)

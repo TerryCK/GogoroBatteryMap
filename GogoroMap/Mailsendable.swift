@@ -35,7 +35,7 @@ extension Mailsendable where Self: UIViewController {
     
     private func showSendMailErrorAlert() -> UIAlertController {
         let alertController = UIAlertController(title: "無法傳送Email", message: "目前無法傳送郵件，請檢查E-mail設定並在重試", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .destructive))
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
         return alertController
     }
     
