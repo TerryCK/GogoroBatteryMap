@@ -173,15 +173,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     func dataUpdate(onCompletion: (() -> Void)? = nil) {
         DataManager.shared.fetchStations { [weak self] (result) in
-            guard let `self` = self else { return }
             if case let .success(remote) = result {
-                let (new, deprecated) = self.batteryStationPointAnnotations.merge(new: remote)
-                self.batteryStationPointAnnotations.remove(annotations: deprecated)
-                self.batteryStationPointAnnotations.append(contentsOf: new)
-                self.clusterManager.remove(deprecated)
-                self.clusterManager.add(new)
-                self.reloadMapView()
-                 }
+                self?.batteryStationPointAnnotations.keepOldUpdate(with: remote)
+            }
             onCompletion?()
         }
     }
@@ -193,10 +187,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         performGuidePage()
         authrizationStatus()
         setupPurchase()
-        clusterManager.add(batteryStationPointAnnotations)
-        
-        reloadMapView()
-        
+//        clusterManager.add(batteryStationPointAnnotations)
+//
+//        reloadMapView()
+//
         
 //        dataUpdate()
         
@@ -224,7 +218,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     var batteryStationPointAnnotations = DataManager.shared.initialData ?? [] {
         didSet {
-            print("didSet")
+            clusterManager.removeAll()
+            clusterManager.add(self.batteryStationPointAnnotations)
+            reloadMapView()
         }
     }
     

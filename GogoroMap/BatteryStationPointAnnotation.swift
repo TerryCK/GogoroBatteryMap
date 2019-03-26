@@ -81,23 +81,12 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     }
 }
 
-extension Array where Element: Hashable {
-     func merge(new: Array) -> (add: Array, deprecated: Array) {
-        let oldSet = Set<Element>(self), newSet = Set<Element>(new)
-        let add = Array(newSet.subtracting(oldSet)), deprecated = Array(oldSet.subtracting(newSet))
-        return (add, deprecated)
+extension Array where Element: Hashable {    
+    mutating func keepOldUpdate(with new: Array) {
+        self = Array(Set<Element>(self).intersection(new).union(new))
     }
 }
 
-extension Array where Element: MKAnnotation {
-    mutating func remove(annotations: Array) {
-        annotations.forEach {  remove(annotation: $0) }
-    }
-    
-    mutating func remove(annotation: Element) {
-        _ = map { $0.coordinate }.index(of: annotation.coordinate).map { remove(at: $0) }
-    }
-}
 
 protocol Serializable: Encodable {
     func serialize() -> Data?
