@@ -28,7 +28,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         didSet {
             clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
             reloadMapView()
-        } 
+        }
     }
     
     func reloadMapView() {
@@ -64,7 +64,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         return cm
     }()
     
-    lazy var mapView = MKMapView {
+    lazy var mapView = MKMapView {        
         $0.delegate = self
         $0.mapType = .standard
         $0.showsUserLocation = true
@@ -163,6 +163,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     override func loadView() {
         super.loadView()
+        
         setupNavigationTitle()
         setupNavigationItems()
         setupSegmentControllerContainer()
@@ -180,16 +181,21 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
         performGuidePage()
         authrizationStatus()
         setupPurchase()
-//        clusterManager.add(batteryStationPointAnnotations)
-//
-//        reloadMapView()
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+            
+            self.batteryStationPointAnnotations = DataManager.shared.initialData ?? []
+            self.reloadMapView()
+        })
+        
 //
         
 //        dataUpdate()
@@ -204,6 +210,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         //        testFunction()
     }
     
+   
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -217,9 +224,9 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     
     var batteryStationPointAnnotations = DataManager.shared.initialData ?? [] {
-        didSet {
+        willSet {
             clusterManager.removeAll()
-            clusterManager.add(self.batteryStationPointAnnotations)
+            clusterManager.add(newValue)
             reloadMapView()
         }
     }
@@ -502,7 +509,7 @@ extension MapViewController {
     
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButtons, customAttributes: "Changing tracking mode")
-        locationArrowTapped()
+        setTracking(mode: mapView.userTrackingMode.nextMode)
     }
 }
 
