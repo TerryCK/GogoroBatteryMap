@@ -11,7 +11,7 @@ import Foundation
 enum ClusterStatus {
     case on, off
     
-    init(_ bool: Bool = UserDefaults.standard.bool(forKey: "cluster")) {
+    init(_ bool: Bool = UserDefaults.standard.value(forKey: "cluster") as? Bool ?? true) {
         self = bool ? .on : .off
     }
     

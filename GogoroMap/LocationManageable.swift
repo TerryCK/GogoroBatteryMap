@@ -13,7 +13,6 @@ import Crashlytics
 protocol LocationManageable: MKMapViewDelegate {
     func authrizationStatus()
     func setCurrentLocation(latDelta: Double, longDelta: Double)
-    func locationArrowTapped()
     func setTracking(mode: MKUserTrackingMode)
 }
 
@@ -47,10 +46,6 @@ extension MapViewController: LocationManageable  {
         currentUserLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
         mapView.setRegion(MKCoordinateRegion(center: currentUserLocation.coordinate,
                                              span: MKCoordinateSpanMake(latDelta, longDelta)), animated: false)
-    }
-    
-    func locationArrowTapped() {
-        setTracking(mode: mapView.userTrackingMode.nextMode)
     }
     
     func setTracking(mode: MKUserTrackingMode) {
