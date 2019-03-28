@@ -62,7 +62,7 @@ Thanks for Gogoro and OpenData platform
 
 ### License
 
-Copyright 2017 Chen, Guan-Jhen
+Copyright 2019 Chen, Guan-Jhen
 
 [Licensed under MIT License](https://opensource.org/licenses/MIT)
 
