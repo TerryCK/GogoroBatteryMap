@@ -32,7 +32,7 @@ extension BatteryStationPointAnnotation {
     } 
 }
 
-protocol BatteryDataModal: Codable {
+protocol BatteryDataModal {
     var title: String? { get }
     var subtitle: String? { get }
     var coordinate: CLLocationCoordinate2D { get }
@@ -44,22 +44,68 @@ protocol BatteryDataModal: Codable {
     func distance(from userPosition: CLLocation) -> Double
 }
 
+extension CLLocationCoordinate2D: Codable {
+    enum CodingKeys: String, CodingKey {
+        case latitude, longitude
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(latitude, forKey: .latitude)
+        try container.encode(longitude, forKey: .longitude)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(latitude: try container.decode(CLLocationDegrees.self, forKey: .latitude),
+                  longitude: try container.decode(CLLocationDegrees.self, forKey: .longitude))
+    }
+}
+
 extension BatteryDataModal {
     func distance(from userPosition: CLLocation) -> Double {
         return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
     }
 }
 
+extension BatteryStationPointAnnotation : Codable {
+    enum CodingKeys: String, CodingKey {
+        case title, subtitle, coordinate, address, state, checkinCounter, checkinDay
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(title, forKey: .title)
+        try container.encode(subtitle, forKey: .subtitle)
+        try container.encode(coordinate, forKey: .coordinate)
+        try container.encode(address, forKey: .address)
+        try container.encode(state, forKey: .state)
+        try container.encode(checkinCounter, forKey: .checkinCounter)
+        try container.encode(checkinDay, forKey: .checkinDay)
+    }
+    
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(title: try container.decode(String?.self, forKey: .title),
+                  subtitle: try container.decode(String?.self, forKey: .subtitle),
+                  coordinate: try container.decode(CLLocationCoordinate2D.self, forKey: .coordinate),
+                  address: try container.decode(String.self, forKey: .address),
+                  state:  try container.decode(Int.self, forKey: .state),
+                  checkinCounter: try container.decode(Int?.self, forKey: .checkinCounter),
+                  checkinDay: try container.decode(String?.self, forKey: .checkinDay))
+    }
+    
+}
+
 public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModal {
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: String? = nil
-   
+    
     public override func isEqual(_ object: Any?) -> Bool {
         return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
     }
     
     public override var hashValue: Int { return coordinate.hashValue }
-
+    
     
     public convenience init<T: ResponseStationProtocol>(station: T) {
         self.init(title: station.name.localized() ?? "",
@@ -69,16 +115,20 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
             state: station.state)
     }
     
-
-
+    
+    
     init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
         self.address      = address
         self.state    = state
+        self.checkinCounter = checkinCounter
+        self.checkinDay = checkinDay
         super.init()
         self.title      = title
         self.subtitle   = subtitle
         self.coordinate = coordinate
     }
+    
+    
 }
 
 extension Array where Element: Hashable {    

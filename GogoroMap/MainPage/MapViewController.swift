@@ -61,6 +61,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         let cm = ClusterManager()
         cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         cm.minCountForClustering = 3
+        cm.add(batteryStationPointAnnotations)
         return cm
     }()
     
@@ -163,7 +164,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     override func loadView() {
         super.loadView()
-        
         setupNavigationTitle()
         setupNavigationItems()
         setupSegmentControllerContainer()
@@ -190,11 +190,11 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupPurchase()
         
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-            
-            self.batteryStationPointAnnotations = DataManager.shared.initialData ?? []
-            self.reloadMapView()
-        })
+//        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+//
+//            self.batteryStationPointAnnotations = DataManager.shared.initialData ?? []
+//            self.reloadMapView()
+//        })
         
 //
         
@@ -291,9 +291,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             topPadding = 0
             setupBottomBackgroundView()
         }
-        
         locationArrowView.anchor(top: topAnchor, left:  nil, bottom: nil, right:  navigationController.view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: sidePading, width: width, height: height)
-        
         menuBarButton.anchor(top: topAnchor, left: navigationController.view.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
     }
     
@@ -373,7 +371,6 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 extension MapViewController {
 
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
-        defer { DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations) }
         Answers.log(event: .MapButtons, customAttributes: log)
 
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
