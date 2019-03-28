@@ -45,7 +45,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    
     let cellEmptyGuideView = UITextView {
         $0.text = "目前尚未有符合資料可顯示..."
         $0.font = .systemFont(ofSize: 32)
@@ -188,7 +187,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         performGuidePage()
         authrizationStatus()
         setupPurchase()
-        
+        dataUpdate()
+//        setupAdContainerView()
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
 //
@@ -198,7 +198,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
 //
         
-//        dataUpdate()
+//
         
         
         Answers.log(view: "Map Page")
@@ -221,8 +221,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations)
     }
     
-    
-    
     var batteryStationPointAnnotations = DataManager.shared.initialData ?? [] {
         willSet {
             clusterManager.removeAll()
@@ -230,7 +228,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             reloadMapView()
         }
     }
-    
     
     //     MARK: - Perfrom
     func performGuidePage() {
@@ -323,8 +320,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         var bottomAnchor = view.bottomAnchor
         if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
         adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-        
-//        view.bringSubview(toFront: adContainerView)
     }
     
     private func setupBottomBackgroundView() {
@@ -355,8 +350,6 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
         collectionView.deselectItem(at: indexPath, animated: false)
     }
     
-  
-    
     private func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
@@ -372,7 +365,6 @@ extension MapViewController {
 
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
         Answers.log(event: .MapButtons, customAttributes: log)
-
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
@@ -396,12 +388,9 @@ extension MapViewController {
         locationArrowView.isEnabled = segmentStatus == .map
         cellEmptyGuideView.isHidden = segmentStatus == .map
         setTracking(mode: .none)
-        
-        switch segmentStatus {
-        case .map:  break
-        case .building, .checkin, .nearby:
-            listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations, currentUserLocation: currentUserLocation)
-        }
+        guard segmentStatus != .map else { return }
+        listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations,
+                                                           currentUserLocation: currentUserLocation)
     }
 }
 
@@ -462,15 +451,11 @@ extension MapViewController {
         
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         selectedAnnotationView = view
-        
         guard let destination = view.annotation?.coordinate,
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
                 return
         }
-        
-        
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        
         detailCalloutView.distanceLabel.text = "距離計算中..."
         detailCalloutView.etaLabel.text = "時間計算中..."
         Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
@@ -499,13 +484,13 @@ extension MapViewController {
     
     
     @objc func navigating() {
-        Answers.log(event: .MapButtons, customAttributes: "Navigate")
+        Answers.log(event: .MapButtons, customAttributes: #function)
         guard let destination = selectedAnnotationView?.annotation else { return }
         Navigator.go(to: destination)
     }
     
     @objc func locationArrowPressed() {
-        Answers.log(event: .MapButtons, customAttributes: "Changing tracking mode")
+        Answers.log(event: .MapButtons, customAttributes: #function)
         setTracking(mode: mapView.userTrackingMode.nextMode)
     }
 }
@@ -524,15 +509,7 @@ extension MapViewController: IAPPurchasable {
                                                selector: #selector(resignApp(_:)),
                                                name: .UIApplicationDidEnterBackground,
                                                object: nil)
-        
     }
-    //
-    //    @objc func handleDataupdate(_ notification: Notification) {
-    //
-    //        guard let data = notification.object as? Data,
-    //            let annotations = data.toAnnoatations else { return }
-    //        self.annotations = annotations
-    //    }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         print("MapViewController recieved notify")
@@ -556,9 +533,8 @@ extension MapViewController {
                        usingSpringWithDamping: 1,
                        initialSpringVelocity: 0,
                        options: [],
-                       animations: {
-                        views.forEach { $0.alpha = 1 } },
-                       completion: nil)
+                       animations: { views.forEach { $0.alpha = 1 } }
+        )
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

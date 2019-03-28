@@ -10,12 +10,10 @@ import UIKit
 import StoreKit
 
 
-protocol StationsViewCellDelegate: AnyObject { }
-
 
 final class StationsViewCell: BaseCollectionViewCell {
     
-    weak var delegate: StationsViewCellDelegate? {
+    weak var delegate: MenuController? {
         didSet {
             guideButton.addTarget(delegate, action: #selector(MenuController.performGuidePage), for: .touchUpInside)
             feedBackButton.addTarget(delegate, action: #selector(MenuController.presentMail), for: .touchUpInside)
@@ -69,7 +67,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         return button
     }()
     
-    private var clusterSwitcher = UISwitch { $0.isOn = UserDefaults.standard.bool(forKey: "cluster") }
+    private var clusterSwitcher = UISwitch { $0.isOn = ClusterStatus() == .on }
     
 
     private lazy var clusterDescribingLabel: UILabel = {
