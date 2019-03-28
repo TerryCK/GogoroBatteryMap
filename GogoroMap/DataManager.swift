@@ -28,10 +28,9 @@ final class DataManager {
     }
     
     func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
-        return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)) ??
-            (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
+        return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data))
+            ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
     }
-    
     
     var initialData: [BatteryStationPointAnnotation]? {
         return fetchData(from: .database).flatMap(dataBridge) ?? fetchData(from: .bundle).flatMap {
@@ -57,8 +56,6 @@ final class DataManager {
             return UserDefaults.standard.data(forKey: Keys.standard.annotationsKey)
         }
     }
-    
-    
     
     private func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
