@@ -25,7 +25,7 @@ extension MenuController {
     }
 }
 
-final class MenuController: UICollectionViewController, StationsViewCellDelegate {
+final class MenuController: UICollectionViewController {
     
     weak var delegate: ManuDelegate?
     weak var dataSource: MenuDataSource?
@@ -42,9 +42,10 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
         setupPurchaseItem()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
+        collectionView?.reloadData()
     }
     
     deinit {
@@ -74,7 +75,6 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     // MARK: - Setup & initializing Views
     private func setupNaviagtionAndCollectionView() {
-        
         navigationController?.view.layer.cornerRadius = 10
         navigationController?.view.layer.masksToBounds = true
         navigationController?.isNavigationBarHidden = false
@@ -90,8 +90,7 @@ final class MenuController: UICollectionViewController, StationsViewCellDelegate
     
     // MARK: - Events
     private func open(url: String) {
-        guard let url = URL(string: url) else { return }
-        UIApplication.shared.open(url)
+        URL(string: url).map { UIApplication.shared.open($0) }
     }
 }
 

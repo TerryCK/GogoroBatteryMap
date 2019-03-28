@@ -50,7 +50,6 @@
 		A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3686A1F3B435D0015F5F9 /* AppDelegate.swift */; };
 		A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */; };
 		A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689A1F3B44D70015F5F9 /* Extensions.swift */; };
-		A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3689E1F3B54C80015F5F9 /* Station.swift */; };
 		A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DB8CE71F4153F40062FA7A /* StoreKit.framework */; };
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
@@ -666,7 +665,6 @@
 				A808F0462220ED3900761A31 /* Response.swift in Sources */,
 				A8646FCE22461CBC00A96934 /* Result.swift in Sources */,
 				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
-				A8D3689F1F3B54C80015F5F9 /* Station.swift in Sources */,
 				A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */,
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,

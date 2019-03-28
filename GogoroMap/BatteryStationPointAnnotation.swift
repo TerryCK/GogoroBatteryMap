@@ -115,8 +115,6 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
             state: station.state)
     }
     
-    
-    
     init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
         self.address      = address
         self.state    = state
