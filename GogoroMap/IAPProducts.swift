@@ -10,6 +10,6 @@ import StoreKit
 
 enum RegisteredPurchase: String {
     case removeAds = "RemoveAds"
-    static let removedProductID = Bundle.id + "." + RegisteredPurchase.removeAds.rawValue
+    static let removedProductID = (Bundle.main.bundleIdentifier ?? "") + "." + RegisteredPurchase.removeAds.rawValue
 }
 
