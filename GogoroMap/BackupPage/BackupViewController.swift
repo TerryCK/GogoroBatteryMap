@@ -17,93 +17,49 @@
 import UIKit
 import CloudKit
 
-
-
-class BackupViewController: UIViewController, CloudBackupable {
-    let cellID = "CellID"
-    
+final class BackupViewController: UITableViewController, CloudBackupable {
     
     let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
     let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
+    let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.lastBackupTime)")
     
-    let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.getLastBackupTime())")
     
-    
-    let backupCell = CustomTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
-    let deleteCell = CustomTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
+    let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
+    let deleteCell = BackupTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
     
     
     lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, elementType: .backup)
     
     lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: backupCells, footView: nil, elementType: .delete)
     
-    
     lazy var elements: [BackupElement] = [backupElement, restoreElement]
-    
-    
-    let fullScreenSize = UIScreen.main.bounds.size
-    
-    
-    lazy var tableView: UITableView = {
-        let frame = CGRect(x: 0, y: 20, width: fullScreenSize.width, height: fullScreenSize.height - 20)
-        let myTableView = UITableView(frame: frame, style: .grouped)
-        myTableView.register(CustomTableViewCell.self, forCellReuseIdentifier: cellID)
-        myTableView.delegate = self
-        myTableView.dataSource = self
-        myTableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
-        myTableView.allowsSelection = true
-        myTableView.allowsMultipleSelection = false
-        return myTableView
-    }()
-    
-    
 
-    
     
     var cloudAccountStatus = CKAccountStatus.noAccount {
         didSet {
-            DispatchQueue.main.async {
-                self.checkAccountStatus()
-            }
+            DispatchQueue.main.async { self.checkAccountStatus() }
         }
     }
     
-    func checkAccountStatus() {
-        
+    private func checkAccountStatus() {
+        backupCell.isUserInteractionEnabled = cloudAccountStatus == .available
+        deleteCell.isUserInteractionEnabled = cloudAccountStatus == .available
+        backupCell.titleLabel.textColor = cloudAccountStatus == .available ? .grassGreen : .gray
+        deleteCell.titleLabel.textColor = cloudAccountStatus == .available ? .red        : .gray
         switch cloudAccountStatus {
-        case .available:
-            enableBackup()
-            
+        case .available: queryingBackupData()
         default:
-            disableBackup()
+            backupfooterView.titleLabel.text = "目前沒有登入的iCloud帳號"
+            backupfooterView.subtitleLabel.text = "無法取得最後更新日"
+            backupCells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
         }
         tableView.reloadData()
     }
+
     
-    private func enableBackup() {
-        backupCell.isUserInteractionEnabled = true
-        deleteCell.isUserInteractionEnabled = true
-        backupCell.titleColor = .grassGreen
-        deleteCell.titleColor = .red
-        queryingBackupData()
-        
-    }
-    
-   private func disableBackup() {
-        backupCell.isUserInteractionEnabled = false
-        deleteCell.isUserInteractionEnabled = false
-        backupCell.titleColor = .gray
-        deleteCell.titleColor = .gray
-        backupfooterView.titleLabel.text = "目前沒有登入的iCloud帳號"
-        backupfooterView.subtitleLabel.text = "無法取得最後更新日"
-        backupCells = [CustomTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
-        
-    }
-    
-    
-    var backupCells: [CustomTableViewCell] = [] {
+    var backupCells: [BackupTableViewCell] = [] {
         didSet {
-            elements[1].cells = backupCells
+            restoreElement.cells = backupCells
             tableView.reloadData()
         }
     }
@@ -111,16 +67,17 @@ class BackupViewController: UIViewController, CloudBackupable {
     var backupDatas: [BackupData] = [] {
         didSet {
             DispatchQueue.main.async {
-                self.backupCells = self.backupDatas.toCustomTableViewCell + [self.deleteCell]
+//                self.backupCells = self.backupDatas.toCustomTableViewCell + [self.deleteCell]
             }
         }
     }
+    
+    
     override func loadView() {
         super.loadView()
-        setupNavigationTitle()
-        setupTableView()
         backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
-        
+        navigationController?.navigationBar.tintColor = .white
+        navigationItem.title = "備份與還原"
     }
     
     override func viewDidLoad() {
@@ -129,16 +86,15 @@ class BackupViewController: UIViewController, CloudBackupable {
         queryingBackupData()
     }
     
-    private func setupTableView() {
-        view.addSubview(tableView)
+    override var tableView: UITableView! {
+        didSet {
+            tableView.delegate = self
+            tableView.dataSource = self
+            tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
+            tableView.allowsSelection = true
+            tableView.allowsMultipleSelection = false
+        }
     }
-    
-    private func setupNavigationTitle() {
-        self.navigationController?.navigationBar.tintColor = .white
-        navigationItem.title = "備份與還原"
-    }
-    
-    
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -148,40 +104,36 @@ class BackupViewController: UIViewController, CloudBackupable {
 
 
 //MARK: - UITableView
-extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
+extension BackupViewController {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return elements[section].cells?.count ?? 1
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return elements.count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
     
-    
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return elements[indexPath.section].cells?[indexPath.row] ?? CustomTableViewCell(type: .none)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return elements[indexPath.section].cells?[indexPath.row] ?? BackupTableViewCell(type: .none)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard cloudAccountStatus == .available else { return }
-        
-        let cell = elements[indexPath.section].cells?[indexPath.row] ?? CustomTableViewCell(type: .none)
+        let cell = elements[indexPath.section].cells?[indexPath.row] ?? BackupTableViewCell(type: .none)
         let backupType = elements[indexPath.section].elementType
         let cellType = cell.cellType
-        let cellTitleColor = cell.titleLabel.textColor
         switch (cellType, backupType) {
         case (.switchButton, _):
             print("switchButton cell")
             
         case (.none, .backup):
 
-            DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
+//            DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
             
             print("doing backup")
 //            backupfooterView.subtitleLabel.text = "最新備份時間: \(Date.now)"
@@ -202,25 +154,25 @@ extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
-        cell.titleLabel.textColor = cellTitleColor
+
     }
     
     
     
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return elements[section].titleView
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+   override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 100
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+   override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 100
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+   override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return elements[section].footView
     }
 }
@@ -242,26 +194,20 @@ extension BackupViewController {
 
 struct BackupElement {
     let titleView: HeadCellView?
-    var cells: [CustomTableViewCell]?
-    let footView: FooterView?
-    let elementType: BackupStatus
+    var cells: [BackupTableViewCell]?
+    let footView: FooterView?, elementType: BackupStatus
 }
 
 enum BackupStatus {
-    case backup
-    case delete
+    case backup, delete
 }
 
 
-class FooterView: HeadCellView {
-    override lazy var titleLabel: UILabel = {
-        let myLabel = UILabel()
-        myLabel.text = "title Label"
-        myLabel.font = UIFont.systemFont(ofSize: 16)
-        myLabel.textColor = .gray
-        myLabel.textAlignment = .center
-        return myLabel
-    }()
+final class FooterView: HeadCellView {
+    override func setupView() {
+        super.setupView()
+        titleLabel.textAlignment = .center
+    }
 }
 
 class HeadCellView: UIView {
@@ -271,49 +217,44 @@ class HeadCellView: UIView {
         setupView()
     }
     
-    init(title:String?, subltitle:String?) {
+    init(title: String?, subltitle: String?) {
         self.init()
-        self.titleLabel.text = title ?? ""
-        self.subtitleLabel.text = subltitle ?? ""
+        titleLabel.text = title
+        subtitleLabel.text = subltitle
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        setupView()
     }
     
-     lazy var titleLabel: UILabel = {
-        let myLabel = UILabel()
-        myLabel.text = "title Label"
-        myLabel.font = UIFont.systemFont(ofSize: 16)
-        myLabel.textColor = .gray
-        return myLabel
-    }()
+    lazy var titleLabel = UILabel {
+        $0.font = .systemFont(ofSize: 16)
+        $0.textColor = .gray
+    }
     
-    lazy var subtitleLabel: UILabel = {
-        let myLabel = UILabel()
-        myLabel.text = "subtitleTextView init(coder:) has not been implemented init(coder:) has not been implemented init(coder:) has not been implemented"
-        myLabel.font = UIFont.systemFont(ofSize: 16)
-        myLabel.numberOfLines = 0
-        myLabel.textColor = .lightGray
-        return myLabel
-    }()
+    lazy var subtitleLabel = UILabel {
+        $0.font = .systemFont(ofSize: 16)
+        $0.numberOfLines = 0
+        $0.textColor = .lightGray
+    }
     
-    private func setupView() {
-        addSubview(titleLabel)
+    func setupView() {
+        [titleLabel, subtitleLabel].forEach(addSubview)
+        
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
-        addSubview(subtitleLabel)
+
         subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
 }
 
 
 struct BackupData {
-    let timeInterval: TimeInterval?
-    let data: Data?
+    let timeInterval: TimeInterval?, data: Data?
     
     var checkinCount: Int {
         guard let data = data,
-        let stations = (try? JSONDecoder().decode([Response.Station].self, from: data)) else { return 0 }
+        let stations = (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)) else { return 0 }
         return stations.reduce(0) {  $0 + ($1.checkinCounter ?? 0)  }
     }
 }

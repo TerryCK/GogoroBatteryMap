@@ -12,9 +12,9 @@ import CloudKit
 import Foundation
 
 extension Collection where Element == BackupData {
-    var toCustomTableViewCell: [CustomTableViewCell] {
+    var toCustomTableViewCell: [BackupTableViewCell] {
         let upperLimit = 10
-        return enumerated().flatMap { (index, element) -> CustomTableViewCell? in
+        return enumerated().flatMap { (index, element) -> BackupTableViewCell? in
             guard index < upperLimit, let data = element.data,
                 let stations = try? JSONDecoder().decode([Response.Station].self, from: data) else { return nil }
             
@@ -26,7 +26,7 @@ extension Collection where Element == BackupData {
             let totalCheckin = stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) }
             
             
-            return CustomTableViewCell(type: .backupButton,
+            return BackupTableViewCell(type: .backupButton,
                                        title: " \(index + 1). \(element.timeInterval?.toTimeString ?? "" )",
                                        subtitle: "         \(size)      打卡次數：\(totalCheckin)")
         }

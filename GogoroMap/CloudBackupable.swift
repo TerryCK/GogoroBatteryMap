@@ -234,69 +234,68 @@ extension CloudBackupable {
 }
 
 
-extension UILabel: CloudBackupable {} 
+//extension UILabel: CloudBackupable {}
 
-extension CloudBackupable where Self == UILabel {
-    
-    typealias UserIDHandler = (CKRecordID) -> Void
-    
-    private func fetchRecordID(completed: @escaping UserIDHandler) {
-        container.fetchUserRecordID { (recordId, error) in
-            guard error == nil, let recordId = recordId else {
-                print("cloud user ID fetch error: \(error!)")
-                return
-            }
-            
-            completed(recordId)
-        }
-    }
-    
-    @available (iOS 10, *)
-    private func getAndUpdataUserName(recordID: CKRecordID)-> Void {
-        container.discoverUserIdentity(withUserRecordID: recordID) { identity, error in
-            guard let components = identity?.nameComponents, error == nil else {
-                print(error!)
-                return
-            }
-            let fullName = PersonNameComponentsFormatter().string(from: components)
-            DispatchQueue.main.async { self.text = "iCloud： \(fullName)" }
-        }
-    }
-    
-    private func requestPermission() {
-        container.requestApplicationPermission(.userDiscoverability) { status, error in
-            guard status == .granted, error == nil else {
-                print(error!)
-                return
-            }
-            
-            if #available(iOS 10, *) {
-                self.fetchRecordID(completed: self.getAndUpdataUserName)
-            } else {
-                self.text = "please upgrade to iOS 10"
-            }
-        }
-    }
-    
-    
-    func updateUserStatus(completed: @escaping (CKAccountStatus)->()) {
-        
-        container.accountStatus { (status, error) in
-            let _ = error.map { self.text = " \($0)"}
-            
-            if status == .available {
-                 self.requestPermission()
-            }
-            
-            DispatchQueue.main.async {
-                self.text = status.description
-            }
-            
-            completed(status)
-        }
-    }
-    
-}
+//extension CloudBackupable where Self == UILabel {
+//    
+//    typealias UserIDHandler = (CKRecordID) -> Void
+//    
+//    private func fetchRecordID(completed: @escaping UserIDHandler) {
+//        container.fetchUserRecordID { (recordId, error) in
+//            guard error == nil, let recordId = recordId else {
+//                print("cloud user ID fetch error: \(error!)")
+//                return
+//            }
+//            
+//            completed(recordId)
+//        }
+//    }
+//    
+//    @available (iOS 10, *)
+//    private func getAndUpdataUserName(recordID: CKRecordID)-> Void {
+//        container.discoverUserIdentity(withUserRecordID: recordID) { identity, error in
+//            guard let components = identity?.nameComponents, error == nil else {
+//                print(error!)
+//                return
+//            }
+//            let fullName = PersonNameComponentsFormatter().string(from: components)
+//            DispatchQueue.main.async { self.text = "iCloud： \(fullName)" }
+//        }
+//    }
+//    
+//    private func requestPermission() {
+//        container.requestApplicationPermission(.userDiscoverability) { status, error in
+//            guard status == .granted, error == nil else {
+//                print(error!)
+//                return
+//            }
+//            
+//            if #available(iOS 10, *) {
+//                self.fetchRecordID(completed: self.getAndUpdataUserName)
+//            } else {
+//                self.text = "please upgrade to iOS 10"
+//            }
+//        }
+//    }
+//    
+//    
+//    func updateUserStatus(completed: @escaping (CKAccountStatus)->()) {
+//        
+//        container.accountStatus { (status, error) in
+//            let _ = error.map { self.text = " \($0)"}
+//            
+//            if status == .available {
+//                 self.requestPermission()
+//            }
+//            
+//            DispatchQueue.main.async {
+//                self.text = status.description
+//            }
+//            
+//            completed(status)
+//        }
+//    }
+//}
 extension CloudBackupable where Self == BackupViewController {
     
     func queryingBackupData() {
@@ -345,11 +344,11 @@ extension UserDefaults: CloudBackupable {
 //        return value(forKey: Keys.standard.annotationsKey) as? Data
 //    }
     
-    func saveNowTime() {
-        set(Date.now, forKey: Keys.standard.nowDateKey)
-    }
-    
-    func getLastBackupTime() -> String {
+//    func saveNowTime() {
+//        set(Date().string(dateformat: "yyyy.MM.dd HH:mm:ss")), forKey: Keys.standard.nowDateKey)
+//    }
+//
+    var lastBackupTime: String {
         return string(forKey: Keys.standard.nowDateKey) ?? ""
     }
 }

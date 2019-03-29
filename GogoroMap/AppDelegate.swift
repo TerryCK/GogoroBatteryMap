@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        window?.rootViewController = UINavigationController(rootViewController: MapViewController())
+//        window?.rootViewController = UINavigationController(rootViewController: MapViewController())
+        window?.rootViewController = UINavigationController(rootViewController: BackupViewController(style: .grouped))
         window?.makeKeyAndVisible()
         
         setupIAPOberserver()
