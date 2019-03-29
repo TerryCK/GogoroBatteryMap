@@ -367,10 +367,10 @@ extension MapViewController {
         Answers.log(event: .MapButtons, customAttributes: log)
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
-        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date.today : ""
+        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date().format(with: "yyyy.MM.dd") : ""
         batteryAnnotation.checkinCounter = counterOfcheckin
         selectedAnnotationView?.image = batteryAnnotation.iconImage
-        (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.setup(with: counterOfcheckin)
+        _ = (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation)
     }
     
     @objc func checkin()   { checkinCount(with: +, log: "Check in") }
@@ -463,8 +463,9 @@ extension MapViewController {
             var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
                 if case .success(let response) = result, let route = response.routes.first {
+                    let (hours, minutes) = TimeInterval.travelTimeConvert(seconds: route.expectedTravelTime)
                     distance = "距離：\(String(format: "%.1f", route.distance/1000)) km "
-                    travelTime = "約：\(route.expectedTravelTime.convertToHMS)"
+                    travelTime = "約：" + (hours > 0 ? "\(hours) 小時 " : "") + "\(minutes) 分鐘 "
                 }
                 detailCalloutView.distanceLabel.text = distance
                 detailCalloutView.etaLabel.text = travelTime

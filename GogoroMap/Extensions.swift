@@ -112,105 +112,31 @@ extension UIView {
 
 
 extension Date {
-   
-    static private func getTime(with formatterString: String) -> String {
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = formatterString
-        let dateString = formatter.string(from: date)
-        return dateString
+    func format(with dateformat: String) -> String {
+        return DateFormatter { $0.dateFormat = dateformat }.string(from: self)
     }
-    
-    static var today: String  { return getTime(with: "yyyy.MM.dd") }
-    
-    static var now: String { return getTime(with: "yyyy.MM.dd HH:mm:ss") }
-  
 }
 
+extension TimeInterval {
+    static func travelTimeConvert(seconds: TimeInterval) -> (hours: Int, minutes: Int) {
+        return (Int(seconds) / 3600 , Int(seconds) % 3600 / 60)
+    }
+}
 
 extension Double {
-    var km: Double {
-        return Double(String(format:"%.1f", self / 1000)) ?? 0
-    }
-    var toRadian: CGFloat {
-        get { return CGFloat(self * (Double.pi/180))
-        }
-    }
-    var format: Double {
-        return Double(String(format:"%.2f", self)) ?? 0
-    }
+    var km: Double { return Double(String(format:"%.1f", self / 1000)) ?? 0 }
+    
+    var toRadian: CGFloat { return CGFloat(self * (Double.pi/180)) }
+    
+    var format: Double { return Double(String(format:"%.2f", self)) ?? 0 }
 
-    var percentage: String {
-        return String(format: "%.1f", self * 100)
-    }
-    var convertToHMS: String {
-        
-        let minutes = Int(self.truncatingRemainder(dividingBy: 3600) / 60)
-        let hours = Int(self / 3600)
-        
-        var result: String = ""
-        
-        result += hours > 0 ? "\(hours) 小時 " : ""
-        result += "\(minutes + 1) 分鐘 "
-        return result
-    }
+    var percentage: String { return String(format: "%.1f", self * 100)  }
     
     var toTimeString: String {
         let timestampDate = Date(timeIntervalSince1970: self)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd   HH:mm:ss"
         return dateFormatter.string(from: timestampDate)
-    }
-
-}
-
-
-extension Bundle {
-    static var id: String {
-        return Bundle.main.bundleIdentifier ?? ""
-    }
-}
-
-
-
-
-extension SKProduct {
-    func localizedPrice() -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = self.priceLocale
-        return formatter.string(from: self.price) ?? "\(price)"
-    }
-}
-
-
-enum DeviceMode: String {
-    case iPhoneX
-    case others
-}
-
-extension UIDevice {
-    static var isiPhoneX: Bool {
-        let heightOfiPhoneX: CGFloat = 812
-        return modelName == .iPhoneX || UIScreen.main.bounds.height == heightOfiPhoneX
-    }
-    
-    static var modelName: DeviceMode {
-       
-        var systemIfo = utsname()
-        uname(&systemIfo)
-        let machineMirror = Mirror(reflecting: systemIfo.machine)
-        
-        let identifier = machineMirror.children.reduce("") { (identifier, element)  in
-            guard let value = element.value as? Int8, value != 0 else { return identifier }
-            return identifier + String(UnicodeScalar(UInt8(value)))
-        }
-        
-        
-        switch identifier {
-        case "iPhone10,3", "iPhone10,6": return .iPhoneX
-        default: return .others
-        }
     }
 }
 
@@ -221,8 +147,4 @@ extension MKMapPoint {
         let offsetCenterY  = Double(UIScreen.main.bounds.height / 2) * factorOfPixelToMapPoint
         return MKMapPoint(x: x - offsetCenterX, y: y - offsetCenterY)
     }
-}
-
-extension UserDefaults {
-    static var hasBuyItems: Bool { return standard.bool(forKey: Keys.standard.hasPurchesdKey) }
 }

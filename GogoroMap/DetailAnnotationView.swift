@@ -135,13 +135,7 @@ final class DetailAnnotationView: UIView {
             timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
         }
     }
-    
-    func setup(with counterOfcheckin: Int) {
-        self.counterOfcheckin = counterOfcheckin
-        lastCheckTimeLabel.text =  "最近的打卡日：\(counterOfcheckin > 0 ? Date.today : "")"
-    }
-    
-    
+ 
     func configure(annotation: BatteryDataModal) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"

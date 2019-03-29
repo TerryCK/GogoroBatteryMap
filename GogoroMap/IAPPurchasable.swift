@@ -40,7 +40,7 @@ extension IAPPurchasable where Self: UIViewController {
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Get purchase item list"])
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
-        let proudctInfo = "\(Bundle.id).\(purchase.rawValue)"
+        let proudctInfo = "\(Bundle.main.bundleIdentifier ?? "").\(purchase.rawValue)"
         
         SwiftyStoreKit.retrieveProductsInfo([proudctInfo]) { result in
             NetworkActivityIndicatorManager.shared.networkOperationFinished() 
@@ -123,7 +123,7 @@ extension IAPPurchasable where Self: UIViewController {
                 Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyReceipt succeeded"])
                 var productId: String
                 if let purchase = purchase as? RegisteredPurchase {
-                    productId = Bundle.id + "." + purchase.rawValue
+                    productId = (Bundle.main.bundleIdentifier ?? "") + "." + purchase.rawValue
                 } else {
                     productId = purchase as? String ?? ""
                 }
