@@ -199,7 +199,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         authrizationStatus()
         setupPurchase()
         dataUpdate()
-//        setupAdContainerView()
+        setupAdContainerView()
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
 //
@@ -211,12 +211,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
 //
         
-        
+        setupRating()
         Answers.log(view: "Map Page")
 //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
         
         #if REALEASE
-        setupRating()
+        
         #endif
         //        testFunction()
     }
@@ -413,10 +413,10 @@ extension MapViewController {
             return originalMKAnnotationView(mapView, viewFor: annotation)
         }
         
-        let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
+        let style = ClusterAnnotationStyle.color(.grassGreen, radius: 42)
         let identifier = "Cluster"
         var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-        if let view = view as? BorderedClusterAnnotationView {
+        if let view = view as? ClusterAnnotationView {
             view.annotation = clusterAnnotation
             view.configure(with: style)
         } else {

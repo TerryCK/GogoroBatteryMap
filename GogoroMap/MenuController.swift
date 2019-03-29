@@ -19,12 +19,6 @@ protocol StationDataSource: AnyObject {
     var batteryStationPointAnnotations: [BatteryStationPointAnnotation] { set get }
 }
 
-extension MenuController {
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-}
-
 final class MenuController: UICollectionViewController {
     
     weak var delegate: ManuDelegate?
@@ -86,6 +80,10 @@ final class MenuController: UICollectionViewController {
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: String(describing: type(of: self)))
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
     }
     
     // MARK: - Events

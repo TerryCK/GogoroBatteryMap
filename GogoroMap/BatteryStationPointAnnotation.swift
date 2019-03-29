@@ -15,7 +15,7 @@ extension BatteryStationPointAnnotation {
         guard let name = title, state == 1 else { return #imageLiteral(resourceName: "building") }
         if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
         if ["加油", "中油"].reduce(false, { $0 || name.contains($1) })   { return #imageLiteral(resourceName: "gasStation") }
-        if ["家樂福", "大潤發", "Mall", "百貨"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
+        if ["家樂福", "大潤發", "Mall", "百貨", "Global Mall", "CITYLINK"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
         if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
         return #imageLiteral(resourceName: "pinFull")
     }
