@@ -41,7 +41,7 @@ enum SegmentStatus: Int {
         case .map       : return []
         case .checkin   : operating =  { $0.checkinCounter ?? 0 > 0 }
         case .nearby    : operating =  { $0.distance(from: currentUserLocation).km < 45 }
-        case .building  : operating =  { $0.state != 1 }
+        case .building  : operating =  { !$0.isOperating }
         }
         
         return annotations

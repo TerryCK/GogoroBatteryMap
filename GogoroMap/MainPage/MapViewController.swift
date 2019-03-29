@@ -199,8 +199,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         authrizationStatus()
         setupPurchase()
         dataUpdate()
-        setupAdContainerView()
-        
+
 //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
 //
 //            self.batteryStationPointAnnotations = DataManager.shared.initialStations ?? []
@@ -211,12 +210,13 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
 //
         
-        setupRating()
+       
         Answers.log(view: "Map Page")
 //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
         
         #if REALEASE
-        
+            setupAdContainerView()
+            setupRating()
         #endif
         //        testFunction()
     }

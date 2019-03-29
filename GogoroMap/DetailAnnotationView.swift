@@ -141,9 +141,9 @@ final class DetailAnnotationView: UIView {
         addressLabel.text = "地址：\(annotation.address)"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay ?? "")"
         counterOfcheckin = annotation.checkinCounter ?? 0
-        checkinButton.isEnabled = annotation.state == 1
-        isAvailableLabel.backgroundColor = annotation.state == 1 ? .lightGreen : .lightGray
-        isAvailableLabel.text = annotation.state == 1 ? "營運中" : "關閉中"
+        checkinButton.isEnabled = annotation.isOperating
+        isAvailableLabel.backgroundColor = annotation.isOperating ? .lightGreen : .lightGray
+        isAvailableLabel.text = annotation.isOperating ? "營運中" : "關閉中"
         return self
     }
 }

@@ -135,12 +135,16 @@ extension BackupViewController {
             print("switchButton cell")
             
         case (.none, .backup):
-
-//            DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
             
-            DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
-                print("doing backup")
+            //  DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
+            
+            _ = dataSource?.batteryStationPointAnnotations
+                .flatMap { try? JSONEncoder().encode($0) }
+                .map { DataManager.shared.saveToCloud(data: $0) {
+                    print("save to cloud")
+                    }
             }
+            
            
 //            backupfooterView.subtitleLabel.text = "最新備份時間: \(Date.now)"
             
