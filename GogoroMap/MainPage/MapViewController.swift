@@ -14,7 +14,7 @@ import GoogleMobileAds
 import Cluster
 import CloudKit
 
-final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, MenuDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate {
+final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate {
     
     var currentUserLocation: CLLocation!
     
@@ -161,6 +161,17 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }()
     */
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
+        
+    }
     override func loadView() {
         super.loadView()
         setupNavigationTitle()
@@ -192,7 +203,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
 //
-//            self.batteryStationPointAnnotations = DataManager.shared.initialData ?? []
+//            self.batteryStationPointAnnotations = DataManager.shared.initialStations ?? []
 //            self.reloadMapView()
 //        })
         
@@ -221,7 +232,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations)
     }
     
-    var batteryStationPointAnnotations = DataManager.shared.initialData ?? [] {
+    var batteryStationPointAnnotations = DataManager.shared.initialStations {
         willSet {
             clusterManager.removeAll()
             clusterManager.add(newValue)

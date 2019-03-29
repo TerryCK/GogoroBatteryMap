@@ -16,8 +16,12 @@ protocol CloudBackupable {
     var database: CKDatabase { get }
     
     var recordType: String { get }
+    static var key: String { get }
     
-    var recordKey: String { get }
+    func saveToCloud(data: Data, completionHandler: @escaping () -> Void)
+    
+    
+    
     
     
     func backupToCloud(with data: Data, completed: @escaping () -> ())
@@ -40,7 +44,24 @@ protocol CloudBackupable {
 
 
 
-
+extension DataManager: CloudBackupable {
+  
+    
+    func saveToCloud(data: Data, completionHandler: @escaping () -> Void) {
+        let cloudRecord = CKRecord(recordType: recordType)
+        cloudRecord.setValue(data, forKey: DataManager.key)
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        database.save(cloudRecord) { (record, error) in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            guard error == nil, record != nil else {
+                print("cloud error: \(String(describing: error))")
+                return
+            }
+            completionHandler()
+            
+        }
+    }
+}
 
 extension CloudBackupable {
     
@@ -48,23 +69,20 @@ extension CloudBackupable {
     
     var database:  CKDatabase  { return container.privateCloudDatabase }
     
-    var recordType: String  { return "CustomPointAnnotations" }
+    var recordType: String  { return String(describing: type(of: self)) }
+
     
-    var recordKey: String   { return "customPointAnnotations" }
-    
-    typealias CompletedHandler = () -> ()
-    
-    func backupToCloud(with data: Data, completed: @escaping CompletedHandler) {
+    func backupToCloud(with data: Data, completed: @escaping ()-> Void) {
         print("saving data to cloud")
         
         let cloudRecord = CKRecord(recordType: recordType)
         let cloudObject = data as CKRecordValue
-        cloudRecord.setObject(cloudObject, forKey: recordKey)
+        cloudRecord.setObject(cloudObject, forKey: recordType)
         
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         
         database.save(cloudRecord) { (record, error) in
-            
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             guard error == nil, record != nil else {
                 print("cloud error: \(String(describing: error))")
                 return
@@ -131,7 +149,7 @@ extension CloudBackupable {
         
         operation.recordFetchedBlock = { (record: CKRecord?) in
 //            NSKeyedUnarchiver.unarchiveObject(with: self) as? [CustomPointAnnotation]
-            let data = record?.value(forKey: self.recordKey) as? Data
+            let data = record?.value(forKey: self.recordType) as? Data
             if let annotations = data.map(NSKeyedUnarchiver.unarchiveObject) as? [CustomPointAnnotation] {
                 completed(annotations)
             }
@@ -296,62 +314,62 @@ extension CloudBackupable {
 //        }
 //    }
 //}
-extension CloudBackupable where Self == BackupViewController {
-    
-    func queryingBackupData() {
-        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        print("queryingBackupData")
-        query { (records, error) in
-            guard error == nil, let records = records else {
-                print("cloud query error:", error!)
-                return
-            }
-            
-            self.backupDataHandler(with: records)
-
-            
-        }
-    }
-    
-        func backupDataHandler(with records: [CKRecord]) {
-            self.backupDatas = records.map {
-                let creationData = $0.creationDate?.timeIntervalSince1970
-                let data = $0.value(forKey: self.recordKey) as? Data
-                return BackupData(timeInterval: creationData, data: data)
-                }.sorted(by: { (data1, data2) -> Bool in
-                    data1.timeInterval ?? 0.0 > data2.timeInterval ?? 0.0
-                })
-            
-            DispatchQueue.main.async {
-                self.backupfooterView.subtitleLabel.text = "最後備份時間: \(self.backupDatas.first?.timeInterval?.toTimeString ?? "")"
-                NetworkActivityIndicatorManager.shared.networkOperationFinished()
-            }
-           
-        }
-    
-}
+//extension CloudBackupable where Self == BackupViewController {
+//
+//    func queryingBackupData() {
+//        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+//        print("queryingBackupData")
+//        query { (records, error) in
+//            guard error == nil, let records = records else {
+//                print("cloud query error:", error!)
+//                return
+//            }
+//
+//            self.backupDataHandler(with: records)
+//
+//
+//        }
+//    }
+//
+//        func backupDataHandler(with records: [CKRecord]) {
+//            self.backupDatas = records.map {
+//                let creationData = $0.creationDate?.timeIntervalSince1970
+//                let data = $0.value(forKey: self.recordKey) as? Data
+//                return BackupData(timeInterval: creationData, data: data)
+//                }.sorted(by: { (data1, data2) -> Bool in
+//                    data1.timeInterval ?? 0.0 > data2.timeInterval ?? 0.0
+//                })
+//
+//            DispatchQueue.main.async {
+//                self.backupfooterView.subtitleLabel.text = "最後備份時間: \(self.backupDatas.first?.timeInterval?.toTimeString ?? "")"
+//                NetworkActivityIndicatorManager.shared.networkOperationFinished()
+//            }
+//
+//        }
+//
+//}
 
 
 
 // TODO: - check user login status of cloud accunt, Notifications for all of devices,
-extension UserDefaults: CloudBackupable {
-//    func saveDataToCloudFromDatabase() {
-//        guard let data = value(forKey: Keys.standard.annotationsKey) as? Data
-//            else { return }
-//        data.backupToCloud()
+//extension UserDefaults: CloudBackupable {
+////    func saveDataToCloudFromDatabase() {
+////        guard let data = value(forKey: Keys.standard.annotationsKey) as? Data
+////            else { return }
+////        data.backupToCloud()
+////    }
+////    var databaseToData: Data? {
+////        return value(forKey: Keys.standard.annotationsKey) as? Data
+////    }
+//    
+////    func saveNowTime() {
+////        set(Date().string(dateformat: "yyyy.MM.dd HH:mm:ss")), forKey: Keys.standard.nowDateKey)
+////    }
+////
+//    var lastBackupTime: String {
+//        return string(forKey: Keys.standard.nowDateKey) ?? ""
 //    }
-//    var databaseToData: Data? {
-//        return value(forKey: Keys.standard.annotationsKey) as? Data
-//    }
-    
-//    func saveNowTime() {
-//        set(Date().string(dateformat: "yyyy.MM.dd HH:mm:ss")), forKey: Keys.standard.nowDateKey)
-//    }
-//
-    var lastBackupTime: String {
-        return string(forKey: Keys.standard.nowDateKey) ?? ""
-    }
-}
+//}
 
 extension CKAccountStatus: CustomStringConvertible {
     public var description: String {
@@ -364,16 +382,16 @@ extension CKAccountStatus: CustomStringConvertible {
     }
 }
 
-extension Data: CloudBackupable {
-    func backupToCloud(completeHandler: @escaping ()->()) {
-        backupToCloud(with: self, completed: completeHandler)
-    }
-
-    var toRecordValue: CKRecordValue { return self as CKRecordValue }
-    
-    func updataNotifiy() {
-        NotificationCenter.default.post(name: .init(rawValue: Keys.standard.dataUpdata), object: self)
-    }
-}
+//extension Data: CloudBackupable {
+//    func backupToCloud(completeHandler: @escaping ()->()) {
+//        backupToCloud(with: self, completed: completeHandler)
+//    }
+//
+//    var toRecordValue: CKRecordValue { return self as CKRecordValue }
+//    
+//    func updataNotifiy() {
+//        NotificationCenter.default.post(name: .init(rawValue: Keys.standard.dataUpdata), object: self)
+//    }
+//}
 
 
