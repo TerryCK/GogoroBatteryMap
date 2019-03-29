@@ -11,6 +11,8 @@
 		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9A002B22238FC200D5150D /* Answer+Entension.swift */; };
+		7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503520260D1C00E2206D /* BackupViewController.swift */; };
+		7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */; };
 		8D05EC5C8092244F4772117D /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */; };
 		A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */; };
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
@@ -54,8 +56,7 @@
 		A8E68F8E1F46D78400160388 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E68F8D1F46D78400160388 /* Log.swift */; };
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
 		A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */; };
-		A8F7504420261C0600E2206D /* BasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503720260D1C00E2206D /* BasicTableViewCell.swift */; };
-		A8F7504520261C0600E2206D /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* CustomTableViewCell.swift */; };
+		A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,7 +132,7 @@
 		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
 		A8F7503720260D1C00E2206D /* BasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTableViewCell.swift; sourceTree = "<group>"; };
-		A8F7503820260D1C00E2206D /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
 		ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
 		E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -391,7 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				A8F7503720260D1C00E2206D /* BasicTableViewCell.swift */,
-				A8F7503820260D1C00E2206D /* CustomTableViewCell.swift */,
+				A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -637,14 +638,14 @@
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
-				A8F7504420261C0600E2206D /* BasicTableViewCell.swift in Sources */,
 				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
 				A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */,
+				7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */,
 				A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
-				A8F7504520261C0600E2206D /* CustomTableViewCell.swift in Sources */,
+				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
 				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
@@ -657,6 +658,7 @@
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
+				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,

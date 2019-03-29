@@ -55,7 +55,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }
     
     private lazy var lastUpdateDateLabel: UILabel = UILabel {
-        $0.text = "\("Last:".localize()) " + DateFormatter { $0.dateFormat = "yyyy.MM.dd" }.string(from: Date())
+        $0.text = "\("Last:".localize()) " + Date().string(dateformat: "yyyy.MM.dd")
         $0.font = .boldSystemFont(ofSize: 11)
     }
     
@@ -79,7 +79,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     
     private let authorLabel = UILabel {
-        $0.text = "Chen, Guan-Jhen \(DateFormatter { $0.dateFormat = "yyyy" }.string(from: Date())) Copyright"
+        $0.text = "Chen, Guan-Jhen \(Date().string(dateformat: "yyyy")) Copyright"
         $0.font = .systemFont(ofSize: 12)
         $0.textColor = .gray
         }

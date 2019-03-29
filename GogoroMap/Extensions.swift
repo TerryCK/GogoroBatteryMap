@@ -112,7 +112,7 @@ extension UIView {
 
 
 extension Date {
-    func format(with dateformat: String) -> String {
+    func string(dateformat: String) -> String {
         return DateFormatter { $0.dateFormat = dateformat }.string(from: self)
     }
 }
