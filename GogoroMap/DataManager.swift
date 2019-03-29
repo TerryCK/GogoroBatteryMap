@@ -34,9 +34,9 @@ final class DataManager {
     }
     
     var initialStations: [BatteryStationPointAnnotation] {
-        return fetchData(from: .database).flatMap(dataBridge) ?? fetchData(from: .bundle).flatMap {
-            try? JSONDecoder().decode(Response.self, from: $0).stations.map(BatteryStationPointAnnotation.init)
-        }!
+
+        return fetchData(from: .database).flatMap(dataBridge) ??
+            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }
     
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation]>) -> Void) {
