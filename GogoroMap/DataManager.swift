@@ -10,11 +10,12 @@ import Foundation
 
 protocol DataManagerProtocol {
     func saveToDatabase(with annotations: [BatteryStationPointAnnotation])
-    var initialData: [BatteryStationPointAnnotation]? { get }
+    var initialStations: [BatteryStationPointAnnotation] { get }
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation]>) -> Void)
 }
 
 final class DataManager {
+    static let key: String = "batteryStationPointAnnotation"
     
     enum Approach { case bundle, database }
     
@@ -32,10 +33,10 @@ final class DataManager {
             ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
     }
     
-    var initialData: [BatteryStationPointAnnotation]? {
+    var initialStations: [BatteryStationPointAnnotation] {
         return fetchData(from: .database).flatMap(dataBridge) ?? fetchData(from: .bundle).flatMap {
             try? JSONDecoder().decode(Response.self, from: $0).stations.map(BatteryStationPointAnnotation.init)
-        }
+        }!
     }
     
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation]>) -> Void) {
@@ -48,7 +49,7 @@ final class DataManager {
         }
     }
     
-    private func fetchData(from apporach: Approach) -> Data? {
+     func fetchData(from apporach: Approach) -> Data? {
         switch apporach {
         case .bundle:
             return Bundle.main.path(forResource: "gogoro", ofType: "json").flatMap { try? Data(contentsOf: URL(fileURLWithPath: $0)) }

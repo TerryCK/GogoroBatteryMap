@@ -17,11 +17,13 @@
 import UIKit
 import CloudKit
 
-final class BackupViewController: UITableViewController, CloudBackupable {
+final class BackupViewController: UITableViewController {
+    
+    weak var dataSource: StationDataSource?
     
     let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
     let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
-    let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.lastBackupTime)")
+    let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")")
     
     
     let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
@@ -47,7 +49,7 @@ final class BackupViewController: UITableViewController, CloudBackupable {
         backupCell.titleLabel.textColor = cloudAccountStatus == .available ? .grassGreen : .gray
         deleteCell.titleLabel.textColor = cloudAccountStatus == .available ? .red        : .gray
         switch cloudAccountStatus {
-        case .available: queryingBackupData()
+        case .available: break //queryingBackupData()
         default:
             backupfooterView.titleLabel.text = "目前沒有登入的iCloud帳號"
             backupfooterView.subtitleLabel.text = "無法取得最後更新日"
@@ -75,26 +77,27 @@ final class BackupViewController: UITableViewController, CloudBackupable {
     
     override func loadView() {
         super.loadView()
-        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
+//        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
         navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "備份與還原"
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
+        tableView.allowsSelection = true
+        tableView.allowsMultipleSelection = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
-        queryingBackupData()
-    }
-    
-    override var tableView: UITableView! {
-        didSet {
-            tableView.delegate = self
-            tableView.dataSource = self
-            tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
-            tableView.allowsSelection = true
-            tableView.allowsMultipleSelection = false
+        
+        
+        DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
+            print("doing backup")
         }
+//        queryingBackupData()
     }
+
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -135,7 +138,10 @@ extension BackupViewController {
 
 //            DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
             
-            print("doing backup")
+            DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
+                print("doing backup")
+            }
+           
 //            backupfooterView.subtitleLabel.text = "最新備份時間: \(Date.now)"
             
             
@@ -148,7 +154,7 @@ extension BackupViewController {
         case (.backupButton, _):
             print("doing recovery")
             
-            backupDatas[indexPath.row].data?.updataNotifiy()
+//            backupDatas[indexPath.row].data?.updataNotifiy()
             
             
         }
@@ -186,7 +192,7 @@ extension BackupViewController {
     }
     
     @objc private func checkTheCloudAccountStatus() {
-        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
+//        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
     }
     
     

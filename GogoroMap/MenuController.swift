@@ -15,8 +15,8 @@ protocol ManuDelegate: AnyObject {
     func dataUpdate(onCompletion: (() -> Void)?)
 }
 
-protocol MenuDataSource: AnyObject {
-    var batteryStationPointAnnotations: [BatteryStationPointAnnotation] { get }
+protocol StationDataSource: AnyObject {
+    var batteryStationPointAnnotations: [BatteryStationPointAnnotation] { set get }
 }
 
 extension MenuController {
@@ -28,7 +28,7 @@ extension MenuController {
 final class MenuController: UICollectionViewController {
     
     weak var delegate: ManuDelegate?
-    weak var dataSource: MenuDataSource?
+    weak var dataSource: StationDataSource?
     
     var refreshButton: UIButton?
     
@@ -98,8 +98,11 @@ final class MenuController: UICollectionViewController {
 extension MenuController {
     
     @objc func performGuidePage() {
+        let backupVC = BackupViewController.init(style: .grouped)
+        backupVC.dataSource = dataSource
+        navigationController?.pushViewController(backupVC, animated: true)
         
-        //       navigationController?.pushViewController(BackupViewController(), animated: true)
+        
     }
     
     //    @objc func performGuidePage() {
