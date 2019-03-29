@@ -80,21 +80,21 @@ final class BackupViewController: UITableViewController {
 //        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
         navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "備份與還原"
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
-        tableView.allowsSelection = true
-        tableView.allowsMultipleSelection = false
+       
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
         
-        
-        DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
-            print("doing backup")
-        }
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
+        tableView.allowsSelection = true
+        tableView.allowsMultipleSelection = false
+//        DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
+//            print("doing backup")
+//        }
 //        queryingBackupData()
     }
 
