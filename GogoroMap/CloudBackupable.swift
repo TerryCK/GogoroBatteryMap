@@ -11,6 +11,17 @@ import CloudKit
 import UIKit
 
 
+extension CKAccountStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .available:         return "iCloud is available"
+        case .noAccount:         return "the user not logged in"
+        case .restricted:        return "iCloud settings are restricted by parental controls or a configuration profile"
+        case .couldNotDetermine: return "please try again"
+        }
+    }
+}
+
 protocol CloudBackupable {
     
     var database: CKDatabase { get }
@@ -44,24 +55,65 @@ protocol CloudBackupable {
 
 
 
-extension DataManager: CloudBackupable {
-  
+
+extension CKContainer {
     
-    func saveToCloud(data: Data, completionHandler: @escaping () -> Void) {
-        let cloudRecord = CKRecord(recordType: recordType)
-        cloudRecord.setValue(data, forKey: DataManager.key)
+    func save(data: Data, completionHandler: @escaping (CKRecord?) -> Void) {
+        let cloudRecord = CKRecord(recordType: "BatteryStationPointAnnotation")
+        cloudRecord.setValue(data, forKey: "batteryStationPointAnnotation")
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        database.save(cloudRecord) { (record, error) in
+        privateCloudDatabase.save(cloudRecord) { (record, error) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             guard error == nil, record != nil else {
                 print("cloud error: \(String(describing: error))")
                 return
             }
-            completionHandler()
-            
+            DispatchQueue.main.async { completionHandler(record) }
+        }
+    }
+    
+    func fetchUserID(completionHanlder: @escaping (String) -> Void) {
+        fetchUserID { (_, result) in
+            DispatchQueue.main.async { completionHanlder(result ?? "iCloud 目前無法使用 請稍後嘗試") }
+        }
+    }
+    
+    
+    private func fetchUserID(completionHanlder: @escaping (Error?, String?) -> Void) {
+        accountStatus { (status, error) in
+            guard status == .available else {
+                completionHanlder(error, nil)
+                print("\(String(describing: error))")
+                return
+            }
+            self.requestApplicationPermission(.userDiscoverability) { status, error in
+                guard status == .granted, error == nil else {
+                    completionHanlder(error, nil)
+                    print(error!)
+                    return
+                }
+                
+                self.fetchUserRecordID { (recordId, error) in
+                    guard error == nil, let recordId = recordId else {
+                        completionHanlder(error, nil)
+                        print("cloud user ID fetch error: \(error!)")
+                        return
+                    }
+                    
+                    self.discoverUserIdentity(withUserRecordID: recordId) { identity, error in
+                        guard let components = identity?.nameComponents, error == nil else {
+                            completionHanlder(error, nil)
+                            print(error!)
+                            return
+                        }
+                        completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
+                    }
+                }
+            }
         }
     }
 }
+
 
 extension CloudBackupable {
     
@@ -71,7 +123,6 @@ extension CloudBackupable {
     
     var recordType: String  { return String(describing: type(of: self)) }
 
-    
     func backupToCloud(with data: Data, completed: @escaping ()-> Void) {
         print("saving data to cloud")
         
@@ -84,7 +135,7 @@ extension CloudBackupable {
         database.save(cloudRecord) { (record, error) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             guard error == nil, record != nil else {
-                print("cloud error: \(String(describing: error))")
+                print("cloud error: \(String(describing: error!))")
                 return
             }
             print("saved record to cloud")
@@ -246,73 +297,17 @@ extension CloudBackupable {
     //        return annotationFromDatabase
     //    }
     
-    func updateUserStatus(completed: @escaping (CKAccountStatus, Error?) -> Void) {
-        container.accountStatus(completionHandler: completed)
-    }
+//    func updateUserStatus(completed: @escaping (CKAccountStatus, Error?) -> Void) {
+//        container.accountStatus(completionHandler: completed)
+//    }
 }
 
 
 //extension UILabel: CloudBackupable {}
 
-//extension CloudBackupable where Self == UILabel {
-//    
-//    typealias UserIDHandler = (CKRecordID) -> Void
-//    
-//    private func fetchRecordID(completed: @escaping UserIDHandler) {
-//        container.fetchUserRecordID { (recordId, error) in
-//            guard error == nil, let recordId = recordId else {
-//                print("cloud user ID fetch error: \(error!)")
-//                return
-//            }
-//            
-//            completed(recordId)
-//        }
-//    }
-//    
-//    @available (iOS 10, *)
-//    private func getAndUpdataUserName(recordID: CKRecordID)-> Void {
-//        container.discoverUserIdentity(withUserRecordID: recordID) { identity, error in
-//            guard let components = identity?.nameComponents, error == nil else {
-//                print(error!)
-//                return
-//            }
-//            let fullName = PersonNameComponentsFormatter().string(from: components)
-//            DispatchQueue.main.async { self.text = "iCloud： \(fullName)" }
-//        }
-//    }
-//    
-//    private func requestPermission() {
-//        container.requestApplicationPermission(.userDiscoverability) { status, error in
-//            guard status == .granted, error == nil else {
-//                print(error!)
-//                return
-//            }
-//            
-//            if #available(iOS 10, *) {
-//                self.fetchRecordID(completed: self.getAndUpdataUserName)
-//            } else {
-//                self.text = "please upgrade to iOS 10"
-//            }
-//        }
-//    }
-//    
-//    
-//    func updateUserStatus(completed: @escaping (CKAccountStatus)->()) {
-//        
-//        container.accountStatus { (status, error) in
-//            let _ = error.map { self.text = " \($0)"}
-//            
-//            if status == .available {
-//                 self.requestPermission()
-//            }
-//            
-//            DispatchQueue.main.async {
-//                self.text = status.description
-//            }
-//            
-//            completed(status)
-//        }
-//    }
+//extension CloudBackupable {
+//
+//
 //}
 //extension CloudBackupable where Self == BackupViewController {
 //
@@ -371,16 +366,7 @@ extension CloudBackupable {
 //    }
 //}
 
-extension CKAccountStatus: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .available:         return "iCloud is available"
-        case .noAccount:         return "the user not logged in"
-        case .restricted:        return "iCloud settings are restricted by parental controls or a configuration profile"
-        case .couldNotDetermine: return "please try again"
-        }
-    }
-}
+
 
 //extension Data: CloudBackupable {
 //    func backupToCloud(completeHandler: @escaping ()->()) {
