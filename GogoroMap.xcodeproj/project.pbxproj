@@ -131,7 +131,6 @@
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
 		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
-		A8F7503720260D1C00E2206D /* BasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTableViewCell.swift; sourceTree = "<group>"; };
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
 		ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
 		E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
@@ -229,8 +228,8 @@
 				A80660171F4419000036BE3B /* Playground */,
 				A808F0432220ED0E00761A31 /* gogoro.json */,
 				7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */,
-				7C0F5B84224A08AE00CB05B9 /* Keys.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
+				7C0F5B84224A08AE00CB05B9 /* Keys.plist */,
 				A8C060181F3C9AD20054DE01 /* Media.xcassets */,
 			);
 			name = Resource;
@@ -391,7 +390,6 @@
 		A8F7503620260D1C00E2206D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A8F7503720260D1C00E2206D /* BasicTableViewCell.swift */,
 				A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */,
 			);
 			path = Views;
@@ -503,9 +501,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */,
-				7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */,
 				A808F0442220ED0E00761A31 /* gogoro.json in Resources */,
+				7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */,
+				7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */,
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
@@ -637,15 +635,16 @@
 				A8C8BAC91F3C59A900E9E18C /* AdContainerView.swift in Sources */,
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
+				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
+				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
 				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
-				A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */,
 				7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */,
+				A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */,
 				A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
-				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
 				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */,
@@ -658,7 +657,6 @@
 				A8187E8E1F453458008E1558 /* LocationManageable.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
-				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				A8422D451F9490CC00AA28C2 /* MyCollectionViewCell.swift in Sources */,

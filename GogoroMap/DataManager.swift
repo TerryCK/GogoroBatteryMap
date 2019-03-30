@@ -15,7 +15,6 @@ protocol DataManagerProtocol {
 }
 
 final class DataManager {
-    static let key: String = "batteryStationPointAnnotation"
     
     enum Approach { case bundle, database }
     

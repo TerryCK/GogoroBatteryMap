@@ -18,7 +18,7 @@ import UIKit
 import CloudKit
 
 final class BackupViewController: UITableViewController {
-    
+
     weak var dataSource: StationDataSource?
     
     let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
@@ -39,7 +39,7 @@ final class BackupViewController: UITableViewController {
     
     var cloudAccountStatus = CKAccountStatus.noAccount {
         didSet {
-            DispatchQueue.main.async { self.checkAccountStatus() }
+            DispatchQueue.main.async(execute: checkAccountStatus)
         }
     }
     
@@ -55,6 +55,7 @@ final class BackupViewController: UITableViewController {
             backupfooterView.subtitleLabel.text = "無法取得最後更新日"
             backupCells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
         }
+        backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
     }
 
@@ -77,10 +78,12 @@ final class BackupViewController: UITableViewController {
     
     override func loadView() {
         super.loadView()
-//        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
+        checkTheCloudAccountStatus()
+        CKContainer.default().fetchUserID {
+            self.backupfooterView.titleLabel.text = $0
+        }
         navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "備份與還原"
-       
     }
     
     override func viewDidLoad() {
@@ -92,9 +95,6 @@ final class BackupViewController: UITableViewController {
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
-//        DataManager.shared.saveToCloud(data: DataManager.shared.fetchData(from: .bundle)!) {
-//            print("doing backup")
-//        }
 //        queryingBackupData()
     }
 
@@ -126,6 +126,7 @@ extension BackupViewController {
     }
     
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    defer { tableView.deselectRow(at: indexPath, animated: true) }
         guard cloudAccountStatus == .available else { return }
         let cell = elements[indexPath.section].cells?[indexPath.row] ?? BackupTableViewCell(type: .none)
         let backupType = elements[indexPath.section].elementType
@@ -135,13 +136,15 @@ extension BackupViewController {
             print("switchButton cell")
             
         case (.none, .backup):
-            
-            //  DataManager.fetchData(from: .database)?.backupToCloud(completeHandler: queryingBackupData)
-            
-            _ = dataSource?.batteryStationPointAnnotations
-                .flatMap { try? JSONEncoder().encode($0) }
-                .map { DataManager.shared.saveToCloud(data: $0) {
-                    print("save to cloud")
+
+            _ = dataSource
+                .flatMap { try? JSONEncoder().encode($0.batteryStationPointAnnotations) }
+                .map {
+                    CKContainer.default().save(data: $0) {
+                        if let date = $0?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
+                            self.backupfooterView.subtitleLabel.text = "最新備份時間: \(date)"
+                        }
+                            print("save to cloud")
                     }
             }
             
@@ -163,7 +166,7 @@ extension BackupViewController {
             
         }
         
-        tableView.deselectRow(at: indexPath, animated: true)
+    
 
     }
     
@@ -174,15 +177,15 @@ extension BackupViewController {
         return elements[section].titleView
     }
     
-   override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 100
     }
     
-   override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 100
     }
     
-   override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return elements[section].footView
     }
 }
@@ -196,7 +199,7 @@ extension BackupViewController {
     }
     
     @objc private func checkTheCloudAccountStatus() {
-//        backupElement.footView?.titleLabel.updateUserStatus { self.cloudAccountStatus = $0 }
+        CKContainer.default().accountStatus { (status, _) in self.cloudAccountStatus = status }
     }
     
     

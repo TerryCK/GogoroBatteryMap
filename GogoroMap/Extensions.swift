@@ -112,8 +112,11 @@ extension UIView {
 
 
 extension Date {
-    func string(dateformat: String) -> String {
-        return DateFormatter { $0.dateFormat = dateformat }.string(from: self)
+    func string(dateformat: String, timeZone: TimeZone = .autoupdatingCurrent) -> String {
+        return DateFormatter {
+            $0.dateFormat = dateformat
+            $0.timeZone = timeZone
+            }.string(from: self)
     }
 }
 
