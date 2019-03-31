@@ -18,24 +18,24 @@ import UIKit
 import CloudKit
 
 final class BackupViewController: UITableViewController {
-
-    weak var dataSource: StationDataSource?
     
-    let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
-    let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
-    let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")")
+    weak var stations: StationDataSource?
     
-    
-    let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
-    let deleteCell = BackupTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
+    private let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
+    private let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
+    private let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")")
     
     
-    lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, elementType: .backup)
+    private let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
+    private let deleteCell = BackupTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
     
-    lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: backupCells, footView: nil, elementType: .delete)
     
-    lazy var elements: [BackupElement] = [backupElement, restoreElement]
-
+    private lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, type: .backup)
+    
+    private lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: nil, footView: nil, type: .delete)
+    
+    private lazy var elements: [BackupElement] = [backupElement, restoreElement]
+    
     
     var cloudAccountStatus = CKAccountStatus.noAccount {
         didSet {
@@ -49,39 +49,46 @@ final class BackupViewController: UITableViewController {
         backupCell.titleLabel.textColor = cloudAccountStatus == .available ? .grassGreen : .gray
         deleteCell.titleLabel.textColor = cloudAccountStatus == .available ? .red        : .gray
         switch cloudAccountStatus {
-        case .available: break //queryingBackupData()
+        case .available:
+            CKContainer.default().fetchUserID { self.backupfooterView.titleLabel.text = $0 }
         default:
             backupfooterView.titleLabel.text = "目前沒有登入的iCloud帳號"
             backupfooterView.subtitleLabel.text = "無法取得最後更新日"
-            backupCells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
+            elements[1].cells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
         }
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
     }
-
     
-    var backupCells: [BackupTableViewCell] = [] {
+    var records: [CKRecord]? {
         didSet {
-            restoreElement.cells = backupCells
-            tableView.reloadData()
-        }
-    }
-    
-    var backupDatas: [BackupData] = [] {
-        didSet {
+            records?.sort { $0.creationDate > $1.creationDate }
+            let subtitleText: String?
+            
+            if let records = records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
+                elements[1].cells = records.enumerated().flatMap(BackupTableViewCell.init) + [deleteCell]
+                subtitleText = "最新備份時間：\(date)"
+            } else {
+                elements[1].cells = nil
+                subtitleText = nil
+            }
+            
             DispatchQueue.main.async {
-//                self.backupCells = self.backupDatas.toCustomTableViewCell + [self.deleteCell]
+                self.backupfooterView.subtitleLabel.text = subtitleText
+                if self.records?.isEmpty ?? true {
+                    self.tableView.reloadData()
+                } else {
+                    self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                }
+                
             }
         }
     }
     
-    
     override func loadView() {
         super.loadView()
         checkTheCloudAccountStatus()
-        CKContainer.default().fetchUserID {
-            self.backupfooterView.titleLabel.text = $0
-        }
+        
         navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "備份與還原"
     }
@@ -95,9 +102,9 @@ final class BackupViewController: UITableViewController {
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
-//        queryingBackupData()
+        
+        CKContainer.default().fetchData { self.records = $0  }
     }
-
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -109,8 +116,8 @@ final class BackupViewController: UITableViewController {
 //MARK: - UITableView
 extension BackupViewController {
     
-   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return elements[section].cells?.count ?? 1
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return elements[section].cells?.count ?? 0
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -125,49 +132,53 @@ extension BackupViewController {
         return elements[indexPath.section].cells?[indexPath.row] ?? BackupTableViewCell(type: .none)
     }
     
-   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    defer { tableView.deselectRow(at: indexPath, animated: true) }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        defer { tableView.deselectRow(at: indexPath, animated: true) }
         guard cloudAccountStatus == .available else { return }
-        let cell = elements[indexPath.section].cells?[indexPath.row] ?? BackupTableViewCell(type: .none)
-        let backupType = elements[indexPath.section].elementType
-        let cellType = cell.cellType
-        switch (cellType, backupType) {
-        case (.switchButton, _):
+        switch (elements[indexPath.section].cells?[indexPath.row].cellType, elements[indexPath.section].type) {
+            
+        case (.switchButton?, _):
             print("switchButton cell")
             
-        case (.none, .backup):
-
-            _ = dataSource
+        case (.none?, .backup):
+            _ = stations
                 .flatMap { try? JSONEncoder().encode($0.batteryStationPointAnnotations) }
-                .map {
-                    CKContainer.default().save(data: $0) {
-                        if let date = $0?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
-                            self.backupfooterView.subtitleLabel.text = "最新備份時間: \(date)"
-                        }
-                            print("save to cloud")
+                .map { CKContainer.default().save(data: $0) {
+                    guard let newRecord = $0 else { return }
+                    switch self.records {
+                    case .none: self.records = [newRecord]
+                    case let records?: self.records = records + [newRecord]
                     }
+                    }}
+            
+        case (.none?, .delete):
+            print("deleted all backup on cloud")
+            records?.forEach {
+                
+                CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
+                    guard error == nil,
+                        let recordID = recordID,
+                        let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
+                    
+                    
+                    self.records?.remove(at: index)
+                }
             }
             
-           
-//            backupfooterView.subtitleLabel.text = "最新備份時間: \(Date.now)"
-            
-            
-        case (.none, .delete):
-            print("deleted all backup on cloud")
             
             
             
             
-        case (.backupButton, _):
+        case (.backupButton?, _):
             print("doing recovery")
             
-//            backupDatas[indexPath.row].data?.updataNotifiy()
+            //            backupDatas[indexPath.row].data?.updataNotifiy()
             
-            
+        default: break
         }
         
-    
-
+        
+        
     }
     
     
@@ -192,6 +203,7 @@ extension BackupViewController {
 
 extension BackupViewController {
     private func setupObserve() {
+        NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(checkTheCloudAccountStatus),
                                                name: .CKAccountChanged,
@@ -206,14 +218,13 @@ extension BackupViewController {
 }
 
 struct BackupElement {
+    enum type { case backup, delete }
     let titleView: HeadCellView?
     var cells: [BackupTableViewCell]?
-    let footView: FooterView?, elementType: BackupStatus
+    let footView: FooterView?, type: type
 }
 
-enum BackupStatus {
-    case backup, delete
-}
+
 
 
 final class FooterView: HeadCellView {
@@ -256,18 +267,8 @@ class HeadCellView: UIView {
         [titleLabel, subtitleLabel].forEach(addSubview)
         
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
-
+        
         subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
 }
 
-
-struct BackupData {
-    let timeInterval: TimeInterval?, data: Data?
-    
-    var checkinCount: Int {
-        guard let data = data,
-        let stations = (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)) else { return 0 }
-        return stations.reduce(0) {  $0 + ($1.checkinCounter ?? 0)  }
-    }
-}

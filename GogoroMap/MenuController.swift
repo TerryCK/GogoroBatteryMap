@@ -97,7 +97,7 @@ extension MenuController {
     
     @objc func performGuidePage() {
         let backupVC = BackupViewController.init(style: .grouped)
-        backupVC.dataSource = dataSource
+        backupVC.stations = dataSource
         navigationController?.pushViewController(backupVC, animated: true)
         
         
