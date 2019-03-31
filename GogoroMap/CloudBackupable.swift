@@ -54,9 +54,50 @@ protocol CloudBackupable {
 
 
 
+extension Optional where Wrapped: Comparable {
+    static func >(lhs: Optional, rhs: Optional) -> Bool {
+        switch (lhs, rhs) {
+        case let (left?, right?): return left > right
+        default: return false
+        }
+    }
+}
+
 
 
 extension CKContainer {
+   
+    func deleteAllRecord() {
+        
+        let operation = CKQueryOperation(query: CKQuery(recordType: "BatteryStationPointAnnotation", predicate: NSPredicate(value: true)))
+        
+        
+        operation.recordFetchedBlock = { (record: CKRecord?) in
+            guard let record = record else { return }
+            self.privateCloudDatabase.delete(withRecordID: record.recordID,
+                                             completionHandler: { (recordID, error) in
+                                                print(error == nil ? "Deleted \(recordID)" : error!)
+            })
+        }
+        
+        operation.queryCompletionBlock = { (cursor, error) in
+            let _ = error.map { print($0.localizedDescription)  }
+            
+            
+            //TODO: - end todo
+        }
+        
+        
+        privateCloudDatabase.add(operation)
+    }
+    
+    func fetchData(completionHandler: @escaping ([CKRecord]?) -> Void) {
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        privateCloudDatabase.perform(CKQuery(recordType: "BatteryStationPointAnnotation", predicate: NSPredicate(value: true)), inZoneWith: nil) { (records, _) in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+            DispatchQueue.main.async { completionHandler(records) }
+        }
+    }
     
     func save(data: Data, completionHandler: @escaping (CKRecord?) -> Void) {
         let cloudRecord = CKRecord(recordType: "BatteryStationPointAnnotation")
@@ -78,36 +119,28 @@ extension CKContainer {
         }
     }
     
-    
     private func fetchUserID(completionHanlder: @escaping (Error?, String?) -> Void) {
-        accountStatus { (status, error) in
-            guard status == .available else {
+        self.requestApplicationPermission(.userDiscoverability) { status, error in
+            guard status == .granted, error == nil else {
                 completionHanlder(error, nil)
-                print("\(String(describing: error))")
+                print(error!)
                 return
             }
-            self.requestApplicationPermission(.userDiscoverability) { status, error in
-                guard status == .granted, error == nil else {
+            
+            self.fetchUserRecordID { (recordId, error) in
+                guard error == nil, let recordId = recordId else {
                     completionHanlder(error, nil)
-                    print(error!)
+                    print("無法取得使用者ID: \(error!)")
                     return
                 }
                 
-                self.fetchUserRecordID { (recordId, error) in
-                    guard error == nil, let recordId = recordId else {
+                self.discoverUserIdentity(withUserRecordID: recordId) { identity, error in
+                    guard let components = identity?.nameComponents, error == nil else {
                         completionHanlder(error, nil)
-                        print("cloud user ID fetch error: \(error!)")
+                        print(error!)
                         return
                     }
-                    
-                    self.discoverUserIdentity(withUserRecordID: recordId) { identity, error in
-                        guard let components = identity?.nameComponents, error == nil else {
-                            completionHanlder(error, nil)
-                            print(error!)
-                            return
-                        }
-                        completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
-                    }
+                    completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
                 }
             }
         }

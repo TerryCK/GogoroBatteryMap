@@ -7,8 +7,14 @@
 //
 
 import UIKit
+import CloudKit
 
 final class BackupTableViewCell: UITableViewCell {
+    
+    static let byteCountFormatter = ByteCountFormatter {
+        $0.allowedUnits = [.useAll]
+        $0.countStyle = .file
+    }
     
     enum CellType {
         case switchButton , none, backupButton
@@ -42,6 +48,7 @@ final class BackupTableViewCell: UITableViewCell {
             addSubview(subtitleLabel)
             titletopAnchor = topAnchor
             titleLabel.font = .boldSystemFont(ofSize: 16)
+            subtitleLabel.textColor = .lightGray
             subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 5, rightPadding: 0, width: 0, height: 0)
         }
         
@@ -51,8 +58,8 @@ final class BackupTableViewCell: UITableViewCell {
     
     private func setupRightView(with myView: UIView) {
         addSubview(myView)
-        myView.anchor(top: nil, left: nil, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 72, height: 44)
-        myView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 4).isActive = true
+        myView.anchor(top: nil, left: nil, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 20, width: 44, height: 0)
+        myView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
     }
     
@@ -69,7 +76,11 @@ final class BackupTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let switchButton = UISwitch { $0.isOn = false }
+    lazy var  switchButton : UISwitch = {
+        let myswitch = UISwitch()
+        myswitch.isOn = false
+        return myswitch
+    }()
     
     let titleLabel = UILabel {
         $0.font = .systemFont(ofSize: 18)
@@ -81,8 +92,28 @@ final class BackupTableViewCell: UITableViewCell {
         $0.textAlignment = .left
     }
     
-    let cloudImageView = UIImageView {
+    lazy var cloudImageView = UIImageView {
         $0.image = #imageLiteral(resourceName: "downloadFromCloud")
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
+    }
+}
+
+
+extension BackupTableViewCell {
+    convenience init?(index: Int, record: CKRecord) {
+        guard let data = record.value(forKey: "batteryStationPointAnnotation") as? Data,
+            let stations = try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data) else {
+                return nil
+        }
+        
+        let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
+        
+        self.init(type: .backupButton,
+                  title: "\(index + 1). 上傳時間: \(record.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss") ?? "" )",
+            subtitle: "檔案大小: \(size), 打卡次數：\(stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) })"
+        )
+        titleLabel.font = .systemFont(ofSize: 14)
+        titleLabel.textColor = .black
+        subtitleLabel.textAlignment = .center
     }
 }
