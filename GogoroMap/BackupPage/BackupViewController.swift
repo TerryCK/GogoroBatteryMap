@@ -26,13 +26,13 @@ final class BackupViewController: UITableViewController {
     private let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")")
     
     
-    private let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .grassGreen)
-    private let deleteCell = BackupTableViewCell(type: .none, title: "刪除備份", titleColor: .red)
+    private let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .gray)
+    private let deleteCell = BackupTableViewCell(type: .none, title: "刪除全部的備份資料", titleColor: .red)
     
     
     private lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, type: .backup)
     
-    private lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: nil, footView: nil, type: .delete)
+    private lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)], footView: nil, type: .delete)
     
     private lazy var elements: [BackupElement] = [backupElement, restoreElement]
     
@@ -63,24 +63,26 @@ final class BackupViewController: UITableViewController {
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
-            let subtitleText: String?
-            
-            if let records = records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
-                elements[1].cells = records.enumerated().flatMap(BackupTableViewCell.init) + [deleteCell]
-                subtitleText = "最新備份時間：\(date)"
-            } else {
-                elements[1].cells = nil
-                subtitleText = nil
-            }
-            
             DispatchQueue.main.async {
+                let subtitleText: String?
+                if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
+                    self.elements[1].cells = records.enumerated().flatMap(BackupTableViewCell.init) + [self.deleteCell]
+                    
+                    subtitleText = "最新備份時間：\(date)"
+                } else {
+                    
+                    self.elements[1].cells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
+                    subtitleText = nil
+                }
+                
+                
                 self.backupfooterView.subtitleLabel.text = subtitleText
+                
                 if self.records?.isEmpty ?? true {
                     self.tableView.reloadData()
                 } else {
                     self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
                 }
-                
             }
         }
     }
@@ -135,15 +137,20 @@ extension BackupViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         defer { tableView.deselectRow(at: indexPath, animated: true) }
         guard cloudAccountStatus == .available else { return }
-        switch (elements[indexPath.section].cells?[indexPath.row].cellType, elements[indexPath.section].type) {
+        let cell = elements[indexPath.section].cells?[indexPath.row]
+        switch (cell?.cellType, elements[indexPath.section].type) {
             
         case (.switchButton?, _):
             print("switchButton cell")
             
         case (.none?, .backup):
+            cell?.isUserInteractionEnabled = false
+            cell?.titleLabel.text = "資料備份中..."
             _ = stations
                 .flatMap { try? JSONEncoder().encode($0.batteryStationPointAnnotations) }
                 .map { CKContainer.default().save(data: $0) {
+                    cell?.isUserInteractionEnabled = true
+                    cell?.titleLabel.text = "立即備份"
                     guard let newRecord = $0 else { return }
                     switch self.records {
                     case .none: self.records = [newRecord]
@@ -152,37 +159,63 @@ extension BackupViewController {
                     }}
             
         case (.none?, .delete):
-            print("deleted all backup on cloud")
             records?.forEach {
-                
                 CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
                     guard error == nil,
                         let recordID = recordID,
                         let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
-                    
-                    
                     self.records?.remove(at: index)
                 }
             }
             
-            
-            
-            
-            
         case (.backupButton?, _):
-            print("doing recovery")
             
-            //            backupDatas[indexPath.row].data?.updataNotifiy()
+           let alertController =  UIAlertController(title: "要採用此資料？", message: "如按確認地圖站點資訊將會被覆蓋", preferredStyle: .actionSheet)
+            [
+                UIAlertAction(title: "覆蓋", style: .destructive, handler : { _ in
+                    self.stations?.batteryStationPointAnnotations = self.elements[1].cells?[indexPath.row].stations ?? []
+                }),
+                UIAlertAction(title: "取消", style: .cancel, handler: nil),
+            ].forEach(alertController.addAction)
             
+            present(alertController, animated: true)
         default: break
         }
-        
-        
-        
+    }
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return elements[indexPath.section].cells?[indexPath.row].cellType == .some(.backupButton)
     }
     
     
     
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let delete = UITableViewRowAction(style: .destructive, title: "刪除") { (action, indexPath) in
+            let alertController = UIAlertController(title: "要刪除資料？", message: "此筆資料將從iPhone及iCloud刪除, 不可回覆", preferredStyle: .actionSheet)
+            [
+                UIAlertAction(title: "刪除", style: .destructive, handler : { _ in
+                    guard let record = self.records?[indexPath.row] else { return }
+                    self.elements[indexPath.section].cells?[indexPath.row].titleLabel.text = "資料刪除中..."
+                    CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { (recordID, error) in
+                        guard error == nil,
+                            let recordID = recordID,
+                            let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
+                        self.records?.remove(at: index)
+                    }
+                }),
+                UIAlertAction(title: "取消", style: .cancel, handler: nil),
+                ].forEach(alertController.addAction)
+            
+            
+            self.present(alertController, animated: true)
+            
+            
+           
+        }
+        
+        return [delete]
+        
+    }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return elements[section].titleView
