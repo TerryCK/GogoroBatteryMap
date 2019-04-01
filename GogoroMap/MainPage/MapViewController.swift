@@ -413,7 +413,7 @@ extension MapViewController {
             return originalMKAnnotationView(mapView, viewFor: annotation)
         }
         
-        let style = ClusterAnnotationStyle.color(.grassGreen, radius: 42)
+        let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
         let identifier = "Cluster"
         var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
         if let view = view as? ClusterAnnotationView {
@@ -466,11 +466,10 @@ extension MapViewController {
             let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
                 return
         }
-        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+        
         detailCalloutView.distanceLabel.text = "距離計算中..."
         detailCalloutView.etaLabel.text = "時間計算中..."
         Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
-            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
                 if case .success(let response) = result, let route = response.routes.first {
