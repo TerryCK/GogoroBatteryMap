@@ -164,7 +164,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
-        
+        reloadMapView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
