@@ -21,7 +21,7 @@ final class BackupTableViewCell: UITableViewCell {
     }
     
     let cellType: CellType
-    
+    var stations: [BatteryStationPointAnnotation]?
     private func setupView() {
         addSubview(titleLabel)
         
@@ -112,6 +112,7 @@ extension BackupTableViewCell {
                   title: "\(index + 1). 上傳時間: \(record.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss") ?? "" )",
             subtitle: "檔案大小: \(size), 打卡次數：\(stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) })"
         )
+        self.stations = stations
         titleLabel.font = .systemFont(ofSize: 14)
         titleLabel.textColor = .black
         subtitleLabel.textAlignment = .center
