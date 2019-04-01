@@ -125,7 +125,6 @@
 		A8D3689A1F3B44D70015F5F9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A8D3689E1F3B54C80015F5F9 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		A8DB8CE71F4153F40062FA7A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
@@ -258,7 +257,6 @@
 				A869AA181F4414B20085133C /* IAPs */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
-				A8E0A7A51F70B90E0013C4C9 /* CollectionExtensions.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
 				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,

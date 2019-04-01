@@ -139,10 +139,6 @@ extension BackupViewController {
         guard cloudAccountStatus == .available else { return }
         let cell = elements[indexPath.section].cells?[indexPath.row]
         switch (cell?.cellType, elements[indexPath.section].type) {
-            
-        case (.switchButton?, _):
-            print("switchButton cell")
-            
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
@@ -159,20 +155,31 @@ extension BackupViewController {
                     }}
             
         case (.none?, .delete):
-            records?.forEach {
-                CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
-                    guard error == nil,
-                        let recordID = recordID,
-                        let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
-                    self.records?.remove(at: index)
-                }
-            }
             
-        case (.backupButton?, _):
-            
-           let alertController =  UIAlertController(title: "要採用此資料？", message: "如按確認地圖站點資訊將會被覆蓋", preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: "要刪除所有備份資料？", message: "所有備份資料將從iPhone及iCloud刪除，無法復原。", preferredStyle: .actionSheet)
             [
-                UIAlertAction(title: "覆蓋", style: .destructive, handler : { _ in
+                UIAlertAction(title: "刪除", style: .destructive, handler : { _ in
+                    self.elements[indexPath.section].cells?.forEach {
+                        guard $0.cellType == .backupButton else { return }
+                        $0.titleLabel.text = "備份資料刪除中..."
+                        $0.subtitleLabel.text = nil
+                    }
+                    self.records?.forEach {
+                        CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
+                            guard error == nil,
+                                let recordID = recordID,
+                                let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
+                            self.records?.remove(at: index)
+                        }
+                    }}),
+                UIAlertAction(title: "取消", style: .cancel, handler: nil),
+                ].forEach(alertController.addAction)
+            self.present(alertController, animated: true)
+
+        case (.backupButton?, _):
+           let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
+            [
+                UIAlertAction(title: "使用並覆蓋現有資料", style: .destructive, handler : { _ in
                     self.stations?.batteryStationPointAnnotations = self.elements[1].cells?[indexPath.row].stations ?? []
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
@@ -182,6 +189,8 @@ extension BackupViewController {
         default: break
         }
     }
+    
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return elements[indexPath.section].cells?[indexPath.row].cellType == .some(.backupButton)
     }
@@ -191,11 +200,12 @@ extension BackupViewController {
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         let delete = UITableViewRowAction(style: .destructive, title: "刪除") { (action, indexPath) in
-            let alertController = UIAlertController(title: "要刪除資料？", message: "此筆資料將從iPhone及iCloud刪除, 不可回覆", preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: "要刪除資料？", message: "此筆資料將從iPhone及iCloud刪除，無法復原。", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "刪除", style: .destructive, handler : { _ in
                     guard let record = self.records?[indexPath.row] else { return }
                     self.elements[indexPath.section].cells?[indexPath.row].titleLabel.text = "資料刪除中..."
+                    self.elements[indexPath.section].cells?[indexPath.row].subtitleLabel.text = nil
                     CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { (recordID, error) in
                         guard error == nil,
                             let recordID = recordID,
@@ -205,12 +215,7 @@ extension BackupViewController {
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
-            
-            
             self.present(alertController, animated: true)
-            
-            
-           
         }
         
         return [delete]

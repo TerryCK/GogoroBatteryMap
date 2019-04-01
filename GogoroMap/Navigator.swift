@@ -23,6 +23,7 @@ struct Navigator: Navigable {
     }
     
     static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirectionsResponse>)-> Void) {
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
         let request = MKDirectionsRequest {
             $0.source = MKMapItem(placemark: MKPlacemark(coordinate: source, addressDictionary: nil))
             $0.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination, addressDictionary: nil))
@@ -31,6 +32,7 @@ struct Navigator: Navigable {
         }
 
         MKDirections(request: request).calculate { response, error in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             if let response = response {
                 completionHandler(.success(response))
             } else {
