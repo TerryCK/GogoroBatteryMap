@@ -120,7 +120,7 @@ extension CKContainer {
     }
     
     private func fetchUserID(completionHanlder: @escaping (Error?, String?) -> Void) {
-        self.requestApplicationPermission(.userDiscoverability) { status, error in
+        requestApplicationPermission(.userDiscoverability) { status, error in
             guard status == .granted, error == nil else {
                 completionHanlder(error, nil)
                 print(error!)
