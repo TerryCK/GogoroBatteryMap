@@ -137,18 +137,16 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            _ = stations
-                .flatMap { try? JSONEncoder().encode($0.batteryStationPointAnnotations) }
-                .map {
-                    CKContainer.default().save(data: $0) { (newRecord, error) in
-                        cell?.isUserInteractionEnabled = true
-                        cell?.titleLabel.text = "立即備份"
-                        guard let newRecord = newRecord else { return }
-                        switch self.records {
-                        case .none: self.records = [newRecord]
-                        case let records?: self.records = records + [newRecord]
-                        }
-                    }
+            guard let cloudRecords = stations?.batteryStationPointAnnotations.flatMap(BatteryStationRecord.init),
+                let data = try? JSONEncoder().encode(cloudRecords) else { return }
+            CKContainer.default().save(data: data) { (newRecord, error) in
+                cell?.isUserInteractionEnabled = true
+                cell?.titleLabel.text = "立即備份"
+                guard let newRecord = newRecord else { return }
+                switch self.records {
+                case .none: self.records = [newRecord]
+                case let records?: self.records = records + [newRecord]
+                }
             }
             
             

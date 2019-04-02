@@ -15,7 +15,7 @@ public protocol ResponseStationProtocol {
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-    var checkinDay: String?  { get }
+    var checkinDay: Date?  { get }
     var checkinCounter: Int? { get }
     var isOpening: Bool     { get }
 }
@@ -54,7 +54,7 @@ public struct Response: Decodable {
             return lhs.hashValue == rhs.hashValue
         }
         
-        public var checkinDay: String?
+        public var checkinDay: Date?
         public var checkinCounter: Int?
         public let state: Int
         public let name, address : Detail
