@@ -151,3 +151,13 @@ extension Array where Element: BatteryStationPointAnnotation {
         }
     }
 }
+extension Array where Element == BatteryStationRecord {
+    func recovery(from array: [BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation] {
+        return array.flatMap { newElement in
+            for recoveryElement in self where recoveryElement.id == newElement.hashValue {
+                (newElement.checkinDay, newElement.checkinCounter) = (recoveryElement.checkinDay, recoveryElement.checkinCount)
+            }
+            return newElement
+        }
+    }
+}
