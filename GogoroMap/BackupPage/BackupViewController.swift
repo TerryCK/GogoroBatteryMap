@@ -21,18 +21,18 @@ final class BackupViewController: UITableViewController {
     
     weak var stations: StationDataSource?
     
-    private let backupHeadView = HeadCellView(title: "資料備份", subltitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
-    private let restoreHeadView = HeadCellView(title: "資料還原", subltitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
-    private let backupfooterView = FooterView(title: "目前沒有登入的iCloud帳號", subltitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")")
+    private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
+    private let restoreHeadView = SupplementaryCell(title: "資料還原", subtitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
+    private let backupfooterView = SupplementaryCell(title: "目前沒有登入的iCloud帳號", subtitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")", titleTextAlignment: .center)
     
     
     private let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .gray)
     private let deleteCell = BackupTableViewCell(type: .none, title: "刪除全部的備份資料", titleColor: .red)
     
-    
+    private let noDataCell = BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .lightGray)
     private lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, type: .backup)
     
-    private lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)], footView: nil, type: .delete)
+    private lazy var restoreElement = BackupElement(titleView: restoreHeadView, cells: [noDataCell], footView: SupplementaryCell(), type: .delete)
     
     private lazy var elements: [BackupElement] = [backupElement, restoreElement]
     
@@ -54,7 +54,7 @@ final class BackupViewController: UITableViewController {
         default:
             backupfooterView.titleLabel.text = "目前沒有登入的iCloud帳號"
             backupfooterView.subtitleLabel.text = "無法取得最後更新日"
-            elements[1].cells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
+            elements[1].cells = [noDataCell]
         }
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
@@ -63,26 +63,21 @@ final class BackupViewController: UITableViewController {
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
+            let dataSize = records?.reduce(0) { $0 + (($1.value(forKey: "batteryStationPointAnnotation") as? Data)?.count ?? 0) }
             DispatchQueue.main.async {
                 let subtitleText: String?
                 if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
                     self.elements[1].cells = records.enumerated().flatMap(BackupTableViewCell.init) + [self.deleteCell]
-                    
                     subtitleText = "最新備份時間：\(date)"
                 } else {
-                    
-                    self.elements[1].cells = [BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .black)]
+                    self.elements[1].cells = [self.noDataCell]
                     subtitleText = nil
                 }
-                
-                
-                self.backupfooterView.subtitleLabel.text = subtitleText
-                
-                if self.records?.isEmpty ?? true {
-                    self.tableView.reloadData()
-                } else {
-                    self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                if let dataSize = dataSize {
+                self.elements[1].footView?.titleLabel.text = "總檔案尺寸：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
                 }
+                self.backupfooterView.subtitleLabel.text = subtitleText
+                self.tableView.reloadData()
             }
         }
     }
@@ -90,7 +85,6 @@ final class BackupViewController: UITableViewController {
     override func loadView() {
         super.loadView()
         checkTheCloudAccountStatus()
-        
         navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "備份與還原"
     }
@@ -98,14 +92,15 @@ final class BackupViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
-        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
-        
-        CKContainer.default().fetchData { self.records = $0  }
+        CKContainer.default().fetchData { (records, error) in
+            self.records = records
+            DispatchQueue.main.async(execute: self.tableView.reloadData)
+        }
     }
     
     deinit {
@@ -144,15 +139,18 @@ extension BackupViewController {
             cell?.titleLabel.text = "資料備份中..."
             _ = stations
                 .flatMap { try? JSONEncoder().encode($0.batteryStationPointAnnotations) }
-                .map { CKContainer.default().save(data: $0) {
-                    cell?.isUserInteractionEnabled = true
-                    cell?.titleLabel.text = "立即備份"
-                    guard let newRecord = $0 else { return }
-                    switch self.records {
-                    case .none: self.records = [newRecord]
-                    case let records?: self.records = records + [newRecord]
+                .map {
+                    CKContainer.default().save(data: $0) { (newRecord, error) in
+                        cell?.isUserInteractionEnabled = true
+                        cell?.titleLabel.text = "立即備份"
+                        guard let newRecord = newRecord else { return }
+                        switch self.records {
+                        case .none: self.records = [newRecord]
+                        case let records?: self.records = records + [newRecord]
+                        }
                     }
-                    }}
+            }
+            
             
         case (.none?, .delete):
             
@@ -175,15 +173,15 @@ extension BackupViewController {
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
             self.present(alertController, animated: true)
-
+            
         case (.backupButton?, _):
-           let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
+            let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "使用並覆蓋現有資料", style: .destructive, handler : { _ in
                     self.stations?.batteryStationPointAnnotations = self.elements[1].cells?[indexPath.row].stations ?? []
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
-            ].forEach(alertController.addAction)
+                ].forEach(alertController.addAction)
             
             present(alertController, animated: true)
         default: break
@@ -194,8 +192,6 @@ extension BackupViewController {
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return elements[indexPath.section].cells?[indexPath.row].cellType == .some(.backupButton)
     }
-    
-    
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
@@ -257,32 +253,27 @@ extension BackupViewController {
 
 struct BackupElement {
     enum type { case backup, delete }
-    let titleView: HeadCellView?
+    let titleView: SupplementaryCell?
     var cells: [BackupTableViewCell]?
-    let footView: FooterView?, type: type
+    let footView: SupplementaryCell?, type: type
 }
 
 
 
 
-final class FooterView: HeadCellView {
-    override func setupView() {
-        super.setupView()
-        titleLabel.textAlignment = .center
-    }
-}
 
-class HeadCellView: UIView {
+class SupplementaryCell: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }
     
-    init(title: String?, subltitle: String?) {
+    init(title: String? = nil, subtitle: String? = nil, titleTextAlignment: NSTextAlignment = .natural) {
         self.init()
         titleLabel.text = title
-        subtitleLabel.text = subltitle
+        subtitleLabel.text = subtitle
+        titleLabel.textAlignment = titleTextAlignment
     }
     
     required init?(coder aDecoder: NSCoder) {
