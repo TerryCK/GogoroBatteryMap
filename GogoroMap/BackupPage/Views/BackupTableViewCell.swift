@@ -100,21 +100,14 @@ final class BackupTableViewCell: UITableViewCell {
 
 
 extension BackupTableViewCell {
-    convenience init?(index: Int, record: CKRecord) {
-        guard let data = record.value(forKey: "batteryStationPointAnnotation") as? Data,
-            let stations = try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data) else {
-                return nil
-        }
-        
-        let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
-        
-        self.init(type: .backupButton,
-                  title: "\(index + 1). 上傳時間: \(record.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss") ?? "" )",
-            subtitle: "檔案尺寸: \(size), 打卡次數：\(stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) })"
-        )
-        self.stations = stations
-        titleLabel.font = .systemFont(ofSize: 14)
-        titleLabel.textColor = .black
-        subtitleLabel.textAlignment = .center
+    convenience init(title: String, subtitle: String, stations: [BatteryStationPointAnnotation]) {
+                self.init(type: .backupButton, title: title, subtitle: subtitle)
+                self.stations = stations
+                titleLabel.font = .systemFont(ofSize: 14)
+                titleLabel.textColor = .black
+                subtitleLabel.textAlignment = .center
     }
 }
+
+
+

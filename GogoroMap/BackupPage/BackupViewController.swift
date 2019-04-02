@@ -59,7 +59,24 @@ final class BackupViewController: UITableViewController {
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
     }
-    
+    /*
+     
+     guard let stations = try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data) else {
+     return nil
+     }
+     
+     let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
+     
+     self.init(type: .backupButton,
+     title: "\(index + 1). 上傳時間: \(record.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss") ?? "" )",
+     subtitle: "檔案尺寸: \(size), 打卡次數：\(stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) })"
+     )
+     self.stations = stations
+     titleLabel.font = .systemFont(ofSize: 14)
+     titleLabel.textColor = .black
+     subtitleLabel.textAlignment = .center
+     }
+ */
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
@@ -68,11 +85,17 @@ final class BackupViewController: UITableViewController {
                 let subtitleText: String?
                 if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
                     self.elements[1].cells = records
-                        .compactMap { ($0.value(forKey: "batteryStationPointAnnotation") as! Data) }
-                        .flatMap { try? JSONDecoder().decode([BatteryStationRecord].self, from: $0) }
-                        .flatMap { $0.recovery(from: self.stations?.batteryStationPointAnnotations ?? [])}
+                        .flatMap { (($0.value(forKey: "batteryStationPointAnnotation") as? Data), $0.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss")) }
                         .enumerated()
-                        .flatMap(BackupTableViewCell.init) + [self.deleteCell]
+                        .flatMap { (index, element) in
+                            guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
+                            let recovery = batteryRecords.recovery(from: self.stations?.batteryStationPointAnnotations ?? [])
+                            let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
+                            return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
+                                                       subtitle: "檔案尺寸: \(size), 打卡次數：\(recovery.reduce(0) { $0 + ($1.checkinCounter ?? 0) })",
+                                                       stations: recovery)
+                             } + [self.deleteCell]
+                    
 
                     subtitleText = "最新備份時間：\(date)"
                 } else {
