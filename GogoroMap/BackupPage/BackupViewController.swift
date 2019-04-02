@@ -67,7 +67,12 @@ final class BackupViewController: UITableViewController {
             DispatchQueue.main.async {
                 let subtitleText: String?
                 if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
-                    self.elements[1].cells = records.enumerated().flatMap(BackupTableViewCell.init) + [self.deleteCell]
+                    self.elements[1].cells = records.flatMap { $0.value(forKey: "batteryStationPointAnnotation") as? Data}
+                        .flatMap { try? JSONDecoder().decode([BatteryStationRecord].self, from: $0) }
+                        .flatMap { $0.recovery(from: self.stations?.batteryStationPointAnnotations ?? []) }
+                        .enumerated()
+                        .flatMap(BackupTableViewCell.init) + [self.deleteCell]
+                    
                     subtitleText = "最新備份時間：\(date)"
                 } else {
                     self.elements[1].cells = [self.noDataCell]
