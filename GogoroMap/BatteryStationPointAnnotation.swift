@@ -11,13 +11,15 @@ import MapKit
 
 extension BatteryStationPointAnnotation {
     convenience init(_ customPointAnnotation: CustomPointAnnotation) {
+        
+        
         self.init(title         : customPointAnnotation.title,
                   subtitle      : customPointAnnotation.subtitle,
                   coordinate    : customPointAnnotation.coordinate,
                   address       : customPointAnnotation.address,
                   state         : customPointAnnotation.isOpening ? 1 : 0,
                   checkinCounter: customPointAnnotation.checkinCounter,
-                  checkinDay    : customPointAnnotation.checkinDay)
+                  checkinDay    : customPointAnnotation.dateBrige)
     } 
 }
 
@@ -41,7 +43,7 @@ protocol BatteryDataModal {
     var address: String { get }
     var state: Int { get }
     var checkinCounter: Int? { set get }
-    var checkinDay: String? { set get }
+    var checkinDay: Date? { set get }
     var iconImage: UIImage { get }
     var isOperating: Bool { get }
     func distance(from userPosition: CLLocation) -> Double
@@ -94,14 +96,23 @@ extension BatteryStationPointAnnotation : Codable {
                   address: try container.decode(String.self, forKey: .address),
                   state:  try container.decode(Int.self, forKey: .state),
                   checkinCounter: try container.decode(Int?.self, forKey: .checkinCounter),
-                  checkinDay: try container.decode(String?.self, forKey: .checkinDay))
+                  checkinDay: try container.decode(Date?.self, forKey: .checkinDay))
     }
-    
+}
+
+struct BatteryStationRecord: Codable {
+    let id: Int, checkinCount: Int, checkinDay: Date?
+}
+
+extension BatteryStationRecord {
+    init(_ batteryModel: BatteryStationPointAnnotation) {
+        self.init(id: batteryModel.hashValue, checkinCount: batteryModel.checkinCounter ?? 0, checkinDay: batteryModel.checkinDay)
+    }
 }
 
 public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModal {
     public let address: String, state: Int
-    public var checkinCounter: Int? = nil, checkinDay: String? = nil
+    public var checkinCounter: Int? = nil, checkinDay: Date? = nil
     
     public override func isEqual(_ object: Any?) -> Bool {
         return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
@@ -118,7 +129,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
             state: station.state)
     }
     
-    init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: String? = nil) {
+    init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: Date? = nil) {
         self.address      = address
         self.state    = state
         self.checkinCounter = checkinCounter
@@ -127,7 +138,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         self.title      = title
         self.subtitle   = subtitle
         self.coordinate = coordinate
-    }    
+    }
 }
 
 extension Array where Element: BatteryStationPointAnnotation {

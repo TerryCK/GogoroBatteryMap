@@ -373,12 +373,12 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 
 //MARK: - Checkin functions
 extension MapViewController {
-
+// Date().string(dateformat: "yyyy.MM.dd") : ""
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
         Answers.log(event: .MapButtons, customAttributes: log)
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
-        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date().string(dateformat: "yyyy.MM.dd") : ""
+        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date() : nil
         batteryAnnotation.checkinCounter = counterOfcheckin
         selectedAnnotationView?.image = batteryAnnotation.iconImage
         _ = (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation)

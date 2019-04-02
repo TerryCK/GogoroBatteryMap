@@ -16,7 +16,12 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
     var address: String = ""
     var isOpening: Bool = false
     var checkinDay: String = ""
+    var dateBrige: Date? { return CustomPointAnnotation.dateFormat.date(from: checkinDay) }
     
+    static let dateFormat = DateFormatter {
+        $0.dateFormat = "yyyy.MM.dd"
+        $0.timeZone = .autoupdatingCurrent
+    }
     
     init(title: String,
          subtitle: String,
