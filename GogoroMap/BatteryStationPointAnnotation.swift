@@ -127,23 +127,16 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         self.title      = title
         self.subtitle   = subtitle
         self.coordinate = coordinate
+    }    
+}
+
+extension Array where Element: BatteryStationPointAnnotation {
+    mutating func keepOldUpdate(with newArray: Array) {
+        self = newArray.flatMap { (newElement) -> Element in
+            for oldElement in self where oldElement.isEqual(newElement) {
+                (newElement.checkinDay, newElement.checkinCounter) = (oldElement.checkinDay, oldElement.checkinCounter)
+            }
+            return newElement
+        }
     }
-    
-    
-}
-
-extension Array where Element: Hashable {    
-    mutating func keepOldUpdate(with new: Array) {
-        self = Array(Set<Element>(self).intersection(new).union(new))
-    }
-}
-
-
-protocol Serializable: Encodable {
-    func serialize() -> Data?
-}
-
-extension Serializable {
-    func serialize() -> Data? {
-        return try? JSONEncoder().encode(self)    }
 }
