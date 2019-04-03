@@ -91,7 +91,7 @@ final class BackupViewController: UITableViewController {
                             guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
                             let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
-                                                       subtitle: "檔案尺寸: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
+                                                       subtitle: "檔案容量: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
                                                        stationRecords: batteryRecords)
                              } + [self.deleteCell]
                     
@@ -102,7 +102,7 @@ final class BackupViewController: UITableViewController {
                     subtitleText = nil
                 }
                 if let dataSize = dataSize {
-                self.elements[1].footView?.titleLabel.text = "總檔案尺寸：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
+                self.elements[1].footView?.titleLabel.text = "iCloud 已使用儲存容量：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
                 }
                 self.backupfooterView.subtitleLabel.text = subtitleText
                 self.tableView.reloadData()
@@ -165,7 +165,6 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            print(stations?.batteryStationPointAnnotations.filter {$0.checkinCounter != 0}.count )
             guard let stations = stations?.batteryStationPointAnnotations,
                 let data = try? JSONEncoder().encode(stations.flatMap(BatteryStationRecord.init)) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
@@ -207,14 +206,13 @@ extension BackupViewController {
                 UIAlertAction(title: "使用並覆蓋現有資料", style: .destructive, handler : { _ in
                     DataManager.shared.fetchStations{ (result) in
                         guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
-                            self.stations?.batteryStationPointAnnotations =
-                            stations.flatMap { newElement in
-                                for recoveryElement in stationRecords where recoveryElement.id == newElement.hashValue && recoveryElement.checkinCount != 0 {
-                                    (newElement.checkinDay, newElement.checkinCounter) = (recoveryElement.checkinDay, recoveryElement.checkinCount)
-                                    return newElement
-                                }
-                                return newElement
-                        } ?? []
+                        stationRecords.forEach {
+                            for station in stations where $0.id == station.hashValue {
+                                (station.checkinDay, station.checkinCounter) = ($0.checkinDay, $0.checkinCount)
+                                return
+                            }
+                        }
+                            self.stations?.batteryStationPointAnnotations = stations
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),

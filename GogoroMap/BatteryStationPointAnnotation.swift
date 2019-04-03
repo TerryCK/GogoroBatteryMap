@@ -105,8 +105,9 @@ struct BatteryStationRecord: Codable {
 }
 
 extension BatteryStationRecord {
-    init(_ batteryModel: BatteryStationPointAnnotation) {
-        self.init(id: batteryModel.hashValue, checkinCount: batteryModel.checkinCounter ?? 0, checkinDay: batteryModel.checkinDay)
+    init?(_ batteryModel: BatteryStationPointAnnotation) {
+        guard let count = batteryModel.checkinCounter else { return nil }
+        self.init(id: batteryModel.hashValue, checkinCount: count, checkinDay: batteryModel.checkinDay)
     }
 }
 
@@ -146,6 +147,7 @@ extension Array where Element: BatteryStationPointAnnotation {
         self = newArray.flatMap { (newElement) -> Element in
             for oldElement in self where oldElement.isEqual(newElement) {
                 (newElement.checkinDay, newElement.checkinCounter) = (oldElement.checkinDay, oldElement.checkinCounter)
+                return newElement
             }
             return newElement
         }
