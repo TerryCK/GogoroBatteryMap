@@ -132,34 +132,34 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
-/*
-    private lazy var testButton1 : UIButton = {
-        let myButton = UIButton(type: .system)
-        myButton.setTitle("save", for: .normal)
-        myButton.backgroundColor = .lightBlue
-        myButton.titleLabel?.textColor = .white
-        myButton.addTarget(self, action: #selector(saveTest), for: .touchUpInside)
-        return myButton
-    }()
-    
-    private lazy var testButton2 : UIButton = {
-        let myButton = UIButton(type: .system)
-        myButton.setTitle("query", for: .normal)
-        myButton.backgroundColor = .lightBlue
-        myButton.titleLabel?.textColor = .white
-        myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
-        return myButton
-    }()
-    
-    private lazy var testStack: UIStackView = {
-        let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
-        myStack.axis = .horizontal
-        myStack.distribution = .fillEqually
-        myStack.alignment = .center
-        myStack.spacing = 10
-        return myStack
-    }()
-    */
+    /*
+     private lazy var testButton1 : UIButton = {
+     let myButton = UIButton(type: .system)
+     myButton.setTitle("save", for: .normal)
+     myButton.backgroundColor = .lightBlue
+     myButton.titleLabel?.textColor = .white
+     myButton.addTarget(self, action: #selector(saveTest), for: .touchUpInside)
+     return myButton
+     }()
+     
+     private lazy var testButton2 : UIButton = {
+     let myButton = UIButton(type: .system)
+     myButton.setTitle("query", for: .normal)
+     myButton.backgroundColor = .lightBlue
+     myButton.titleLabel?.textColor = .white
+     myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
+     return myButton
+     }()
+     
+     private lazy var testStack: UIStackView = {
+     let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
+     myStack.axis = .horizontal
+     myStack.distribution = .fillEqually
+     myStack.alignment = .center
+     myStack.spacing = 10
+     return myStack
+     }()
+     */
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -180,7 +180,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupMainViews()
         setupSideMenu()
     }
-
+    
     
     func dataUpdate(onCompletion: (() -> Void)? = nil) {
         DataManager.shared.fetchStations { [weak self] (result) in
@@ -191,7 +191,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
- 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -199,29 +199,18 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         authrizationStatus()
         setupPurchase()
         dataUpdate()
-
-//        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-//
-//            self.batteryStationPointAnnotations = DataManager.shared.initialStations ?? []
-//            self.reloadMapView()
-//        })
         
-//
-        
-//
-        
-       
         Answers.log(view: "Map Page")
-//        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
+        //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
         
         #if REALEASE
-            setupAdContainerView()
-            setupRating()
+        setupAdContainerView()
+        setupRating()
         #endif
         //        testFunction()
     }
     
-   
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -235,6 +224,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     var batteryStationPointAnnotations = DataManager.shared.initialStations {
         willSet {
             clusterManager.removeAll()
+            reloadMapView()
             clusterManager.add(newValue)
             reloadMapView()
         }
@@ -373,7 +363,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 
 //MARK: - Checkin functions
 extension MapViewController {
-// Date().string(dateformat: "yyyy.MM.dd") : ""
+    // Date().string(dateformat: "yyyy.MM.dd") : ""
     private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
         Answers.log(event: .MapButtons, customAttributes: log)
         guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
@@ -568,11 +558,11 @@ extension MapViewController {
         //
         //                #endif
         
-//        #if DEBUG
-//        
-//        view.addSubview(testStack)
-//        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-//        #endif
+        //        #if DEBUG
+        //        
+        //        view.addSubview(testStack)
+        //        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+        //        #endif
         
     }
     
@@ -600,8 +590,8 @@ extension MapViewController {
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         currentUserLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-//        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-//        print("Radius - \(getRadius(centralLocation: centralLocation))")
+        //        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
+        //        print("Radius - \(getRadius(centralLocation: centralLocation))")
     }
     
     

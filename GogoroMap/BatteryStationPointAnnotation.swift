@@ -118,7 +118,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
     }
     
-    public override var hashValue: Int { return Int(coordinate.latitude * 100000 + coordinate.longitude) }
+    public override var hashValue: Int { return Int(coordinate.latitude * 10000000 + coordinate.longitude) }
     
     
     public convenience init<T: ResponseStationProtocol>(station: T) {
@@ -146,19 +146,6 @@ extension Array where Element: BatteryStationPointAnnotation {
         self = newArray.flatMap { (newElement) -> Element in
             for oldElement in self where oldElement.isEqual(newElement) {
                 (newElement.checkinDay, newElement.checkinCounter) = (oldElement.checkinDay, oldElement.checkinCounter)
-            }
-            return newElement
-        }
-    }
-}
-extension Array where Element == BatteryStationRecord {
-    func recovery(from array: [BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation] {
-        return array.flatMap { newElement in
-            for recoveryElement in self where recoveryElement.id == newElement.hashValue && newElement.checkinDay != nil {
-                print(newElement.checkinDay, "before")
-                (newElement.checkinDay, newElement.checkinCounter) = (recoveryElement.checkinDay, recoveryElement.checkinCount)
-                print(newElement.checkinDay, "after")
-                return newElement
             }
             return newElement
         }

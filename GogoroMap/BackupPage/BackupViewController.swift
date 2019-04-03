@@ -89,11 +89,10 @@ final class BackupViewController: UITableViewController {
                         .enumerated()
                         .flatMap { (index, element) in
                             guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
-                            let recovery = batteryRecords.recovery(from: self.stations?.batteryStationPointAnnotations ?? [])
                             let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
-                                                       subtitle: "檔案尺寸: \(size), 打卡次數：\(recovery.reduce(0) { $0 + ($1.checkinCounter ?? 0) })",
-                                                       stations: recovery)
+                                                       subtitle: "檔案尺寸: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
+                                                       stationRecords: batteryRecords)
                              } + [self.deleteCell]
                     
 
@@ -166,8 +165,9 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            guard let cloudRecords = stations?.batteryStationPointAnnotations.flatMap(BatteryStationRecord.init),
-                let data = try? JSONEncoder().encode(cloudRecords) else { return }
+            print(stations?.batteryStationPointAnnotations.filter {$0.checkinCounter != 0}.count )
+            guard let stations = stations?.batteryStationPointAnnotations,
+                let data = try? JSONEncoder().encode(stations.flatMap(BatteryStationRecord.init)) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
                 cell?.isUserInteractionEnabled = true
                 cell?.titleLabel.text = "立即備份"
@@ -205,7 +205,17 @@ extension BackupViewController {
             let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "使用並覆蓋現有資料", style: .destructive, handler : { _ in
-                    self.stations?.batteryStationPointAnnotations = self.elements[1].cells?[indexPath.row].stations ?? []
+                    DataManager.shared.fetchStations{ (result) in
+                        guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
+                            self.stations?.batteryStationPointAnnotations =
+                            stations.flatMap { newElement in
+                                for recoveryElement in stationRecords where recoveryElement.id == newElement.hashValue && recoveryElement.checkinCount != 0 {
+                                    (newElement.checkinDay, newElement.checkinCounter) = (recoveryElement.checkinDay, recoveryElement.checkinCount)
+                                    return newElement
+                                }
+                                return newElement
+                        } ?? []
+                    }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)

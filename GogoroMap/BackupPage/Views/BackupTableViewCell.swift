@@ -21,7 +21,7 @@ final class BackupTableViewCell: UITableViewCell {
     }
     
     let cellType: CellType
-    var stations: [BatteryStationPointAnnotation]?
+    var stationRecords: [BatteryStationRecord]?
     private func setupView() {
         addSubview(titleLabel)
         
@@ -100,9 +100,9 @@ final class BackupTableViewCell: UITableViewCell {
 
 
 extension BackupTableViewCell {
-    convenience init(title: String, subtitle: String, stations: [BatteryStationPointAnnotation]) {
+    convenience init(title: String, subtitle: String, stationRecords: [BatteryStationRecord]) {
                 self.init(type: .backupButton, title: title, subtitle: subtitle)
-                self.stations = stations
+                self.stationRecords = stationRecords
                 titleLabel.font = .systemFont(ofSize: 14)
                 titleLabel.textColor = .black
                 subtitleLabel.textAlignment = .center
