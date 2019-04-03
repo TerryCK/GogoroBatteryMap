@@ -203,8 +203,10 @@ extension BackupViewController {
         case (.backupButton?, _):
             let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
-                UIAlertAction(title: "使用並覆蓋現有資料", style: .destructive, handler : { _ in
+                UIAlertAction(title: "使用", style: .destructive, handler : { _ in
                     DataManager.shared.fetchStations{ (result) in
+                        NetworkActivityIndicatorManager.shared.networkOperationStarted()
+                        self.navigationController?.title = "資料覆蓋中..."
                         guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
                         stationRecords.forEach {
                             for station in stations where $0.id == station.hashValue {
@@ -212,6 +214,8 @@ extension BackupViewController {
                                 return
                             }
                         }
+                         NetworkActivityIndicatorManager.shared.networkOperationFinished()
+                        self.navigationController?.title = "備份與還原"
                             self.stations?.batteryStationPointAnnotations = stations
                     }
                 }),
