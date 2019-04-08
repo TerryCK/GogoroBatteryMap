@@ -9,8 +9,6 @@
 import UIKit
 import StoreKit
 
-
-
 final class StationsViewCell: BaseCollectionViewCell {
     
     weak var delegate: MenuController? {
@@ -37,11 +35,11 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     var product: SKProduct? {
         didSet {
-            removeAdsButton.setTitle("\(product?.localizedPrice ?? "error") \n\(product?.localizedTitle ?? "error")", for: .normal)
-            guard let index = buttonsStackView.subviews.index(of: copyrightLabel) else { return }
+            guard let product = product, let price = product.localizedPrice else { return }
+            removeAdsButton.setTitle("\(price) \n\(product.localizedTitle)", for: .normal)
             restoreButton.addTarget(delegate, action: #selector(MenuController.restorePurchase), for: .touchUpInside)
             removeAdsButton.addTarget(self, action: #selector(buyButtonTapped), for: .touchUpInside)
-            buttonsStackView.insertArrangedSubview(buyStoreButtonStackView, at: index)
+            buyStoreButtonStackView.isHidden = false
             layoutIfNeeded()
         }
     }
@@ -238,6 +236,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
+        stackView.isHidden = true
         return stackView
         }()
     
@@ -271,18 +270,11 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
         }()
     
-//    private lazy var clusterStackView: UIStackView = {
-//        var subViews: [UIView] = [self.clusterIconImageView ,self.clusterDescribingLabel ,self.clusterSwitcher]
-//        let stackView = UIStackView(arrangedSubviews: subViews)
-//        stackView.distribution = .fillEqually
-//        stackView.axis = .horizontal
-//        stackView.spacing = 10
-//        return stackView
-//    }()
     private lazy var buttonsStackView: UIStackView = {
         var subviews: [UIView] = [pushShareStackView,
                                   feedBackButtonStackView,
-                                  copyrightLabel]
+                                  buyStoreButtonStackView,
+                                  copyrightLabel,]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.distribution = .fillEqually
         stackView.axis = .vertical

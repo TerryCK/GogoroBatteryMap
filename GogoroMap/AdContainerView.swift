@@ -16,10 +16,8 @@ final class AdContainerView: UIView {
     lazy var nativeAdView: GADBannerView = {
         let gAdView = GADBannerView()
         let request: GADRequest = GADRequest()
-        let test_iPhone = Keys.standard.gadiPhone
-        let test_iPad = Keys.standard.gadiPad
         gAdView.adUnitID = Keys.standard.adUnitID
-        request.testDevices = [kGADSimulatorID, test_iPhone, test_iPad]
+        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone]
         gAdView.adSize = kGADAdSizeSmartBannerPortrait
         gAdView.load(request)
         return gAdView

@@ -6,48 +6,29 @@
 //  Copyright © 2017 陳 冠禎. All rights reserved.
 //
 
-/*TODO: - 1.deleted all cloud Data
- 2.quering data with < 10 items
- 3.download and restore data which user selected
- 4.backup and reload tableView when backupd
- 5.refactoring code
- */
-
-
 import UIKit
 import CloudKit
 import GoogleMobileAds
 
-final class BackupViewController: UITableViewController, GADBannerViewDelegate {
+
+extension BackupViewController: ADSupportable {
     
     
-    private func addBannerViewToView(_ bannerView: GADBannerView) {
-        view.addSubview(bannerView)
-        var bottomAnchor = view.bottomAnchor
-        if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
-        bannerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        print("Google Ad error: \(error)")
     }
-    
     
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        self.bannerView = bannerView
-        bannerView.alpha = 0
-        UIView.animate(withDuration: 1,
-                       animations: { bannerView.alpha = 1 }
-        )
+        didReceiveAd(bannerView)
     }
-    
-    
-    private var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
-    private func setupAds() {
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        bannerView.rootViewController = self
-        bannerView.load(GADRequest())
-        bannerView.delegate = self
-    }
+}
+
+final class BackupViewController: UITableViewController {
+
+    var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     weak var stations: StationDataSource?
-    
+    let adUnitID: String = "ca-app-pub-3940256099942544/2934735716"
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
     private let restoreHeadView = SupplementaryCell(title: "資料還原", subtitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
     private let backupfooterView = SupplementaryCell(title: "目前沒有登入的iCloud帳號", subtitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")", titleTextAlignment: .center)
@@ -86,24 +67,7 @@ final class BackupViewController: UITableViewController, GADBannerViewDelegate {
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
     }
-    /*
-     
-     guard let stations = try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data) else {
-     return nil
-     }
-     
-     let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
-     
-     self.init(type: .backupButton,
-     title: "\(index + 1). 上傳時間: \(record.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss") ?? "" )",
-     subtitle: "檔案尺寸: \(size), 打卡次數：\(stations.reduce(0) { $0 + ($1.checkinCounter ?? 0) })"
-     )
-     self.stations = stations
-     titleLabel.font = .systemFont(ofSize: 14)
-     titleLabel.textColor = .black
-     subtitleLabel.textAlignment = .center
-     }
-     */
+
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
@@ -141,21 +105,22 @@ final class BackupViewController: UITableViewController, GADBannerViewDelegate {
         super.loadView()
         checkTheCloudAccountStatus()
         navigationController?.navigationBar.tintColor = .white
-        navigationItem.title = "備份與還原"
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        addBannerViewToView(bannerView)
+        
         setupObserve()
-        setupAds()
+        setupAd()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
+        navigationItem.title = "資料更新中..."
         CKContainer.default().fetchData { (records, error) in
             self.records = records
+            self.navigationItem.title = "備份與還原"
             DispatchQueue.main.async(execute: self.tableView.reloadData)
         }
     }
@@ -316,57 +281,4 @@ extension BackupViewController {
     @objc private func checkTheCloudAccountStatus() {
         CKContainer.default().accountStatus { (status, _) in self.cloudAccountStatus = status }
     }
-    
-    
 }
-
-struct BackupElement {
-    enum type { case backup, delete }
-    let titleView: SupplementaryCell?
-    var cells: [BackupTableViewCell]?
-    let footView: SupplementaryCell?, type: type
-}
-
-
-
-
-
-class SupplementaryCell: UIView {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
-    
-    init(title: String? = nil, subtitle: String? = nil, titleTextAlignment: NSTextAlignment = .natural) {
-        self.init()
-        titleLabel.text = title
-        subtitleLabel.text = subtitle
-        titleLabel.textAlignment = titleTextAlignment
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupView()
-    }
-    
-    lazy var titleLabel = UILabel {
-        $0.font = .systemFont(ofSize: 16)
-        $0.textColor = .gray
-    }
-    
-    lazy var subtitleLabel = UILabel {
-        $0.font = .systemFont(ofSize: 16)
-        $0.numberOfLines = 0
-        $0.textColor = .lightGray
-    }
-    
-    func setupView() {
-        [titleLabel, subtitleLabel].forEach(addSubview)
-        
-        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
-        
-        subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
-    }
-}
-

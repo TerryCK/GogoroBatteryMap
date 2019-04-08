@@ -19,11 +19,8 @@ protocol IAPPurchasable: IAPAlartable {
     func getSKProduct(_ purchase: Product, completeHandler: @escaping (Result<[SKProduct]>) -> Void)
     func purchase(_ result: SKProduct)
     func restore()
-    
     func verifyPurchase(_ purchase: Product)
     func handlePurchaseNotification(_ notification: Notification)
-    
-    
     func setupObserver()
 }
 
@@ -55,12 +52,7 @@ extension IAPPurchasable where Self: UIViewController {
                 if purchase.needsFinishTransaction {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
-                
                 Answers.logPurchase(withPrice: purchase.product.price, currency: "TWD", success: true, itemName: purchase.productId, itemType: nil, itemId: nil, customAttributes: nil)
-                Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents,
-                                       customAttributes: [Log.sharedName.purchaseEvent: "Purchase succeeded"])
-                
-                
                 self.verifyPurchase(product)
             }
             self.showAlert(self.alertForPurchase(result))
@@ -73,11 +65,9 @@ extension IAPPurchasable where Self: UIViewController {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.restorePurchases(atomically: true) { results in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
-            
             for purchase in results.restoredPurchases where purchase.needsFinishTransaction {
                 SwiftyStoreKit.finishTransaction(purchase.transaction)
             }
-            
             if let productId = results.restoredPurchases.first?.productId,
                 let product = Product.allCases.first(where: { $0.productId == productId }) {
                 Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Restore succeeded"])
@@ -94,7 +84,6 @@ extension IAPPurchasable where Self: UIViewController {
     
     func verifyPurchase(_ purchase: Product) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        print("verify Purchase")
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase"])
         verifyReceipt { result in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
@@ -111,12 +100,9 @@ extension IAPPurchasable where Self: UIViewController {
     }
     
     
-    fileprivate func deliverPurchaseNotificationFor(identifier: String?) {
-        guard let identifier = identifier else {
-            return }
+    private func deliverPurchaseNotificationFor(identifier: String?) {
+        guard let identifier = identifier else { return }
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Deliver purchase"])
-        
-        NetworkActivityIndicatorManager.shared.networkOperationFinished()
         UserDefaults.standard.set(true, forKey: Keys.standard.hasPurchesdKey)
         NotificationCenter.default.post(name: .init(rawValue: Keys.standard.removeAdsObserverName), object: identifier)
     }

@@ -14,19 +14,21 @@ import GoogleMobileAds
 import Cluster
 import CloudKit
 
-final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate {
-    
+extension MapViewController: ADSupportable {
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        print("Google Ad error: \(error)")
+    }
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        didReceiveAd(bannerView)
+    }
+}
+
+
+final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate  {
+
     var currentUserLocation: CLLocation!
     
-    
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        adContainerView.nativeAdView = bannerView
-        bannerView.alpha = 0
-        UIView.animate(withDuration: 1,
-                       animations: { bannerView.alpha = 1 }
-        )
-    }
-    
+    var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     lazy var locationManager = CLLocationManager {
         $0.delegate = self
@@ -83,13 +85,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.showsScale = true
         $0.showsTraffic = false
     }
-    
-    lazy var adContainerView: AdContainerView = {
-        AdContainerView.shared.nativeAdView.delegate = self
-        AdContainerView.shared.nativeAdView.rootViewController = self
-        return AdContainerView.shared
-    }()
-    
+
     lazy var locationArrowView: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "locationArrowNone"), for: .normal)
@@ -142,34 +138,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
-    /*
-     private lazy var testButton1 : UIButton = {
-     let myButton = UIButton(type: .system)
-     myButton.setTitle("save", for: .normal)
-     myButton.backgroundColor = .lightBlue
-     myButton.titleLabel?.textColor = .white
-     myButton.addTarget(self, action: #selector(saveTest), for: .touchUpInside)
-     return myButton
-     }()
-     
-     private lazy var testButton2 : UIButton = {
-     let myButton = UIButton(type: .system)
-     myButton.setTitle("query", for: .normal)
-     myButton.backgroundColor = .lightBlue
-     myButton.titleLabel?.textColor = .white
-     myButton.addTarget(self, action: #selector(queryTest), for: .touchUpInside)
-     return myButton
-     }()
-     
-     private lazy var testStack: UIStackView = {
-     let myStack = UIStackView(arrangedSubviews: [testButton1,testButton2])
-     myStack.axis = .horizontal
-     myStack.distribution = .fillEqually
-     myStack.alignment = .center
-     myStack.spacing = 10
-     return myStack
-     }()
-     */
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -204,21 +172,19 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        adContainerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         setupObserver()
         performGuidePage()
         authrizationStatus()
         setupPurchase()
         dataUpdate()
-        
         Answers.log(view: "Map Page")
-        //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
-        setupAdContainerView()
-        setupRating()
+//        setupAdContainerView()
+//        setupRating()
 //        #if REALEASE
 //        setupAdContainerView()
 //        setupRating()
 //        #endif
-        //        testFunction()
     }
     
     
@@ -326,13 +292,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
     }
     
-    private func setupAdContainerView() {
-        Answers.log(view: "Ad View")
-        view.addSubview(adContainerView)
-        var bottomAnchor = view.bottomAnchor
-        if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
-        adContainerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-    }
     
     private func setupBottomBackgroundView() {
         let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
@@ -512,6 +471,9 @@ extension MapViewController {
 // MARK:- Verify purchase notification
 extension MapViewController: IAPPurchasable {
     
+    var adUnitID: String { return Keys.standard.adUnitID  }
+    
+    
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
@@ -524,14 +486,7 @@ extension MapViewController: IAPPurchasable {
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
-        print("MapViewController recieved notify")
-        
-        guard let productID = notification.object as? String,
-            RegisteredPurchase.removedProductID == productID else { return }
-        Answers.log(event: .PurchaseEvents, customAttributes: "Removed Ad")
-        
-        adContainerView.removeFromSuperview()
-        mapView.layoutIfNeeded()
+        bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
     }
 }
 
@@ -558,58 +513,15 @@ extension MapViewController {
 //TODO:- test area
 extension MapViewController {
     
-    private func testFunction() {
-        //                #if DEBUG
-        //
-        //                    let activity = selectedPin?.userActivity
-        //                    activity?.isEligibleForPublicIndexing = true
-        //                    activity?.isEligibleForSearch = true
-        //
-        //                    userActivity = activity
-        //
-        //                #endif
-        
-        //        #if DEBUG
-        //
-        //        view.addSubview(testStack)
-        //        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-        //        #endif
-        
-    }
-    
-    @objc func saveTest() {
-        
-        //        print("test for annotation save to cloud")
-        //        saveToCloud(with: self.annotations)
-        //
-        //        self.annotations.toData.backupToCloud(completeHandler: )
-        
-        //        saveToCloud(with: self.annotations)
-        //        queryDatabase()
-        //        DispatchQueue.global().async {
-        //            let predicated = self.annotations.getDistance(userPosition: self.currentUserLocation)
-        //            predicated.forEach { (station) in
-        //                print(station.title as Any)
-        //            }
-        //        }
-    }
-    
-    @objc func queryTest() {
-        //        getAnnoatationsFromCloud { self.annotations = $0 }
-        
-    }
-    
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         currentUserLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-        //        let centralLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-        //        print("Radius - \(getRadius(centralLocation: centralLocation))")
     }
     
     
-    func getRadius(centralLocation: CLLocation) -> Double {
-        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
-        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
-        let radius = centralLocation.distance(from: topCentralLocation)
-        return radius / 1000.0 // to convert radius to meters
-    }
+//    func getRadius(centralLocation: CLLocation) -> Double {
+//        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
+//        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
+//        let radius = centralLocation.distance(from: topCentralLocation)
+//        return radius / 1000.0 // to convert radius to meters
+//    }
 }
