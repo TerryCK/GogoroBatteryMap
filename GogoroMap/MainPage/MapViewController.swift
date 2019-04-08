@@ -18,6 +18,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     var currentUserLocation: CLLocation!
     
+    
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        adContainerView.nativeAdView = bannerView
+        bannerView.alpha = 0
+        UIView.animate(withDuration: 1,
+                       animations: { bannerView.alpha = 1 }
+        )
+    }
+    
+    
     lazy var locationManager = CLLocationManager {
         $0.delegate = self
         $0.distanceFilter = kCLLocationAccuracyNearestTenMeters
@@ -202,11 +212,12 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
         Answers.log(view: "Map Page")
         //        DispatchQueue.main.asyncAfter(deadline:  .now() + 0.5, execute: setupAdContainerView)
-        
-        #if REALEASE
         setupAdContainerView()
         setupRating()
-        #endif
+//        #if REALEASE
+//        setupAdContainerView()
+//        setupRating()
+//        #endif
         //        testFunction()
     }
     
@@ -559,7 +570,7 @@ extension MapViewController {
         //                #endif
         
         //        #if DEBUG
-        //        
+        //
         //        view.addSubview(testStack)
         //        testStack.anchor(top: segmentedControl.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 50, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
         //        #endif
