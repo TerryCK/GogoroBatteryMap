@@ -25,8 +25,10 @@ extension MapViewController: ADSupportable {
 
 
 final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate  {
-
+    
     var currentUserLocation: CLLocation!
+    
+    var adUnitID = Keys.standard.adUnitID
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
@@ -85,7 +87,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.showsScale = true
         $0.showsTraffic = false
     }
-
+    
     lazy var locationArrowView: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "locationArrowNone"), for: .normal)
@@ -172,19 +174,22 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        adContainerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         setupObserver()
         performGuidePage()
         authrizationStatus()
         setupPurchase()
         dataUpdate()
         Answers.log(view: "Map Page")
-//        setupAdContainerView()
-//        setupRating()
-//        #if REALEASE
-//        setupAdContainerView()
-//        setupRating()
-//        #endif
+        setupAd()
+        #if DEBUG
+        adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        #endif
+        
+        
+        //        setupAdContainerView()
+        //        #if REALEASE
+        //        setupRating()
+        //        #endif
     }
     
     
@@ -471,7 +476,7 @@ extension MapViewController {
 // MARK:- Verify purchase notification
 extension MapViewController: IAPPurchasable {
     
-    var adUnitID: String { return Keys.standard.adUnitID  }
+    
     
     
     func setupObserver() {
@@ -518,10 +523,10 @@ extension MapViewController {
     }
     
     
-//    func getRadius(centralLocation: CLLocation) -> Double {
-//        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
-//        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
-//        let radius = centralLocation.distance(from: topCentralLocation)
-//        return radius / 1000.0 // to convert radius to meters
-//    }
+    //    func getRadius(centralLocation: CLLocation) -> Double {
+    //        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
+    //        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
+    //        let radius = centralLocation.distance(from: topCentralLocation)
+    //        return radius / 1000.0 // to convert radius to meters
+    //    }
 }
