@@ -9,11 +9,10 @@
 import UIKit
 import CloudKit
 import GoogleMobileAds
+import Crashlytics
 
 
 extension BackupViewController: ADSupportable {
-    
-    
     func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         print("Google Ad error: \(error)")
     }
@@ -28,7 +27,7 @@ final class BackupViewController: UITableViewController {
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     weak var stations: StationDataSource?
-    let adUnitID: String = "ca-app-pub-3940256099942544/2934735716"
+    let adUnitID: String = Keys.standard.backupAdUnitID
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
     private let restoreHeadView = SupplementaryCell(title: "資料還原", subtitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
     private let backupfooterView = SupplementaryCell(title: "目前沒有登入的iCloud帳號", subtitle: "最後更新日: \(UserDefaults.standard.string(forKey: Keys.standard.nowDateKey) ?? "")", titleTextAlignment: .center)
@@ -109,7 +108,7 @@ final class BackupViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        Answers.log(view: "backup page")
         setupObserve()
         setupAd()
         tableView.delegate = self
@@ -119,9 +118,16 @@ final class BackupViewController: UITableViewController {
         tableView.allowsMultipleSelection = false
         navigationItem.title = "資料更新中..."
         CKContainer.default().fetchData { (records, error) in
-            self.records = records
-            self.navigationItem.title = "備份與還原"
-            DispatchQueue.main.async(execute: self.tableView.reloadData)
+//            if let error = error {
+////                let alertController = UIAlertController(title: "網路錯誤", message: "請檢查網路，錯誤訊息: \(error), 按確認返回", preferredStyle: .alert)
+////                let action = UIAlertAction(title: "確認", style: .default, handler: { _ in self.dismiss(animated: true) })
+////                self.present(alertController, animated: true)
+//            } else {
+                self.records = records
+                self.navigationItem.title = "備份與還原"
+                DispatchQueue.main.async(execute: self.tableView.reloadData)
+//            }
+
         }
     }
     
@@ -201,7 +207,7 @@ extension BackupViewController {
                 UIAlertAction(title: "使用", style: .destructive, handler : { _ in
                     DataManager.shared.fetchStations{ (result) in
                         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-                        self.navigationController?.title = "資料覆蓋中..."
+                        self.navigationItem.title = "資料覆蓋中..."
                         guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
                         stationRecords.forEach {
                             for station in stations where $0.id == station.hashValue {
@@ -210,7 +216,7 @@ extension BackupViewController {
                             }
                         }
                         NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                        self.navigationController?.title = "備份與還原"
+                        self.navigationItem.title = "備份與還原"
                         self.stations?.batteryStationPointAnnotations = stations
                     }
                 }),
