@@ -15,7 +15,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     weak var delegate: MenuController? {
         didSet {
-            guideButton.addTarget(delegate, action: #selector(MenuController.performGuidePage), for: .touchUpInside)
+            guideButton.addTarget(delegate, action: #selector(MenuController.performBackupPage), for: .touchUpInside)
             feedBackButton.addTarget(delegate, action: #selector(MenuController.presentMail), for: .touchUpInside)
             recommandButton.addTarget(delegate, action: #selector(MenuController.recommand), for: .touchUpInside)
             shareButton.addTarget(delegate, action: #selector(MenuController.shareThisApp), for: .touchUpInside)
