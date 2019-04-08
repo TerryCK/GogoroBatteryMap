@@ -16,8 +16,35 @@
 
 import UIKit
 import CloudKit
+import GoogleMobileAds
 
-final class BackupViewController: UITableViewController {
+final class BackupViewController: UITableViewController, GADBannerViewDelegate {
+    
+    
+    private func addBannerViewToView(_ bannerView: GADBannerView) {
+        view.addSubview(bannerView)
+        var bottomAnchor = view.bottomAnchor
+        if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
+        bannerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
+    }
+    
+    
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        self.bannerView = bannerView
+        bannerView.alpha = 0
+        UIView.animate(withDuration: 1,
+                       animations: { bannerView.alpha = 1 }
+        )
+    }
+    
+    
+    private var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
+    private func setupAds() {
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        bannerView.delegate = self
+    }
     
     weak var stations: StationDataSource?
     
@@ -76,7 +103,7 @@ final class BackupViewController: UITableViewController {
      titleLabel.textColor = .black
      subtitleLabel.textAlignment = .center
      }
- */
+     */
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
@@ -91,18 +118,18 @@ final class BackupViewController: UITableViewController {
                             guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
                             let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
-                                                       subtitle: "檔案容量: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
-                                                       stationRecords: batteryRecords)
-                             } + [self.deleteCell]
+                                subtitle: "檔案容量: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
+                                stationRecords: batteryRecords)
+                        } + [self.deleteCell]
                     
-
+                    
                     subtitleText = "最新備份時間：\(date)"
                 } else {
                     self.elements[1].cells = [self.noDataCell]
                     subtitleText = nil
                 }
                 if let dataSize = dataSize {
-                self.elements[1].footView?.titleLabel.text = "iCloud 已使用儲存容量：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
+                    self.elements[1].footView?.titleLabel.text = "iCloud 已使用儲存容量：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
                 }
                 self.backupfooterView.subtitleLabel.text = subtitleText
                 self.tableView.reloadData()
@@ -119,7 +146,9 @@ final class BackupViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addBannerViewToView(bannerView)
         setupObserve()
+        setupAds()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
@@ -188,6 +217,7 @@ extension BackupViewController {
                         $0.titleLabel.text = "備份資料刪除中..."
                         $0.subtitleLabel.text = nil
                     }
+                    
                     self.records?.forEach {
                         CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
                             guard error == nil,
@@ -214,9 +244,9 @@ extension BackupViewController {
                                 return
                             }
                         }
-                         NetworkActivityIndicatorManager.shared.networkOperationFinished()
+                        NetworkActivityIndicatorManager.shared.networkOperationFinished()
                         self.navigationController?.title = "備份與還原"
-                            self.stations?.batteryStationPointAnnotations = stations
+                        self.stations?.batteryStationPointAnnotations = stations
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
