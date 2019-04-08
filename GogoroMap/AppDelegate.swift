@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if RELEASE
         FirebaseApp.configure()
-            Bundle.main.infoDictionary["GADApplicationIdentifier"] = Keys.standard.applicationID
+//            Bundle.main.infoDictionary["GADApplicationIdentifier"] = Keys.standard.applicationID
             GADMobileAds.sharedInstance().start(completionHandler: nil)
         Fabric.sharedSDK().debug = true
         Fabric.with([Crashlytics.self])
