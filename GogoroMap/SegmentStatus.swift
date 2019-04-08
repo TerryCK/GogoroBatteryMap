@@ -40,7 +40,7 @@ enum SegmentStatus: Int {
         switch self {
         case .map       : return []
         case .checkin   : operating =  { $0.checkinCounter ?? 0 > 0 }
-        case .nearby    : operating =  { $0.distance(from: currentUserLocation).km < 45 }
+        case .nearby    : operating =  { _ in true }
         case .building  : operating =  { !$0.isOperating }
         }
         
