@@ -36,9 +36,9 @@ extension Alartable where Self: UIViewController {
     func showAlert(_ alert: UIAlertController?) {
         guard
             let alert = alert,
-            self.presentedViewController == nil else { return }
+            presentedViewController == nil else { return }
         
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 }
 

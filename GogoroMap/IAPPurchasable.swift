@@ -14,18 +14,13 @@ import UIKit
 import Crashlytics
 
 
-protocol PurchaseItem { }
-extension String: PurchaseItem { }
-extension RegisteredPurchase: PurchaseItem { }
-typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> ()
-
 protocol IAPPurchasable: IAPAlartable {
     
-    func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler)
+    func getSKProduct(_ purchase: Product, completeHandler: @escaping (Result<[SKProduct]>) -> Void)
     func purchase(_ result: SKProduct)
     func restore()
     
-    func verifyPurchase<T: PurchaseItem>(_ purchase: T)
+    func verifyPurchase(_ purchase: Product)
     func handlePurchaseNotification(_ notification: Notification)
     
     
@@ -36,20 +31,16 @@ protocol IAPPurchasable: IAPAlartable {
 
 extension IAPPurchasable where Self: UIViewController {
     
-    func getInfo(_ purchase: RegisteredPurchase, completeHandle: @escaping ProductsRequestCompletionHandler) {
-        Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Get purchase item list"])
+    func getSKProduct(_ product: Product, completeHandler: @escaping (Result<[SKProduct]>) -> Void) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        
-        let proudctInfo = "\(Bundle.main.bundleIdentifier ?? "").\(purchase.rawValue)"
-        
-        SwiftyStoreKit.retrieveProductsInfo([proudctInfo]) { result in
-            NetworkActivityIndicatorManager.shared.networkOperationFinished() 
+        SwiftyStoreKit.retrieveProductsInfo([product.productId]) { result in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             if let product = result.retrievedProducts.first {
-                completeHandle(true, [product])
-                return
+                completeHandler(.success([product]))
+            } else {
+                 self.showAlert(self.alertForProductRetrievalInfo(result))
+                completeHandler(.fail(nil))
             }
-            self.showAlert(self.alertForProductRetrievalInfo(result))
-            completeHandle(false, nil)
         }
     }
     
@@ -58,7 +49,8 @@ extension IAPPurchasable where Self: UIViewController {
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Remove Ad"])
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.purchaseProduct(result, quantity: 1, atomically: true) { result in
-            if case .success(let purchase) = result {
+            if case .success(let purchase) = result,
+                let product = Product.allCases.first(where: { $0.productId == purchase.productId }) {
                 NetworkActivityIndicatorManager.shared.networkOperationFinished()
                 if purchase.needsFinishTransaction {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
@@ -67,7 +59,9 @@ extension IAPPurchasable where Self: UIViewController {
                 Answers.logPurchase(withPrice: purchase.product.price, currency: "TWD", success: true, itemName: purchase.productId, itemType: nil, itemId: nil, customAttributes: nil)
                 Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents,
                                        customAttributes: [Log.sharedName.purchaseEvent: "Purchase succeeded"])
-                self.verifyPurchase(purchase.productId)
+                
+                
+                self.verifyPurchase(product)
             }
             self.showAlert(self.alertForPurchase(result))
         }
@@ -78,14 +72,16 @@ extension IAPPurchasable where Self: UIViewController {
     func restore() {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.restorePurchases(atomically: true) { results in
+            NetworkActivityIndicatorManager.shared.networkOperationFinished()
             
             for purchase in results.restoredPurchases where purchase.needsFinishTransaction {
                 SwiftyStoreKit.finishTransaction(purchase.transaction)
             }
             
-            if let productId = results.restoredPurchases.first?.productId {
+            if let productId = results.restoredPurchases.first?.productId,
+                let product = Product.allCases.first(where: { $0.productId == productId }) {
                 Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "Restore succeeded"])
-                self.verifyPurchase(productId)
+                self.verifyPurchase(product)
             }
         }
     }
@@ -93,60 +89,24 @@ extension IAPPurchasable where Self: UIViewController {
     
     private func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
         let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: Keys.standard.secretKet)
-
         SwiftyStoreKit.verifyReceipt(using: appleValidator,  completion: completion)
     }
     
-    
-    //    func verifyReceipt() {
-    //
-    //        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-    //        verifyReceipt { result in
-    //            NetworkActivityIndicatorManager.shared.networkOperationFinished()
-    //            self.showAlert(self.alertForVerifyReceipt(result))
-    //        }
-    //    }
-    
-    
-    
-    func verifyPurchase<T: PurchaseItem>(_ purchase: T) {
-        
+    func verifyPurchase(_ purchase: Product) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         print("verify Purchase")
         Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase"])
         verifyReceipt { result in
-            
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
-            
-            switch result {
-            case .success(let receipt):
-                Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyReceipt succeeded"])
-                var productId: String
-                if let purchase = purchase as? RegisteredPurchase {
-                    productId = (Bundle.main.bundleIdentifier ?? "") + "." + purchase.rawValue
-                } else {
-                    productId = purchase as? String ?? ""
-                }
-                
-                let purchaseResult = SwiftyStoreKit.verifyPurchase (
-                    productId: productId,
-                    inReceipt: receipt
-                )
-                
-                switch purchaseResult {
-                case .purchased(let item):
-                    Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase purchased"])
-                    
-                    self.deliverPurchaseNotificationFor(identifier: item.productId)
-                    
-                default:
-                    print("no purchased item with:", productId)
-                }
-                
-            case .error:
-                UserDefaults.standard.set(false, forKey: Keys.standard.hasPurchesdKey)
-                break
+            guard case .success(let receipt) = result,
+                case .purchased(let item) = SwiftyStoreKit.verifyPurchase(productId: purchase.productId, inReceipt: receipt) else {
+                    print("\(#function) error can't verify puchase product" )
+                    UserDefaults.standard.set(false, forKey: Keys.standard.hasPurchesdKey)
+                    return
             }
+             Answers.logCustomEvent(withName: Log.sharedName.purchaseEvents, customAttributes: [Log.sharedName.purchaseEvent: "VerifyPurchase purchased"])
+             self.deliverPurchaseNotificationFor(identifier: item.productId)
+            
         }
     }
     
@@ -163,7 +123,7 @@ extension IAPPurchasable where Self: UIViewController {
     
     func setupPurchase() {
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            verifyPurchase(RegisteredPurchase.removeAds)
+            verifyPurchase(.removeAds)
         }
     }
 }

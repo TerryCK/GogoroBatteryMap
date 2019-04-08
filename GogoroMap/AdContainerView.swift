@@ -36,10 +36,3 @@ final class AdContainerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-extension MapViewController: GADBannerViewDelegate {
-    
-    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        print("Google Ad error: \(error)")
-    }
-}
