@@ -95,12 +95,10 @@ final class MenuController: UICollectionViewController {
 // MARK: - Perform target's events
 extension MenuController {
     
-    @objc func performGuidePage() {
+    @objc func performBackupPage() {
         let backupVC = BackupViewController.init(style: .grouped)
         backupVC.stations = dataSource
         navigationController?.pushViewController(backupVC, animated: true)
-        
-        
     }
     
     //    @objc func performGuidePage() {
