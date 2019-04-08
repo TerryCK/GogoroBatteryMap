@@ -8,8 +8,14 @@
 
 import StoreKit
 
-enum RegisteredPurchase: String {
+enum Product: String, CaseIterable {
     case removeAds = "RemoveAds"
-    static let removedProductID = (Bundle.main.bundleIdentifier ?? "") + "." + RegisteredPurchase.removeAds.rawValue
+//    static let removedProductID = (Bundle.main.bundleIdentifier ?? "") + "." + Product.removeAds.rawValue
+    
+    
+    var productId: String {
+        guard let bundleId = Bundle.main.bundleIdentifier else { return "" }
+        return "\(bundleId).\(rawValue)"
+    }
 }
 
