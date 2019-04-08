@@ -120,6 +120,7 @@ extension Date {
     }
 }
 
+
 extension TimeInterval {
     static func travelTimeConvert(seconds: TimeInterval) -> (hours: Int, minutes: Int) {
         return (Int(seconds) / 3600 , Int(seconds) % 3600 / 60)
