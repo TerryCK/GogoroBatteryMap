@@ -181,7 +181,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private let guideButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle(NSLocalizedString("Guide", comment: ""), for: .normal)
+        button.setTitle(NSLocalizedString("Backup", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()

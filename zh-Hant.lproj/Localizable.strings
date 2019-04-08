@@ -12,7 +12,7 @@
 "Open hours:" = "營業時間：";
 "Updating" = "站點資訊同步中" ;
 "Information" = "更多資訊";
-
+"Backup" = "備份" ;
 // MARK: Guide Controller
 "Press here and continue" = "我知道了，按此繼續";
 
