@@ -58,13 +58,14 @@ final class DataManager {
     }
     
     private func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
-        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        guard let url = URL(string: "https://wapi.gogoro.com/tw/api/vm/list") else {
+        
+        guard let url = URL(string: Keys.standard.gogoroAPI) else {
             completionHandler(.fail(nil))
             return
         }
         
         print("API: \(url)")
+        NetworkActivityIndicatorManager.shared.networkOperationStarted()
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             switch data {

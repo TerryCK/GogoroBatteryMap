@@ -181,15 +181,10 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         dataUpdate()
         Answers.log(view: "Map Page")
         setupAd()
+        setupRating()
         #if DEBUG
         adUnitID = "ca-app-pub-3940256099942544/2934735716"
         #endif
-        
-        
-        //        setupAdContainerView()
-        //        #if REALEASE
-        //        setupRating()
-        //        #endif
     }
     
     
@@ -475,10 +470,6 @@ extension MapViewController {
 
 // MARK:- Verify purchase notification
 extension MapViewController: IAPPurchasable {
-    
-    
-    
-    
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
