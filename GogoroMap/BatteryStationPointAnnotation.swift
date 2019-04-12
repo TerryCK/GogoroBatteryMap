@@ -101,13 +101,13 @@ extension BatteryStationPointAnnotation : Codable {
 }
 
 struct BatteryStationRecord: Codable {
-    let id, checkinCount: Int, checkinDay: Date?
+    let id: CLLocationCoordinate2D, checkinCount: Int, checkinDay: Date?
 }
 
 extension BatteryStationRecord {
     init?(_ batteryModel: BatteryStationPointAnnotation) {
         guard let count = batteryModel.checkinCounter else { return nil }
-        self.init(id: batteryModel.hashValue, checkinCount: count, checkinDay: batteryModel.checkinDay)
+        self.init(id: batteryModel.coordinate, checkinCount: count, checkinDay: batteryModel.checkinDay)
     }
 }
 
@@ -116,10 +116,8 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     public var checkinCounter: Int? = nil, checkinDay: Date? = nil
     
     public override func isEqual(_ object: Any?) -> Bool {
-        return hashValue == (object as? BatteryStationPointAnnotation)?.hashValue
+        return coordinate == (object as? BatteryStationPointAnnotation)?.coordinate
     }
-    
-    public override var hashValue: Int { return Int(coordinate.latitude * 10000000 + coordinate.longitude) }
     
     
     public convenience init<T: ResponseStationProtocol>(station: T) {

@@ -23,7 +23,7 @@ extension BackupViewController: ADSupportable {
 }
 
 final class BackupViewController: UITableViewController {
-
+    
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     weak var stations: StationDataSource?
@@ -66,7 +66,7 @@ final class BackupViewController: UITableViewController {
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
         tableView.reloadData()
     }
-
+    
     var records: [CKRecord]? {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
@@ -111,6 +111,9 @@ final class BackupViewController: UITableViewController {
         Answers.log(view: "backup page")
         setupObserve()
         setupAd()
+        if #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview()
+        }
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
@@ -118,16 +121,10 @@ final class BackupViewController: UITableViewController {
         tableView.allowsMultipleSelection = false
         navigationItem.title = "資料更新中..."
         CKContainer.default().fetchData { (records, error) in
-//            if let error = error {
-////                let alertController = UIAlertController(title: "網路錯誤", message: "請檢查網路，錯誤訊息: \(error), 按確認返回", preferredStyle: .alert)
-////                let action = UIAlertAction(title: "確認", style: .default, handler: { _ in self.dismiss(animated: true) })
-////                self.present(alertController, animated: true)
-//            } else {
-                self.records = records
-                self.navigationItem.title = "備份與還原"
-                DispatchQueue.main.async(execute: self.tableView.reloadData)
-//            }
-
+            self.records = records
+            self.navigationItem.title = error == nil ? "備份與還原" : "發生錯誤，請稍後嘗試"
+            self.backupCell.isUserInteractionEnabled = error == nil
+            DispatchQueue.main.async(execute: self.tableView.reloadData)
         }
     }
     
@@ -210,7 +207,7 @@ extension BackupViewController {
                         self.navigationItem.title = "資料覆蓋中..."
                         guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
                         stationRecords.forEach {
-                            for station in stations where $0.id == station.hashValue {
+                            for station in stations where $0.id == station.coordinate {
                                 (station.checkinDay, station.checkinCounter) = ($0.checkinDay, $0.checkinCount)
                                 return
                             }
