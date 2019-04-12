@@ -181,7 +181,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         dataUpdate()
         Answers.log(view: "Map Page")
         setupAd()
-        setupRating()
         #if DEBUG
         adUnitID = "ca-app-pub-3940256099942544/2934735716"
         #endif
@@ -270,11 +269,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         menuBarButton.anchor(top: topAnchor, left: navigationController.view.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
     }
     
-    private func setupRating() {
-        if #available(iOS 10.3, *) {
-            SKStoreReviewController.requestReview()
-        }
-    }
+   
     
     private func setupMainViews() {
         [mapView, collectionView, cellEmptyGuideView].forEach { (myView: UIView) in

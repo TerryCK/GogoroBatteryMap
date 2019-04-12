@@ -106,6 +106,7 @@ extension IAPAlartable where Self: UIViewController {
                 return alertWithTitle("Purchase failed", message: "Could not connect to the network")
             case .cloudServiceRevoked: // user has revoked permission to use this cloud service
                 return alertWithTitle("Purchase failed", message: "Cloud service was revoked")
+            default: return alertWithTitle("Purchase failed", message: "Cloud service was revoked")
             }
         }
     }
