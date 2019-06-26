@@ -75,9 +75,9 @@ final class BackupViewController: UITableViewController {
                 let subtitleText: String?
                 if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
                     self.elements[1].cells = records
-                        .flatMap { (($0.value(forKey: "batteryStationPointAnnotation") as? Data), $0.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss")) }
+                        .compactMap { (($0.value(forKey: "batteryStationPointAnnotation") as? Data), $0.creationDate?.string(dateformat: "yyyy.MM.dd   HH:mm:ss")) }
                         .enumerated()
-                        .flatMap { (index, element) in
+                        .compactMap { (index, element) in
                             guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
                             let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
@@ -163,7 +163,7 @@ extension BackupViewController {
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
             guard let stations = stations?.batteryStationPointAnnotations,
-                let data = try? JSONEncoder().encode(stations.flatMap(BatteryStationRecord.init)) else { return }
+                let data = try? JSONEncoder().encode(stations.compactMap(BatteryStationRecord.init)) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
                 cell?.isUserInteractionEnabled = true
                 cell?.titleLabel.text = "立即備份"
@@ -190,7 +190,7 @@ extension BackupViewController {
                         CKContainer.default().privateCloudDatabase.delete(withRecordID: $0.recordID) { (recordID, error) in
                             guard error == nil,
                                 let recordID = recordID,
-                                let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
+                                let index = self.records?.map({ $0.recordID }).firstIndex(of: recordID) else { return }
                             self.records?.remove(at: index)
                         }
                     }}),
@@ -242,7 +242,7 @@ extension BackupViewController {
                     CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { (recordID, error) in
                         guard error == nil,
                             let recordID = recordID,
-                            let index = self.records?.map({ $0.recordID }).index(of: recordID) else { return }
+                            let index = self.records?.map({ $0.recordID }).firstIndex(of: recordID) else { return }
                         self.records?.remove(at: index)
                     }
                 }),
