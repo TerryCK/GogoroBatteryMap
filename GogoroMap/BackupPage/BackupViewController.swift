@@ -116,7 +116,7 @@ final class BackupViewController: UITableViewController {
         }
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorInset = UIEdgeInsetsMake(0, 20, 0, 20)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
         navigationItem.title = "資料更新中..."

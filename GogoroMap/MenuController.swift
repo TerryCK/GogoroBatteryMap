@@ -76,7 +76,7 @@ final class MenuController: UICollectionViewController {
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
         collectionView?.backgroundColor = .clear
-        collectionView?.contentInset = UIEdgeInsetsMake(0, 0, 10, 0)
+        collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         collectionView?.isScrollEnabled = false
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: String(describing: type(of: self)))

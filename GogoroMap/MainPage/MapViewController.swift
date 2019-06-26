@@ -192,7 +192,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     @objc func resignApp(_ notification: Notification) {
-        guard case .UIApplicationDidEnterBackground = notification.name else { return }
+        guard case UIApplication.didEnterBackgroundNotification = notification.name else { return }
         locationManager.stopUpdatingLocation()
         DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations)
     }
@@ -318,10 +318,10 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     
     private func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
-        let annotationPoint = MKMapPointForCoordinate(station.coordinate).centerOfScreen
+        let annotationPoint = MKMapPoint(station.coordinate).centerOfScreen
         let factor = 0.7, height = 20000.0
         let width = factor * height
-        let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, width, height)
+        let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
     }
 }
@@ -440,10 +440,10 @@ extension MapViewController {
     
     
     private func clusterSetVisibleMapRect(with cluster: ClusterAnnotation) {
-        let zoomRect = cluster.annotations.reduce(MKMapRectNull) { (zoomRect, annotation) in
-            let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
-            let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 2500, 0)
-            return MKMapRectIsNull(zoomRect) ? pointRect : MKMapRectUnion(zoomRect, pointRect)
+        let zoomRect = cluster.annotations.reduce(MKMapRect.null) { (zoomRect, annotation) in
+            let annotationPoint = MKMapPoint(annotation.coordinate)
+            let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: 2500, height: 0)
+            return zoomRect.isNull ? pointRect : zoomRect.union(pointRect)
         }
         mapView.setVisibleMapRect(zoomRect, animated: true)
     }
@@ -472,7 +472,7 @@ extension MapViewController: IAPPurchasable {
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(resignApp(_:)),
-                                               name: .UIApplicationDidEnterBackground,
+                                               name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
     }
     

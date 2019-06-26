@@ -45,7 +45,7 @@ extension MapViewController: LocationManageable  {
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
         currentUserLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
         mapView.setRegion(MKCoordinateRegion(center: currentUserLocation.coordinate,
-                                             span: MKCoordinateSpanMake(latDelta, longDelta)), animated: false)
+                                             span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)), animated: false)
     }
     
     func setTracking(mode: MKUserTrackingMode) {
