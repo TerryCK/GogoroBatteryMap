@@ -11,13 +11,16 @@ import Foundation
 protocol DataManagerProtocol {
     func saveToDatabase(with annotations: [BatteryStationPointAnnotation])
     var initialStations: [BatteryStationPointAnnotation] { get }
-    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation]>) -> Void)
+    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void)
 }
 
+enum ServiceError: Error {
+    case general
+}
 final class DataManager {
     
     enum Approach { case bundle, database }
-    
+  
     private init() { }
     
     static let shared = DataManager()
@@ -38,12 +41,12 @@ final class DataManager {
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }
     
-    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation]>) -> Void) {
+    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
         fetchData { (result) in
             if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) {
                 completionHandler(.success(stations))
             } else {
-                completionHandler(.fail(nil))
+                completionHandler(.failure(ServiceError.general))
             }
         }
     }
@@ -57,10 +60,10 @@ final class DataManager {
         }
     }
     
-    private func fetchData(completionHandler: @escaping (Result<Data>) -> Void) {
+    private func fetchData(completionHandler: @escaping (Result<Data, Error>) -> Void) {
         
         guard let url = URL(string: Keys.standard.gogoroAPI) else {
-            completionHandler(.fail(nil))
+            completionHandler(.failure(ServiceError.general))
             return
         }
         
@@ -70,7 +73,7 @@ final class DataManager {
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             switch data {
             case .some(let response):  completionHandler(.success(response))
-            case .none: completionHandler(.fail(error))
+            case .none: completionHandler(.failure(ServiceError.general))
             }
             }.resume()
     }
