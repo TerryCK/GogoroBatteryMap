@@ -136,7 +136,7 @@ final class DetailAnnotationView: UIView {
         }
     }
  
-    func configure(annotation: BatteryDataModal) -> Self {
+    func configure(annotation: BatteryDataModalProtocol) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
         lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay?.string(dateformat: "yyyy.MM.dd") ?? "")"

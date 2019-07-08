@@ -33,7 +33,7 @@ enum SegmentStatus: Int {
         }
     }
     
-    func annotationsToDisplay<T: BatteryDataModal>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
+    func annotationsToDisplay<T: BatteryDataModalProtocol>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
         let operating: (T) -> Bool
         

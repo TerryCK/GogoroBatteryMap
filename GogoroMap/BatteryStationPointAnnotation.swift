@@ -23,7 +23,7 @@ extension BatteryStationPointAnnotation {
     } 
 }
 
-extension BatteryDataModal {
+extension BatteryDataModalProtocol {
     var isOperating: Bool { return state == 1 && !(title?.contains("(維修中)") ?? true) }
     
     public var iconImage: UIImage {
@@ -36,7 +36,7 @@ extension BatteryDataModal {
         return #imageLiteral(resourceName: "pinFull")
     }
 }
-protocol BatteryDataModal {
+protocol BatteryDataModalProtocol {
     var title: String? { get }
     var subtitle: String? { get }
     var coordinate: CLLocationCoordinate2D { get }
@@ -67,7 +67,7 @@ extension CLLocationCoordinate2D: Codable {
     }
 }
 
-extension BatteryDataModal {
+extension BatteryDataModalProtocol {
     func distance(from userPosition: CLLocation) -> Double {
         return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
     }
@@ -100,18 +100,9 @@ extension BatteryStationPointAnnotation : Codable {
     }
 }
 
-struct BatteryStationRecord: Codable {
-    let id: CLLocationCoordinate2D, checkinCount: Int, checkinDay: Date?
-}
 
-extension BatteryStationRecord {
-    init?(_ batteryModel: BatteryStationPointAnnotation) {
-        guard let count = batteryModel.checkinCounter else { return nil }
-        self.init(id: batteryModel.coordinate, checkinCount: count, checkinDay: batteryModel.checkinDay)
-    }
-}
 
-public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModal {
+public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModalProtocol {
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: Date? = nil
     
