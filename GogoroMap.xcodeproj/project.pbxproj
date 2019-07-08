@@ -11,6 +11,7 @@
 		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
+		7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */; };
 		7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED0225B3F220045A796 /* BackupElement.swift */; };
 		7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED2225B3F400045A796 /* SupplementaryCell.swift */; };
 		7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED6225B583A0045A796 /* ADSupport.swift */; };
@@ -78,6 +79,7 @@
 		7C0F5B84224A08AE00CB05B9 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
+		7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDataModalProtocol.swift; sourceTree = "<group>"; };
 		7C646ED0225B3F220045A796 /* BackupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupElement.swift; sourceTree = "<group>"; };
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
 				A8CE224E1F3EA11800A4EF6D /* Navigator.swift */,
 				A85E9FBB201D7D530008665B /* String+Extension.swift */,
+				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -674,6 +677,7 @@
 				A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */,
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
+				7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */,
 				7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
 			);

@@ -12,9 +12,11 @@ public protocol ResponseStationProtocol {
     var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
+    var coordinate: CLLocationCoordinate2D { get }
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
+    var city: Response.Station.Detail { get }
 }
 
 public extension Response.Station.Detail {
@@ -34,7 +36,7 @@ public struct Response: Decodable {
     public struct Station: Decodable, ResponseStationProtocol {
         
         public let state: Int
-        public let name, address : Detail
+        public let name, address, city: Detail
         public let latitude, longitude: Double
         public let availableTime: String?
         
@@ -45,6 +47,7 @@ public struct Response: Decodable {
             case address       = "Address"
             case state         = "State"
             case availableTime = "AvailableTime"
+            case city          = "City"
         }
         
         public init(from decoder: Decoder) throws {
@@ -55,8 +58,10 @@ public struct Response: Decodable {
             availableTime = try container.decode(String?.self, forKey: .availableTime)
             let nameString = try container.decode(String.self, forKey: .name)
             let addressString = try container.decode(String.self, forKey: .address)
+            let cityString = try container.decode(String.self, forKey: .city)
             let jsonDecoder = JSONDecoder()
             name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
+            city = try jsonDecoder.decode(Detail.self, from: cityString.data(using: .utf8)!)
             address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
         }
         

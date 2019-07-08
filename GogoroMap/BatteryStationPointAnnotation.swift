@@ -11,8 +11,6 @@ import MapKit
 
 extension BatteryStationPointAnnotation {
     convenience init(_ customPointAnnotation: CustomPointAnnotation) {
-        
-        
         self.init(title         : customPointAnnotation.title,
                   subtitle      : customPointAnnotation.subtitle,
                   coordinate    : customPointAnnotation.coordinate,
@@ -23,31 +21,7 @@ extension BatteryStationPointAnnotation {
     } 
 }
 
-extension BatteryDataModalProtocol {
-    var isOperating: Bool { return state == 1 && !(title?.contains("(維修中)") ?? true) }
-    
-    public var iconImage: UIImage {
-        guard checkinCounter ?? 0 <= 0 else { return #imageLiteral(resourceName: "checkin") }
-        guard let name = title, isOperating else { return #imageLiteral(resourceName: "building") }
-        if name.contains("Gogoro")                                { return #imageLiteral(resourceName: "goStore") }
-        if ["加油", "中油"].reduce(false, { $0 || name.contains($1) })   { return #imageLiteral(resourceName: "gasStation") }
-        if ["家樂福", "大潤發", "Mall", "百貨", "Global Mall", "CITYLINK"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
-        if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
-        return #imageLiteral(resourceName: "pinFull")
-    }
-}
-protocol BatteryDataModalProtocol {
-    var title: String? { get }
-    var subtitle: String? { get }
-    var coordinate: CLLocationCoordinate2D { get }
-    var address: String { get }
-    var state: Int { get }
-    var checkinCounter: Int? { set get }
-    var checkinDay: Date? { set get }
-    var iconImage: UIImage { get }
-    var isOperating: Bool { get }
-    func distance(from userPosition: CLLocation) -> Double
-}
+
 
 extension CLLocationCoordinate2D: Codable {
     enum CodingKeys: String, CodingKey {
@@ -67,11 +41,6 @@ extension CLLocationCoordinate2D: Codable {
     }
 }
 
-extension BatteryDataModalProtocol {
-    func distance(from userPosition: CLLocation) -> Double {
-        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
-    }
-}
 
 extension BatteryStationPointAnnotation : Codable {
     enum CodingKeys: String, CodingKey {
@@ -105,25 +74,27 @@ extension BatteryStationPointAnnotation : Codable {
 public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModalProtocol {
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: Date? = nil
+    public var city: String? = nil
     
     public override func isEqual(_ object: Any?) -> Bool {
         return coordinate == (object as? BatteryStationPointAnnotation)?.coordinate
     }
-    
     
     public convenience init<T: ResponseStationProtocol>(station: T) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
             coordinate: CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude),
             address: station.address.localized() ?? "",
-            state: station.state)
+            state: station.state,
+            city: station.city.localized())
     }
     
-    init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: Date? = nil) {
+    private init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: Date? = nil, city: String? = nil) {
         self.address      = address
         self.state    = state
         self.checkinCounter = checkinCounter
         self.checkinDay = checkinDay
+        self.city = city
         super.init()
         self.title      = title
         self.subtitle   = subtitle
