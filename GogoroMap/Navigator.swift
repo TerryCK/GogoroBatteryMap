@@ -10,7 +10,7 @@ import MapKit
 
 protocol Navigable {
     static func go(to destination: MKAnnotation)
-    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response>)-> Void)
+    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response, Error>)-> Void)
 }
 
 struct Navigator: Navigable {
@@ -22,7 +22,7 @@ struct Navigator: Navigable {
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }
     
-    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response>)-> Void) {
+    static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response, Error>)-> Void) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         let request = MKDirections.Request {
             $0.source = MKMapItem(placemark: MKPlacemark(coordinate: source, addressDictionary: nil))
@@ -35,8 +35,8 @@ struct Navigator: Navigable {
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
             if let response = response {
                 completionHandler(.success(response))
-            } else {
-                completionHandler(.fail(error))
+            } else if let error = error{
+                completionHandler(.failure(error))
             }
         }
     }

@@ -16,7 +16,7 @@ import Crashlytics
 
 protocol IAPPurchasable: IAPAlartable {
     
-    func getSKProduct(_ purchase: Product, completeHandler: @escaping (Result<[SKProduct]>) -> Void)
+    func getSKProduct(_ purchase: Product, completeHandler: @escaping (Result<[SKProduct], Error>) -> Void)
     func purchase(_ result: SKProduct)
     func restore()
     func verifyPurchase(_ purchase: Product)
@@ -28,7 +28,7 @@ protocol IAPPurchasable: IAPAlartable {
 
 extension IAPPurchasable where Self: UIViewController {
     
-    func getSKProduct(_ product: Product, completeHandler: @escaping (Result<[SKProduct]>) -> Void) {
+    func getSKProduct(_ product: Product, completeHandler: @escaping (Result<[SKProduct], Error>) -> Void) {
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         SwiftyStoreKit.retrieveProductsInfo([product.productId]) { result in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
@@ -36,7 +36,7 @@ extension IAPPurchasable where Self: UIViewController {
                 completeHandler(.success([product]))
             } else {
                  self.showAlert(self.alertForProductRetrievalInfo(result))
-                completeHandler(.fail(nil))
+                completeHandler(.failure(ServiceError.general))
             }
         }
     }
