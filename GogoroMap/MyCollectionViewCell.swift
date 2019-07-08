@@ -60,7 +60,7 @@ final class MyCollectionViewCell: BaseCollectionViewCell {
         alpha = 0.98
     }
     
-    func configure(index: Int, station: BatteryDataModal, userLocation: CLLocation) -> Self {
+    func configure(index: Int, station: BatteryDataModalProtocol, userLocation: CLLocation) -> Self {
         titleLabel.text = "\(index + 1 ). \(station.title ?? "")"
         dateLabel.text = station.checkinCounter ?? 0 > 0 ? "打卡日期: \(station.checkinDay?.string(dateformat: "yyyy.MM.dd") ?? "")" : ""
         imageView.image = station.iconImage

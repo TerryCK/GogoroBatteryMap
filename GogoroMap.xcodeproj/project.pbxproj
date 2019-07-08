@@ -10,6 +10,7 @@
 		42B57E665539D12848DC1419 /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */; };
 		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
+		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
 		7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED0225B3F220045A796 /* BackupElement.swift */; };
 		7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED2225B3F400045A796 /* SupplementaryCell.swift */; };
 		7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED6225B583A0045A796 /* ADSupport.swift */; };
@@ -76,6 +77,7 @@
 		5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C0F5B84224A08AE00CB05B9 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
 		7C646ED0225B3F220045A796 /* BackupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupElement.swift; sourceTree = "<group>"; };
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 			children = (
 				7C646ED0225B3F220045A796 /* BackupElement.swift */,
 				A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */,
+				7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */,
 				A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */,
 				A8742B011F449741002BA66B /* Keys.swift */,
 				A808F0452220ED3900761A31 /* Response.swift */,
@@ -642,6 +645,7 @@
 				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
 				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
+				7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
 				7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */,
