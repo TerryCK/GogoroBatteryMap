@@ -63,7 +63,7 @@ final class MenuController: UICollectionViewController {
         cell.analytics = StationAnalyticsModel(dataSource?.batteryStationPointAnnotations ?? [])
         cell.product = products.first
         cell.purchaseHandler = purchase
-        
+        cell.mapOptions.setTitle("導航：" + Navigator.option.description, for: .normal)
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.isHidden = true
             cell.setupThanksLabel()

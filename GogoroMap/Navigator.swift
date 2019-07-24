@@ -9,7 +9,8 @@
 import MapKit
 
 protocol Navigable {
-    static func go(to destination: MKAnnotation)
+    static var option: Navigator.Option { get }
+    static func go<T: BatteryStationPointAnnotation>(to destination: T)
     static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response, Error>)-> Void)
 }
 
@@ -35,16 +36,16 @@ struct Navigator: Navigable {
             return Option(rawValue: UserDefaults.standard.integer(forKey: #function))!
         }
     }
-    static func go(to destination: MKAnnotation) {
+    static func go<T: BatteryStationPointAnnotation>(to destination: T) {
         
         
         switch option {
         case .google:
-            guard let address = destination.subtitle ?? "",
-                let query = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            guard let address = destination.address.matches(with: #"^[^\(\)]*"#.regex).first?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                     fallthrough
             }
-            if let url = URL(string: "comgooglemaps://?saddr=&daddr=\(query)&directionsmode=driving") {
+            print("address: ", address)
+            if let url = URL(string: "comgooglemaps://?saddr=&daddr=\(address)&directionsmode=motorcycle") {
                 if #available(iOS 10.0, *) {
                     UIApplication.shared.open(url) { isFinish in
                         if !isFinish {
@@ -62,8 +63,8 @@ struct Navigator: Navigable {
     }
     
     
-    static func goWithAppleMap(to destination: MKAnnotation) {
-        guard let name = destination.title ?? "" else { return }
+    static func goWithAppleMap<T: BatteryStationPointAnnotation>(to destination: T) {
+        guard let name = destination.title else { return }
         let placemark = MKPlacemark(coordinate: destination.coordinate, addressDictionary: [name: ""])
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = "\(name)(Gogoro \("Battery Station".localize()))"
