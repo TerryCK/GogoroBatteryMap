@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import MapKit
 public protocol ResponseStationProtocol {
     var state: Int { get }
     var name: Response.Station.Detail { get }
@@ -24,7 +24,11 @@ public extension Response.Station.Detail {
         return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value
     }
 }
-
+extension ResponseStationProtocol {
+    public var coordinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
 
 public struct Response: Decodable {
     public let stations: [Station]
@@ -34,6 +38,8 @@ public struct Response: Decodable {
     }
     
     public struct Station: Decodable, ResponseStationProtocol {
+        
+        
         
         public let state: Int
         public let name, address, city: Detail
