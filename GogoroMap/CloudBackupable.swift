@@ -74,13 +74,17 @@ extension CKContainer {
                     return
                 }
                 
-                self.discoverUserIdentity(withUserRecordID: recordId) { identity, error in
-                    guard let components = identity?.nameComponents, error == nil else {
-                        completionHanlder(error, nil)
-                        print(error!)
-                        return
+                if #available(iOS 10.0, *) {
+                    self.discoverUserIdentity(withUserRecordID: recordId) { identity, error in
+                        guard let components = identity?.nameComponents, error == nil else {
+                            completionHanlder(error, nil)
+                            print(error!)
+                            return
+                        }
+                        completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
                     }
-                    completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
+                } else {
+                    return
                 }
             }
         }
