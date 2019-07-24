@@ -4,6 +4,7 @@
 def shared_pods
 use_frameworks!
 
+pod 'AlamofireNetworkActivityLogger'
 pod 'SideMenu', :git => 'https://github.com/jonkykong/SideMenu.git', :tag => '3.1.5'
 pod 'Google-Mobile-Ads-SDK'
 pod 'Fabric'
@@ -30,3 +31,19 @@ end
   # Pods for GogoroMap
 
 
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+    
+      if target.name.include? 'SideMenu'
+#          puts "#{target.name}"
+          config.build_settings['SWIFT_VERSION'] = '4.0'
+      elsif target.name.include? 'Cluster'
+          config.build_settings['SWIFT_VERSION'] = '4.0'
+      else
+          config.build_settings['SWIFT_VERSION'] = '4.2'
+      end
+    end
+  end
+end

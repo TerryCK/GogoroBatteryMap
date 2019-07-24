@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		42B57E665539D12848DC1419 /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */; };
+		089FC6956616C81D15D0E1EF /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB72CCD6698DA771532494F7 /* Pods_GogoroMapTests.framework */; };
 		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
@@ -18,7 +18,6 @@
 		7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9A002B22238FC200D5150D /* Answer+Entension.swift */; };
 		7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503520260D1C00E2206D /* BackupViewController.swift */; };
 		7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */; };
-		8D05EC5C8092244F4772117D /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */; };
 		A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */; };
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
 		A80759681F4C04430031D576 /* CheckinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759671F4C04430031D576 /* CheckinButton.swift */; };
@@ -60,6 +59,7 @@
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
 		A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */; };
 		A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */; };
+		B9570E2DCD257BE261988B4B /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9F0E8382F0D3555E9F00D3 /* Pods_GogoroMap.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,9 +73,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F31B1F947CE3BD09D69D383 /* Pods-GogoroMapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		370AE44DE5875D423DE55C88 /* Pods-GogoroMapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3FEAA5AD509FEAF14EC2798E /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
+		4D9F0E8382F0D3555E9F00D3 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C0F5B84224A08AE00CB05B9 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
@@ -84,7 +84,7 @@
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
 		7C9A002B22238FC200D5150D /* Answer+Entension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Answer+Entension.swift"; sourceTree = "<group>"; };
-		A513DD0607F82D57A2BDD52A /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
+		8160DE02C511AF390A825C3F /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
 		A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidePageViewController.swift; sourceTree = "<group>"; };
 		A80759651F4BD6480031D576 /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
 		A80759671F4C04430031D576 /* CheckinButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckinButton.swift; sourceTree = "<group>"; };
@@ -137,8 +137,8 @@
 		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
-		ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
-		E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
+		AB72CCD6698DA771532494F7 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6217855A8B56929B9DC9DD2 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,7 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42B57E665539D12848DC1419 /* Pods_GogoroMapTests.framework in Frameworks */,
+				089FC6956616C81D15D0E1EF /* Pods_GogoroMapTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */,
-				8D05EC5C8092244F4772117D /* Pods_GogoroMap.framework in Frameworks */,
+				B9570E2DCD257BE261988B4B /* Pods_GogoroMap.framework in Frameworks */,
 				A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -163,26 +163,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3E2705D11D025301FE44D99B /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */,
-				A513DD0607F82D57A2BDD52A /* Pods-GogoroMap.release.xcconfig */,
-				2F31B1F947CE3BD09D69D383 /* Pods-GogoroMapTests.debug.xcconfig */,
-				ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		8A9B908657EC79E54659031F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				A81ADFF02026DC1B008A757D /* CloudKit.framework */,
-				5A94E4E9820EC7DC152E7DE7 /* Pods_GogoroMap.framework */,
-				2C01F5FFAA1A1695FF753633 /* Pods_GogoroMapTests.framework */,
+				4D9F0E8382F0D3555E9F00D3 /* Pods_GogoroMap.framework */,
+				AB72CCD6698DA771532494F7 /* Pods_GogoroMapTests.framework */,
 				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8FD7339A92901AFF5D1515FF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8160DE02C511AF390A825C3F /* Pods-GogoroMap.debug.xcconfig */,
+				3FEAA5AD509FEAF14EC2798E /* Pods-GogoroMap.release.xcconfig */,
+				370AE44DE5875D423DE55C88 /* Pods-GogoroMapTests.debug.xcconfig */,
+				D6217855A8B56929B9DC9DD2 /* Pods-GogoroMapTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		A80660171F4419000036BE3B /* Playground */ = {
@@ -264,13 +265,13 @@
 				A869AA181F4414B20085133C /* IAPs */,
 				7C646ED6225B583A0045A796 /* ADSupport.swift */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
+				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
 				A8187E8D1F453458008E1558 /* LocationManageable.swift */,
 				A8187E8F1F453E22008E1558 /* Mailsendable.swift */,
 				A8CE224E1F3EA11800A4EF6D /* Navigator.swift */,
 				A85E9FBB201D7D530008665B /* String+Extension.swift */,
-				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -281,7 +282,7 @@
 				8A9B908657EC79E54659031F /* Frameworks */,
 				A8D368691F3B435D0015F5F9 /* GogoroMap */,
 				A84AC7FF1F46EB71004F5E3B /* GogoroMapTests */,
-				3E2705D11D025301FE44D99B /* Pods */,
+				8FD7339A92901AFF5D1515FF /* Pods */,
 				A8D368681F3B435D0015F5F9 /* Products */,
 				A866F6521F481FA6009459B3 /* Localizable.strings */,
 			);
@@ -409,11 +410,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A84AC8051F46EB71004F5E3B /* Build configuration list for PBXNativeTarget "GogoroMapTests" */;
 			buildPhases = (
-				7A9E22C1550BB336C453621C /* [CP] Check Pods Manifest.lock */,
+				29B9A4E893A41EE65BF75646 /* [CP] Check Pods Manifest.lock */,
 				A84AC7FA1F46EB70004F5E3B /* Sources */,
 				A84AC7FB1F46EB70004F5E3B /* Frameworks */,
 				A84AC7FC1F46EB70004F5E3B /* Resources */,
-				FA005F113CE0D61E649B790C /* [CP] Embed Pods Frameworks */,
+				E9E19A81F7D4432A6FA71A2B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -429,12 +430,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A8D368791F3B435F0015F5F9 /* Build configuration list for PBXNativeTarget "GogoroMap" */;
 			buildPhases = (
-				7650B4F2FE10B95535AD218A /* [CP] Check Pods Manifest.lock */,
+				795D5B43398FAD748C61FDA0 /* [CP] Check Pods Manifest.lock */,
 				A8D368631F3B435D0015F5F9 /* Sources */,
 				A8D368641F3B435D0015F5F9 /* Frameworks */,
 				A8D368651F3B435D0015F5F9 /* Resources */,
-				501A4B98FF6B3E1A62E6C9CD /* [CP] Embed Pods Frameworks */,
 				A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */,
+				9AB59202FCB3E9A05DE844FC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -523,42 +524,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		501A4B98FF6B3E1A62E6C9CD /* [CP] Embed Pods Frameworks */ = {
+		29B9A4E893A41EE65BF75646 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Cluster-iOS10.0/Cluster.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS10.0/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.0/SideMenu.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS10.0/SwiftyStoreKit.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb-iOS10.0/nanopb.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7650B4F2FE10B95535AD218A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GogoroMapTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		795D5B43398FAD748C61FDA0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-GogoroMap-checkManifestLockResult.txt",
 			);
@@ -567,22 +568,34 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7A9E22C1550BB336C453621C /* [CP] Check Pods Manifest.lock */ = {
+		9AB59202FCB3E9A05DE844FC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
+				"${PODS_ROOT}/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS10.0/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger-iOS10.0/AlamofireNetworkActivityLogger.framework",
+				"${BUILT_PRODUCTS_DIR}/Cluster-iOS10.0/Cluster.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS10.0/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.0/SideMenu.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit-iOS10.0/SwiftyStoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb-iOS10.0/nanopb.framework",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-GogoroMapTests-checkManifestLockResult.txt",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */ = {
@@ -599,13 +612,15 @@
 			shellPath = /bin/sh;
 			shellScript = "FABRIC_APIKEY_FILE=\"${SRCROOT}/fabric.apikey\"\nFABRIC_BUILDSECRET_FILE=\"${SRCROOT}/fabric.buildsecret\"\n\nif test ! -f \"$FABRIC_APIKEY_FILE\" -o ! -f \"$FABRIC_BUILDSECRET_FILE\"; then\necho \"This build wants to upload dSYM files to Crashlytics.\"\necho \"Uploading is possible only if a Fabric API key and a Fabric build secret are\"\necho \"available. This build is failing because at least one of these pieces of\"\necho \"information is missing.\"\necho \"\"\necho \"To fix the problem, create the following files and store the API key and\"\necho \"build secret, respectively, within those files:\"\necho \"\"\necho \"  $FABRIC_APIKEY_FILE\"\necho \"  $FABRIC_BUILDSECRET_FILE\"\necho \"\"\necho \"If you forked the project then you must register with Crashlytics and\"\necho \"get your own API key and build secret.\"\n\n# Let the build fail\nexit 1\nfi\n\nFABRIC_APIKEY=$(cat \"$FABRIC_APIKEY_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_APIKEY_FILE\"\nexit 1\nfi\n\nFABRIC_BUILDSECRET=$(cat \"$FABRIC_BUILDSECRET_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_BUILDSECRET_FILE\"\nexit 1\nfi\n\necho \"Uploading dSYM files to Crashlytics\"\n\"${PODS_ROOT}/Fabric/run\" \"$FABRIC_APIKEY\" \"$FABRIC_BUILDSECRET\"\n";
 		};
-		FA005F113CE0D61E649B790C /* [CP] Embed Pods Frameworks */ = {
+		E9E19A81F7D4432A6FA71A2B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS10.3/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger-iOS10.3/AlamofireNetworkActivityLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/Cluster-iOS10.3/Cluster.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-iOS10.3/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu-iOS10.3/SideMenu.framework",
@@ -614,6 +629,8 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
@@ -622,7 +639,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -647,6 +664,7 @@
 				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
 				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
+				7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */,
 				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
 				7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */,
 				A81C33AE1F8A1D2E002EA1D6 /* BorderedClusterAnnotationView.swift in Sources */,
@@ -677,7 +695,6 @@
 				A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */,
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
-				7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */,
 				7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
 			);
@@ -717,7 +734,7 @@
 /* Begin XCBuildConfiguration section */
 		A84AC8061F46EB71004F5E3B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F31B1F947CE3BD09D69D383 /* Pods-GogoroMapTests.debug.xcconfig */;
+			baseConfigurationReference = 370AE44DE5875D423DE55C88 /* Pods-GogoroMapTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
@@ -733,7 +750,7 @@
 		};
 		A84AC8071F46EB71004F5E3B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ACBBB31741B827C36D83DDB7 /* Pods-GogoroMapTests.release.xcconfig */;
+			baseConfigurationReference = D6217855A8B56929B9DC9DD2 /* Pods-GogoroMapTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
@@ -864,7 +881,7 @@
 		};
 		A8D3687A1F3B435F0015F5F9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E748E0ADB6AF7C6848CE2657 /* Pods-GogoroMap.debug.xcconfig */;
+			baseConfigurationReference = 8160DE02C511AF390A825C3F /* Pods-GogoroMap.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
@@ -886,7 +903,7 @@
 		};
 		A8D3687B1F3B435F0015F5F9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A513DD0607F82D57A2BDD52A /* Pods-GogoroMap.release.xcconfig */;
+			baseConfigurationReference = 3FEAA5AD509FEAF14EC2798E /* Pods-GogoroMap.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
