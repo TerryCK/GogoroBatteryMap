@@ -11,6 +11,7 @@ import Fabric
 import Crashlytics
 import Firebase
 import SwiftyStoreKit
+import AlamofireNetworkActivityLogger
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,13 +24,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         setupIAPOberserver()
-        
+
         #if RELEASE
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         Fabric.sharedSDK().debug = true
         Fabric.with([Crashlytics.self])
         print("test release mode ")
+        #else
+        NetworkActivityLogger.shared.startLogging()
+        NetworkActivityLogger.shared.level = .debug
         #endif
         
         return true

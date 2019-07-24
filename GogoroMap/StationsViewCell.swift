@@ -19,6 +19,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             shareButton.addTarget(delegate, action: #selector(MenuController.shareThisApp), for: .touchUpInside)
             moreAppsButton.addTarget(delegate, action: #selector(MenuController.moreApp), for: .touchUpInside)
             dataUpdateButton.addTarget(delegate, action: #selector(MenuController.attempUpdate), for: .touchUpInside)
+            mapOptions.addTarget(delegate, action: #selector(MenuController.changeMapOption), for: .touchUpInside)
             clusterSwitcher.addTarget(delegate, action: #selector(MenuController.clusterSwitching(sender:)), for: .valueChanged)
         }
     }
@@ -43,7 +44,7 @@ final class StationsViewCell: BaseCollectionViewCell {
             layoutIfNeeded()
         }
     }
-
+    
     var purchaseHandler: ((SKProduct) -> ())?
     
     @objc func buyButtonTapped() {
@@ -67,7 +68,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private var clusterSwitcher = UISwitch { $0.isOn = ClusterStatus() == .on }
     
-
+    
     private lazy var clusterDescribingLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = "Cluster".localize()
@@ -80,28 +81,28 @@ final class StationsViewCell: BaseCollectionViewCell {
         $0.text = "Chen, Guan-Jhen \(Date().string(dateformat: "yyyy")) Copyright"
         $0.font = .systemFont(ofSize: 12)
         $0.textColor = .gray
-        }
+    }
     
     private lazy var availableLabel: UILabel = {     
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = ""
         label.font = .boldSystemFont(ofSize: 14)
         return label
-        }()
+    }()
     
     private lazy var haveBeenLabel: UILabel = {     
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Have been:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
-        }()
+    }()
     
     private lazy var hasCheckinsLabel: UILabel = {     
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Total checkins:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
-        }() 
+    }()
     
     private lazy var completedRatioLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
@@ -109,21 +110,21 @@ final class StationsViewCell: BaseCollectionViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 18)
         
         return label
-        }()
+    }()
     
     private lazy var totalLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Total:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
-        }()
+    }()
     
     private lazy var buildingLabel: UILabel = {     
         let label = UILabel(frame: CGRect(x: 20, y: 50, width: frame.width, height: 16))
         label.text = NSLocalizedString("Building:", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
-        }()
+    }()
     
     private let copyrightLabel: UILabel = {
         let label = UILabel()
@@ -133,7 +134,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         return label
     }()
     
-     private let thanksLabel: UILabel = {
+    private let thanksLabel: UILabel = {
         let label = UILabel()
         label.text = "感謝您的贊助，您的贊助將會鼓勵作者開發更多的App，我們非常歡迎有趣的點子來使您生活更美好"
         label.font = UIFont.boldSystemFont(ofSize: 11)
@@ -177,6 +178,13 @@ final class StationsViewCell: BaseCollectionViewCell {
         return button
     }()
     
+    private let mapOptions: UIButton = {
+        let button = CustomButton(type: .system)
+        button.setTitle("\(Navigator.option.description)", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        return button
+    }()
+    
     private let guideButton: UIButton = {
         let button = CustomButton(type: .system)
         button.setTitle(NSLocalizedString("Backup", comment: ""), for: .normal)
@@ -206,7 +214,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.alignment = .center
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     private lazy var pushShareStackView: UIStackView = {     
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [shareButton, recommandButton])
@@ -214,7 +222,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.distribution = .fillEqually
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     private lazy var feedBackButtonStackView: UIStackView = {     
         let stackView:  UIStackView = UIStackView(arrangedSubviews: [guideButton, feedBackButton])
@@ -222,7 +230,15 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.distribution = .fillEqually
         stackView.spacing = 10
         return stackView
-        }()
+    }()
+    
+    private lazy var mapOptionStackView: UIStackView = {
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [mapOptions])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        return stackView
+    }()
     
     private lazy var clusterIconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -231,17 +247,17 @@ final class StationsViewCell: BaseCollectionViewCell {
         return imageView
     }()
     
-     lazy var buyStoreButtonStackView: UIStackView = {     
+    lazy var buyStoreButtonStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews:  [restoreButton, removeAdsButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
         stackView.isHidden = true
         return stackView
-        }()
+    }()
     
     private lazy var clusterView: UIView = {
-       let myView = UIView()
+        let myView = UIView()
         
         [clusterIconImageView, clusterDescribingLabel,
          clusterSwitcher].forEach(myView.addSubview)
@@ -261,17 +277,18 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.distribution = .fillEqually
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     private lazy var headStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [updateStackView, completedRatioLabel, haveBeenLabel, hasCheckinsLabel, operationStatusStack, clusterView])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         return stackView
-        }()
+    }()
     
     private lazy var buttonsStackView: UIStackView = {
-        var subviews: [UIView] = [pushShareStackView,
+        var subviews: [UIView] = [mapOptions,
+                                  pushShareStackView,
                                   feedBackButtonStackView,
                                   buyStoreButtonStackView,
                                   copyrightLabel,]
@@ -280,7 +297,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.axis = .vertical
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     private lazy var bottomLabelStackView: UIStackView = {     
         let stackView = UIStackView(arrangedSubviews: [copyrightLabel, authorLabel])
@@ -288,7 +305,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         stackView.axis = .vertical
         stackView.spacing = 10
         return stackView
-        }()
+    }()
     
     func setupThanksLabel() {
         buttonsStackView.insertArrangedSubview(thanksLabel, at: 0)
@@ -315,7 +332,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         viewContainer.addSubview(buttonsStackView)
         buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: authorLabel.topAnchor, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 0)
-      
+        
         [totalLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
         
     }

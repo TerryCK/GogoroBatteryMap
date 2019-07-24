@@ -38,9 +38,11 @@ final class MenuController: UICollectionViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        #if Release
         if #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview()
         }
+        #endif
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -151,7 +153,21 @@ extension MenuController {
         log(#function)
         presentErrorMailReport()
     }
-
+    
+    @objc func changeMapOption() {
+        let alertController = UIAlertController(title: "導航選項", message: "選擇偏好的導航地圖", preferredStyle: .actionSheet)
+        var actions = Navigator.Option.allCases.map { option in
+            UIAlertAction(title: option.description,
+                          style: .default,
+                          handler: { _ in
+                            Navigator.option = option
+                            self.collectionView.reloadData()
+            })
+        }
+        actions.append(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        actions.forEach(alertController.addAction)
+        present(alertController, animated: true)
+    }
     @objc func attempUpdate() {
         log(#function)
         navigationItem.title = "\("Updating".localize())..."
