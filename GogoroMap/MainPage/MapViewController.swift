@@ -493,7 +493,8 @@ extension MapViewController {
     
     @objc func navigating() {
         Answers.log(event: .MapButtons, customAttributes: #function)
-        guard let destination = selectedAnnotationView?.annotation else { return }
+        guard let destination = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
+        
         Navigator.go(to: destination)
     }
     

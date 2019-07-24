@@ -178,10 +178,10 @@ final class StationsViewCell: BaseCollectionViewCell {
         return button
     }()
     
-    private let mapOptions: UIButton = {
+    let mapOptions: UIButton = {
         let button = CustomButton(type: .system)
         button.setTitle("\(Navigator.option.description)", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
     
