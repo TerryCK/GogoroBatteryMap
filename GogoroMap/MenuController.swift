@@ -96,7 +96,11 @@ final class MenuController: UICollectionViewController {
     
     // MARK: - Events
     private func open(url: String) {
-        URL(string: url).map { UIApplication.shared.open($0) }
+        URL(string: url).map { if #available(iOS 10.0, *) {
+            UIApplication.shared.open($0)
+        } else {
+            UIApplication.shared.openURL($0)
+            } }
     }
 }
 
