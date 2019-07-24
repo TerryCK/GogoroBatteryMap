@@ -34,8 +34,14 @@ final class MenuController: UICollectionViewController {
         super.viewDidLoad()
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
+        
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview()
+        }
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
