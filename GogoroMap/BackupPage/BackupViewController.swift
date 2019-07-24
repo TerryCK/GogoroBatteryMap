@@ -111,9 +111,7 @@ final class BackupViewController: UITableViewController {
         Answers.log(view: "backup page")
         setupObserve()
         setupAd()
-        if #available(iOS 10.3, *) {
-            SKStoreReviewController.requestReview()
-        }
+       
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)

@@ -180,12 +180,42 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupPurchase()
         dataUpdate()
         Answers.log(view: "Map Page")
-        setupAd()
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
+        longPressRecognizer.numberOfTapsRequired = 1
+        longPressRecognizer.minimumPressDuration = 0.1
+        mapView.addGestureRecognizer(longPressRecognizer)
         #if DEBUG
         adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        #else
+        setupAd()
         #endif
+        
+    }
+    enum Status {
+        case lock, release
+    }
+    private var lastTouchPoint: CGPoint?
+    
+    private var gestureRecognizerStatus: Status  = .release
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        lastTouchPoint = touches.first?.location(in: mapView)
     }
     
+    @objc func action(sender: UILongPressGestureRecognizer) {
+        let isLongPressGestureRecognizerActive = [.possible, .began, .changed].contains(sender.state)
+        
+        gestureRecognizerStatus = isLongPressGestureRecognizerActive ? .lock : .release
+        guard isLongPressGestureRecognizerActive, let lastTouchPoint = lastTouchPoint else {
+            clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+            return
+        }
+        let current = sender.location(in: mapView)
+        let deltaY = current.y - lastTouchPoint.y
+        self.lastTouchPoint = current
+        
+        mapZoomWith(scale: deltaY > 0 ? 1.05 : 0.95)
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -439,6 +469,18 @@ extension MapViewController {
     }
     
     
+    private func mapZoomWith(scale: Double) {
+        var span = mapView.region.span
+        var region = mapView.region
+        let latDelt = min(158.0, max(span.latitudeDelta * scale, 0))
+        let longDelt = min(145.5, max(span.longitudeDelta * scale, 0))
+        span.latitudeDelta = latDelt
+        span.longitudeDelta = longDelt
+        region.span = span
+        mapView.setRegion(region, animated: false)
+    }
+    
+    
     private func clusterSetVisibleMapRect(with cluster: ClusterAnnotation) {
         let zoomRect = cluster.annotations.reduce(MKMapRect.null) { (zoomRect, annotation) in
             let annotationPoint = MKMapPoint(annotation.coordinate)
@@ -496,6 +538,7 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        guard gestureRecognizerStatus == .release else { return }
         clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
     }
 }
