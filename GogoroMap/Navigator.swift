@@ -36,15 +36,13 @@ struct Navigator: Navigable {
             return Option(rawValue: UserDefaults.standard.integer(forKey: #function))!
         }
     }
+    
     static func go<T: BatteryStationPointAnnotation>(to destination: T) {
-        
-        
         switch option {
         case .google:
             guard let address = destination.address.matches(with: #"^[^\(\)]*"#.regex).first?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                     fallthrough
             }
-            print("address: ", address)
             if let url = URL(string: "comgooglemaps://?saddr=&daddr=\(address)&directionsmode=motorcycle") {
                 if #available(iOS 10.0, *) {
                     UIApplication.shared.open(url) { isFinish in
