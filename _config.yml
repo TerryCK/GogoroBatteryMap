@@ -51,7 +51,7 @@ features                                  :
     fontawesome_icon_name                 : map-marked-alt
 
   - title                                 : 導航
-    description                           : 一鍵導航，預估達目的所需時間與距離
+    description                           : 一鍵導航，預估達目的所需時間與距離，可選Google Map機車模式，或使用Apple Map導航
     fontawesome_icon_name                 : mobile
 
   - title                                 : 指南針
