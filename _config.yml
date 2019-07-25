@@ -35,11 +35,11 @@ github_username                           : TerryCK
 features                                  :
 
   - title                                 : 省下時間
-    description                           : 更快速找到洗衣精補充站，將時間留給身邊美好人事物
+    description                           : 不用花太多時間，即可快速找到電池充電站，將時間留給身邊美好人事物
     fontawesome_icon_name                 : coffee
 
   - title                                 : 省下金錢
-    description                           : 一起減塑、重複使用包裝瓶，保護環境及下一代
+    description                           : 一起減少石油消費，保護環境及下一代
     fontawesome_icon_name                 : coins
 
   - title                                 : 無需登入
