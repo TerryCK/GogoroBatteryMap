@@ -11,6 +11,9 @@
 		7C0DBE6822EA9BE3002B76D5 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */; };
 		7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6922EA9BF2002B76D5 /* TableViewGroupDataManager.swift */; };
 		7C0DBE6D22EAA1DA002B76D5 /* TableViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6B22EAA1DA002B76D5 /* TableViewHeaderView.swift */; };
+		7C0DBE6E22EAC0E9002B76D5 /* AdContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */; };
+		7C0DBE6F22EAC0E9002B76D5 /* TableViewController.xib in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6722EA9BE3002B76D5 /* TableViewController.xib */; };
+		7C0DBE7022EAC0E9002B76D5 /* TableViewHeaderView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6C22EAA1DA002B76D5 /* TableViewHeaderView.xib */; };
 		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
@@ -672,6 +675,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0DBE6E22EAC0E9002B76D5 /* AdContainerView.swift in Sources */,
+				7C0DBE6F22EAC0E9002B76D5 /* TableViewController.xib in Sources */,
+				7C0DBE7022EAC0E9002B76D5 /* TableViewHeaderView.xib in Sources */,
 				7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */,
 				7C0DBE6822EA9BE3002B76D5 /* TableViewController.swift in Sources */,
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,

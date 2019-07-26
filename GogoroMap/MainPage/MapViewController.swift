@@ -188,6 +188,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupAd(with: view)
         #endif
         
+        navigationController?.pushViewController(TableViewController(), animated: true)
+        
     }
     enum Status {
         case lock, release
