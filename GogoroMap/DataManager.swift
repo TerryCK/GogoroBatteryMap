@@ -10,41 +10,49 @@ import Foundation
 
 protocol DataManagerProtocol {
     func saveToDatabase(with annotations: [BatteryStationPointAnnotation])
-    var initialStations: [BatteryStationPointAnnotation] { get }
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void)
+    var initialStations: [BatteryStationPointAnnotation] { get set }
+    var stations: [Response.Station] { get set }
+    var lastUpdate: Date { get set }
 }
 
 enum ServiceError: Error {
     case general
 }
-final class DataManager {
+
+final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
   
-    private init() { }
+    private override init() { }
     
     static let shared = DataManager()
+    
+    var stations: [Response.Station] = []
+    
+    @objc dynamic var lastUpdate: Date = Date()
     
     func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
         guard let data = try? JSONEncoder().encode(annotations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
-    func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
+    private func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
         return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data))
             ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
     }
     
     var initialStations: [BatteryStationPointAnnotation] {
-
         return fetchData(from: .database).flatMap(dataBridge) ??
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }
     
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
         fetchData { (result) in
-            if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) {
-                completionHandler(.success(stations))
+            if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
+                self.lastUpdate = Date()
+                self.stations = stations
+                completionHandler(.success(stations.map(BatteryStationPointAnnotation.init)))
             } else {
                 completionHandler(.failure(ServiceError.general))
             }
@@ -61,7 +69,6 @@ final class DataManager {
     }
     
     private func fetchData(completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        
         guard let url = URL(string: Keys.standard.gogoroAPI) else {
             completionHandler(.failure(ServiceError.general))
             return
@@ -77,5 +84,4 @@ final class DataManager {
             }
             }.resume()
     }
-    
 }

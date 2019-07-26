@@ -184,10 +184,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         longPressRecognizer.numberOfTapsRequired = 1
         longPressRecognizer.minimumPressDuration = 0.1
         mapView.addGestureRecognizer(longPressRecognizer)
-        #if DEBUG
-        adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        #else
-        setupAd()
+        #if Release
+        setupAd(with: view)
         #endif
         
     }
@@ -346,7 +344,7 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
         collectionView.deselectItem(at: indexPath, animated: false)
     }
     
-    private func mapViewMove(to station: MKPointAnnotation) {
+    func mapViewMove(to station: MKPointAnnotation) {
         Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
         let annotationPoint = MKMapPoint(station.coordinate).centerOfScreen
         let factor = 0.7, height = 20000.0

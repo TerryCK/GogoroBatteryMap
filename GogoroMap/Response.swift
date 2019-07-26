@@ -40,6 +40,14 @@ public struct Response: Decodable {
     public struct Station: Decodable, ResponseStationProtocol {
         
         
+        var mkPointAnnotation: MKPointAnnotation {
+            return {
+                $0.coordinate = coordinate
+                $0.title = name.localized()
+                $0.subtitle = address.localized()
+                return $0
+                }(MKPointAnnotation())
+        }
         
         public let state: Int
         public let name, address, city: Detail

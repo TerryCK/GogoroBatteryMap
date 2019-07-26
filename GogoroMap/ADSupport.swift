@@ -11,16 +11,20 @@ import GoogleMobileAds
 import Crashlytics
 
 protocol ADSupportable: GADBannerViewDelegate {
-    func setupAd()
+    func setupAd(with view: UIView)
     var bannerView: GADBannerView { set get }
     var adUnitID: String { get }
-    func didReceiveAd(_ bannerView: GADBannerView)
-    
 }
 
 extension ADSupportable where Self: UIViewController {
-    
-    func setupAd() {
+    var adUnitID: String {
+        #if DEBUG
+        return "ca-app-pub-3940256099942544/2934735716"
+        #else
+        return "ca-app-pub-3022461967351598~7274807607"
+        #endif
+    }
+    func setupAd(with view: UIView) {
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else { return }
         Answers.log(view: "Ad View")
