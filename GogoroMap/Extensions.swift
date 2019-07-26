@@ -152,3 +152,20 @@ extension MKMapPoint {
         return MKMapPoint(x: x - offsetCenterX, y: y - offsetCenterY)
     }
 }
+
+extension UIViewController {
+    // MARK: - UIViewController containment
+    func displayContentController(_ controller: UIViewController, inView view: UIView) {
+        addChild(controller)
+        controller.view.frame = view.bounds
+        view.addSubview(controller.view)
+        controller.didMove(toParent: self)
+    }
+    
+    func removeContentController(_ controller: UIViewController?) {
+        controller?.willMove(toParent: nil)
+        controller?.view.removeFromSuperview()
+        controller?.removeFromParent()
+    }
+
+}

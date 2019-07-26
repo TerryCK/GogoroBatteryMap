@@ -20,11 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
-        //        window?.rootViewController = UINavigationController(rootViewController: BackupViewController(style: .grouped))
         window?.makeKeyAndVisible()
-        
         setupIAPOberserver()
-
         #if RELEASE
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
@@ -42,14 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func setupIAPOberserver() {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
-            for purchase in purchases {
-                if purchase.transaction.transactionState == .purchased || purchase.transaction.transactionState == .restored {
-                    if purchase.needsFinishTransaction {
-                        // Deliver content from server, then:
-                        SwiftyStoreKit.finishTransaction(purchase.transaction)
-                    }
-                    print("purchased: \(purchase)")
-                }
+            for purchase in purchases where [.purchased, .restored].contains(purchase.transaction.transactionState) && purchase.needsFinishTransaction {
+                SwiftyStoreKit.finishTransaction(purchase.transaction)
             }
         }
     }
@@ -62,7 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        UserDefaults.standard.synchronize()
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -78,7 +68,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
     }
-    
-    
 }
 

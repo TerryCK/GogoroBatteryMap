@@ -110,7 +110,7 @@ final class BackupViewController: UITableViewController {
         super.viewDidLoad()
         Answers.log(view: "backup page")
         setupObserve()
-        setupAd()
+        setupAd(with: view)
        
         tableView.delegate = self
         tableView.dataSource = self
