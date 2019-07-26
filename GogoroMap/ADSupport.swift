@@ -21,7 +21,7 @@ extension ADSupportable where Self: UIViewController {
         #if DEBUG
         return "ca-app-pub-3940256099942544/2934735716"
         #else
-        return "ca-app-pub-3022461967351598~7274807607"
+        return  Keys.standard.adUnitID
         #endif
     }
     func setupAd(with view: UIView) {

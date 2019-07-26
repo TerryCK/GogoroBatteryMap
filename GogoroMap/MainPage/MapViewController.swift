@@ -229,8 +229,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     var batteryStationPointAnnotations = DataManager.shared.initialStations {
         willSet {
-            clusterManager.removeAll()
-            reloadMapView()
+            clusterManager.remove(batteryStationPointAnnotations)
             clusterManager.add(newValue)
             reloadMapView()
         }
@@ -399,7 +398,7 @@ extension MapViewController {
             return originalMKAnnotationView(mapView, viewFor: annotation)
         }
         
-        let annotationView = mapView.annotationView(of: CountClusterAnnotationView.self, annotation: annotation, reuseIdentifier: "Cluster")
+        let annotationView = mapView.annotationView(of: CountClusterAnnotationView.self, annotation: clusterAnnotation, reuseIdentifier: "Cluster")
         annotationView.countLabel.backgroundColor = .green
         return annotationView
     }
@@ -523,13 +522,9 @@ extension MapViewController: IAPPurchasable {
 extension MapViewController {
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         views.forEach { $0.alpha = 0 }
-        UIView.animate(withDuration: 0.35,
-                       delay: 0,
-                       usingSpringWithDamping: 1,
-                       initialSpringVelocity: 0,
-                       options: [],
-                       animations: { views.forEach { $0.alpha = 1 } }
-        )
+        UIView.animate(withDuration: 0.35) {
+             views.forEach { $0.alpha = 1 }
+        }
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
