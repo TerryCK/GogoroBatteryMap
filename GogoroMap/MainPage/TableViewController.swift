@@ -17,24 +17,10 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
     func apply(searchText: String) -> DataSource
 }
 
-protocol Searchable {
-    func apply(searchText: String) -> Self
-}
-//
-//extension TableViewGroupDataManager: Searchable where Element: ResponseStationProtocol {
-//    func apply(searchText: String) -> TableViewGroupDataManager<Element> {
-//        <#code#>
-//    }
-//    
-//    
-//}
-
-
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
     
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
-    
-    
+
     private var observation: NSKeyValueObservation?
     
     var searchText: String = "" {
