@@ -7,22 +7,31 @@
 //
 
 import MapKit
+import Crashlytics
 
-
-struct CalloutAccessoryViewModel<Annotation: MKAnnotation> {
-    let destination: Annotation
-    
-   
+struct CalloutAccessoryViewModel {
+    let destinationView: MKAnnotationView
 }
 
 
-extension CalloutAccessoryViewModel where Annotation: BatteryDataModalProtocol {
-    @discardableResult
-    func bind(mapView: MKMapView, calloutView: DetailAnnotationView) -> DetailAnnotationView {
-        
-        
-        calloutView.distanceLabel.text = "距離計算中..."
-        calloutView.etaLabel.text = "時間計算中..."
+extension CalloutAccessoryViewModel {
+    private func checkinCount(with calculate: (Int, Int) -> Int) {
+        Answers.log(event: .MapButtons, customAttributes: #function)
+        guard let batteryAnnotation = destinationView.annotation as? BatteryStationPointAnnotation else { return }
+        let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
+        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date() : nil
+        batteryAnnotation.checkinCounter = counterOfcheckin
+        destinationView.image = batteryAnnotation.iconImage
+        _ = (destinationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation)
+    }
+
+    func bind(mapView: MKMapView) {
+        guard let destination = mapView.selectedAnnotations.first as? BatteryStationPointAnnotation,
+            let detailCalloutView = destinationView.detailCalloutAccessoryView as? DetailAnnotationView else {
+                return
+        }
+        detailCalloutView.distanceLabel.text = "距離計算中..."
+        detailCalloutView.etaLabel.text = "時間計算中..."
         Navigator.travelETA(from: mapView.userLocation.coordinate, to: destination.coordinate) { (result) in
             var distance = "無法取得資料", travelTime = "無法取得資料"
             DispatchQueue.main.async {
@@ -31,12 +40,14 @@ extension CalloutAccessoryViewModel where Annotation: BatteryDataModalProtocol {
                     distance = "距離：\(String(format: "%.1f", route.distance/1000)) km "
                     travelTime = "約：" + (hours > 0 ? "\(hours) 小時 " : "") + "\(minutes) 分鐘 "
                 }
-                calloutView.distanceLabel.text = distance
-                calloutView.etaLabel.text = travelTime
+                detailCalloutView.distanceLabel.text = distance
+                detailCalloutView.etaLabel.text = travelTime
             }
         }
-        
-        return calloutView.configure(annotation: destination)
+        detailCalloutView.checkinAction = { self.checkinCount(with: +) }
+        detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
+        detailCalloutView.goAction = { Navigator.go(to: destination) }
+        detailCalloutView.configure(annotation: destination)
     }
 }
 

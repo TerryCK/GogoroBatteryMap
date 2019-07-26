@@ -28,14 +28,14 @@ final class DetailAnnotationView: UIView {
         }
         switch action {
         case .go: goAction?()
-        case .checkin: checkin?()
-        case .uncheckin: uncheckin?()
+        case .checkin: checkinAction?()
+        case .uncheckin: uncheckinAction?()
         }
     }
     
     var goAction : (() -> Void)?
-    var checkin  :  (() -> Void)?
-    var uncheckin:  (() -> Void)?
+    var checkinAction  :  (() -> Void)?
+    var uncheckinAction:  (() -> Void)?
     
     let checkinButton: UIButton = {
         let button = CheckinButton(type: .system)
@@ -160,6 +160,7 @@ final class DetailAnnotationView: UIView {
         }
     }
  
+    @discardableResult
     func configure(annotation: BatteryDataModalProtocol) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
