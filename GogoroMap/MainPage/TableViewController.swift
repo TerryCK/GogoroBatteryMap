@@ -20,14 +20,14 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
 protocol Searchable {
     func apply(searchText: String) -> Self
 }
-
-extension TableViewGroupDataManager: Searchable where Element: ResponseStationProtocol {
-    func apply(searchText: String) -> TableViewGroupDataManager<Element> {
-        <#code#>
-    }
-    
-    
-}
+//
+//extension TableViewGroupDataManager: Searchable where Element: ResponseStationProtocol {
+//    func apply(searchText: String) -> TableViewGroupDataManager<Element> {
+//        <#code#>
+//    }
+//    
+//    
+//}
 
 
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
