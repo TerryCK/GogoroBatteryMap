@@ -355,23 +355,6 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     }
 }
 
-//MARK: - Checkin functions
-extension MapViewController {
-    // Date().string(dateformat: "yyyy.MM.dd") : ""
-    private func checkinCount(with calculate: (Int, Int) -> Int, log: String) {
-        Answers.log(event: .MapButtons, customAttributes: log)
-        guard let batteryAnnotation = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
-        let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
-        batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date() : nil
-        batteryAnnotation.checkinCounter = counterOfcheckin
-        selectedAnnotationView?.image = batteryAnnotation.iconImage
-        _ = (selectedAnnotationView?.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation)
-    }
-    
-    @objc func checkin()   { checkinCount(with: +, log: "Check in") }
-    
-    @objc func unCheckin() { checkinCount(with: -, log: "Remove check in") }
-}
 
 //MARK: - Lists of function annotations
 extension MapViewController {
@@ -421,11 +404,7 @@ extension MapViewController {
         guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
         annotationView?.image = batteryStation.iconImage
         
-        annotationView?.detailCalloutAccessoryView = DetailAnnotationView {
-            $0.goButton.addTarget(self, action: #selector(MapViewController.navigating), for: .touchUpInside)
-            $0.checkinButton.addTarget(self, action: #selector(MapViewController.checkin), for: .touchUpInside)
-            $0.unCheckinButton.addTarget(self, action: #selector(MapViewController.unCheckin), for: .touchUpInside)
-            }.configure(annotation: batteryStation)
+        annotationView?.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
         
         return annotationView
     }
@@ -440,25 +419,8 @@ extension MapViewController {
         
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         selectedAnnotationView = view
-        guard let destination = view.annotation?.coordinate,
-            let detailCalloutView = view.detailCalloutAccessoryView as? DetailAnnotationView else {
-                return
-        }
         
-        detailCalloutView.distanceLabel.text = "距離計算中..."
-        detailCalloutView.etaLabel.text = "時間計算中..."
-        Navigator.travelETA(from: currentUserLocation.coordinate, to: destination) { (result) in
-            var distance = "無法取得資料", travelTime = "無法取得資料"
-            DispatchQueue.main.async {
-                if case .success(let response) = result, let route = response.routes.first {
-                    let (hours, minutes) = TimeInterval.travelTimeConvert(seconds: route.expectedTravelTime)
-                    distance = "距離：\(String(format: "%.1f", route.distance/1000)) km "
-                    travelTime = "約：" + (hours > 0 ? "\(hours) 小時 " : "") + "\(minutes) 分鐘 "
-                }
-                detailCalloutView.distanceLabel.text = distance
-                detailCalloutView.etaLabel.text = travelTime
-            }
-        }
+        CalloutAccessoryViewModel(destinationView: view).bind(mapView: mapView)
     }
     
     
@@ -483,13 +445,6 @@ extension MapViewController {
         mapView.setVisibleMapRect(zoomRect, animated: true)
     }
     
-    
-    @objc func navigating() {
-        Answers.log(event: .MapButtons, customAttributes: #function)
-        guard let destination = selectedAnnotationView?.annotation as? BatteryStationPointAnnotation else { return }
-        
-        Navigator.go(to: destination)
-    }
     
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButtons, customAttributes: #function)
@@ -531,21 +486,4 @@ extension MapViewController {
         guard gestureRecognizerStatus == .release else { return }
         clusterManager.reload(mapView: mapView)
     }
-}
-
-
-//TODO:- test area
-extension MapViewController {
-    
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        currentUserLocation = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude:  mapView.centerCoordinate.longitude)
-    }
-    
-    
-    //    func getRadius(centralLocation: CLLocation) -> Double {
-    //        let topCentralLat: Double = centralLocation.coordinate.latitude -  mapView.region.span.latitudeDelta/2
-    //        let topCentralLocation = CLLocation(latitude: topCentralLat, longitude: centralLocation.coordinate.longitude)
-    //        let radius = centralLocation.distance(from: topCentralLocation)
-    //        return radius / 1000.0 // to convert radius to meters
-    //    }
 }
