@@ -24,7 +24,6 @@ struct TableViewGroupDataManager<Element>: TableViewGroupDataSource {
     subscript(indexPath: IndexPath) -> Element              {  return array[indexPath.section].value[indexPath.row]  }
     func numberOfRowsInSection(indexPath: IndexPath) -> Int {  return array[indexPath.section].value.count }
     func title(indexPath: IndexPath) -> String              {  return array[indexPath.section].key }
-
 }
 
 extension TableViewGroupDataManager {
@@ -42,8 +41,8 @@ extension TableViewGroupDataManager {
         array = Array(Dictionary(grouping: s, by: closure)).sorted { $0.key > $1.key }
     }
     
-    init<S: Sequence>(_ s: S) where S.Element == Element  {
-        array = []
+    init<S: Sequence>(_ s: S) where S.Element == Element {
+        array = Array(Dictionary(grouping: s, by: { _ in "" }))
     }
 }
 

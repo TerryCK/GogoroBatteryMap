@@ -171,7 +171,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    
+    private var displayContentController: UIViewController?
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -187,8 +187,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         #if Release
         setupAd(with: view)
         #endif
-        
-        navigationController?.pushViewController(TableViewController(), animated: true)
+       
+//        navigationController?.pushViewController(TableViewController(), animated: true)
         
     }
     enum Status {
@@ -379,6 +379,7 @@ extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
         Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
+
         mapView.isHidden            = segmentStatus != .map
         collectionView.isHidden     = segmentStatus == .map
         locationArrowView.isEnabled = segmentStatus == .map
