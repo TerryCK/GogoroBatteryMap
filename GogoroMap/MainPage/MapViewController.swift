@@ -47,7 +47,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     
     func reloadMapView() {
         DispatchQueue.main.async {
-            self.clusterManager.reload(self.mapView, visibleMapRect: self.mapView.visibleMapRect)
+            self.clusterManager.reload(mapView: self.mapView)
         }
     }
     
@@ -207,7 +207,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         
         gestureRecognizerStatus = isLongPressGestureRecognizerActive ? .lock : .release
         guard isLongPressGestureRecognizerActive, let lastTouchPoint = lastTouchPoint else {
-            clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+            clusterManager.reload(mapView: mapView)
             return
         }
         let current = sender.location(in: mapView)
@@ -399,16 +399,9 @@ extension MapViewController {
             return originalMKAnnotationView(mapView, viewFor: annotation)
         }
         
-        let style = ClusterAnnotationStyle.color(.grassGreen, radius: 36)
-        let identifier = "Cluster"
-        var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-        if let view = view as? ClusterAnnotationView {
-            view.annotation = clusterAnnotation
-            view.configure(with: style)
-        } else {
-            view = ClusterAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier, style: style)
-        }
-        return view
+        let annotationView = mapView.annotationView(of: CountClusterAnnotationView.self, annotation: annotation, reuseIdentifier: "Cluster")
+        annotationView.countLabel.backgroundColor = .green
+        return annotationView
     }
     
     
@@ -541,7 +534,7 @@ extension MapViewController {
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         guard gestureRecognizerStatus == .release else { return }
-        clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+        clusterManager.reload(mapView: mapView)
     }
 }
 
