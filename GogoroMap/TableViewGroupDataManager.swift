@@ -41,6 +41,10 @@ extension TableViewGroupDataManager {
     init<T: Sequence>(_ s: T, closure: (T.Element) -> String) where T.Element == Element {
         array = Array(Dictionary(grouping: s, by: closure)).sorted { $0.key > $1.key }
     }
+    
+    init<S: Sequence>(_ s: S) where S.Element == Element  {
+        array = []
+    }
 }
 
 extension TableViewGroupDataManager: CustomStringConvertible {
