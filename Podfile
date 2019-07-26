@@ -5,14 +5,13 @@ def shared_pods
 use_frameworks!
 
 pod 'AlamofireNetworkActivityLogger'
-pod 'SideMenu', :git => 'https://github.com/jonkykong/SideMenu.git', :tag => '3.1.5'
+pod 'SideMenu'
 pod 'Google-Mobile-Ads-SDK'
 pod 'Fabric'
 pod 'Crashlytics'
 pod 'Firebase/Core'
 pod 'SwiftyStoreKit'
-pod 'Cluster', :git => 'https://github.com/efremidze/Cluster.git', :tag => '2.1.0'
-
+pod 'Cluster'
 end
 
 target 'GogoroMap' do
@@ -37,12 +36,11 @@ post_install do |installer|
     target.build_configurations.each do |config|
     
       if target.name.include? 'SideMenu'
-#          puts "#{target.name}"
-          config.build_settings['SWIFT_VERSION'] = '4.0'
+          config.build_settings['SWIFT_VERSION'] = '5'
       elsif target.name.include? 'Cluster'
-          config.build_settings['SWIFT_VERSION'] = '4.0'
+          config.build_settings['SWIFT_VERSION'] = '5'
       else
-          config.build_settings['SWIFT_VERSION'] = '4.2'
+          config.build_settings['SWIFT_VERSION'] = '5'
       end
     end
   end
