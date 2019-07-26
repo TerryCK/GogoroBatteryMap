@@ -14,17 +14,41 @@ final class DetailAnnotationView: UIView {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)
         button.contentMode = .scaleAspectFill
+        button.tag = ButtonAction.go.rawValue
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
+    enum ButtonAction: Int {
+        case go = 0, checkin = 1, uncheckin = 2
+    }
+    
+    @objc func buttonPressed(sender: UIButton) {
+        guard let action = ButtonAction(rawValue: sender.tag) else {
+            return
+        }
+        switch action {
+        case .go: goAction?()
+        case .checkin: checkin?()
+        case .uncheckin: uncheckin?()
+        }
+    }
+    
+    var goAction : (() -> Void)?
+    var checkin  :  (() -> Void)?
+    var uncheckin:  (() -> Void)?
     
     let checkinButton: UIButton = {
         let button = CheckinButton(type: .system)
+        button.tag = ButtonAction.checkin.rawValue
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
     
     let unCheckinButton: UIButton = {
         let button = UnCheckInButton(type: .system)
         button.isHidden = true
+        button.tag = ButtonAction.uncheckin.rawValue
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
     

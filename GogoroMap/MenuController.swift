@@ -108,7 +108,7 @@ final class MenuController: UICollectionViewController {
 extension MenuController {
     
     @objc func performBackupPage() {
-        let backupVC = BackupViewController.init(style: .grouped)
+        let backupVC = BackupViewController(style: .grouped)
         backupVC.stations = dataSource
         navigationController?.pushViewController(backupVC, animated: true)
     }
