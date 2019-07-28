@@ -16,7 +16,7 @@ public protocol RegexMatchable : StringProtocol {
     func match(regex: Regex) -> Bool
     func matches(with regex: Regex, options: NSRegularExpression.Options) -> [String]
     func capturedGroups(with regex: Regex, options: NSRegularExpression.Options) -> [String]
-    func replacingOccurrences(regex: Regex, options: NSRegularExpression.Options = [], replacement: String) -> String
+    func replacingOccurrences(regex: Regex, options: NSRegularExpression.Options, replacement: String) -> String
 }
 
 public extension RegexMatchable {
