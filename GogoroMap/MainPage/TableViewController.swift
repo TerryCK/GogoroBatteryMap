@@ -23,6 +23,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     private var observation: NSKeyValueObservation?
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
        searchResultData = rawData.filter(searchText: searchText)
     }
     
@@ -98,7 +99,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController {
+        if let mapViewController = parent as? MapViewController {
             mapViewController.displayContentController = nil
             mapViewController.mapViewMove(to: searchResultData[indexPath])
         }

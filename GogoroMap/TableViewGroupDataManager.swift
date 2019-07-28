@@ -52,8 +52,9 @@ extension TableViewGroupDataManager where Element == BatteryStationPointAnnotati
         }
         let keywords = searchText.replacingOccurrences(regex: "臺".regex, replacement: "台")
         
-        let fetchResult = array.map {
-              ($0.key, $0.value.filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false } )
+        let fetchResult = array.compactMap { element -> (String, [BatteryStationPointAnnotation])? in
+            let result = element.value.filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false }
+           return result.isEmpty ? nil : (element.key, result)
         }
         return TableViewGroupDataManager(array: fetchResult)
     }
