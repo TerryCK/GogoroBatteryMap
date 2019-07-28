@@ -312,11 +312,11 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
     
     func mapViewMove(to annotation: MKAnnotation) {
         let annotationPoint = MKMapPoint(annotation.coordinate).centerOfScreen
-        let factor = 0.7, height = 20000.0
+        let factor = 0.7, height = 15000.0
         let width = factor * height
         let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
             if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude }) {
                 self.mapView.selectAnnotation(selectedAnnotation, animated: true)
             }
