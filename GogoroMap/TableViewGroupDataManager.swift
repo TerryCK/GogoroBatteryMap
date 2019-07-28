@@ -27,8 +27,8 @@ struct TableViewGroupDataManager<Element>: TableViewGroupDataSource {
 }
 
 extension TableViewGroupDataManager {
-    init<T: Sequence>(_ s: T, closure: (T.Element) -> String) where T.Element == Element {
-        array = Array(Dictionary(grouping: s, by: closure))
+    init<T: Sequence>(_ s: T, groupKey: (T.Element) -> String) where T.Element == Element {
+        array = Array(Dictionary(grouping: s, by: groupKey))
     }
     
     init<S: Sequence>(_ s: S) where S.Element == Element {
@@ -55,7 +55,6 @@ extension TableViewGroupDataManager where Element == BatteryStationPointAnnotati
         let fetchResult = array.map {
               ($0.key, $0.value.filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false } )
         }
-        
         return TableViewGroupDataManager(array: fetchResult)
     }
 }

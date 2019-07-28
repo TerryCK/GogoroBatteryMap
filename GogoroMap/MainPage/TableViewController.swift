@@ -22,13 +22,6 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
 
     private var observation: NSKeyValueObservation?
     
-//    var searchText: String = "" {
-//        didSet {
-//            searchResultData = rawData.filter(searchText: searchText)
-//        }
-//    }
-    
-    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
        searchResultData = rawData.filter(searchText: searchText)
     }
@@ -44,9 +37,8 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
-            
             self.rawData = TableViewGroupDataManager(dataManager.stations,
-                                                     closure: { $0.address.matches(with: "^[^市縣]*".regex).first ?? ""} )
+                                                     groupKey: { $0.address.matches(with: "^[^市縣]*".regex).first ?? ""} )
         }
     }
     
@@ -54,13 +46,9 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         observation?.invalidate()
     }
     
-    private var userLocation: MKUserLocation? {
-        return (navigationController?.viewControllers.first { $0.isKind(of: MapViewController.self) } as? MapViewController)?.mapView.userLocation
-    }
-    
     var rawData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
         didSet {
-            if let userLocation = userLocation?.location {
+            if let userLocation = (parent as? MapViewController)?.userLocation {
                 rawData = rawData
                     .sortedValue { $0.distance(from: userLocation) < $1.distance(from: userLocation)
                     }.sorted {
@@ -111,7 +99,6 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController {
-//            navigationController?.popViewController(animated: false)
             mapViewController.displayContentController = nil
             mapViewController.mapViewMove(to: searchResultData[indexPath])
         }

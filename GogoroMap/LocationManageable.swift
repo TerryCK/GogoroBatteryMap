@@ -43,8 +43,8 @@ extension MapViewController: LocationManageable  {
 
     
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
-        currentUserLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
-        mapView.setRegion(MKCoordinateRegion(center: currentUserLocation.coordinate,
+        userLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
+        mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate,
                                              span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)), animated: false)
     }
     
@@ -53,28 +53,6 @@ extension MapViewController: LocationManageable  {
         Answers.logCustomEvent(withName: "TrackingMode", customAttributes: ["TrackingMode" : "\(mode)"])
         mapView.setUserTrackingMode(mode, animated: mode == .followWithHeading)
         locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
-    }
-}
-
-extension MapViewController {
-    
-    @objc(mapView:didChangeUserTrackingMode:animated:) func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
-        locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let current = locations.last else { return }
-        currentUserLocation = current
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-            locationManager.requestLocation()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
     }
 }
 

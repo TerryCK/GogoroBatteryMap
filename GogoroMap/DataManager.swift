@@ -28,7 +28,9 @@ final class DataManager: NSObject {
     
     static let shared = DataManager()
     
-    var stations: [BatteryStationPointAnnotation] = []
+    lazy var stations: [BatteryStationPointAnnotation] = {
+      return initialStations
+    }()
     
     @objc dynamic var lastUpdate: Date = Date()
     
@@ -42,7 +44,7 @@ final class DataManager: NSObject {
             ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
     }
     
-    var initialStations: [BatteryStationPointAnnotation] {
+    private var initialStations: [BatteryStationPointAnnotation] {
         return fetchData(from: .database).flatMap(dataBridge) ??
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }
@@ -59,7 +61,7 @@ final class DataManager: NSObject {
         }
     }
     
-     func fetchData(from apporach: Approach) -> Data? {
+     private func fetchData(from apporach: Approach) -> Data? {
         switch apporach {
         case .bundle:
             return Bundle.main.path(forResource: "gogoro", ofType: "json").flatMap { try? Data(contentsOf: URL(fileURLWithPath: $0)) }
