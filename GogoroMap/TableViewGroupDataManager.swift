@@ -17,6 +17,7 @@ protocol TableViewGroupDataSource {
     
 }
 
+
 struct TableViewGroupDataManager<Element>: TableViewGroupDataSource {
     typealias Group = (key: String, value: Array<Element>)
     private let array: [Group]

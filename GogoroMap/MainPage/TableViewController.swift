@@ -19,12 +19,11 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
     
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
-
+    
     private var observation: NSKeyValueObservation?
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
-       searchResultData = rawData.filter(searchText: searchText)
+        searchResultData = rawData.filter(searchText: searchText)
     }
     
     override func viewDidLoad() {
@@ -64,12 +63,12 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     }
     
     
-     var searchResultData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
+    var searchResultData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
         didSet {
             DispatchQueue.main.async(execute: tableView.reloadData)
         }
     }
-
+    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return searchResultData.numberOfSection
