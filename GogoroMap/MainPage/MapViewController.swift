@@ -157,7 +157,7 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
             case .some(let contentViewController): displayContentController(contentViewController, inView: mapView)
             case .none:
                 segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
-                removeContentController(displayContentController)
+                removeContentController(oldValue)
             }
         }
     }
