@@ -171,12 +171,18 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    private var displayContentController: UIViewController? {
-        didSet {
-            guard let content = displayContentController else {
-                return
+    var displayContentController: UIViewController? {
+        willSet {
+            if newValue == nil {
+                segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
+                removeContentController(displayContentController)
             }
-            displayContentController(content, inView: mapView)
+        }
+        didSet {
+            if let content = displayContentController  {
+                displayContentController(content, inView: mapView)
+            }
+            
         }
     }
     override func viewDidLoad() {
