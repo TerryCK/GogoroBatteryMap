@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 import GoogleMobileAds
 
 protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate {
@@ -14,7 +15,7 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
     var rawData: DataSource { get set }
     var searchResultData: DataSource { get set }
     var searchText: String { get set }
-    func apply(searchText: String) -> DataSource
+//    func apply(searchText: String) -> DataSource
 }
 
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
@@ -25,18 +26,8 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     var searchText: String = "" {
         didSet {
-            searchResultData = apply(searchText: searchText)
+            searchResultData = rawData.apply(searchText: searchText, groupKey: groupHandler)
         }
-    }
-    
-    func apply(searchText: String) -> TableViewGroupDataManager<Response.Station> {
-        guard !searchText.isEmpty else {
-           return rawData
-        }
-        let searchResult = rawData.reduce([Response.Station]()) { $0 + $1.value.filter {
-            $0.name.localized()?.contains(searchText) ?? false || $0.address.localized()?.contains(searchText) ?? false}
-        }
-       return TableViewGroupDataManager(searchResult, closure: groupHandler)
     }
     
     
@@ -51,32 +42,45 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         title = "站點列表"
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
-        DataManager.shared.fetchStations { (_) in }
     }
     
     private func setupObserve() {
-        observation  = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
             self.rawData = TableViewGroupDataManager(dataManager.stations, closure: self.groupHandler)
             DispatchQueue.main.async(execute: self.tableView.reloadData)
         }
     }
     
-    private let groupHandler: (Response.Station) -> String = {
-        $0.address.localized()?.matches(with: "^[^市縣]*".regex).first ?? ""
+    private let groupHandler: (BatteryStationPointAnnotation) -> String = {
+        $0.address.matches(with: "^[^市縣]*".regex).first ?? ""
     }
     
     deinit {
         observation?.invalidate()
     }
     
-     var rawData: TableViewGroupDataManager<Response.Station> = TableViewGroupDataManager([Response.Station]()) {
+    private var userLocation: MKUserLocation? {
+        return (navigationController?.viewControllers.first { $0.isKind(of: MapViewController.self) } as? MapViewController)?.mapView.userLocation
+    }
+    
+    var rawData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
         didSet {
-            searchResultData = apply(searchText: searchText)
+            if let userLocation = userLocation?.location {
+                rawData = rawData
+                    .sortedValue { $0.distance(from: userLocation) < $1.distance(from: userLocation)
+                    }.sorted {
+                        guard case let (a?, b?) = ($0.value.first?.distance(from: userLocation), $1.value.first?.distance(from: userLocation)) else {
+                            return false
+                        }
+                        return a < b
+                }
+            }
+            searchResultData = rawData.apply(searchText: searchText, groupKey: groupHandler).apply(searchText: searchText, groupKey: groupHandler)
         }
     }
     
     
-     var searchResultData: TableViewGroupDataManager<Response.Station> = TableViewGroupDataManager([Response.Station]()) {
+     var searchResultData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
         didSet {
             DispatchQueue.main.async(execute: tableView.reloadData)
         }
@@ -104,7 +108,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-        let title = searchResultData[indexPath].name.localized()
+        let title = searchResultData[indexPath].title
         cell.textLabel?.text = (title?.isEmpty ?? true) ? "  敬請期待  " : title
         cell.textLabel?.textAlignment = (title?.isEmpty ?? true) ? .center : .natural
         return cell
@@ -113,7 +117,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController {
             navigationController?.popViewController(animated: false)
-            mapViewController.mapViewMove(to: searchResultData[indexPath].mkPointAnnotation)
+            mapViewController.mapViewMove(to: searchResultData[indexPath])
         }
     }
 }
