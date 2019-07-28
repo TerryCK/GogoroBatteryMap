@@ -22,12 +22,20 @@ extension MapViewController: ADSupportable {
         didReceiveAd(bannerView)
     }
 }
-
-
-final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate, CLLocationManagerDelegate  {
+extension MapViewController: CLLocationManagerDelegate {
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        self.userLocation = userLocation.location
+    }
     
-    var currentUserLocation: CLLocation!
+    func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
+        locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
+    }
+}
+
+final class MapViewController: UIViewController, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate  {
     
+    var userLocation: CLLocation!
+    private var selectedAnnotationView: MKAnnotationView? = nil
     var adUnitID = Keys.standard.adUnitID
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
@@ -50,14 +58,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
             self.clusterManager.reload(mapView: self.mapView)
         }
     }
-    
-    var listToDisplay = [BatteryStationPointAnnotation]() {
-        didSet {
-            cellEmptyGuideView.isHidden = !listToDisplay.isEmpty
-            collectionView.isHidden = listToDisplay.isEmpty
-            if !listToDisplay.isEmpty { collectionView.reloadData() }
-        }
-    }
+
     
     let cellEmptyGuideView = UITextView {
         $0.text = "目前尚未有符合資料可顯示..."
@@ -67,7 +68,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         $0.isHidden = true
     }
     
-    private var selectedAnnotationView: MKAnnotationView? = nil
     
     //     MARK: - View Creators
     private lazy var clusterManager: ClusterManager = {
@@ -104,39 +104,19 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         return button
     }()
     
-    private lazy var segmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl()
-        SegmentStatus.items.forEach {
-            sc.insertSegment(withTitle: $0.name,
-                             at: $0.rawValue,
-                             animated: false)
+    private lazy var segmentedControl: UISegmentedControl = { sc in
+        SegmentStatus.allCases.forEach {
+
+            sc.insertSegment(withTitle: $0.name, at: $0.rawValue, animated: true)
         }
-        
+
         sc.selectedSegmentIndex = 0
         sc.tintColor = .white
         sc.addTarget(self,
                      action: #selector(MapViewController.segmentChange),
                      for: .valueChanged)
         return sc
-    }()
-    
-    
-    lazy var collectionView: UICollectionView = {
-        let flowLayout = UICollectionViewFlowLayout {
-            $0.itemSize = CGSize(width: view.frame.width, height: 70)
-            $0.minimumInteritemSpacing = 0
-            $0.minimumLineSpacing = 0
-        }
-        
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        cv.delegate = self
-        cv.dataSource = self
-        cv.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: MyCollectionViewCell.self))
-        cv.isHidden = true
-        cv.backgroundColor = .clear
-        cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
-        return cv
-    }()
+    }(UISegmentedControl())
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
@@ -172,19 +152,16 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
     }
     
     var displayContentController: UIViewController? {
-        willSet {
-            if newValue == nil {
+        didSet {
+            switch displayContentController {
+            case .some(let contentViewController): displayContentController(contentViewController, inView: mapView)
+            case .none:
                 segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
                 removeContentController(displayContentController)
             }
         }
-        didSet {
-            if let content = displayContentController  {
-                displayContentController(content, inView: mapView)
-            }
-            
-        }
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -201,7 +178,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         setupAd(with: view)
         #endif
        
-//        navigationController?.pushViewController(TableViewController(), animated: true)
         
     }
     enum Status {
@@ -240,7 +216,7 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         DataManager.shared.saveToDatabase(with: batteryStationPointAnnotations)
     }
     
-    var batteryStationPointAnnotations = DataManager.shared.initialStations {
+    var batteryStationPointAnnotations = DataManager.shared.stations {
         willSet {
             clusterManager.remove(batteryStationPointAnnotations)
             clusterManager.add(newValue)
@@ -314,10 +290,8 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
    
     
     private func setupMainViews() {
-        [mapView, collectionView, cellEmptyGuideView].forEach { (myView: UIView) in
-            view.addSubview(myView)
-            myView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
-        }
+        view.addSubview(mapView)
+        mapView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     }
     
     private func setupSegmentControllerContainer() {
@@ -335,28 +309,6 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         view.addSubview(backgroundView)
         backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
     }
-}
-
-// MARK: - UICollectionViewDataSource
-extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return listToDisplay.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return (collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: MyCollectionViewCell.self), for: indexPath) as! MyCollectionViewCell).configure(index: indexPath.item, station: listToDisplay[indexPath.item], userLocation: currentUserLocation)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: "Pressd CellView"])
-        let seletedItem = listToDisplay[indexPath.item]
-        segmentedControl.selectedSegmentIndex = 0
-        segmentChange(sender: segmentedControl)
-        if !mapView.annotations.contains { $0.title ?? ""  == seletedItem.title } { mapViewMove(to: seletedItem) }
-        mapView.selectAnnotation(seletedItem, animated: true)
-        collectionView.deselectItem(at: indexPath, animated: false)
-    }
     
     func mapViewMove(to annotation: MKAnnotation) {
         let annotationPoint = MKMapPoint(annotation.coordinate).centerOfScreen
@@ -372,17 +324,17 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
     }
 }
 
-
 //MARK: - Lists of function annotations
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
-        let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
-        
+        let segmentStatus = SegmentStatus.allCases[sender.selectedSegmentIndex]
+        locationArrowView.isEnabled = segmentStatus == .map
+        setTracking(mode: .none)
         switch segmentStatus {
         case .map:  removeContentController(displayContentController)
         case .checkin: displayContentController = TableViewController()
             
-        case .building, .nearby: break
+        case .building, .nearby: removeContentController(displayContentController)
             
         }
         
@@ -401,7 +353,7 @@ extension MapViewController {
 }
 
 //MARK: - Present annotationView and Navigatorable
-extension MapViewController {
+extension MapViewController: MKMapViewDelegate {
     
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
@@ -430,12 +382,21 @@ extension MapViewController {
         
         guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
         annotationView?.image = batteryStation.iconImage
-        
         annotationView?.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
-        
         return annotationView
     }
     
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35) {
+            views.forEach { $0.alpha = 1 }
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        guard gestureRecognizerStatus == .release else { return }
+        clusterManager.reload(mapView: mapView)
+    }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let clusterAnnotation = view.annotation as? ClusterAnnotation {
@@ -462,7 +423,6 @@ extension MapViewController {
         mapView.setRegion(region, animated: false)
     }
     
-    
     private func clusterSetVisibleMapRect(with cluster: ClusterAnnotation) {
         let zoomRect = cluster.annotations.reduce(MKMapRect.null) { (zoomRect, annotation) in
             let annotationPoint = MKMapPoint(annotation.coordinate)
@@ -472,14 +432,11 @@ extension MapViewController {
         mapView.setVisibleMapRect(zoomRect, animated: true)
     }
     
-    
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButtons, customAttributes: #function)
         setTracking(mode: mapView.userTrackingMode.nextMode)
     }
 }
-
-
 
 // MARK:- Verify purchase notification
 extension MapViewController: IAPPurchasable {
@@ -488,6 +445,7 @@ extension MapViewController: IAPPurchasable {
                                                selector: #selector(handlePurchaseNotification(_:)),
                                                name:  .init(rawValue: Keys.standard.removeAdsObserverName),
                                                object: nil)
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(resignApp(_:)),
                                                name: UIApplication.didEnterBackgroundNotification,
@@ -496,21 +454,5 @@ extension MapViewController: IAPPurchasable {
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
-    }
-}
-
-
-//feature for cluster
-extension MapViewController {
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        views.forEach { $0.alpha = 0 }
-        UIView.animate(withDuration: 0.35) {
-             views.forEach { $0.alpha = 1 }
-        }
-    }
-    
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        guard gestureRecognizerStatus == .release else { return }
-        clusterManager.reload(mapView: mapView)
     }
 }

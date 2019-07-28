@@ -10,10 +10,10 @@ import UIKit
 import Crashlytics
 import CoreLocation
 
-enum SegmentStatus: Int {
-    case map, checkin, nearby, building
+enum SegmentStatus: Int, CaseIterable {
+    case map = 0, checkin, nearby, building
     
-    static let items: [SegmentStatus] = [map , checkin, nearby, building]
+    
     
     var name: String {
         switch self {
