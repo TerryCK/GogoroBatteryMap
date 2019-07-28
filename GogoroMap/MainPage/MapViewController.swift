@@ -171,7 +171,14 @@ final class MapViewController: UIViewController, MKMapViewDelegate, ManuDelegate
         }
     }
     
-    private var displayContentController: UIViewController?
+    private var displayContentController: UIViewController? {
+        didSet {
+            guard let content = displayContentController else {
+                return
+            }
+            displayContentController(content, inView: mapView)
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserver()
@@ -345,13 +352,17 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
         collectionView.deselectItem(at: indexPath, animated: false)
     }
     
-    func mapViewMove(to station: MKPointAnnotation) {
-        Answers.log(event: .MapButtons, customAttributes: "mapViewMove")
-        let annotationPoint = MKMapPoint(station.coordinate).centerOfScreen
+    func mapViewMove(to annotation: MKAnnotation) {
+        let annotationPoint = MKMapPoint(annotation.coordinate).centerOfScreen
         let factor = 0.7, height = 20000.0
         let width = factor * height
         let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+            if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude }) {
+                self.mapView.selectAnnotation(selectedAnnotation, animated: true)
+            }
+        }
     }
 }
 
@@ -360,16 +371,26 @@ extension MapViewController: UICollectionViewDataSource, UICollectionViewDelegat
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = SegmentStatus.items[sender.selectedSegmentIndex]
-        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-
-        mapView.isHidden            = segmentStatus != .map
-        collectionView.isHidden     = segmentStatus == .map
-        locationArrowView.isEnabled = segmentStatus == .map
-        cellEmptyGuideView.isHidden = segmentStatus == .map
-        setTracking(mode: .none)
-        guard segmentStatus != .map else { return }
-        listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations,
-                                                           currentUserLocation: currentUserLocation)
+        
+        switch segmentStatus {
+        case .map:  removeContentController(displayContentController)
+        case .checkin: displayContentController = TableViewController()
+            
+        case .building, .nearby: break
+            
+        }
+        
+//
+//        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
+//
+//        mapView.isHidden            = segmentStatus != .map
+//        collectionView.isHidden     = segmentStatus == .map
+//        locationArrowView.isEnabled = segmentStatus == .map
+//        cellEmptyGuideView.isHidden = segmentStatus == .map
+//        setTracking(mode: .none)
+//        guard segmentStatus != .map else { return }
+//        listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations,
+//                                                           currentUserLocation: currentUserLocation)
     }
 }
 

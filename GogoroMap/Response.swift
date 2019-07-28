@@ -7,28 +7,23 @@
 //
 
 import UIKit
-import MapKit
+
 public protocol ResponseStationProtocol {
     var state: Int { get }
     var name: Response.Station.Detail { get }
     var address: Response.Station.Detail { get }
-    var coordinate: CLLocationCoordinate2D { get }
+    var city: Response.Station.Detail { get }
     var latitude : Double { get  }
     var longitude: Double { get  }
     var availableTime: String? { get }
-    var city: Response.Station.Detail { get }
 }
 
 public extension Response.Station.Detail {
     func localized() -> String? {
-        return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value
+        return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value?.replacingOccurrences(regex: "臺".regex, replacement: "台")
     }
 }
-extension ResponseStationProtocol {
-    public var coordinate: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-}
+
 
 public struct Response: Decodable {
     public let stations: [Station]
@@ -37,17 +32,7 @@ public struct Response: Decodable {
         case stations = "data"
     }
     
-    public struct Station: Decodable, ResponseStationProtocol {
-        
-        
-        var mkPointAnnotation: MKPointAnnotation {
-            return {
-                $0.coordinate = coordinate
-                $0.title = name.localized()
-                $0.subtitle = address.localized()
-                return $0
-                }(MKPointAnnotation())
-        }
+    public struct Station: Decodable {
         
         public let state: Int
         public let name, address, city: Detail

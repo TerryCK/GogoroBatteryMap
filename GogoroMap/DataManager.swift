@@ -28,7 +28,7 @@ final class DataManager: NSObject {
     
     static let shared = DataManager()
     
-    var stations: [Response.Station] = []
+    var stations: [BatteryStationPointAnnotation] = []
     
     @objc dynamic var lastUpdate: Date = Date()
     
@@ -51,8 +51,8 @@ final class DataManager: NSObject {
         fetchData { (result) in
             if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
                 self.lastUpdate = Date()
-                self.stations = stations
-                completionHandler(.success(stations.map(BatteryStationPointAnnotation.init)))
+                self.stations = stations.map(BatteryStationPointAnnotation.init)
+                completionHandler(.success(self.stations))
             } else {
                 completionHandler(.failure(ServiceError.general))
             }

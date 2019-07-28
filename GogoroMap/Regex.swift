@@ -16,6 +16,7 @@ public protocol RegexMatchable : StringProtocol {
     func match(regex: Regex) -> Bool
     func matches(with regex: Regex, options: NSRegularExpression.Options) -> [String]
     func capturedGroups(with regex: Regex, options: NSRegularExpression.Options) -> [String]
+    func replacingOccurrences(regex: Regex, options: NSRegularExpression.Options = [], replacement: String) -> String
 }
 
 public extension RegexMatchable {
@@ -42,5 +43,10 @@ extension String : RegexMatchable {
         return (0..<match.numberOfRanges).compactMap {
             return match.range(at: $0).location == NSNotFound ? nil : Range(match.range(at: $0), in: self).flatMap { String(self[$0]) }
         }
+    }
+    
+    public func replacingOccurrences(regex: Regex, options: NSRegularExpression.Options = [], replacement: String) -> String {
+        let regular = try? NSRegularExpression(pattern: regex.pattern, options: options)
+        return regular?.stringByReplacingMatches(in: self, options: [], range: NSRange(startIndex..., in: self), withTemplate: replacement) ?? self
     }
 }

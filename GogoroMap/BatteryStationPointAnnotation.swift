@@ -80,7 +80,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         return coordinate == (object as? BatteryStationPointAnnotation)?.coordinate
     }
     
-    public convenience init<T: ResponseStationProtocol>(station: T) {
+    public convenience init(station: Response.Station) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
             coordinate: CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude),
