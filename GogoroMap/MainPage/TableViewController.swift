@@ -14,8 +14,6 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
     associatedtype DataSource
     var rawData: DataSource { get set }
     var searchResultData: DataSource { get set }
-    var searchText: String { get set }
-//    func apply(searchText: String) -> DataSource
 }
 
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
@@ -24,15 +22,15 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
 
     private var observation: NSKeyValueObservation?
     
-    var searchText: String = "" {
-        didSet {
-            searchResultData = rawData.apply(searchText: searchText, groupKey: groupHandler)
-        }
-    }
+//    var searchText: String = "" {
+//        didSet {
+//            searchResultData = rawData.filter(searchText: searchText)
+//        }
+//    }
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.searchText = searchText
+       searchResultData = rawData.filter(searchText: searchText)
     }
     
     override func viewDidLoad() {
@@ -46,13 +44,10 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
-            self.rawData = TableViewGroupDataManager(dataManager.stations, closure: self.groupHandler)
-            DispatchQueue.main.async(execute: self.tableView.reloadData)
+            
+            self.rawData = TableViewGroupDataManager(dataManager.stations,
+                                                     closure: { $0.address.matches(with: "^[^市縣]*".regex).first ?? ""} )
         }
-    }
-    
-    private let groupHandler: (BatteryStationPointAnnotation) -> String = {
-        $0.address.matches(with: "^[^市縣]*".regex).first ?? ""
     }
     
     deinit {
@@ -75,7 +70,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
                         return a < b
                 }
             }
-            searchResultData = rawData.apply(searchText: searchText, groupKey: groupHandler).apply(searchText: searchText, groupKey: groupHandler)
+            searchResultData = rawData
         }
     }
     
@@ -116,7 +111,8 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController {
-            navigationController?.popViewController(animated: false)
+//            navigationController?.popViewController(animated: false)
+            mapViewController.displayContentController = nil
             mapViewController.mapViewMove(to: searchResultData[indexPath])
         }
     }

@@ -34,11 +34,7 @@ extension TableViewGroupDataManager {
     init<S: Sequence>(_ s: S) where S.Element == Element {
         array = Array(Dictionary(grouping: s, by: { _ in "" }))
     }
-    
-    func reduce<Result>(_ initialResult: Result, nextPartialResult: (Result, Group) throws -> Result) rethrows -> Result {
-        return try array.reduce(initialResult, nextPartialResult)
-    }
-    
+
     func sorted(by handler: ((Group, Group) throws -> Bool)) rethrows -> TableViewGroupDataManager {
         return try TableViewGroupDataManager(array: array.sorted(by: handler))
     }
@@ -46,27 +42,22 @@ extension TableViewGroupDataManager {
     func sortedValue(by handler: ((Element, Element) throws -> Bool)) rethrows -> TableViewGroupDataManager {
         return try TableViewGroupDataManager(array: array.map { ($0.key, try $0.value.sorted(by: handler)) })
     }
-    
-    func filter(by hanlder: (Group) throws -> Bool) rethrows -> TableViewGroupDataManager {
-        return try TableViewGroupDataManager(array: array.filter(hanlder))
-    }
-    
-    
 }
 
 extension TableViewGroupDataManager where Element == BatteryStationPointAnnotation {
     
-    func apply(searchText: String, groupKey: (Element) -> String) -> TableViewGroupDataManager {
+    func filter(searchText: String) -> TableViewGroupDataManager {
         guard !searchText.isEmpty else {
             return self
         }
-        let searchResult = reduce([BatteryStationPointAnnotation]()) { $0 + $1.value.filter {
-            let title = $0.title ?? ""
-            return $0.address.contains(searchText) || title.contains(searchText)
-            }
+        let keywords = searchText.replacingOccurrences(regex: "臺".regex, replacement: "台")
+        
+        let fetchResult = array.map {
+              ($0.key, $0.value.filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false } )
+        }
+        
+        return TableViewGroupDataManager(array: fetchResult)
     }
-    return TableViewGroupDataManager(searchResult, closure: groupKey)
-}
 }
 
 extension TableViewGroupDataManager: CustomStringConvertible {
