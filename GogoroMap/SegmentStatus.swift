@@ -14,7 +14,6 @@ enum SegmentStatus: Int, CaseIterable {
     case map = 0, checkin, nearby, building
     
     
-    
     var name: String {
         switch self {
         case .map       : return "地圖模式"

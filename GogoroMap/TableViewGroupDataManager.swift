@@ -43,21 +43,25 @@ extension TableViewGroupDataManager {
     func sortedValue(by handler: ((Element, Element) throws -> Bool)) rethrows -> TableViewGroupDataManager {
         return try TableViewGroupDataManager(array: array.map { ($0.key, try $0.value.sorted(by: handler)) })
     }
+    
+    func filter(_ handler: ((Element) -> Bool) ) -> TableViewGroupDataManager {
+        let fetchResult = array.compactMap { element -> (String, [Element])? in
+            let result = element.value.filter(handler)
+            return result.isEmpty ? nil : (element.key, result)
+        }
+        return TableViewGroupDataManager(array: fetchResult)
+    }
 }
 
 extension TableViewGroupDataManager where Element == BatteryStationPointAnnotation {
+   
     
     func filter(searchText: String) -> TableViewGroupDataManager {
         guard !searchText.isEmpty else {
             return self
         }
         let keywords = searchText.replacingOccurrences(regex: "臺".regex, replacement: "台")
-        
-        let fetchResult = array.compactMap { element -> (String, [BatteryStationPointAnnotation])? in
-            let result = element.value.filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false }
-           return result.isEmpty ? nil : (element.key, result)
-        }
-        return TableViewGroupDataManager(array: fetchResult)
+        return filter { $0.address.contains(keywords) || $0.title?.contains(keywords) ?? false }
     }
 }
 

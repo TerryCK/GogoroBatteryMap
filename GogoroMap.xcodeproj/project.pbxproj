@@ -20,6 +20,8 @@
 		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
 		7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */; };
+		7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22F7F822EE940100E6FE63 /* TableViewCell.swift */; };
+		7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C22F7F922EE940100E6FE63 /* TableViewCell.xib */; };
 		7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED0225B3F220045A796 /* BackupElement.swift */; };
 		7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED2225B3F400045A796 /* SupplementaryCell.swift */; };
 		7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED6225B583A0045A796 /* ADSupport.swift */; };
@@ -94,6 +96,8 @@
 		7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
 		7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDataModalProtocol.swift; sourceTree = "<group>"; };
+		7C22F7F822EE940100E6FE63 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		7C22F7F922EE940100E6FE63 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		7C646ED0225B3F220045A796 /* BackupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupElement.swift; sourceTree = "<group>"; };
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
@@ -361,6 +365,8 @@
 			children = (
 				A8EACCB81F8EF534000B12BF /* Views */,
 				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
+				7C22F7F822EE940100E6FE63 /* TableViewCell.swift */,
+				7C22F7F922EE940100E6FE63 /* TableViewCell.xib */,
 				7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */,
 				7C0DBE6722EA9BE3002B76D5 /* TableViewController.xib */,
 				7C0DBE6B22EAA1DA002B76D5 /* TableViewHeaderView.swift */,
@@ -536,6 +542,7 @@
 				7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */,
 				7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */,
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
+				7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
 				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
@@ -744,6 +751,7 @@
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
 				7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
+				7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */,
 				7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
