@@ -26,13 +26,17 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         searchResultData = rawData.filter(searchText: searchText)
     }
     
+    var segmentStatus: SegmentStatus = .nearby
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
-        setupAd(with: view)
         title = "站點列表"
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
+        tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
+        #if Release
+        setupAd(with: view)
+        #endif
     }
     
     private func setupObserve() {
@@ -56,7 +60,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
                             return false
                         }
                         return a < b
-                }
+                    }
             }
             searchResultData = rawData
         }
@@ -90,10 +94,15 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-        let title = searchResultData[indexPath].title
-        cell.textLabel?.text = (title?.isEmpty ?? true) ? "  敬請期待  " : title
-        cell.textLabel?.textAlignment = (title?.isEmpty ?? true) ? .center : .natural
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell
+        let station = searchResultData[indexPath]
+        cell.goAction = { Navigator.go(to: station) }
+        cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
+        cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
+        if let userLocation = (parent as? MapViewController)?.userLocation {
+            cell.subtitleLabel.text = "距離：\(station.distance(from: userLocation).km) 公里"
+        }
+        cell.statusIconImageView.image = station.iconImage
         return cell
     }
     
