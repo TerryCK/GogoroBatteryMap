@@ -18,6 +18,8 @@ protocol SearchableViewControllerProtocol: UIViewController, UISearchBarDelegate
 
 final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable, SearchableViewControllerProtocol {
     
+    static let shared: TableViewController = TableViewController()
+    
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
@@ -26,7 +28,11 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         searchResultData = rawData.filter(searchText: searchText)
     }
     
-    var segmentStatus: SegmentStatus = .nearby
+    var segmentStatus: SegmentStatus = .nearby {
+        didSet {
+            searchResultData = rawData.filter(segmentStatus.hanlder)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,13 +45,15 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         #endif
     }
     
+    
+    
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
             self.rawData = TableViewGroupDataManager(dataManager.stations,
                                                      groupKey: { $0.address.matches(with: "^[^市縣]*".regex).first ?? ""} )
         }
     }
-    
+  
     deinit {
         observation?.invalidate()
     }
@@ -62,7 +70,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
                         return a < b
                     }
             }
-            searchResultData = rawData
+            searchResultData = rawData.filter(segmentStatus.hanlder)
         }
     }
     
@@ -109,6 +117,8 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let mapViewController = parent as? MapViewController {
             mapViewController.displayContentController = nil
+            
+            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
             mapViewController.mapViewMove(to: searchResultData[indexPath])
         }
     }
