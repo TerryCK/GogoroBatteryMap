@@ -104,12 +104,10 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         return button
     }()
     
-    private lazy var segmentedControl: UISegmentedControl = { sc in
+    lazy var segmentedControl: UISegmentedControl = { sc in
         SegmentStatus.allCases.forEach {
-
             sc.insertSegment(withTitle: $0.name, at: $0.rawValue, animated: true)
         }
-
         sc.selectedSegmentIndex = 0
         sc.tintColor = .white
         sc.addTarget(self,
@@ -153,11 +151,9 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
     
     var displayContentController: UIViewController? {
         didSet {
-            switch displayContentController {
-            case .some(let contentViewController): displayContentController(contentViewController, inView: mapView)
-            case .none:
-                segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
-                removeContentController(oldValue)
+            removeContentController(oldValue)
+            if let contentViewController = displayContentController {
+                displayContentController(contentViewController, inView: mapView)
             }
         }
     }
@@ -328,27 +324,18 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
 extension MapViewController {
     @objc func segmentChange(sender: UISegmentedControl) {
         let segmentStatus = SegmentStatus.allCases[sender.selectedSegmentIndex]
+        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
         locationArrowView.isEnabled = segmentStatus == .map
         setTracking(mode: .none)
-        switch segmentStatus {
-        case .map:  removeContentController(displayContentController)
-        case .checkin: displayContentController = TableViewController()
-            
-        case .building, .nearby: removeContentController(displayContentController)
-            
-        }
         
-//
-//        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-//
-//        mapView.isHidden            = segmentStatus != .map
-//        collectionView.isHidden     = segmentStatus == .map
-//        locationArrowView.isEnabled = segmentStatus == .map
-//        cellEmptyGuideView.isHidden = segmentStatus == .map
-//        setTracking(mode: .none)
-//        guard segmentStatus != .map else { return }
-//        listToDisplay = segmentStatus.annotationsToDisplay(annotations: batteryStationPointAnnotations,
-//                                                           currentUserLocation: currentUserLocation)
+        segmentedControl.selectedSegmentIndex = segmentStatus.rawValue
+        switch segmentStatus {
+        case .map: displayContentController = nil
+        case .checkin, .building, .nearby:
+            let contantViewController = TableViewController.shared
+            contantViewController.segmentStatus = segmentStatus
+            displayContentController = contantViewController
+        }
     }
 }
 

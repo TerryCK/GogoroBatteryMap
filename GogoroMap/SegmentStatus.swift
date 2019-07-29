@@ -31,7 +31,13 @@ enum SegmentStatus: Int, CaseIterable {
         case .building  : return "Building list"
         }
     }
-    
+    var hanlder: (BatteryDataModalProtocol) -> Bool {
+        switch self {
+        case .checkin       : return { $0.checkinCounter ?? 0 > 0 }
+        case .nearby, .map  : return  { _ in true }
+        case .building      : return{ !$0.isOperating }
+        }
+    }
     func annotationsToDisplay<T: BatteryDataModalProtocol>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
         Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
         let operating: (T) -> Bool
