@@ -32,11 +32,20 @@ extension MapViewController: CLLocationManagerDelegate {
     }
 }
 
+extension MapViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        <#code#>
+    }
+}
 final class MapViewController: UIViewController, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate  {
     
-    var userLocation: CLLocation!
+    lazy var userLocation: CLLocation? = locationManager.location
+    
     private var selectedAnnotationView: MKAnnotationView? = nil
+    
     var adUnitID = Keys.standard.adUnitID
+    
+   
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
@@ -57,15 +66,6 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         DispatchQueue.main.async {
             self.clusterManager.reload(mapView: self.mapView)
         }
-    }
-
-    
-    let cellEmptyGuideView = UITextView {
-        $0.text = "目前尚未有符合資料可顯示..."
-        $0.font = .systemFont(ofSize: 32)
-        $0.textAlignment = .center
-        $0.isEditable = false
-        $0.isHidden = true
     }
     
     
@@ -288,6 +288,12 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
     private func setupMainViews() {
         view.addSubview(mapView)
         mapView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "過濾關鍵字, 地區, 地址, 商店, 加油站, 打卡"
+        searchBar.barTintColor = .lightGreen
+        view.addSubview(searchBar)
+       
+        searchBar.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 56)
     }
     
     private func setupSegmentControllerContainer() {

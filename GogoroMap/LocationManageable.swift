@@ -44,7 +44,7 @@ extension MapViewController: LocationManageable  {
     
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
         userLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
-        mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate,
+        mapView.setRegion(MKCoordinateRegion(center: userLocation!.coordinate,
                                              span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)), animated: false)
     }
     
@@ -62,6 +62,7 @@ extension MKUserTrackingMode: CustomStringConvertible {
         case .none:              return #imageLiteral(resourceName: "locationArrowNone")
         case .follow:            return #imageLiteral(resourceName: "locationArrow")
         case .followWithHeading: return #imageLiteral(resourceName: "locationArrowFollewWithHeading")
+        @unknown default: return #imageLiteral(resourceName: "locationArrowNone")
         }
     }
     
@@ -70,6 +71,7 @@ extension MKUserTrackingMode: CustomStringConvertible {
         case .none:              return "None"
         case .follow:            return "Follow"
         case .followWithHeading: return "Heading"
+        @unknown default: return "None"
         }
     }
     

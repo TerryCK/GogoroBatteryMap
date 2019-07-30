@@ -71,6 +71,7 @@ extension BatteryStationPointAnnotation : Codable {
 
 
 
+
 public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryDataModalProtocol {
     public let address: String, state: Int
     public var checkinCounter: Int? = nil, checkinDay: Date? = nil
