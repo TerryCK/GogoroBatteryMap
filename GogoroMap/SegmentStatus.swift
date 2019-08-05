@@ -17,7 +17,7 @@ enum SegmentStatus: Int, CaseIterable {
     var name: String {
         switch self {
         case .map       : return "地圖模式"
-        case .building  : return "建置中列表"
+        case .building  : return "即將啟用"
         case .nearby    : return "附近列表"
         case .checkin   : return "打卡列表"
         }
@@ -26,9 +26,9 @@ enum SegmentStatus: Int, CaseIterable {
     var eventName: String {
         switch self {
         case .map       : return "Map mode"
-        case .checkin   : return "Checkin list"
-        case .nearby    : return "Nearby list"
-        case .building  : return "Building list"
+        case .checkin   : return "Checkin"
+        case .nearby    : return "Nearby"
+        case .building  : return "Building"
         }
     }
     var hanlder: (BatteryDataModalProtocol) -> Bool {

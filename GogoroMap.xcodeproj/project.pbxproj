@@ -152,7 +152,6 @@
 		A8E68F8D1F46D78400160388 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A8E71FD41F3D4B7300C8E34D /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
-		A8F69F931F3C096F00F5968C /* Myplayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Myplayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
 		DD8AD749A18C624453471F46 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -202,14 +201,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		A80660171F4419000036BE3B /* Playground */ = {
-			isa = PBXGroup;
-			children = (
-				A8F69F931F3C096F00F5968C /* Myplayground.playground */,
-			);
-			name = Playground;
-			sourceTree = "<group>";
-		};
 		A84AC7FF1F46EB71004F5E3B /* GogoroMapTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,7 +239,6 @@
 			children = (
 				A8C8BAC71F3C558500E9E18C /* Boards */,
 				A8EACCBA1F8EF5E2000B12BF /* GPS */,
-				A80660171F4419000036BE3B /* Playground */,
 				A808F0432220ED0E00761A31 /* gogoro.json */,
 				7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,

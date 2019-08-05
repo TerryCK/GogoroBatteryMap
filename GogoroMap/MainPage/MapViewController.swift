@@ -191,14 +191,13 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
             DispatchQueue.main.async {
-                self.navigationItem.title = "地圖狀態更新中"
+                self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
                     self.clusterManager.add(dataManager.stations)
                     self.reloadMapView()
-                    DispatchQueue.main.async {
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
-                    }
+                    
                 }
             }
         }
