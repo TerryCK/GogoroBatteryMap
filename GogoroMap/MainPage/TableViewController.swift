@@ -40,9 +40,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         title = "站點列表"
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
-        #if Release
         setupAd(with: view)
-        #endif
     }
     
     

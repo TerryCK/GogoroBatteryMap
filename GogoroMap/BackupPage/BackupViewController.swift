@@ -197,19 +197,26 @@ extension BackupViewController {
         case (.backupButton?, _):
             let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
-                UIAlertAction(title: "使用", style: .destructive, handler : { _ in
-                    DataManager.shared.fetchStations{ (result) in
-                        NetworkActivityIndicatorManager.shared.networkOperationStarted()
-                        self.navigationItem.title = "資料覆蓋中..."
-                        guard case .success(let stations) = result, let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else { return }
-                        stationRecords.forEach {
-                            for station in stations where $0.id == station.coordinate {
-                                (station.checkinDay, station.checkinCounter) = ($0.checkinDay, $0.checkinCount)
-                                return
+                UIAlertAction(title: "覆蓋", style: .destructive, handler : { _ in
+                    self.navigationItem.title = "資料覆蓋中..."
+                    guard let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else {
+                        return
+                    }
+                    DataManager.shared.fetchStations { (result) in
+                        guard case let .success(stations) = result else {
+                            return
+                        }
+                        for station in stations {
+                            for record in stationRecords where  record.id == station.coordinate {
+                                print(record.id == station.coordinate)
+                                (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                             }
                         }
-                        NetworkActivityIndicatorManager.shared.networkOperationFinished()
-                        self.navigationItem.title = "備份與還原"
+                        
+                        DataManager.shared.stations = stations
+                        DispatchQueue.main.async {
+                            self.navigationItem.title = "備份與還原"
+                        }
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
