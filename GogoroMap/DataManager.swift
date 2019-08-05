@@ -8,14 +8,6 @@
 
 import Foundation
 
-protocol DataManagerProtocol {
-    func saveToDatabase(with annotations: [BatteryStationPointAnnotation])
-    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void)
-    var initialStations: [BatteryStationPointAnnotation] { get set }
-    var stations: [Response.Station] { get set }
-    var lastUpdate: Date { get set }
-}
-
 enum ServiceError: Error {
     case general
 }
@@ -23,30 +15,22 @@ enum ServiceError: Error {
 final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
-  
+    
     private override init() { }
     
     static let shared = DataManager()
     
     lazy var stations: [BatteryStationPointAnnotation] = {
-      return initialStations
+        return fetchData(from: .database).flatMap(dataBridge) ??
+            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
+    
     
     @objc dynamic var lastUpdate: Date = Date()
     
-    func saveToDatabase(with annotations: [BatteryStationPointAnnotation]) {
-        guard let data = try? JSONEncoder().encode(annotations) else { return }
+    func save() {
+        guard let data = try? JSONEncoder().encode(stations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
-    }
-    
-    private func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
-        return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data))
-            ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
-    }
-    
-    private var initialStations: [BatteryStationPointAnnotation] {
-        return fetchData(from: .database).flatMap(dataBridge) ??
-            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }
     
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
@@ -61,7 +45,12 @@ final class DataManager: NSObject {
         }
     }
     
-     private func fetchData(from apporach: Approach) -> Data? {
+    private func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
+        return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data))
+            ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
+    }
+    
+    private func fetchData(from apporach: Approach) -> Data? {
         switch apporach {
         case .bundle:
             return Bundle.main.path(forResource: "gogoro", ofType: "json").flatMap { try? Data(contentsOf: URL(fileURLWithPath: $0)) }
