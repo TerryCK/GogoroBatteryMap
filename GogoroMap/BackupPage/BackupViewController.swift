@@ -206,9 +206,9 @@ extension BackupViewController {
                         guard case let .success(stations) = result else {
                             return
                         }
-                        for station in stations {
-                            for record in stationRecords where  record.id == station.coordinate {
-                                print(record.id == station.coordinate)
+                        
+                        for record in stationRecords {
+                            for station in stations where  record.id == station.coordinate {
                                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                             }
                         }
