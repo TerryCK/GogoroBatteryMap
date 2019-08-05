@@ -36,9 +36,8 @@ final class DataManager: NSObject {
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
         fetchData { (result) in
             if case let .success(data) = result, let response = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
+                completionHandler(.success(response.map(BatteryStationPointAnnotation.init)))
                 self.lastUpdate = Date()
-                self.stations.keepOldUpdate(with: response.map(BatteryStationPointAnnotation.init))
-                completionHandler(.success(self.stations))
             } else {
                 completionHandler(.failure(ServiceError.general))
             }
@@ -64,8 +63,6 @@ final class DataManager: NSObject {
             completionHandler(.failure(ServiceError.general))
             return
         }
-        
-        print("API: \(url)")
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()

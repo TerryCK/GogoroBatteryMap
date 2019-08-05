@@ -186,7 +186,11 @@ extension MenuController {
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         refreshButton?.isUserInteractionEnabled = false
-        DataManager.shared.fetchStations { (_) in }
+        DataManager.shared.fetchStations { result in
+            if case let .success(station) = result {
+                 DataManager.shared.stations.keepOldUpdate(with: station)
+            }
+        }
     }
     
     private func log(_ event: String) {
