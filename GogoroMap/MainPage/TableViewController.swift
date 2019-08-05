@@ -31,13 +31,14 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     var segmentStatus: SegmentStatus = .nearby {
         didSet {
             searchResultData = rawData.filter(segmentStatus.hanlder)
+            title = segmentStatus.name
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
-        title = "站點列表"
+        
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         setupAd(with: view)
