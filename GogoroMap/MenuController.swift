@@ -52,7 +52,7 @@ final class MenuController: UICollectionViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        #if Release
+        #if RELEASE
         if #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview()
         }
