@@ -12,17 +12,12 @@ import Crashlytics
 
 protocol ManuDelegate: AnyObject {
     var clusterSwitcher: ClusterStatus { set get }
-    func dataUpdate(onCompletion: (() -> Void)?)
 }
 
-protocol StationDataSource: AnyObject {
-    var batteryStationPointAnnotations: [BatteryStationPointAnnotation] { set get }
-}
 
 final class MenuController: UICollectionViewController {
     
     weak var delegate: ManuDelegate?
-    weak var dataSource: StationDataSource?
     
     var refreshButton: UIButton?
     
@@ -34,8 +29,27 @@ final class MenuController: UICollectionViewController {
         super.viewDidLoad()
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
-        
+        setupObserve()
     }
+    
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        observation?.invalidate()
+    }
+    
+    private var observation: NSKeyValueObservation?
+    
+    private func setupObserve() {
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
+            DispatchQueue.main.async {
+                self.navigationItem.title = "Information".localize()
+                self.collectionView?.reloadData()
+                self.refreshButton?.isUserInteractionEnabled = true
+            }
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         #if Release
@@ -49,18 +63,14 @@ final class MenuController: UICollectionViewController {
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
         collectionView?.reloadData()
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .init(rawValue: Keys.standard.removeAdsObserverName), object: nil)
-    }
-    
+
     // MARK: - CollectionView logics
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: type(of: self)), for: indexPath) as! StationsViewCell
         
         cell.delegate = self
-        cell.analytics = StationAnalyticsModel(dataSource?.batteryStationPointAnnotations ?? [])
+        cell.analytics = StationAnalyticsModel(DataManager.shared.stations)
         cell.product = products.first
         cell.purchaseHandler = purchase
         cell.mapOptions.setTitle("導航：" + Navigator.option.description, for: .normal)
@@ -108,9 +118,7 @@ final class MenuController: UICollectionViewController {
 extension MenuController {
     
     @objc func performBackupPage() {
-        let backupVC = BackupViewController(style: .grouped)
-        backupVC.stations = dataSource
-        navigationController?.pushViewController(backupVC, animated: true)
+        navigationController?.pushViewController(BackupViewController(style: .grouped), animated: true)
     }
     
     //    @objc func performGuidePage() {
@@ -172,18 +180,13 @@ extension MenuController {
         actions.forEach(alertController.addAction)
         present(alertController, animated: true)
     }
+    
     @objc func attempUpdate() {
         log(#function)
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         refreshButton?.isUserInteractionEnabled = false
-        delegate?.dataUpdate { [weak self] in
-            DispatchQueue.main.async {
-                self?.navigationItem.title = "Information".localize()
-                self?.collectionView?.reloadData()
-                self?.refreshButton?.isUserInteractionEnabled = true
-            }
-        }
+        DataManager.shared.fetchStations { (_) in }
     }
     
     private func log(_ event: String) {
