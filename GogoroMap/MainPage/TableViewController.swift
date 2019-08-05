@@ -58,7 +58,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         observation?.invalidate()
     }
     
-    var rawData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
+    var rawData = TableViewGroupDataManager(DataManager.shared.stations) {
         didSet {
             if let userLocation = (parent as? MapViewController)?.userLocation {
                 rawData = rawData

@@ -26,7 +26,6 @@ final class BackupViewController: UITableViewController {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-    weak var stations: StationDataSource?
     let adUnitID: String = Keys.standard.backupAdUnitID
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
     private let restoreHeadView = SupplementaryCell(title: "資料還原", subtitle: "從iCloud中選擇您要還原的備份資料的時間點以還原舊有資料")
@@ -160,8 +159,7 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            guard let stations = stations?.batteryStationPointAnnotations,
-                let data = try? JSONEncoder().encode(stations.compactMap(BatteryStationRecord.init)) else { return }
+            guard  let data = try? JSONEncoder().encode(DataManager.shared.stations.compactMap(BatteryStationRecord.init)) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
                 cell?.isUserInteractionEnabled = true
                 cell?.titleLabel.text = "立即備份"
@@ -212,7 +210,6 @@ extension BackupViewController {
                         }
                         NetworkActivityIndicatorManager.shared.networkOperationFinished()
                         self.navigationItem.title = "備份與還原"
-                        self.stations?.batteryStationPointAnnotations = stations
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),

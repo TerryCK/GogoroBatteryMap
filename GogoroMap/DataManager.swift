@@ -35,9 +35,9 @@ final class DataManager: NSObject {
     
     func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
         fetchData { (result) in
-            if case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
+            if case let .success(data) = result, let response = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
                 self.lastUpdate = Date()
-                self.stations = stations.map(BatteryStationPointAnnotation.init)
+                self.stations.keepOldUpdate(with: response.map(BatteryStationPointAnnotation.init))
                 completionHandler(.success(self.stations))
             } else {
                 completionHandler(.failure(ServiceError.general))

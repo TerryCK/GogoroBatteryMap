@@ -32,20 +32,14 @@ extension MapViewController: CLLocationManagerDelegate {
     }
 }
 
-//extension MapViewController: UISearchBarDelegate {
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        <#code#>
-//    }
-//}
-final class MapViewController: UIViewController, ManuDelegate, StationDataSource, GuidePageViewControllerDelegate  {
+
+final class MapViewController: UIViewController, ManuDelegate, GuidePageViewControllerDelegate  {
     
     lazy var userLocation: CLLocation? = locationManager.location
     
     private var selectedAnnotationView: MKAnnotationView? = nil
     
     var adUnitID = Keys.standard.adUnitID
-    
-   
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
@@ -67,15 +61,14 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
             self.clusterManager.reload(mapView: self.mapView)
         }
     }
-    
-    
+
     //     MARK: - View Creators
     private lazy var clusterManager: ClusterManager = {
         let cm = ClusterManager()
         cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         cm.minCountForClustering = 3
         cm.removeAll()
-        cm.add(batteryStationPointAnnotations)
+        cm.add(DataManager.shared.stations)
         return cm
     }()
     
@@ -141,15 +134,6 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
     }
     
     
-    func dataUpdate(onCompletion: (() -> Void)? = nil) {
-        DataManager.shared.fetchStations { [weak self] (result) in
-            if case let .success(remote) = result {
-                self?.batteryStationPointAnnotations.keepOldUpdate(with: remote)
-            }
-            onCompletion?()
-        }
-    }
-    
     var displayContentController: UIViewController? {
         didSet {
             removeContentController(oldValue)
@@ -165,7 +149,6 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         performGuidePage()
         authrizationStatus()
         setupPurchase()
-        dataUpdate()
         Answers.log(view: "Map Page")
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
         longPressRecognizer.numberOfTapsRequired = 1
@@ -174,7 +157,7 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         #if Release
         setupAd(with: view)
         #endif
-       
+        
         
     }
     enum Status {
@@ -205,15 +188,16 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        observation?.invalidate()
     }
     
-   
+    private var observation: NSKeyValueObservation?
     
-    var batteryStationPointAnnotations = DataManager.shared.stations {
-        willSet {
-            clusterManager.remove(batteryStationPointAnnotations)
-            clusterManager.add(newValue)
-            reloadMapView()
+    private func setupObserve() {
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
+            self.clusterManager.removeAll()
+            self.clusterManager.add(dataManager.stations)
+            self.reloadMapView()
         }
     }
     
@@ -242,7 +226,6 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         
         let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
-        menuController.dataSource = self
         sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
         sideMenuManager.menuLeftNavigationController?.leftSide = true
         sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
@@ -280,17 +263,11 @@ final class MapViewController: UIViewController, ManuDelegate, StationDataSource
         menuBarButton.anchor(top: topAnchor, left: navigationController.view.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
     }
     
-   
+    
     
     private func setupMainViews() {
         view.addSubview(mapView)
         mapView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
-//        let searchBar = UISearchBar()
-//        searchBar.placeholder = "過濾關鍵字, 地區, 地址, 商店, 加油站, 打卡"
-//        searchBar.barTintColor = .lightGreen
-//        view.addSubview(searchBar)
-       
-//        searchBar.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 56)
     }
     
     private func setupSegmentControllerContainer() {
