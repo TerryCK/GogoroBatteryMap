@@ -50,12 +50,18 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
             self.rawData = TableViewGroupDataManager(dataManager.stations,
                                                      groupKey: { $0.address.matches(with: "^[^市縣]*".regex).first ?? ""} )
+            self.stations = dataManager.stations.sorted {  $0.distance(from: self.userLocation) < $1.distance(from: self.userLocation) }
+            self.searchResultData = self.station.filter(segmentStatus.hanlder)
         }
     }
   
     deinit {
         observation?.invalidate()
     }
+    
+    lazy var userLocation : CLLocation! = (parent as? MapViewController)?.userLocation
+    
+    private var stations = DataManager.shared.stations.sorted {  $0.distance(from: userLocation) < $1.distance(from: userLocation) }
     
     var rawData = TableViewGroupDataManager(DataManager.shared.stations) {
         didSet {
@@ -74,12 +80,17 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     }
     
     
-    var searchResultData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
+//    var searchResultData = TableViewGroupDataManager([BatteryStationPointAnnotation]()) {
+//        didSet {
+//            DispatchQueue.main.async(execute: tableView.reloadData)
+//        }
+//    }
+    
+    var searchResultData = [BatteryStationPointAnnotation]() {
         didSet {
             DispatchQueue.main.async(execute: tableView.reloadData)
         }
     }
-    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return searchResultData.numberOfSection
