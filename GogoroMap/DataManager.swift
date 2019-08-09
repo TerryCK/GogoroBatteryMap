@@ -18,6 +18,7 @@ final class DataManager: NSObject {
     
     private override init() { }
     
+    
     static let shared = DataManager()
     
     lazy var stations: [BatteryStationPointAnnotation] = {

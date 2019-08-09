@@ -43,8 +43,8 @@ extension MapViewController: LocationManageable  {
 
     
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
-        userLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
-        mapView.setRegion(MKCoordinateRegion(center: userLocation!.coordinate,
+        let userLocation = locationManager.location ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
+        mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate,
                                              span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)), animated: false)
     }
     
