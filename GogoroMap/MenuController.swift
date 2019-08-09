@@ -95,7 +95,7 @@ final class MenuController: UICollectionViewController {
         navigationItem.titleView?.layer.masksToBounds = true
         collectionView?.backgroundColor = .clear
         collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
-        collectionView?.isScrollEnabled = false
+        collectionView?.isScrollEnabled = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(StationsViewCell.self, forCellWithReuseIdentifier: String(describing: type(of: self)))
     }
@@ -136,7 +136,8 @@ extension MenuController {
     
     @objc func moreApp() {
         log(#function)
-        open(url: "https://itunes.apple.com/tw/app/id1192891004?l=zh&mt=8")
+//        open(url: "https://apple.co/2KqUHIy")
+        open(url: "https://apps.apple.com/tw/developer/chen-guan-jhen/id1168936144")
     }
     
     @objc func shareThisApp() {
@@ -188,8 +189,9 @@ extension MenuController {
         refreshButton?.isUserInteractionEnabled = false
         DataManager.shared.fetchStations { result in
             if case let .success(station) = result {
-                 DataManager.shared.stations.keepOldUpdate(with: station)
+                return DataManager.shared.stations.keepOldUpdate(with: station)
             }
+            return nil
         }
     }
     

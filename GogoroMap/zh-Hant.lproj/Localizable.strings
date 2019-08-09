@@ -19,10 +19,10 @@
 // MARK: StationViewCell
 "RemovedAD" = "去廣告";
 "Restore" = "恢復購買";
-"Guide" = "導    覽";
-"More" = "更多";
-"Rating" =  "App評分";
-"Share" = "分    享";
+"Guide" = "導覽";
+"More" = "探索";
+"Rating" = "評分";
+"Share" = "分享";
 "FeedBack" = "回饋建議";
 "Last:" = "站點資料同步日期：";
 "refresh" = "更新";

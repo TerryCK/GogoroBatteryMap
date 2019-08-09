@@ -78,8 +78,10 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     
     private let authorLabel = UILabel {
-        $0.text = "Chen, Guan-Jhen \(Date().string(dateformat: "yyyy")) Copyright"
-        $0.font = .systemFont(ofSize: 12)
+        $0.text = "© \(Date().string(dateformat: "yyyy")) Chen, Guan-Jhen All rights reserved"
+        $0.font = .systemFont(ofSize: 11)
+        $0.numberOfLines = 0
+        $0.adjustsFontSizeToFitWidth = true
         $0.textColor = .gray
     }
     
@@ -131,6 +133,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         label.text = "Data provided by Gogoro, image: CC0 Public Domain".localize()
         label.font = UIFont.boldSystemFont(ofSize: 11)
         label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -161,6 +164,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         let button = CustomButton(type: .system)
         button.setTitle(NSLocalizedString("Share", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         return button
     }()
     
@@ -168,12 +172,14 @@ final class StationsViewCell: BaseCollectionViewCell {
         let button = CustomButton(type: .system)
         button.setTitle(NSLocalizedString("Rating", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         return button
     }()
     
     private let moreAppsButton: UIButton = {
         let button = CustomButton(type: .system)
-        button.setTitle("\(NSLocalizedString("More", comment: "")) app", for: .normal)
+        button.setTitle("\(NSLocalizedString("More", comment: ""))", for: .normal)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         return button
     }()
@@ -217,7 +223,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }()
     
     private lazy var pushShareStackView: UIStackView = {     
-        let stackView:  UIStackView = UIStackView(arrangedSubviews: [shareButton, recommandButton])
+        let stackView:  UIStackView = UIStackView(arrangedSubviews: [shareButton, recommandButton, moreAppsButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -327,7 +333,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         
         viewContainer.addSubview(authorLabel)
-        authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 10, rightPadding: 0, width: 0, height: 20)
+        authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 3, bottomPadding: 10, rightPadding: 3, width: 0, height: 20)
         authorLabel.centerXAnchor.constraint(equalTo: viewContainer.centerXAnchor).isActive = true
         
         viewContainer.addSubview(buttonsStackView)

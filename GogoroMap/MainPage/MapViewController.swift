@@ -15,29 +15,30 @@ import Cluster
 import CloudKit
 
 extension MapViewController: ADSupportable {
-    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        print("Google Ad error: \(error)")
-    }
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        didReceiveAd(bannerView)
+        bridgeAd(bannerView)
     }
 }
-extension MapViewController: CLLocationManagerDelegate {
-    func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
-        locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
+
+extension MapViewController  {
+    func setCurrentLocation(latDelta: Double, longDelta: Double) {
+        let userLocation = locationManager.userLocation ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
+        mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate,
+                                             span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)), animated: false)
+    }
+    
+    func setTracking(mode: MKUserTrackingMode) {
+        Answers.logCustomEvent(withName: "TrackingMode", customAttributes: ["TrackingMode" : "\(mode)"])
+        mapView.setUserTrackingMode(mode, animated: true)
     }
 }
 
 
-final class MapViewController: UIViewController, ManuDelegate, GuidePageViewControllerDelegate  {
+final class MapViewController: UIViewController, ManuDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-    lazy var locationManager = CLLocationManager {
-        $0.delegate = self
-        $0.distanceFilter = kCLLocationAccuracyNearestTenMeters
-        $0.desiredAccuracy = kCLLocationAccuracyBest
-    }
+    private let locationManager: LocationManager = .shared
     
     var clusterSwitcher = ClusterStatus() {
         didSet {
@@ -59,7 +60,7 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
         return cm
     }()
    
-    lazy var mapView = MKMapView {        
+    private lazy var mapView : MKMapView = {
         $0.delegate = self
         $0.mapType = .standard
         $0.showsUserLocation = true
@@ -67,7 +68,9 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
         $0.showsCompass = true
         $0.showsScale = true
         $0.showsTraffic = false
-    }
+        $0.userLocation.title = "😏 \("here".localize())"
+        return $0
+    }(MKMapView())
     
     lazy var locationArrowView: UIButton = {
         let button = UIButton(type: .system)
@@ -130,12 +133,31 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
         }
     }
     
+    func promptLocationAuthenticateError() {
+        let alertController = UIAlertController(title: "定位權限已關閉",
+                                                message: "如要變更權限，請至 設定 > 隱私權 > 定位服務 開啟",
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "確認", style: .default))
+        present(alertController, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupObserve()
         setupObserver()
         performGuidePage()
-        authrizationStatus()
+        
+        LocationManager.shared.authorize { (status) in
+            switch status {
+            case .denied, .restricted:
+                promptLocationAuthenticateError()
+            case .authorizedAlways, .authorizedWhenInUse, .notDetermined:
+                setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
+            @unknown default:
+                break
+            }
+        }
+        
         setupPurchase()
         Answers.log(view: "Map Page")
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
@@ -145,12 +167,19 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
         setupAd(with: view)
     }
     
+
     enum Status {
         case lock, release
     }
     private var lastTouchPoint: CGPoint?
     
-    private var gestureRecognizerStatus: Status  = .release
+    private var gestureRecognizerStatus: Status  = .release {
+        didSet {
+            if gestureRecognizerStatus == .lock {
+                setTracking(mode: .none)
+            }
+        }
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPoint = touches.first?.location(in: mapView)
@@ -179,12 +208,12 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
     private var observation: NSKeyValueObservation?
     
     private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             DispatchQueue.main.async {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-                    self.clusterManager.add(dataManager.stations)
+                    self.clusterManager.add(DataManager.shared.stations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                     
@@ -197,7 +226,7 @@ final class MapViewController: UIViewController, ManuDelegate, GuidePageViewCont
     //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
-        present(GuidePageViewController { $0.delegate = self }, animated: true)
+        present(GuidePageViewController(), animated: true)
     }
     
     @objc func performMenu() {
@@ -305,9 +334,8 @@ extension MapViewController {
         switch segmentStatus {
         case .map: displayContentController = nil
         case .checkin, .building, .nearby:
-            let contantViewController = TableViewController.shared
-            contantViewController.segmentStatus = segmentStatus
-            displayContentController = contantViewController
+            TableViewController.shared.segmentStatus = segmentStatus
+            displayContentController = TableViewController.shared
         }
     }
 }
@@ -351,6 +379,11 @@ extension MapViewController: MKMapViewDelegate {
         UIView.animate(withDuration: 0.35) {
             views.forEach { $0.alpha = 1 }
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
+        locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
+        
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

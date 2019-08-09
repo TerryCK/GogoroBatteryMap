@@ -12,12 +12,12 @@ enum ServiceError: Error {
     case general
 }
 
+
 final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
     
     private override init() { }
-    
     
     static let shared = DataManager()
     
@@ -25,7 +25,7 @@ final class DataManager: NSObject {
         return fetchData(from: .database).flatMap(dataBridge) ??
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
-    
+   
     
     @objc dynamic var lastUpdate: Date = Date()
     
@@ -34,13 +34,15 @@ final class DataManager: NSObject {
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
-    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> Void) {
+    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> [BatteryStationPointAnnotation]?) {
         fetchData { (result) in
             if case let .success(data) = result, let response = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
-                completionHandler(.success(response.map(BatteryStationPointAnnotation.init)))
+                if let stations = completionHandler(.success(response.map(BatteryStationPointAnnotation.init))) {
+                    self.stations = stations
+                }
                 self.lastUpdate = Date()
             } else {
-                completionHandler(.failure(ServiceError.general))
+                _ = completionHandler(.failure(ServiceError.general))
             }
         }
     }
