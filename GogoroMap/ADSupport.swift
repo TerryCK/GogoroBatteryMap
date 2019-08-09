@@ -17,7 +17,7 @@ protocol ADSupportable: GADBannerViewDelegate {
     func adViewDidReceiveAd(_ bannerView: GADBannerView)
 }
 
-extension ADSupportable {
+extension ADSupportable where Self: UIViewController {
     var adUnitID: String {
         #if DEBUG
         return "ca-app-pub-3940256099942544/2934735716"

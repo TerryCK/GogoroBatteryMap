@@ -80,20 +80,6 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-//    override init(style: UITableView.Style) {
-//        super.init(style: style)
-//        setupObserve()
-//    }
-//
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//        setupObserve()
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-    
     deinit {
         observation?.invalidate()
     }
