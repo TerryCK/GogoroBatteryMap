@@ -10,13 +10,10 @@
 		7C0DBE6822EA9BE3002B76D5 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */; };
 		7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6922EA9BF2002B76D5 /* TableViewGroupDataManager.swift */; };
 		7C0DBE6D22EAA1DA002B76D5 /* TableViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6B22EAA1DA002B76D5 /* TableViewHeaderView.swift */; };
-		7C0DBE6E22EAC0E9002B76D5 /* AdContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */; };
 		7C0DBE6F22EAC0E9002B76D5 /* TableViewController.xib in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6722EA9BE3002B76D5 /* TableViewController.xib */; };
 		7C0DBE7022EAC0E9002B76D5 /* TableViewHeaderView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6C22EAA1DA002B76D5 /* TableViewHeaderView.xib */; };
 		7C0DBE7722EAF8CD002B76D5 /* CountClusterAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE7622EAF8CD002B76D5 /* CountClusterAnnotationView.swift */; };
 		7C0DBE7922EB05A2002B76D5 /* CalloutAccessoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE7822EB05A2002B76D5 /* CalloutAccessoryViewModel.swift */; };
-		7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B84224A08AE00CB05B9 /* Keys.plist */; };
-		7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
 		7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */; };
 		7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22F7F822EE940100E6FE63 /* TableViewCell.swift */; };
@@ -68,6 +65,9 @@
 		A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD41F3D4B7300C8E34D /* MenuController.swift */; };
 		A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */; };
 		A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */; };
+		DE772FE122FD1218000A67C3 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE772FDF22FD1218000A67C3 /* Keys.plist */; };
+		DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */; };
+		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
 		E41C8F60F5C7BC4AAA35100E /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E422699BDE0AFFFDE59293 /* Pods_GogoroMapTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -94,8 +94,6 @@
 		7C0DBE6C22EAA1DA002B76D5 /* TableViewHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewHeaderView.xib; sourceTree = "<group>"; };
 		7C0DBE7622EAF8CD002B76D5 /* CountClusterAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountClusterAnnotationView.swift; sourceTree = "<group>"; };
 		7C0DBE7822EB05A2002B76D5 /* CalloutAccessoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalloutAccessoryViewModel.swift; sourceTree = "<group>"; };
-		7C0F5B84224A08AE00CB05B9 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
-		7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
 		7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDataModalProtocol.swift; sourceTree = "<group>"; };
 		7C22F7F822EE940100E6FE63 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -137,7 +135,6 @@
 		A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		A8C060181F3C9AD20054DE01 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnnotation.swift; sourceTree = "<group>"; };
-		A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdContainerView.swift; sourceTree = "<group>"; };
 		A8CE224E1F3EA11800A4EF6D /* Navigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -155,6 +152,9 @@
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
 		DD8AD749A18C624453471F46 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE772FDF22FD1218000A67C3 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,8 +171,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */,
-				A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */,
 				7E6E6FDE19CAFED68A744E0C /* Pods_GogoroMap.framework in Frameworks */,
+				A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,9 +183,9 @@
 			isa = PBXGroup;
 			children = (
 				A81ADFF02026DC1B008A757D /* CloudKit.framework */,
-				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 				DD8AD749A18C624453471F46 /* Pods_GogoroMap.framework */,
 				09E422699BDE0AFFFDE59293 /* Pods_GogoroMapTests.framework */,
+				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -240,9 +240,9 @@
 				A8C8BAC71F3C558500E9E18C /* Boards */,
 				A8EACCBA1F8EF5E2000B12BF /* GPS */,
 				A808F0432220ED0E00761A31 /* gogoro.json */,
-				7C0F5B86224A08CB00CB05B9 /* GoogleService-Info.plist */,
+				DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
-				7C0F5B84224A08AE00CB05B9 /* Keys.plist */,
+				DE772FDF22FD1218000A67C3 /* Keys.plist */,
 				A8C060181F3C9AD20054DE01 /* Media.xcassets */,
 			);
 			name = Resource;
@@ -271,6 +271,7 @@
 				A869AA181F4414B20085133C /* IAPs */,
 				7C646ED6225B583A0045A796 /* ADSupport.swift */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
+				DE772FE322FD3286000A67C3 /* Array+Extension.swift */,
 				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
@@ -335,7 +336,6 @@
 		A8EACCB81F8EF534000B12BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A8C8BAC81F3C59A900E9E18C /* AdContainerView.swift */,
 				7C0DBE7822EB05A2002B76D5 /* CalloutAccessoryViewModel.swift */,
 				A80759671F4C04430031D576 /* CheckinButton.swift */,
 				7C0DBE7622EAF8CD002B76D5 /* CountClusterAnnotationView.swift */,
@@ -526,8 +526,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A808F0442220ED0E00761A31 /* gogoro.json in Resources */,
-				7C0F5B87224A08CB00CB05B9 /* GoogleService-Info.plist in Resources */,
-				7C0F5B85224A08AE00CB05B9 /* Keys.plist in Resources */,
+				DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */,
+				DE772FE122FD1218000A67C3 /* Keys.plist in Resources */,
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
@@ -691,10 +691,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C0DBE6E22EAC0E9002B76D5 /* AdContainerView.swift in Sources */,
 				7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */,
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
+				DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */,
 				7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */,
 				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
 				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,

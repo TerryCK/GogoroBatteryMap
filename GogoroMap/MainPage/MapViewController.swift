@@ -23,10 +23,6 @@ extension MapViewController: ADSupportable {
     }
 }
 extension MapViewController: CLLocationManagerDelegate {
-    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        self.userLocation = userLocation.location
-    }
-    
     func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
         locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
     }
@@ -34,12 +30,6 @@ extension MapViewController: CLLocationManagerDelegate {
 
 
 final class MapViewController: UIViewController, ManuDelegate, GuidePageViewControllerDelegate  {
-    
-    lazy var userLocation: CLLocation? = locationManager.location
-    
-    private var selectedAnnotationView: MKAnnotationView? = nil
-    
-    var adUnitID = Keys.standard.adUnitID
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
@@ -371,12 +361,11 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let clusterAnnotation = view.annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
-            selectedAnnotationView = nil
+            
             return
         }
         
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
-        selectedAnnotationView = view
         
         CalloutAccessoryViewModel(destinationView: view).bind(mapView: mapView)
     }

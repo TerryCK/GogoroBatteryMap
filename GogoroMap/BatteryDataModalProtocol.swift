@@ -21,7 +21,7 @@ extension BatteryDataModalProtocol {
         if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
         return #imageLiteral(resourceName: "pinFull")
     }
-    func distance(from userPosition: CLLocation) -> Double {
+    func distance(from userPosition: CLLocation) -> CLLocationDistance {
         return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
     }
 }
