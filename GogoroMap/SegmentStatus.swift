@@ -38,20 +38,5 @@ enum SegmentStatus: Int, CaseIterable {
         case .building      : return{ !$0.isOperating }
         }
     }
-    func annotationsToDisplay<T: BatteryDataModalProtocol>(annotations: [T], currentUserLocation: CLLocation) -> [T] {
-        Answers.logCustomEvent(withName: Log.sharedName.mapButtons, customAttributes: [Log.sharedName.mapButton: eventName])
-        let operating: (T) -> Bool
-        
-        switch self {
-        case .map       : return []
-        case .checkin   : operating =  { $0.checkinCounter ?? 0 > 0 }
-        case .nearby    : operating =  { _ in true }
-        case .building  : operating =  { !$0.isOperating }
-        }
-        
-        return annotations
-            .filter(operating)
-            .sorted { $0.distance(from: currentUserLocation) < $1.distance(from: currentUserLocation) }
-    }
 }
 

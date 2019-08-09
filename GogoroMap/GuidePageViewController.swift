@@ -9,14 +9,8 @@
 import UIKit
 import Crashlytics
 
-protocol GuidePageViewControllerDelegate: AnyObject {
-    func setCurrentLocation(latDelta: Double, longDelta: Double)
-}
-
 final class GuidePageViewController: UIViewController {
 
-    weak var delegate: GuidePageViewControllerDelegate?
-    
     private lazy var guideImageView: UIImageView = {
         let imageView: UIImageView = UIImageView(frame: view.frame)
         imageView.image = #imageLiteral(resourceName: "guidePage")
@@ -49,7 +43,6 @@ final class GuidePageViewController: UIViewController {
     
     @objc func dismissController() {
         UserDefaults.standard.set(true, forKey: Keys.standard.beenHereKey)
-        delegate?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
         dismiss(animated: true, completion: nil)
     }
 }

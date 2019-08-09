@@ -10,19 +10,31 @@ import UIKit
 import MapKit
 import GoogleMobileAds
 
+extension TableViewController: ADSupportable {
+    public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        bridgeAd(bannerView)
+    }
+}
 
-final class TableViewController: UITableViewController, UISearchBarDelegate, ADSupportable {
+final class TableViewController: UITableViewController, UISearchBarDelegate {
     
     static let shared: TableViewController = TableViewController()
     
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
+    
     private var searchText = "" {
         didSet {
-            searchResultData = stations.filter(segmentStatus.hanlder).filter(text: searchText)
+            DispatchQueue.global().async {
+                self.searchResultData = self.stations.filter(self.segmentStatus.hanlder).filter(text: self.searchText)
+            }
         }
     }
+    
+    private let refreshController = UIRefreshControl()
+    
+    private let locationManager: LocationManager = .shared
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
@@ -31,37 +43,79 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
-    var segmentStatus: SegmentStatus = .nearby
+    var segmentStatus: SegmentStatus = .nearby {
+        didSet {
+            DispatchQueue.global().async {
+                self.stations = self.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
+        tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         setupAd(with: view)
+        tableView.addSubview(refreshController)
+        refreshController.attributedTitle =  NSAttributedString(string: "Updating".localize())
+        refreshController.addTarget(self, action: #selector(loadData), for: .valueChanged)
+        setupObserve()
     }
     
-    
-    override func didMove(toParent parent: UIViewController?) {
-        super.didMove(toParent: parent)
-        switch parent {
-        case .some(let parent as MapViewController) :
-            observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (dataManager, changed) in
-                self.stations = dataManager.stations.sorted(userLocation: parent.locationManager.location, by: <)
+    @objc func loadData() {
+        
+        DataManager.shared.fetchStations { result in
+            DispatchQueue.main.async(execute: self.refreshController.endRefreshing)
+            if case let .success(station) = result {
+                return DataManager.shared.stations.keepOldUpdate(with: station)
             }
-        default:
-            observation?.invalidate()
+            return nil
         }
     }
 
+    
+    private func setupObserve() {
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
+                self.stations = DataManager.shared.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+        }
+    }
+    
+//    override init(style: UITableView.Style) {
+//        super.init(style: style)
+//        setupObserve()
+//    }
+//
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        setupObserve()
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+    
+    deinit {
+        observation?.invalidate()
+    }
+    
     private var stations = DataManager.shared.stations {
         didSet {
             searchResultData = stations.filter(segmentStatus.hanlder).filter(text: searchText)
         }
     }
 
-    private var searchResultData = [BatteryStationPointAnnotation]() {
+    private var searchResultData = DataManager.shared.stations {
         didSet {
             DispatchQueue.main.async(execute: tableView.reloadData)
         }
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+       let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
+        header.countLabel.text = "\(searchResultData.count) 站"
+        header.regionLabel.text = searchText.isEmpty ? segmentStatus.name : "過濾關鍵字：\(searchText)"
+        return header
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -74,7 +128,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate, ADS
         let station = searchResultData[indexPath.row]
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
         cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
-        cell.subtitleLabel.text = (parent as? MapViewController)?.locationManager.location
+        cell.subtitleLabel.text = locationManager.userLocation
             .map { "距離：\(station.distance(from: $0).km) 公里"}
         cell.statusIconImageView.image = station.iconImage
         return cell

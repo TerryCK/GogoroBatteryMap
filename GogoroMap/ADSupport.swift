@@ -14,9 +14,10 @@ protocol ADSupportable: GADBannerViewDelegate {
     func setupAd(with view: UIView)
     var bannerView: GADBannerView { set get }
     var adUnitID: String { get }
+    func adViewDidReceiveAd(_ bannerView: GADBannerView)
 }
 
-extension ADSupportable where Self: UIViewController {
+extension ADSupportable {
     var adUnitID: String {
         #if DEBUG
         return "ca-app-pub-3940256099942544/2934735716"
@@ -44,7 +45,7 @@ extension ADSupportable where Self: UIViewController {
         #endif
     }
     
-    func didReceiveAd(_ bannerView: GADBannerView){
+    func bridgeAd(_ bannerView: GADBannerView) {
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else { return }
         self.bannerView = bannerView
         bannerView.alpha = 0
@@ -52,5 +53,4 @@ extension ADSupportable where Self: UIViewController {
                        animations: { bannerView.alpha = 1 }
         )
     }
-    
 }

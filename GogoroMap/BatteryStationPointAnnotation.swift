@@ -104,8 +104,8 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
 }
 
 extension Array where Element: BatteryStationPointAnnotation {
-    mutating func keepOldUpdate(with newArray: Array) {
-        self = newArray.compactMap { (newElement) -> Element in
+     func keepOldUpdate(with newArray: Array) -> Array {
+        return newArray.compactMap { (newElement) -> Element in
             for oldElement in self where oldElement.isEqual(newElement) {
                 (newElement.checkinDay, newElement.checkinCounter) = (oldElement.checkinDay, oldElement.checkinCounter)
                 return newElement

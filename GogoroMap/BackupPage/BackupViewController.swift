@@ -12,16 +12,12 @@ import GoogleMobileAds
 import Crashlytics
 
 
+
 extension BackupViewController: ADSupportable {
-    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        print("Google Ad error: \(error)")
-    }
-    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        didReceiveAd(bannerView)
+        bridgeAd(bannerView)
     }
 }
-
 final class BackupViewController: UITableViewController {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
@@ -204,7 +200,7 @@ extension BackupViewController {
                     }
                     DataManager.shared.fetchStations { (result) in
                         guard case let .success(stations) = result else {
-                            return
+                            return nil
                         }
                         
                         for record in stationRecords {
@@ -213,10 +209,11 @@ extension BackupViewController {
                             }
                         }
                         
-                        DataManager.shared.stations = stations
+//                        DataManager.shared.stations = stations
                         DispatchQueue.main.async {
                             self.navigationItem.title = "備份與還原"
                         }
+                        return stations
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
