@@ -12,6 +12,7 @@ pod 'Crashlytics'
 pod 'Firebase/Core'
 pod 'SwiftyStoreKit'
 pod 'Cluster'
+#pod 'FloatingPanel'
 end
 
 target 'GogoroMap' do
