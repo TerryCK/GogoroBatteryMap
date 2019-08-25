@@ -30,7 +30,6 @@
 		A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */; };
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
 		A80759681F4C04430031D576 /* CheckinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759671F4C04430031D576 /* CheckinButton.swift */; };
-		A808F0442220ED0E00761A31 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = A808F0432220ED0E00761A31 /* gogoro.json */; };
 		A808F0462220ED3900761A31 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = A808F0452220ED3900761A31 /* Response.swift */; };
 		A8187E8E1F453458008E1558 /* MKUserTrackingMode+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8187E8D1F453458008E1558 /* MKUserTrackingMode+Extension.swift */; };
 		A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8187E8F1F453E22008E1558 /* Mailsendable.swift */; };
@@ -70,6 +69,7 @@
 		DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */; };
 		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
 		DE772FE622FD7369000A67C3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE522FD7369000A67C3 /* LocationManager.swift */; };
+		DEB9D37623121CAE00ACEBA9 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB9D37523121CAE00ACEBA9 /* gogoro.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,7 +108,6 @@
 		A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidePageViewController.swift; sourceTree = "<group>"; };
 		A80759651F4BD6480031D576 /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
 		A80759671F4C04430031D576 /* CheckinButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckinButton.swift; sourceTree = "<group>"; };
-		A808F0432220ED0E00761A31 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 		A808F0452220ED3900761A31 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		A8187E8D1F453458008E1558 /* MKUserTrackingMode+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MKUserTrackingMode+Extension.swift"; sourceTree = "<group>"; };
 		A8187E8F1F453E22008E1558 /* Mailsendable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mailsendable.swift; sourceTree = "<group>"; };
@@ -157,6 +156,7 @@
 		DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		DE772FE522FD7369000A67C3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		DEB9D37523121CAE00ACEBA9 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,8 +241,8 @@
 			children = (
 				A8C8BAC71F3C558500E9E18C /* Boards */,
 				A8EACCBA1F8EF5E2000B12BF /* GPS */,
-				A808F0432220ED0E00761A31 /* gogoro.json */,
 				DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */,
+				DEB9D37523121CAE00ACEBA9 /* gogoro.json */,
 				A8D368761F3B435E0015F5F9 /* Info.plist */,
 				DE772FDF22FD1218000A67C3 /* Keys.plist */,
 				A8C060181F3C9AD20054DE01 /* Media.xcassets */,
@@ -528,13 +528,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A808F0442220ED0E00761A31 /* gogoro.json in Resources */,
 				DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */,
 				DE772FE122FD1218000A67C3 /* Keys.plist in Resources */,
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
 				7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */,
+				DEB9D37623121CAE00ACEBA9 /* gogoro.json in Resources */,
 				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
 				A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */,
 			);
