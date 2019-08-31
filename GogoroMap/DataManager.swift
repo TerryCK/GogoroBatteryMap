@@ -26,6 +26,18 @@ final class DataManager: NSObject {
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
    
+    var goShares: [GoShareDataModel] = []
+    
+    func fetchGoShare() {
+        fetchData(api: .goShare) { result in
+            switch result {
+            case .success(let data):
+                self.goShares = (try? JSONDecoder().decode([GoShareDataModel].self, from: data)) ?? []
+                self.lastUpdate = Date()
+            case .failure : break
+            }
+        }
+    }
     
     @objc dynamic var lastUpdate: Date = Date()
     
@@ -61,8 +73,21 @@ final class DataManager: NSObject {
         }
     }
     
-    private func fetchData(completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        guard let url = URL(string: Keys.standard.gogoroAPI) else {
+    enum API {
+        case gogoro, goShare
+        var url: URL? { return URL(string: api) }
+        
+        var api: String {
+            switch self {
+            case .gogoro: return Keys.standard.gogoroAPI
+            case .goShare: return GoogleAppScript(id: Keys.standard.goShareScriptID).apiString
+            }
+        }
+    }
+    
+    
+    private func fetchData(api: API = .gogoro, completionHandler: @escaping (Result<Data, Error>) -> Void) {
+        guard let url = api.url else {
             completionHandler(.failure(ServiceError.general))
             return
         }
@@ -75,4 +100,10 @@ final class DataManager: NSObject {
             }
             }.resume()
     }
+}
+
+struct GoogleAppScript {
+    let id: String
+    var url: URL { return URL(string: apiString)! }
+    var apiString : String { return "https://script.google.com/macros/s/\(id)/exec" }
 }

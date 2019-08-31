@@ -70,6 +70,7 @@
 		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
 		DE772FE622FD7369000A67C3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE522FD7369000A67C3 /* LocationManager.swift */; };
 		DEB9D37623121CAE00ACEBA9 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB9D37523121CAE00ACEBA9 /* gogoro.json */; };
+		DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +158,7 @@
 		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		DE772FE522FD7369000A67C3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		DEB9D37523121CAE00ACEBA9 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
+		DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoShareDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +234,7 @@
 				A8742B011F449741002BA66B /* Keys.swift */,
 				A808F0452220ED3900761A31 /* Response.swift */,
 				A8422D421F947BC200AA28C2 /* SegmentStatus.swift */,
+				DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -719,6 +722,7 @@
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
+				DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				A8742B021F449741002BA66B /* Keys.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,

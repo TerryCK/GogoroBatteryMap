@@ -7,17 +7,6 @@
 //
 
 import UIKit
-
-public protocol ResponseStationProtocol {
-    var state: Int { get }
-    var name: Response.Station.Detail { get }
-    var address: Response.Station.Detail { get }
-    var city: Response.Station.Detail { get }
-    var latitude : Double { get  }
-    var longitude: Double { get  }
-    var availableTime: String? { get }
-}
-
 public extension Response.Station.Detail {
     func localized() -> String? {
         return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value?.replacingOccurrences(regex: "臺".regex, replacement: "台")
