@@ -26,6 +26,7 @@ struct Keys {
     let removeAdsObserverName = "removeAdsObserverName"
     let dataUpdata = "dataUpdata"
     let backupAdUnitID: String
+    let goShareScriptID: String
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
@@ -36,6 +37,7 @@ struct Keys {
         gadiPad = dictionary["gadiPad"] as? String ?? ""
         gogoroAPI = dictionary["gogoroAPI"] as? String ?? ""
         backupAdUnitID = dictionary["backupAdUnitID"] as? String ?? ""
+        goShareScriptID = dictionary["goShareScriptID"] as? String ?? ""
     }
     
     static let standard: Keys = {
