@@ -23,6 +23,7 @@
 		7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED0225B3F220045A796 /* BackupElement.swift */; };
 		7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED2225B3F400045A796 /* SupplementaryCell.swift */; };
 		7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED6225B583A0045A796 /* ADSupport.swift */; };
+		7C790ECA231D25FE0083A617 /* GoShareCalloutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C790EC9231D25FE0083A617 /* GoShareCalloutView.xib */; };
 		7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9A002B22238FC200D5150D /* Answer+Entension.swift */; };
 		7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503520260D1C00E2206D /* BackupViewController.swift */; };
 		7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */; };
@@ -102,6 +103,7 @@
 		7C646ED0225B3F220045A796 /* BackupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupElement.swift; sourceTree = "<group>"; };
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
+		7C790EC9231D25FE0083A617 /* GoShareCalloutView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GoShareCalloutView.xib; sourceTree = "<group>"; };
 		7C9A002B22238FC200D5150D /* Answer+Entension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Answer+Entension.swift"; sourceTree = "<group>"; };
 		7CED91BD22E8526F001042E2 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		9C11DA1F9EBA74A348D072CE /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -345,6 +347,7 @@
 				A8CE22521F3EAD5E00A4EF6D /* CustomButton.swift */,
 				A80759651F4BD6480031D576 /* DetailAnnotationView.swift */,
 				A8D2F79A1F4C0F5C00380343 /* UnCheckInButton.swift */,
+				7C790EC9231D25FE0083A617 /* GoShareCalloutView.xib */,
 			);
 			name = Views;
 			path = ..;
@@ -533,6 +536,7 @@
 				A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */,
 				A866F6501F481FA6009459B3 /* Localizable.strings in Resources */,
 				A8C060191F3C9AD20054DE01 /* Media.xcassets in Resources */,
+				7C790ECA231D25FE0083A617 /* GoShareCalloutView.xib in Resources */,
 				7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */,
 				DEB9D37623121CAE00ACEBA9 /* gogoro.json in Resources */,
 				A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */,
