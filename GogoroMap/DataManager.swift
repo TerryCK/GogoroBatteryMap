@@ -26,13 +26,27 @@ final class DataManager: NSObject {
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
    
-    var goShares: [GoShareDataModel] = []
+    var goShareDataModels: [GoShareDataModel] = [] {
+        didSet {
+            goShareAnnotations = goShareDataModels.compactMap { dataModal in
+                guard let coordinate = dataModal.coordinate else {
+                    return nil
+                }
+                return GoSharePointAnnotation(title: dataModal.plate, subtitle: dataModal.remainingMileage, coordinate: coordinate)
+            }
+        }
+    }
+    var goShareAnnotations: [GoSharePointAnnotation] = [] {
+        didSet {
+            self.lastUpdate = Date()
+        }
+    }
     
     func fetchGoShare() {
         fetchData(api: .goShare) { result in
             switch result {
             case .success(let data):
-                self.goShares = (try? JSONDecoder().decode([GoShareDataModel].self, from: data)) ?? []
+                self.goShareDataModels = (try? JSONDecoder().decode([GoShareDataModel].self, from: data)) ?? []
                 self.lastUpdate = Date()
             case .failure : break
             }

@@ -193,6 +193,7 @@ extension MenuController {
             }
             return nil
         }
+        DataManager.shared.fetchGoShare()
     }
     
     private func log(_ event: String) {

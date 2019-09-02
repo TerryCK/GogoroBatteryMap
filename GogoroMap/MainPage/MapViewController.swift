@@ -213,7 +213,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-                    self.clusterManager.add(DataManager.shared.stations)
+//                    self.clusterManager.add(DataManager.shared.stations)
+                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                     
@@ -367,11 +368,17 @@ extension MapViewController: MKMapViewDelegate {
         } else {
             annotationView?.annotation = annotation
         }
+        switch annotation {
+        case let batteryStation as BatteryStationPointAnnotation:
+            annotationView?.image = batteryStation.iconImage
+            annotationView?.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
+            return annotationView
+        case _ as GoSharePointAnnotation:
+            annotationView?.image = UIImage(named: "test")
+            return annotationView
+        default: return nil
+        }
         
-        guard let batteryStation = annotation as? BatteryStationPointAnnotation else { return nil }
-        annotationView?.image = batteryStation.iconImage
-        annotationView?.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
-        return annotationView
     }
     
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
