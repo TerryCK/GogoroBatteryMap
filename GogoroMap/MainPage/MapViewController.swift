@@ -213,7 +213,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-                    self.clusterManager.add(DataManager.shared.stations)
+//                    self.clusterManager.add(DataManager.shared.stations)
+                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                     
