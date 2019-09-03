@@ -213,8 +213,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-//                    self.clusterManager.add(DataManager.shared.stations)
-                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
+                    self.clusterManager.add(DataManager.shared.stations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                     
@@ -360,25 +359,19 @@ extension MapViewController: MKMapViewDelegate {
         
         if annotation.isKind(of: MKUserLocation.self) { return nil }
         let identifier = "station"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-        
-        if annotationView == nil {
-            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView?.canShowCallout = true
-        } else {
-            annotationView?.annotation = annotation
-        }
+        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) ?? MKAnnotationView(annotation: annotation,
+                                                                                                                   reuseIdentifier: identifier)
+        annotationView.canShowCallout = true
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
-            annotationView?.image = batteryStation.iconImage
-            annotationView?.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
-            return annotationView
+            annotationView.image = batteryStation.iconImage
+            annotationView.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
         case _ as GoSharePointAnnotation:
-            annotationView?.image = UIImage(named: "test")
-            return annotationView
+            annotationView.image = UIImage(named: "test")
+            
         default: return nil
         }
-        
+        return annotationView
     }
     
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
@@ -401,12 +394,10 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let clusterAnnotation = view.annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
-            
             return
         }
         
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
-        
         CalloutAccessoryViewModel(destinationView: view).bind(mapView: mapView)
     }
     
