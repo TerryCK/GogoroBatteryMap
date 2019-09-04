@@ -13,6 +13,7 @@ import Crashlytics
 import GoogleMobileAds
 import Cluster
 import CloudKit
+import FloatingPanel
 
 extension MapViewController: ADSupportable {
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
@@ -33,6 +34,30 @@ extension MapViewController  {
     }
 }
 
+extension MapViewController: FloatingPanelControllerDelegate {
+    func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
+        switch newCollection.verticalSizeClass {
+        case .compact:
+            vc.surfaceView.borderWidth = 1.0 / traitCollection.displayScale
+            vc.surfaceView.borderColor = UIColor.black.withAlphaComponent(0.2)
+            return SearchPanelLandscapeLayout()
+        default:
+            vc.surfaceView.borderWidth = 0.0
+            vc.surfaceView.borderColor = nil
+            return nil
+        }
+    }
+    
+    
+    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        guard vc.position == .full,
+            let tableViewController = vc.contentViewController as? TableViewController else {
+                return
+        }
+        tableViewController.searchBar.showsCancelButton = false
+        tableViewController.searchBar.resignFirstResponder()
+    }
+}
 
 final class MapViewController: UIViewController, ManuDelegate  {
     
@@ -45,6 +70,20 @@ final class MapViewController: UIViewController, ManuDelegate  {
             clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
         }
     }
+    
+    lazy var fpc: FloatingPanelController = {
+        $0.delegate = self
+        $0.surfaceView.backgroundColor = .clear
+        if #available(iOS 11, *) {
+            $0.surfaceView.cornerRadius = 9.0
+        } else {
+            $0.surfaceView.cornerRadius = 0.0
+        }
+        $0.surfaceView.shadowHidden = false
+        $0.set(contentViewController: TableViewController.shared)
+        $0.track(scrollView: TableViewController.shared.tableView)
+        return $0
+    }(FloatingPanelController(delegate: nil))
     
     func reloadMapView() {
         DispatchQueue.main.async {
@@ -88,17 +127,17 @@ final class MapViewController: UIViewController, ManuDelegate  {
         return button
     }()
     
-    lazy var segmentedControl: UISegmentedControl = { sc in
-        SegmentStatus.allCases.forEach {
-            sc.insertSegment(withTitle: $0.name, at: $0.rawValue, animated: true)
-        }
-        sc.selectedSegmentIndex = 0
-        sc.tintColor = .white
-        sc.addTarget(self,
-                     action: #selector(MapViewController.segmentChange),
-                     for: .valueChanged)
-        return sc
-    }(UISegmentedControl())
+//    lazy var segmentedControl: UISegmentedControl = { sc in
+//        SegmentStatus.allCases.forEach {
+//            sc.insertSegment(withTitle: $0.name, at: $0.rawValue, animated: true)
+//        }
+//        sc.selectedSegmentIndex = 0
+//        sc.tintColor = .white
+//        sc.addTarget(self,
+//                     action: #selector(MapViewController.segmentChange),
+//                     for: .valueChanged)
+//        return sc
+//    }(UISegmentedControl())
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
@@ -107,6 +146,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
         reloadMapView()
+       
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -118,7 +158,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         super.loadView()
         setupNavigationTitle()
         setupNavigationItems()
-        setupSegmentControllerContainer()
+//        setupSegmentControllerContainer()
         setupMainViews()
         setupSideMenu()
     }
@@ -157,7 +197,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 break
             }
         }
-        
+        fpc.addPanel(toParent: self, animated: true)
         setupPurchase()
         Answers.log(view: "Map Page")
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
@@ -213,8 +253,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-//                    self.clusterManager.add(DataManager.shared.stations)
-                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
+                    self.clusterManager.add(DataManager.shared.stations)
+//                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                     
@@ -232,25 +272,26 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
-        if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
+        if let sideManuController = SideMenuManager.default.leftMenuNavigationController {
             setTracking(mode: .none)
-            present(sideManuController, animated: true, completion: nil)
+            fpc.present(sideManuController, animated: true, completion: nil)
         }
     }
     
     //     MARK: - View setups
     private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
         
-        let flowLyout = UICollectionViewFlowLayout {
+        let flowLyout: UICollectionViewFlowLayout = {
             $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
             $0.minimumLineSpacing = 0
             $0.minimumInteritemSpacing = 0
-        }
+            return $0
+        }(UICollectionViewFlowLayout())
         
         let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
-        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-        sideMenuManager.menuLeftNavigationController?.leftSide = true
+        sideMenuManager.leftMenuNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+        sideMenuManager.leftMenuNavigationController?.leftSide = true
         sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         sideMenuManager.menuFadeStatusBar = true
         sideMenuManager.menuShadowOpacity = 0.59
@@ -290,17 +331,17 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     private func setupMainViews() {
         view.addSubview(mapView)
-        mapView.anchor(top: segmentControllerContainer.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        mapView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     }
     
-    private func setupSegmentControllerContainer() {
-        view.addSubview(segmentControllerContainer)
-        var topAnchor = view.topAnchor
-        if #available(iOS 11, *) { topAnchor = view.safeAreaLayoutGuide.topAnchor }
-        segmentControllerContainer.anchor(top: topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
-        segmentControllerContainer.addSubview(segmentedControl)
-        segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
-    }
+//    private func setupSegmentControllerContainer() {
+//        view.addSubview(segmentControllerContainer)
+//        var topAnchor = view.topAnchor
+//        if #available(iOS 11, *) { topAnchor = view.safeAreaLayoutGuide.topAnchor }
+//        segmentControllerContainer.anchor(top: topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
+//        segmentControllerContainer.addSubview(segmentedControl)
+//        segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
+//    }
     
     
     private func setupBottomBackgroundView() {
@@ -315,31 +356,33 @@ final class MapViewController: UIViewController, ManuDelegate  {
         let width = factor * height
         let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-            if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude }) {
-                self.mapView.selectAnnotation(selectedAnnotation, animated: true)
+        fpc.move(to: .tip, animated: true) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+                if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude }) {
+                    self.mapView.selectAnnotation(selectedAnnotation, animated: true)
+                }
             }
         }
     }
 }
 
 //MARK: - Lists of function annotations
-extension MapViewController {
-    @objc func segmentChange(sender: UISegmentedControl) {
-        let segmentStatus = SegmentStatus.allCases[sender.selectedSegmentIndex]
-        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-        locationArrowView.isEnabled = segmentStatus == .map
-        setTracking(mode: .none)
-        
-        segmentedControl.selectedSegmentIndex = segmentStatus.rawValue
-        switch segmentStatus {
-        case .map: displayContentController = nil
-        case .checkin, .building, .nearby:
-            TableViewController.shared.segmentStatus = segmentStatus
-            displayContentController = TableViewController.shared
-        }
-    }
-}
+//extension MapViewController {
+//    @objc func segmentChange(sender: UISegmentedControl) {
+//        let segmentStatus = SegmentStatus.allCases[sender.selectedSegmentIndex]
+//        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
+//        locationArrowView.isEnabled = segmentStatus == .map
+//        setTracking(mode: .none)
+//
+//        segmentedControl.selectedSegmentIndex = segmentStatus.rawValue
+//        switch segmentStatus {
+//        case .map: displayContentController = nil
+//        case .checkin, .building, .nearby:
+//            TableViewController.shared.segmentStatus = segmentStatus
+//            displayContentController = TableViewController.shared
+//        }
+//    }
+//}
 
 //MARK: - Present annotationView and Navigatorable
 extension MapViewController: MKMapViewDelegate {

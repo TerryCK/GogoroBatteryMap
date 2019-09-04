@@ -23,6 +23,7 @@ extension CalloutAccessoryViewModel {
         batteryAnnotation.checkinCounter = counterOfcheckin
         destinationView.image = batteryAnnotation.iconImage
         _ = (destinationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation)
+        
     }
 
     func bind(mapView: MKMapView) {

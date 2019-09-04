@@ -20,6 +20,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
     
     static let shared: TableViewController = TableViewController()
     
+    @IBOutlet weak var searchBar: UISearchBar!
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
@@ -115,15 +116,21 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
         cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
         cell.subtitleLabel.text = locationManager.userLocation
-            .map { "距離：\(station.distance(from: $0).km) 公里"}
+            .map { "距離：\(station.distance(from: $0).km) 公里" }
+        if let checkinCount = station.checkinCounter, let checkdate = station.checkinDay {
+            cell.checkinLabel.text = "打卡次數: \(checkinCount) (最新日期：\(checkdate.string(dateformat: "yyyy.MM.dd")))"
+        } else {
+            cell.checkinLabel.text = nil
+        }
         cell.statusIconImageView.image = station.iconImage
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let mapViewController = parent as? MapViewController {
+        
+        if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController{
             mapViewController.displayContentController = nil
-            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
+//            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
             mapViewController.mapViewMove(to: searchResultData[indexPath.row])
         }
     }
