@@ -28,6 +28,7 @@
 		7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9A002B22238FC200D5150D /* Answer+Entension.swift */; };
 		7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503520260D1C00E2206D /* BackupViewController.swift */; };
 		7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */; };
+		7CE0C0FF231F7F1C009D6370 /* SearchPanelLandscapeLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE0C0FE231F7F1B009D6370 /* SearchPanelLandscapeLayout.swift */; };
 		7CED91BE22E85270001042E2 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CED91BD22E8526F001042E2 /* Regex.swift */; };
 		A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */; };
 		A80759661F4BD6480031D576 /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80759651F4BD6480031D576 /* DetailAnnotationView.swift */; };
@@ -107,6 +108,7 @@
 		7C790EC9231D25FE0083A617 /* GoShareCalloutView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GoShareCalloutView.xib; sourceTree = "<group>"; };
 		7C790ECB231E37CA0083A617 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Keys.plist; path = ../../../../Desktop/Keys.plist; sourceTree = "<group>"; };
 		7C9A002B22238FC200D5150D /* Answer+Entension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Answer+Entension.swift"; sourceTree = "<group>"; };
+		7CE0C0FE231F7F1B009D6370 /* SearchPanelLandscapeLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelLandscapeLayout.swift; sourceTree = "<group>"; };
 		7CED91BD22E8526F001042E2 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		9C11DA1F9EBA74A348D072CE /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidePageViewController.swift; sourceTree = "<group>"; };
@@ -361,6 +363,7 @@
 			children = (
 				A8EACCB81F8EF534000B12BF /* Views */,
 				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
+				7CE0C0FE231F7F1B009D6370 /* SearchPanelLandscapeLayout.swift */,
 				7C22F7F822EE940100E6FE63 /* TableViewCell.swift */,
 				7C22F7F922EE940100E6FE63 /* TableViewCell.xib */,
 				7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */,
@@ -560,6 +563,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger/AlamofireNetworkActivityLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/Cluster/Cluster.framework",
+				"${BUILT_PRODUCTS_DIR}/FloatingPanel/FloatingPanel.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
@@ -570,6 +574,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FloatingPanel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
@@ -622,6 +627,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger/AlamofireNetworkActivityLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/Cluster/Cluster.framework",
+				"${BUILT_PRODUCTS_DIR}/FloatingPanel/FloatingPanel.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
@@ -632,6 +638,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FloatingPanel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
@@ -730,6 +737,7 @@
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				A8742B021F449741002BA66B /* Keys.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
+				7CE0C0FF231F7F1C009D6370 /* SearchPanelLandscapeLayout.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
@@ -868,7 +876,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
@@ -923,7 +931,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				SDKROOT = iphoneos;
@@ -943,6 +951,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MapVision.GogoroMap;
@@ -965,6 +974,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -debug-time-function-bodies \"-D\" \"COCOAPODS\"";

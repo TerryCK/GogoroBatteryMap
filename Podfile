@@ -35,14 +35,14 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-    
-      if target.name.include? 'SideMenu'
-          config.build_settings['SWIFT_VERSION'] = '5'
-      elsif target.name.include? 'Cluster'
-          config.build_settings['SWIFT_VERSION'] = '5'
-      else
-          config.build_settings['SWIFT_VERSION'] = '5'
-      end
+     config.build_settings['SWIFT_VERSION'] = '5'
+#      if target.name.include? 'SideMenu'
+#          config.build_settings['SWIFT_VERSION'] = '5'
+#      elsif target.name.include? 'Cluster'
+#          config.build_settings['SWIFT_VERSION'] = '5'
+#      else
+#          config.build_settings['SWIFT_VERSION'] = '5'
+#      end
     end
   end
 end
