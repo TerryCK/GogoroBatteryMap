@@ -223,6 +223,10 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPoint = touches.first?.location(in: mapView)
+        if lastTouchPoint != nil {
+            fpc.move(to: .tip, animated: true)
+            mapView.selectedAnnotations.forEach {  mapView.deselectAnnotation($0, animated: false) }
+        }
     }
     
     @objc func action(sender: UILongPressGestureRecognizer) {
@@ -272,7 +276,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
-        if let sideManuController = SideMenuManager.default.leftMenuNavigationController {
+        if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
             setTracking(mode: .none)
             fpc.present(sideManuController, animated: true, completion: nil)
         }
@@ -290,8 +294,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
         
         let menuController = MenuController(collectionViewLayout: flowLyout)
         menuController.delegate = self
-        sideMenuManager.leftMenuNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-        sideMenuManager.leftMenuNavigationController?.leftSide = true
+        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+        sideMenuManager.menuLeftNavigationController?.leftSide = true
         sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
         sideMenuManager.menuFadeStatusBar = true
         sideMenuManager.menuShadowOpacity = 0.59
@@ -442,7 +446,10 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
-        CalloutAccessoryViewModel(destinationView: view).bind(mapView: mapView)
+        fpc.move(to: .tip, animated: true) {
+             CalloutAccessoryViewModel(destinationView: view).bind(mapView: self.mapView)
+        }
+       
     }
     
     
@@ -468,7 +475,9 @@ extension MapViewController: MKMapViewDelegate {
     
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButtons, customAttributes: #function)
-        setTracking(mode: mapView.userTrackingMode.nextMode)
+        fpc.move(to: .tip, animated: true) {
+            self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
+        }
     }
 }
 
