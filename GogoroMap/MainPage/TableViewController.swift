@@ -15,15 +15,56 @@ extension TableViewController: ADSupportable {
         bridgeAd(bannerView)
     }
 }
-
-final class TableViewController: UITableViewController, UISearchBarDelegate {
+extension TableViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        
+        updateSearchBar(showScope: true)
+        if let mapViewController = mapViewController {
+            mapViewController.fpc.move(to: .full, animated: true)
+        }
+    }
     
-    static let shared: TableViewController = TableViewController()
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.searchText = searchText
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        updateSearchBar(showScope: false)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchText = ""
+    }
+    
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        segmentStatus = SegmentStatus(rawValue: selectedScope) ?? .nearby
+    }
+    private var mapViewController: MapViewController? {
+        return navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController
+    }
+}
+
+final class TableViewController: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
+    
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        updateSearchBar(showScope: false)
+    }
+    private func updateSearchBar(showScope: Bool) {
+        searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
+        searchBar.showsScopeBar = showScope
+        if showScope {
+            searchBar.selectedScopeButtonIndex = segmentStatus
+        }
+        tableView.tableHeaderView?.sizeToFit()
+        tableView.reloadData()
+    }
     
     private var searchText = "" {
         didSet {
@@ -32,18 +73,8 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
             }
         }
     }
-    
-    private let refreshController = UIRefreshControl()
-    
     private let locationManager: LocationManager = .shared
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.searchText = searchText
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-    }
     var segmentStatus: SegmentStatus = .nearby {
         didSet {
             DispatchQueue.global().async {
@@ -56,28 +87,24 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
+        
         setupAd(with: view)
-        tableView.addSubview(refreshController)
-        refreshController.attributedTitle =  NSAttributedString(string: "Updating".localize())
-        refreshController.addTarget(self, action: #selector(loadData), for: .valueChanged)
         setupObserve()
     }
     
-    @objc func loadData() {
-        
+    func loadData() {
         DataManager.shared.fetchStations { result in
-            DispatchQueue.main.async(execute: self.refreshController.endRefreshing)
             if case let .success(station) = result {
                 return DataManager.shared.stations.keepOldUpdate(with: station)
             }
             return nil
         }
     }
-
+    
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-                self.stations = DataManager.shared.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+            self.stations = DataManager.shared.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
         }
     }
     
@@ -90,7 +117,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
             searchResultData = stations.filter(segmentStatus.hanlder).filter(text: searchText)
         }
     }
-
+    
     private var searchResultData = DataManager.shared.stations {
         didSet {
             DispatchQueue.main.async(execute: tableView.reloadData)
@@ -99,7 +126,7 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
     
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-       let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
         header.countLabel.text = "\(searchResultData.count) 站"
         header.regionLabel.text = searchText.isEmpty ? segmentStatus.name : "過濾關鍵字：\(searchText)"
         return header
@@ -128,9 +155,9 @@ final class TableViewController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if let mapViewController = navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController{
+        if let mapViewController = mapViewController {
             mapViewController.displayContentController = nil
-//            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
+            //            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
             mapViewController.mapViewMove(to: searchResultData[indexPath.row])
         }
     }

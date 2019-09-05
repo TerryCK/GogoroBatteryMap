@@ -80,8 +80,9 @@ final class MapViewController: UIViewController, ManuDelegate  {
             $0.surfaceView.cornerRadius = 0.0
         }
         $0.surfaceView.shadowHidden = false
-        $0.set(contentViewController: TableViewController.shared)
-        $0.track(scrollView: TableViewController.shared.tableView)
+        let tableViewController = TableViewController()
+        $0.set(contentViewController: tableViewController)
+        $0.track(scrollView: tableViewController.tableView)
         return $0
     }(FloatingPanelController(delegate: nil))
     
@@ -108,6 +109,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         $0.showsScale = true
         $0.showsTraffic = false
         $0.userLocation.title = "😏 \("here".localize())"
+        view = $0
         return $0
     }(MKMapView())
     
@@ -127,17 +129,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         return button
     }()
     
-//    lazy var segmentedControl: UISegmentedControl = { sc in
-//        SegmentStatus.allCases.forEach {
-//            sc.insertSegment(withTitle: $0.name, at: $0.rawValue, animated: true)
-//        }
-//        sc.selectedSegmentIndex = 0
-//        sc.tintColor = .white
-//        sc.addTarget(self,
-//                     action: #selector(MapViewController.segmentChange),
-//                     for: .valueChanged)
-//        return sc
-//    }(UISegmentedControl())
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
@@ -158,8 +149,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         super.loadView()
         setupNavigationTitle()
         setupNavigationItems()
-//        setupSegmentControllerContainer()
-        setupMainViews()
         setupSideMenu()
     }
     
@@ -186,7 +175,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupObserve()
         setupObserver()
         performGuidePage()
-        
         LocationManager.shared.authorize { (status) in
             switch status {
             case .denied, .restricted:
@@ -333,21 +321,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     
     
-    private func setupMainViews() {
-        view.addSubview(mapView)
-        mapView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
-    }
-    
-//    private func setupSegmentControllerContainer() {
-//        view.addSubview(segmentControllerContainer)
-//        var topAnchor = view.topAnchor
-//        if #available(iOS 11, *) { topAnchor = view.safeAreaLayoutGuide.topAnchor }
-//        segmentControllerContainer.anchor(top: topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 44)
-//        segmentControllerContainer.addSubview(segmentedControl)
-//        segmentedControl.anchor(top: segmentControllerContainer.topAnchor, left: segmentControllerContainer.leftAnchor, bottom: segmentControllerContainer.bottomAnchor, right: segmentControllerContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
-//    }
-    
-    
     private func setupBottomBackgroundView() {
         let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
         view.addSubview(backgroundView)
@@ -369,24 +342,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         }
     }
 }
-
-//MARK: - Lists of function annotations
-//extension MapViewController {
-//    @objc func segmentChange(sender: UISegmentedControl) {
-//        let segmentStatus = SegmentStatus.allCases[sender.selectedSegmentIndex]
-//        Answers.log(event: .MapButtons, customAttributes: segmentStatus.eventName)
-//        locationArrowView.isEnabled = segmentStatus == .map
-//        setTracking(mode: .none)
-//
-//        segmentedControl.selectedSegmentIndex = segmentStatus.rawValue
-//        switch segmentStatus {
-//        case .map: displayContentController = nil
-//        case .checkin, .building, .nearby:
-//            TableViewController.shared.segmentStatus = segmentStatus
-//            displayContentController = TableViewController.shared
-//        }
-//    }
-//}
 
 //MARK: - Present annotationView and Navigatorable
 extension MapViewController: MKMapViewDelegate {
