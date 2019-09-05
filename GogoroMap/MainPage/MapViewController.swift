@@ -80,6 +80,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
             $0.surfaceView.cornerRadius = 0.0
         }
         $0.surfaceView.shadowHidden = false
+        $0.surfaceView.grabberTopPadding = 3
         let tableViewController = TableViewController()
         $0.set(contentViewController: tableViewController)
         $0.track(scrollView: tableViewController.tableView)
