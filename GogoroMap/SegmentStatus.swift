@@ -28,7 +28,7 @@ enum SegmentStatus: Int, CaseIterable {
     var hanlder: (BatteryDataModalProtocol) -> Bool {
         switch self {
         case .checkin       : return { $0.checkinCounter ?? 0 > 0 }
-        case .uncheck       : return { $0.checkinCounter == nil }
+        case .uncheck       : return { $0.checkinCounter ?? 0 == 0 }
         case .nearby        : return { _ in true }
         case .building      : return { !$0.isOperating }
         }

@@ -83,6 +83,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         let tableViewController = TableViewController()
         $0.set(contentViewController: tableViewController)
         $0.track(scrollView: tableViewController.tableView)
+        
         return $0
     }(FloatingPanelController(delegate: nil))
     
