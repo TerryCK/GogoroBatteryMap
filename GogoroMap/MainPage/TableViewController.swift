@@ -60,7 +60,7 @@ final class TableViewController: UITableViewController {
         searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
         searchBar.showsScopeBar = showScope
         if showScope {
-            searchBar.selectedScopeButtonIndex = segmentStatus
+            searchBar.selectedScopeButtonIndex = segmentStatus.rawValue
         }
         tableView.tableHeaderView?.sizeToFit()
         tableView.reloadData()

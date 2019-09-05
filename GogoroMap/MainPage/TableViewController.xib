@@ -26,13 +26,9 @@
             <searchBar key="tableHeaderView" contentMode="redraw" placeholder="過濾 地址, 關鍵字, 即將啟用..." id="asP-qB-jct">
                 <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                <color key="tintColor" red="0.30840110780000002" green="0.5618229508" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                <color key="barTintColor" red="0.53461119189999995" green="0.74295966570000005" blue="0.52493640990000001" alpha="1" colorSpace="calibratedRGB"/>
+                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <color key="barTintColor" red="0.30840110780000002" green="0.5618229508" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
-                <scopeButtonTitles>
-                    <string>Title</string>
-                    <string>Title</string>
-                </scopeButtonTitles>
                 <connections>
                     <outlet property="delegate" destination="-1" id="3wi-HK-L1k"/>
                 </connections>
