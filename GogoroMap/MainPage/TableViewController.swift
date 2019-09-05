@@ -18,7 +18,7 @@ extension TableViewController: ADSupportable {
 extension TableViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         
-        updateSearchBar(showScope: true)
+        
         if let mapViewController = mapViewController {
             mapViewController.fpc.move(to: .full, animated: true)
         }
@@ -30,7 +30,7 @@ extension TableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        updateSearchBar(showScope: false)
+//        updateSearchBar(showScope: false)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -54,7 +54,7 @@ final class TableViewController: UITableViewController {
     private var observation: NSKeyValueObservation?
     
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        updateSearchBar(showScope: false)
+//        updateSearchBar(showScope: false)
     }
     private func updateSearchBar(showScope: Bool) {
         searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
@@ -87,7 +87,7 @@ final class TableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
-        
+        updateSearchBar(showScope: true)
         setupAd(with: view)
         setupObserve()
     }
