@@ -418,8 +418,7 @@ extension MapViewController: MKMapViewDelegate {
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
             annotationView.image = batteryStation.iconImage
-            annotationView.detailCalloutAccessoryView = DetailAnnotationView(nativeAdView: nativeAdView)
-                .configure(annotation: batteryStation)
+            annotationView.detailCalloutAccessoryView = DetailAnnotationView(nativeAdView: nativeAdView).configure(annotation: batteryStation)
         case _ as GoSharePointAnnotation:
             annotationView.image = UIImage(named: "test")
             
@@ -453,7 +452,7 @@ extension MapViewController: MKMapViewDelegate {
         adLoader = adLoaderBuild()
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
-            CalloutAccessoryViewModel(destinationView: view).bind(mapView: self.mapView)
+            CalloutAccessoryViewModel(destinationView: view, adView: self.nativeAdView).bind(mapView: self.mapView)
         }
        
     }
