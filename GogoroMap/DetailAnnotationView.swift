@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 final class DetailAnnotationView: UIView {
     // MARK: - View creators
@@ -88,7 +89,14 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    let lastCheckTimeLabel = UILabel { $0.font = .systemFont(ofSize: 12) }
+    var nativeAdView: GADUnifiedNativeAdView! {
+        didSet {
+            if let label = nativeAdView.bodyView as? UILabel {
+                label.adjustsFontSizeToFitWidth = true
+                label.minimumScaleFactor = 0.5
+            }
+        }
+    }
     
     let timesOfCheckinLabel = UILabel {  $0.font = .systemFont(ofSize: 12)  }
     
@@ -97,14 +105,16 @@ final class DetailAnnotationView: UIView {
         $0.layer.cornerRadius = 6
         $0.layer.masksToBounds = true
         $0.textAlignment = .center
-        $0.font = .systemFont(ofSize: 9)
-        $0.anchor(top: nil, left: nil, bottom: nil, right: nil, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 40, height: 12)
+        $0.font = .systemFont(ofSize: 14)
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.5
+        $0.anchor(width: 40, height: 14)
     }
     
     private let opneHourLabel = UILabel { $0.font = .systemFont(ofSize: 12) }
     
     private lazy var openStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [opneHourLabel])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [isAvailableLabel, opneHourLabel])
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 10
@@ -113,7 +123,7 @@ final class DetailAnnotationView: UIView {
     
     
     private lazy var mainStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [isAvailableLabel, openStackView, timesOfCheckinLabel,  lastCheckTimeLabel])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [openStackView, timesOfCheckinLabel])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .equalCentering
@@ -125,20 +135,34 @@ final class DetailAnnotationView: UIView {
     
     //    MARK: - View's setup & initialize with autolayout
     private func setup() {
-        [goButtonStackView, mainStackView, addressLabel, buttonStackView, separatorView].forEach(addSubview)
+
+        [goButtonStackView, mainStackView, addressLabel, nativeAdView, buttonStackView, separatorView].forEach(addSubview)
         
         separatorView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 5, bottomPadding: 0, rightPadding: 5, width: 0, height: 0.75)
         
         goButtonStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0)
         
+        
         mainStackView.anchor(top: separatorView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
         addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
+        nativeAdView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 30)
         
-        buttonStackView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        buttonStackView.anchor(top: nativeAdView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
     }
     
+    init(nativeAdView: GADUnifiedNativeAdView) {
+        
+        self.nativeAdView = nativeAdView
+        self.nativeAdView.backgroundColor = .red
+        super.init(frame: .zero)
+        widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
+        setup()
+        backgroundColor = .clear
+        layer.cornerRadius = 5
+        layer.masksToBounds = true
+    }
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
@@ -153,22 +177,23 @@ final class DetailAnnotationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var counterOfcheckin: Int = 0 {
-        didSet {
-            unCheckinButton.isHidden = counterOfcheckin <= 0
-            timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次"
-        }
-    }
  
     @discardableResult
     func configure(annotation: BatteryDataModalProtocol) -> Self {
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
-        lastCheckTimeLabel.text = "最近的打卡日：\(annotation.checkinDay?.string(dateformat: "yyyy.MM.dd") ?? "")"
-        counterOfcheckin = annotation.checkinCounter ?? 0
         checkinButton.isEnabled = annotation.isOperating
         isAvailableLabel.backgroundColor = annotation.isOperating ? .lightGreen : .lightGray
-        isAvailableLabel.text = annotation.isOperating ? "營運中" : "關閉中"
+        isAvailableLabel.text = annotation.isOperating ? " 營運中 " : " 關閉中 "
+        if let counterOfcheckin = annotation.checkinCounter,
+            counterOfcheckin > 0,
+            let checkindate = annotation.checkinDay?.string(dateformat: "yyyy.MM.dd") {
+            timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次 打卡日： \(checkindate)"
+            unCheckinButton.isHidden = false
+        } else {
+            unCheckinButton.isHidden = true
+            timesOfCheckinLabel.text = "尚無打卡記錄"
+        }
         return self
     }
 }
