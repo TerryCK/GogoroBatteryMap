@@ -153,9 +153,7 @@ final class DetailAnnotationView: UIView {
     }
     
     init(nativeAdView: GADUnifiedNativeAdView) {
-        
         self.nativeAdView = nativeAdView
-        self.nativeAdView.backgroundColor = .red
         super.init(frame: .zero)
         widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
         setup()

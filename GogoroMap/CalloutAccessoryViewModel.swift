@@ -12,6 +12,7 @@ import GoogleMobileAds
 
 struct CalloutAccessoryViewModel {
     let destinationView: MKAnnotationView
+    let adView: GADUnifiedNativeAdView
 }
 
 
@@ -45,6 +46,7 @@ extension CalloutAccessoryViewModel {
                 detailCalloutView.etaLabel.text = travelTime
             }
         }
+        detailCalloutView.nativeAdView = adView
         detailCalloutView.checkinAction = { self.checkinCount(with: +) }
         detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
         detailCalloutView.goAction = { Navigator.go(to: destination) }
