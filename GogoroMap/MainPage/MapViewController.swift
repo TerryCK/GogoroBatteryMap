@@ -34,6 +34,8 @@ extension MapViewController  {
     }
 }
 
+
+
 extension MapViewController: FloatingPanelControllerDelegate {
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         switch newCollection.verticalSizeClass {
@@ -44,7 +46,7 @@ extension MapViewController: FloatingPanelControllerDelegate {
         default:
             vc.surfaceView.borderWidth = 0.0
             vc.surfaceView.borderColor = nil
-            return nil
+            return MapFloatingLayout()
         }
     }
     
@@ -58,10 +60,60 @@ extension MapViewController: FloatingPanelControllerDelegate {
         tableViewController.searchBar.resignFirstResponder()
     }
 }
+extension MapViewController: GADAdLoaderDelegate {
+    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
+        print(error)
+    }
+}
+
+extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
+    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
+        nativeAdView.nativeAd = nativeAd
+        nativeAd.delegate = self
+        (nativeAdView.bodyView as? UILabel)?.text = nativeAd.body
+        nativeAdView.bodyView?.isHidden = nativeAd.body == nil
+    }
+}
+
+extension MapViewController: GADUnifiedNativeAdDelegate {
+    func nativeAdDidRecordClick(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+    
+    func nativeAdDidRecordImpression(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+    
+    func nativeAdWillPresentScreen(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+    
+    func nativeAdWillDismissScreen(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+    
+    func nativeAdDidDismissScreen(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+    
+    func nativeAdWillLeaveApplication(_ nativeAd: GADUnifiedNativeAd) {
+        print("\(#function) called")
+    }
+}
 
 final class MapViewController: UIViewController, ManuDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
+    
+    private var adLoader: GADAdLoader!
+    
+    private func adLoaderBuild() -> GADAdLoader {
+        let adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/2247696110", rootViewController: self,
+                                   adTypes: [ .unifiedNative ], options: nil)
+        adLoader.delegate = self
+        adLoader.load(GADRequest())
+        return adLoader
+    }
     
     private let locationManager: LocationManager = .shared
     
@@ -134,12 +186,19 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
+    private var nativeAdView: GADUnifiedNativeAdView = {
+        guard let nibObjects = Bundle.main.loadNibNamed("AdLabel", owner: nil, options: nil),
+            let adView = nibObjects.first as? GADUnifiedNativeAdView else {
+                assert(false, "Could not load nib file for adView")
+        }
+        adView.translatesAutoresizingMaskIntoConstraints = false
+        return adView
+    }()
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
         reloadMapView()
-       
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -153,17 +212,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupNavigationItems()
         setupSideMenu()
     }
-    
-    
-    var displayContentController: UIViewController? {
-        didSet {
-            removeContentController(oldValue)
-            if let contentViewController = displayContentController {
-                displayContentController(contentViewController, inView: mapView)
-            }
-        }
-    }
-    
+
     func promptLocationAuthenticateError() {
         let alertController = UIAlertController(title: "定位權限已關閉",
                                                 message: "如要變更權限，請至 設定 > 隱私權 > 定位服務 開啟",
@@ -215,7 +264,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         lastTouchPoint = touches.first?.location(in: mapView)
         if lastTouchPoint != nil {
             fpc.move(to: .tip, animated: true)
-            mapView.selectedAnnotations.forEach {  mapView.deselectAnnotation($0, animated: false) }
         }
     }
     
@@ -370,7 +418,8 @@ extension MapViewController: MKMapViewDelegate {
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
             annotationView.image = batteryStation.iconImage
-            annotationView.detailCalloutAccessoryView = DetailAnnotationView().configure(annotation: batteryStation)
+            annotationView.detailCalloutAccessoryView = DetailAnnotationView(nativeAdView: nativeAdView)
+                .configure(annotation: batteryStation)
         case _ as GoSharePointAnnotation:
             annotationView.image = UIImage(named: "test")
             
@@ -401,10 +450,10 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
-        
+        adLoader = adLoaderBuild()
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
-             CalloutAccessoryViewModel(destinationView: view).bind(mapView: self.mapView)
+            CalloutAccessoryViewModel(destinationView: view).bind(mapView: self.mapView)
         }
        
     }

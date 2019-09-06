@@ -21,7 +21,7 @@ public class SearchPanelLandscapeLayout: FloatingPanelLayout {
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         switch position {
         case .full: return 16.0
-        case .tip: return 69.0
+        case .tip: return 60.0
         default: return nil
         }
     }
@@ -43,4 +43,16 @@ public class SearchPanelLandscapeLayout: FloatingPanelLayout {
 //    public func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
 //        return 0.0
 //    }
+}
+
+final class MapFloatingLayout : FloatingPanelLayout {
+    var initialPosition: FloatingPanelPosition { return .half }
+    public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
+        switch position {
+        case .full: return 18.0
+        case .half: return 262.0
+        case .tip: return 60.0
+        case .hidden: return nil
+        }
+    }
 }

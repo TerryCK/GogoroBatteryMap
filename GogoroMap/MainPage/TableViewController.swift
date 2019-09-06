@@ -17,11 +17,7 @@ extension TableViewController: ADSupportable {
 }
 extension TableViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        
-        
-        if let mapViewController = mapViewController {
-            mapViewController.fpc.move(to: .full, animated: true)
-        }
+        mapViewController?.fpc.move(to: .full, animated: true)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -30,17 +26,16 @@ extension TableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-//        updateSearchBar(showScope: false)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchText = ""
     }
     
-    
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         segmentStatus = SegmentStatus(rawValue: selectedScope) ?? .nearby
     }
+    
     private var mapViewController: MapViewController? {
         return navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController
     }
@@ -53,9 +48,7 @@ final class TableViewController: UITableViewController {
     
     private var observation: NSKeyValueObservation?
     
-    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        updateSearchBar(showScope: false)
-    }
+
     private func updateSearchBar(showScope: Bool) {
         searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
         searchBar.showsScopeBar = showScope
@@ -154,11 +147,6 @@ final class TableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        if let mapViewController = mapViewController {
-            mapViewController.displayContentController = nil
-            //            mapViewController.segmentedControl.selectedSegmentIndex = SegmentStatus.map.rawValue
-            mapViewController.mapViewMove(to: searchResultData[indexPath.row])
-        }
+        mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
     }
 }
