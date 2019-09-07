@@ -89,14 +89,6 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    var nativeAdView: GADUnifiedNativeAdView! {
-        didSet {
-            if let label = nativeAdView.bodyView as? UILabel {
-                label.adjustsFontSizeToFitWidth = true
-                label.minimumScaleFactor = 0.5
-            }
-        }
-    }
     
     let timesOfCheckinLabel = UILabel {  $0.font = .systemFont(ofSize: 12)  }
     
@@ -135,28 +127,26 @@ final class DetailAnnotationView: UIView {
     
     //    MARK: - View's setup & initialize with autolayout
     private func setup() {
-
-        [goButtonStackView, mainStackView, addressLabel, nativeAdView, buttonStackView, separatorView].forEach(addSubview)
+        let views = [goButtonStackView, mainStackView, addressLabel, nativeAdView, buttonStackView, separatorView]
+        for case let view? in views {
+            addSubview(view)
+        }
         
         separatorView.anchor(top: goButtonStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 5, bottomPadding: 0, rightPadding: 5, width: 0, height: 0.75)
         
         goButtonStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 0, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0)
         
-        
-        mainStackView.anchor(top: separatorView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        mainStackView.anchor(top: separatorView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 10, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
         
         addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
-        nativeAdView.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 30)
         
-        buttonStackView.anchor(top: nativeAdView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        nativeAdView?.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, height: 32)
         
-    }
-    
-    init(nativeAdView: GADUnifiedNativeAdView) {
-        self.nativeAdView = nativeAdView
-        super.init(frame: .zero)
+        buttonStackView.anchor(top: nativeAdView?.bottomAnchor ?? mainStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5)
+        
+        buttonStackView.topAnchor.constraint(greaterThanOrEqualTo: addressLabel.bottomAnchor,
+                                             constant: 5).isActive = true
         widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
-        setup()
         backgroundColor = .clear
         layer.cornerRadius = 5
         layer.masksToBounds = true
@@ -164,20 +154,34 @@ final class DetailAnnotationView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
         setup()
-        backgroundColor = .clear
-        layer.cornerRadius = 5
-        layer.masksToBounds = true
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
- 
+    
+    private let nativeAdView: GADUnifiedNativeAdView? = {
+        guard let nibObjects = Bundle.main.loadNibNamed("AdLabel", owner: nil, options: nil),
+            let adView = nibObjects.first as? GADUnifiedNativeAdView else {
+                return nil
+        }
+        adView.translatesAutoresizingMaskIntoConstraints = false
+        return adView
+    }()
+    
+    
     @discardableResult
-    func configure(annotation: BatteryDataModalProtocol) -> Self {
+    func configure(annotation: BatteryDataModalProtocol, nativeAd: GADUnifiedNativeAd?) -> Self {
+        if let nativeAd = nativeAd {
+            nativeAdView?.nativeAd = nativeAd
+            (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body
+        }
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            nativeAdView?.removeFromSuperview()
+        }
+        
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
         checkinButton.isEnabled = annotation.isOperating
@@ -186,11 +190,11 @@ final class DetailAnnotationView: UIView {
         if let counterOfcheckin = annotation.checkinCounter,
             counterOfcheckin > 0,
             let checkindate = annotation.checkinDay?.string(dateformat: "yyyy.MM.dd") {
-            timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次 打卡日： \(checkindate)"
+            timesOfCheckinLabel.text = "打卡：\(counterOfcheckin) 次,  打卡日： \(checkindate)"
             unCheckinButton.isHidden = false
         } else {
             unCheckinButton.isHidden = true
-            timesOfCheckinLabel.text = "尚無打卡記錄"
+            timesOfCheckinLabel.text = "   "
         }
         return self
     }
