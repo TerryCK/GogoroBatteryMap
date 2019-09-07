@@ -68,10 +68,7 @@ extension MapViewController: GADAdLoaderDelegate {
 
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-        nativeAdView.nativeAd = nativeAd
-        nativeAd.delegate = self
-        (nativeAdView.bodyView as? UILabel)?.text = nativeAd.body
-        nativeAdView.bodyView?.isHidden = nativeAd.body == nil
+        self.nativeAd = nativeAd
     }
 }
 
@@ -105,9 +102,18 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-    private var adLoader: GADAdLoader!
+    private var nativeAd: GADUnifiedNativeAd? {
+        didSet {
+            nativeAd?.delegate = self
+        }
+    }
     
-    private func adLoaderBuild() -> GADAdLoader {
+    private var adLoader: GADAdLoader?
+    
+    private func adLoaderBuild() -> GADAdLoader? {
+        guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
+            return nil
+        }
         let adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/2247696110", rootViewController: self,
                                    adTypes: [ .unifiedNative ], options: nil)
         adLoader.delegate = self
@@ -186,14 +192,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
-    private var nativeAdView: GADUnifiedNativeAdView = {
-        guard let nibObjects = Bundle.main.loadNibNamed("AdLabel", owner: nil, options: nil),
-            let adView = nibObjects.first as? GADUnifiedNativeAdView else {
-                assert(false, "Could not load nib file for adView")
-        }
-        adView.translatesAutoresizingMaskIntoConstraints = false
-        return adView
-    }()
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -226,6 +224,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupObserve()
         setupObserver()
         performGuidePage()
+        adLoader = adLoaderBuild()
         LocationManager.shared.authorize { (status) in
             switch status {
             case .denied, .restricted:
@@ -236,6 +235,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 break
             }
         }
+        setupAd(with: view)
         fpc.addPanel(toParent: self, animated: true)
         setupPurchase()
         Answers.log(view: "Map Page")
@@ -243,7 +243,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         longPressRecognizer.numberOfTapsRequired = 1
         longPressRecognizer.minimumPressDuration = 0.1
         mapView.addGestureRecognizer(longPressRecognizer)
-        setupAd(with: view)
+        
     }
     
 
@@ -418,7 +418,9 @@ extension MapViewController: MKMapViewDelegate {
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
             annotationView.image = batteryStation.iconImage
-            annotationView.detailCalloutAccessoryView = DetailAnnotationView(nativeAdView: nativeAdView).configure(annotation: batteryStation)
+            annotationView.detailCalloutAccessoryView = DetailAnnotationView()
+                .configure(annotation: batteryStation,
+                           nativeAd: nativeAd)
         case _ as GoSharePointAnnotation:
             annotationView.image = UIImage(named: "test")
             
@@ -449,12 +451,10 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
-        adLoader = adLoaderBuild()
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
-            CalloutAccessoryViewModel(destinationView: view, adView: self.nativeAdView).bind(mapView: self.mapView)
+            DetailCalloutAccessoryViewModel(annotationView: view).bind(mapView: mapView, nativeAd:  self.nativeAd)
         }
-       
     }
     
     
@@ -497,5 +497,8 @@ extension MapViewController: IAPPurchasable {
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
+        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            nativeAd = nil
+        }
     }
 }
