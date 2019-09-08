@@ -69,6 +69,7 @@
 		A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */; };
 		DE3CAF7A23236740006AFE1A /* DetailCalloutAccessoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3CAF7823236740006AFE1A /* DetailCalloutAccessoryViewModel.swift */; };
 		DE3CAF7B23236740006AFE1A /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3CAF7923236740006AFE1A /* DetailAnnotationView.swift */; };
+		DE6B596E2324BCBB00366F09 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6B596D2324BCBA00366F09 /* Environment.swift */; };
 		DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */; };
 		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
 		DE772FE622FD7369000A67C3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE522FD7369000A67C3 /* LocationManager.swift */; };
@@ -160,6 +161,7 @@
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
 		DE3CAF7823236740006AFE1A /* DetailCalloutAccessoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCalloutAccessoryViewModel.swift; sourceTree = "<group>"; };
 		DE3CAF7923236740006AFE1A /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
+		DE6B596D2324BCBA00366F09 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		DE772FE522FD7369000A67C3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 		A8D368991F3B44A00015F5F9 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				DE6B596D2324BCBA00366F09 /* Environment.swift */,
 				A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */,
 				DE772FE522FD7369000A67C3 /* LocationManager.swift */,
 				A833AC67223DE5F900016284 /* ClusterStatue.swift */,
@@ -733,6 +736,7 @@
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
+				DE6B596E2324BCBB00366F09 /* Environment.swift in Sources */,
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
 				DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */,

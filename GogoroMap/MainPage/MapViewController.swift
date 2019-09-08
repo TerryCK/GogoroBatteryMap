@@ -114,8 +114,10 @@ final class MapViewController: UIViewController, ManuDelegate  {
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
             return nil
         }
-        let adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/2247696110", rootViewController: self,
-                                   adTypes: [ .unifiedNative ], options: nil)
+        let adLoader = GADAdLoader(adUnitID: nativeAdID,
+                                   rootViewController: self,
+                                   adTypes: [ .unifiedNative ],
+                                   options: nil)
         adLoader.delegate = self
         adLoader.load(GADRequest())
         return adLoader
@@ -142,7 +144,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         let tableViewController = TableViewController()
         $0.set(contentViewController: tableViewController)
         $0.track(scrollView: tableViewController.tableView)
-        
         return $0
     }(FloatingPanelController(delegate: nil))
     
@@ -202,8 +203,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
-        
     }
+    
     override func loadView() {
         super.loadView()
         setupNavigationTitle()
@@ -235,6 +236,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 break
             }
         }
+        
         setupAd(with: view)
         fpc.addPanel(toParent: self, animated: true)
         setupPurchase()
@@ -243,6 +245,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         longPressRecognizer.numberOfTapsRequired = 1
         longPressRecognizer.minimumPressDuration = 0.1
         mapView.addGestureRecognizer(longPressRecognizer)
+        
         
     }
     
@@ -314,10 +317,15 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
-        if let sideManuController = SideMenuManager.default.menuLeftNavigationController {
-            setTracking(mode: .none)
-            fpc.present(sideManuController, animated: true, completion: nil)
+        
+        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else  {
+            return
         }
+        setTracking(mode: .none)
+        (self.fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
+        removeAds(view: view)
+        fpc.present(sideManuController, animated: true)
+        
     }
     
     //     MARK: - View setups
@@ -420,7 +428,7 @@ extension MapViewController: MKMapViewDelegate {
             annotationView.image = batteryStation.iconImage
             annotationView.detailCalloutAccessoryView = DetailAnnotationView()
                 .configure(annotation: batteryStation,
-                           nativeAd: nativeAd)
+                           nativeAd: nil)
         case _ as GoSharePointAnnotation:
             annotationView.image = UIImage(named: "test")
             
@@ -451,9 +459,11 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
+        adLoader = adLoaderBuild()
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
-            DetailCalloutAccessoryViewModel(annotationView: view).bind(mapView: mapView, nativeAd:  self.nativeAd)
+            DetailCalloutAccessoryViewModel(annotationView: view).bind(mapView: mapView,
+                                                                       nativeAd: self.nativeAd)
         }
     }
     
@@ -496,9 +506,8 @@ extension MapViewController: IAPPurchasable {
     }
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
-        bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            nativeAd = nil
+            removeAds(view: view)
         }
     }
 }
