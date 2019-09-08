@@ -81,22 +81,9 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-    private let goDescriptLabel: UILabel = {
-        $0.font = .systemFont(ofSize: 9)
-        $0.text = "導航: \(Navigator.option)"
-        return $0
-    }(UILabel())
-    
-    private lazy var goStackview: UIStackView = {
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [goButton, goDescriptLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 2
-        return stackView
-    }()
-    
+
     private lazy var goButtonStackView: UIStackView = {   
-        let stackView: UIStackView = UIStackView(arrangedSubviews: [goStackview, etaStackview])
+        let stackView: UIStackView = UIStackView(arrangedSubviews: [goButton, etaStackview])
         stackView.axis = .horizontal
         stackView.alignment = .leading
         stackView.spacing = 10

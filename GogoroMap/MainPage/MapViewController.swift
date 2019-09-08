@@ -102,12 +102,14 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-    private var nativeAd: GADUnifiedNativeAd? {
+     var nativeAd: GADUnifiedNativeAd? {
         didSet {
             nativeAd?.delegate = self
+            menuController?.collectionView.reloadData()
         }
     }
     
+    private var menuController: MenuController?
     private var adLoader: GADAdLoader?
     
     private func adLoaderBuild() -> GADAdLoader? {
@@ -171,7 +173,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         $0.showsTraffic = false
         $0.userLocation.title = "😏 \("here".localize())"
         view.addSubview($0)
-        $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 60)
+        $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 45)
         return $0
     }(MKMapView())
     
@@ -190,9 +192,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         button.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
         return button
     }()
-    
-    
-//    private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
     
     override func viewDidAppear(_ animated: Bool) {
@@ -297,7 +296,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
 //                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
-                    
                 }
             }
         }
@@ -318,7 +316,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         
         setTracking(mode: .none)
         (self.fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-
+        adLoader = adLoaderBuild()
         fpc.present(sideManuController, animated: true)
         
     }
@@ -345,6 +343,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         sideMenuManager.menuAnimationFadeStrength = 0.40
         sideMenuManager.menuBlurEffectStyle = nil
         sideMenuManager.menuPresentMode = .viewSlideInOut
+        self.menuController = menuController
     }
     
     private func setupNavigationTitle() {
@@ -504,6 +503,7 @@ extension MapViewController: IAPPurchasable {
     @objc func handlePurchaseNotification(_ notification: Notification) {
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             removeAds(view: view)
+            DataManager.shared.lastUpdate = Date()
         }
     }
 }

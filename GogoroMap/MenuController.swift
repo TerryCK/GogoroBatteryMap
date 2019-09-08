@@ -9,9 +9,11 @@
 import UIKit
 import StoreKit
 import Crashlytics
+import GoogleMobileAds
 
 protocol ManuDelegate: AnyObject {
     var clusterSwitcher: ClusterStatus { set get }
+    var nativeAd: GADUnifiedNativeAd? { get }
 }
 
 
@@ -74,9 +76,14 @@ final class MenuController: UICollectionViewController {
         cell.product = products.first
         cell.purchaseHandler = purchase
         cell.mapOptions.setTitle("導航：" + Navigator.option.description, for: .normal)
+        
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
             cell.buyStoreButtonStackView.isHidden = true
             cell.setupThanksLabel()
+            cell.nativeAdView?.removeFromSuperview()
+        } else {
+            cell.nativeAdView?.nativeAd = delegate?.nativeAd
+            (cell.nativeAdView?.bodyView as? UILabel)?.text = delegate?.nativeAd?.body
         }
         
         refreshButton = cell.dataUpdateButton
