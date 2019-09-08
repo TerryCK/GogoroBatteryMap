@@ -170,7 +170,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
         $0.showsScale = true
         $0.showsTraffic = false
         $0.userLocation.title = "😏 \("here".localize())"
-        view = $0
+        view.addSubview($0)
+        $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 60)
         return $0
     }(MKMapView())
     
@@ -226,30 +227,23 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupObserver()
         performGuidePage()
         adLoader = adLoaderBuild()
+        
         LocationManager.shared.authorize { (status) in
-            switch status {
-            case .denied, .restricted:
+            if [.denied, .restricted].contains(status) {
                 promptLocationAuthenticateError()
-            case .authorizedAlways, .authorizedWhenInUse, .notDetermined:
-                setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-            @unknown default:
-                break
             }
+            setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
         }
         
-        setupAd(with: view)
-        fpc.addPanel(toParent: self, animated: true)
         setupPurchase()
         Answers.log(view: "Map Page")
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
         longPressRecognizer.numberOfTapsRequired = 1
         longPressRecognizer.minimumPressDuration = 0.1
         mapView.addGestureRecognizer(longPressRecognizer)
-        
-        
+        fpc.addPanel(toParent: self, animated: true)
     }
     
-
     enum Status {
         case lock, release
     }
@@ -317,13 +311,13 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
-        
         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else  {
             return
         }
+        
         setTracking(mode: .none)
         (self.fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-        removeAds(view: view)
+
         fpc.present(sideManuController, animated: true)
         
     }
@@ -403,7 +397,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
 
 //MARK: - Present annotationView and Navigatorable
 extension MapViewController: MKMapViewDelegate {
-    
+
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
             return originalMKAnnotationView(mapView, viewFor: annotation)
@@ -462,7 +456,8 @@ extension MapViewController: MKMapViewDelegate {
         adLoader = adLoaderBuild()
         Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
-            DetailCalloutAccessoryViewModel(annotationView: view).bind(mapView: mapView,
+            DetailCalloutAccessoryViewModel(annotationView: view,
+                                            controller: self).bind(mapView: mapView,
                                                                        nativeAd: self.nativeAd)
         }
     }

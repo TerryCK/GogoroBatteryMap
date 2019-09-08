@@ -55,7 +55,6 @@ final class TableViewController: UITableViewController {
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
-    
 
     private func updateSearchBar(showScope: Bool) {
         searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
@@ -74,6 +73,7 @@ final class TableViewController: UITableViewController {
             }
         }
     }
+
     private let locationManager: LocationManager = .shared
     
     var segmentStatus: SegmentStatus = .nearby {
@@ -102,6 +102,7 @@ final class TableViewController: UITableViewController {
             setTextFieldTintColor(to: color, for: subview)
         }
     }
+    
     func loadData() {
         DataManager.shared.fetchStations { result in
             if case let .success(station) = result {
@@ -133,8 +134,11 @@ final class TableViewController: UITableViewController {
             DispatchQueue.main.async(execute: tableView.reloadData)
         }
     }
-    
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        segmentStatus = .nearby
+    }
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
         header.countLabel.text = "\(searchResultData.count) 站"

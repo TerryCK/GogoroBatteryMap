@@ -12,6 +12,7 @@ import GoogleMobileAds
 
 struct DetailCalloutAccessoryViewModel {
     let annotationView: MKAnnotationView
+    let controller: MapViewController
 }
 
 extension DetailCalloutAccessoryViewModel {
@@ -23,6 +24,7 @@ extension DetailCalloutAccessoryViewModel {
         batteryAnnotation.checkinCounter = counterOfcheckin
         annotationView.image = batteryAnnotation.iconImage
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
+        (controller.fpc.contentViewController as? TableViewController)?.tableView.reloadData()
     }
     
     func bind(mapView: MKMapView, nativeAd: GADUnifiedNativeAd?) {

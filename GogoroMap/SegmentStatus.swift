@@ -15,7 +15,7 @@ enum SegmentStatus: Int, CaseIterable {
     var name: String {
         switch self {
         case .building  : return "即將啟用"
-        case .nearby    : return "附近"
+        case .nearby    : return "附近營運中"
         case .checkin   : return "已打卡"
         case .uncheck   : return "未打卡"
         }
@@ -29,7 +29,7 @@ enum SegmentStatus: Int, CaseIterable {
         switch self {
         case .checkin       : return { $0.checkinCounter ?? 0 > 0 }
         case .uncheck       : return { $0.checkinCounter ?? 0 == 0 }
-        case .nearby        : return { _ in true }
+        case .nearby        : return { $0.isOperating }
         case .building      : return { !$0.isOperating }
         }
     }
