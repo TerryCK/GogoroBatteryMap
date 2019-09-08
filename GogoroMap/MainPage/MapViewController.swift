@@ -210,6 +210,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupNavigationTitle()
         setupNavigationItems()
         setupSideMenu()
+        
     }
 
     func promptLocationAuthenticateError() {
@@ -505,5 +506,6 @@ extension MapViewController: IAPPurchasable {
             removeAds(view: view)
             DataManager.shared.lastUpdate = Date()
         }
+        
     }
 }

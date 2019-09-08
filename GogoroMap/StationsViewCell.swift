@@ -264,6 +264,9 @@ final class StationsViewCell: BaseCollectionViewCell {
     }()
     
     let nativeAdView: GADUnifiedNativeAdView? = {
+        guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
+            return nil
+        }
         guard let nibObjects = Bundle.main.loadNibNamed("AdLabel", owner: nil, options: nil),
             let adView = nibObjects.first as? GADUnifiedNativeAdView else {
                 return nil
