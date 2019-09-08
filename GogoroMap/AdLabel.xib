@@ -17,7 +17,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="few-I8-c8I">
-                    <rect key="frame" x="0.0" y="0.0" width="201" height="44"/>
+                    <rect key="frame" x="0.0" y="0.0" width="186" height="44"/>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -28,7 +28,7 @@
                 <constraint firstItem="few-I8-c8I" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="2xe-qa-ZMV"/>
                 <constraint firstItem="few-I8-c8I" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="PvJ-KH-WiQ"/>
                 <constraint firstAttribute="bottom" secondItem="few-I8-c8I" secondAttribute="bottom" id="gjr-sD-YpG"/>
-                <constraint firstAttribute="trailing" secondItem="few-I8-c8I" secondAttribute="trailing" id="n0s-0H-Snu"/>
+                <constraint firstAttribute="trailing" secondItem="few-I8-c8I" secondAttribute="trailing" constant="15" id="n0s-0H-Snu"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

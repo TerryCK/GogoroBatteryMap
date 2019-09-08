@@ -8,6 +8,7 @@
 
 import UIKit
 import StoreKit
+import GoogleMobileAds
 
 final class StationsViewCell: BaseCollectionViewCell {
     
@@ -79,7 +80,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private let authorLabel = UILabel {
         $0.text = "© \(Date().string(dateformat: "yyyy")) Chen, Guan-Jhen All rights reserved"
-        $0.font = .systemFont(ofSize: 11)
+        $0.font = .systemFont(ofSize: 9)
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.textColor = .gray
@@ -139,8 +140,8 @@ final class StationsViewCell: BaseCollectionViewCell {
     
     private let thanksLabel: UILabel = {
         let label = UILabel()
-        label.text = "感謝您的贊助，您的贊助將會鼓勵作者開發更多的App，我們非常歡迎有趣的點子來使您生活更美好"
-        label.font = UIFont.boldSystemFont(ofSize: 11)
+        label.text = "由衷感謝您透過贊助鼓勵作者開發更多的便利的應用，致力於使生活更美好"
+        label.font = UIFont.boldSystemFont(ofSize: 9)
         label.numberOfLines = 0
         return label
     }()
@@ -262,6 +263,15 @@ final class StationsViewCell: BaseCollectionViewCell {
         return stackView
     }()
     
+    let nativeAdView: GADUnifiedNativeAdView? = {
+        guard let nibObjects = Bundle.main.loadNibNamed("AdLabel", owner: nil, options: nil),
+            let adView = nibObjects.first as? GADUnifiedNativeAdView else {
+                return nil
+        }
+        adView.translatesAutoresizingMaskIntoConstraints = false
+        return adView
+    }()
+    
     private lazy var clusterView: UIView = {
         let myView = UIView()
         
@@ -323,8 +333,11 @@ final class StationsViewCell: BaseCollectionViewCell {
         layer.masksToBounds = true
         
         viewContainer.addSubview(headStackView)
-        
-        headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 200)
+        if let nativeAdView = nativeAdView {
+            headStackView.insertArrangedSubview(nativeAdView,
+                                                at: headStackView.arrangedSubviews.count-1)
+        }
+        headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 225)
         
         let separatorView = UIView { $0.backgroundColor = .gray }
         
@@ -333,7 +346,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         
         
         viewContainer.addSubview(authorLabel)
-        authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 3, bottomPadding: 10, rightPadding: 3, width: 0, height: 20)
+        authorLabel.anchor(top: nil, left: nil, bottom: viewContainer.bottomAnchor, right: nil, topPadding: 0, leftPadding: 5, bottomPadding: 10, rightPadding: 5, width: 0, height: 20)
         authorLabel.centerXAnchor.constraint(equalTo: viewContainer.centerXAnchor).isActive = true
         
         viewContainer.addSubview(buttonsStackView)
