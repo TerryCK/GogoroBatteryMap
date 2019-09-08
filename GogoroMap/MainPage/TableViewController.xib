@@ -27,7 +27,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                <color key="barTintColor" red="0.1764705882" green="0.58431372550000005" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                <color key="barTintColor" red="0.1764705882352941" green="0.58431372549019611" blue="0.25098039215686274" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                 <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
                 <connections>
                     <outlet property="delegate" destination="-1" id="3wi-HK-L1k"/>

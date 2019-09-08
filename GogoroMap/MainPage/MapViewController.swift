@@ -192,7 +192,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
     }()
     
     
-    private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
+//    private lazy var segmentControllerContainer = UIView { $0.backgroundColor = .lightGreen }
     
     
     override func viewDidAppear(_ animated: Bool) {
@@ -260,6 +260,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPoint = touches.first?.location(in: mapView)
         if lastTouchPoint != nil {
+            (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
             fpc.move(to: .tip, animated: true)
         }
     }

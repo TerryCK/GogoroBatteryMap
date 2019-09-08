@@ -89,8 +89,12 @@ final class TableViewController: UITableViewController {
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         updateSearchBar(showScope: true)
-        setupAd(with: view)
+        setupAd(with: tableView)
         setupObserve()
+        if let color = mapViewController?.navigationController?.navigationBar.barTintColor {
+            searchBar.tintColor = color
+        }
+        
         setTextFieldTintColor(to: .gray, for: searchBar)
     }
     
