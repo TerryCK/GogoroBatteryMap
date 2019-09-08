@@ -19,11 +19,17 @@ protocol ADSupportable: GADBannerViewDelegate {
 
 extension ADSupportable where Self: UIViewController {
     var adUnitID: String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/2934735716"
-        #else
-        return  Keys.standard.adUnitID
-        #endif
+        switch Environment.environment {
+        case .debug  : return "ca-app-pub-3940256099942544/2934735716"
+        case .release: return Keys.standard.adUnitID
+        }
+    }
+    
+    var nativeAdID: String {
+        switch Environment.environment {
+        case .debug  : return "ca-app-pub-3940256099942544/3986624511"
+        case .release: return Keys.standard.nativeAdID
+        }
     }
     func setupAd(with view: UIView) {
         #if RELEASE
@@ -52,5 +58,14 @@ extension ADSupportable where Self: UIViewController {
         UIView.animate(withDuration: 1,
                        animations: { bannerView.alpha = 1 }
         )
+    }
+    func removeAds(view: UIView) {
+        for subview in view.subviews {
+            if subview is GADBannerView {
+                subview.removeFromSuperview()
+            } else {
+                removeAds(view: subview)
+            }
+        }
     }
 }

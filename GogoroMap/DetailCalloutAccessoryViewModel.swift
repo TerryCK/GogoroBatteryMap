@@ -39,7 +39,7 @@ extension DetailCalloutAccessoryViewModel {
                 case .success(let response):
                     guard let  route = response.routes.first else { fallthrough }
                     let (hours, minutes) = TimeInterval.travelTimeConvert(seconds: route.expectedTravelTime)
-                    let distance = "距離：\(String(format: "%.1f", route.distance/1000)) km "
+                    let distance = "距離：\(String(format: "%.1f", route.distance/1000)) 公里 "
                     let travelTime = "約：" + (hours > 0 ? "\(hours) 小時 " : "") + "\(minutes) 分鐘 "
                     detailCalloutView.distanceLabel.text = distance
                     detailCalloutView.etaLabel.text = travelTime

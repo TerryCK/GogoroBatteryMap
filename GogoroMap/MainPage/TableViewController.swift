@@ -18,18 +18,26 @@ extension TableViewController: ADSupportable {
 extension TableViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         mapViewController?.fpc.move(to: .full, animated: true)
+        searchBar.showsCancelButton = true
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
     }
-    
+
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
         searchBar.resignFirstResponder()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchText = ""
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
@@ -83,8 +91,17 @@ final class TableViewController: UITableViewController {
         updateSearchBar(showScope: true)
         setupAd(with: view)
         setupObserve()
+        setTextFieldTintColor(to: .gray, for: searchBar)
     }
     
+   private func setTextFieldTintColor(to color: UIColor, for view: UIView) {
+        if view is UITextField {
+            view.tintColor = color
+        }
+        for subview in view.subviews {
+            setTextFieldTintColor(to: color, for: subview)
+        }
+    }
     func loadData() {
         DataManager.shared.fetchStations { result in
             if case let .success(station) = result {
@@ -147,6 +164,7 @@ final class TableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        searchBar.resignFirstResponder()
         mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
     }
 }

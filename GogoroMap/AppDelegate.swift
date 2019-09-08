@@ -22,17 +22,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
         window?.makeKeyAndVisible()
         setupIAPOberserver()
-        #if RELEASE
-        FirebaseApp.configure()
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
-        Fabric.sharedSDK().debug = true
-        Fabric.with([Crashlytics.self])
-        print("test release mode ")
-        #else
-        NetworkActivityLogger.shared.startLogging()
-        NetworkActivityLogger.shared.level = .debug
-        #endif
         
+        switch Environment.environment {
+        case .release:
+            FirebaseApp.configure()
+            GADMobileAds.sharedInstance().start(completionHandler: nil)
+            Fabric.sharedSDK().debug = true
+            Fabric.with([Crashlytics.self])
+        case .debug:
+            NetworkActivityLogger.shared.startLogging()
+            NetworkActivityLogger.shared.level = .debug
+        }
+        
+        print("==== enviroment: \(Environment.environment) ====")
         return true
     }
     

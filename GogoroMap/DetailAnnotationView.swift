@@ -94,13 +94,12 @@ final class DetailAnnotationView: UIView {
     
     private let isAvailableLabel = UILabel {
         $0.textColor = .white
-        $0.layer.cornerRadius = 6
+        $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-        $0.font = .systemFont(ofSize: 14)
+        $0.baselineAdjustment = .alignCenters
+        $0.font = .systemFont(ofSize: 12)
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.5
-        $0.anchor(width: 40, height: 14)
     }
     
     private let opneHourLabel = UILabel { $0.font = .systemFont(ofSize: 12) }
@@ -186,7 +185,7 @@ final class DetailAnnotationView: UIView {
         addressLabel.text = "地址：\(annotation.address)"
         checkinButton.isEnabled = annotation.isOperating
         isAvailableLabel.backgroundColor = annotation.isOperating ? .lightGreen : .lightGray
-        isAvailableLabel.text = annotation.isOperating ? " 營運中 " : " 關閉中 "
+        isAvailableLabel.text = annotation.isOperating ? " 營運中 " : " 敬請期待 "
         if let counterOfcheckin = annotation.checkinCounter,
             counterOfcheckin > 0,
             let checkindate = annotation.checkinDay?.string(dateformat: "yyyy.MM.dd") {
