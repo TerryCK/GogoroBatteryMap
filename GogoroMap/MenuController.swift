@@ -63,7 +63,8 @@ final class MenuController: UICollectionViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
-        collectionView?.reloadData()
+//        collectionView?.reloadData()
+        
     }
 
     // MARK: - CollectionView logics
@@ -194,13 +195,7 @@ extension MenuController {
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         refreshButton?.isUserInteractionEnabled = false
-        DataManager.shared.fetchStations { result in
-            if case let .success(station) = result {
-                return DataManager.shared.stations.keepOldUpdate(with: station)
-            }
-            return nil
-        }
-        DataManager.shared.fetchGoShare()
+        DataManager.shared.fetchStations()
     }
     
     private func log(_ event: String) {

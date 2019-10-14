@@ -107,16 +107,6 @@ final class TableViewController: UITableViewController {
         }
     }
     
-    func loadData() {
-        DataManager.shared.fetchStations { result in
-            if case let .success(station) = result {
-                return DataManager.shared.stations.keepOldUpdate(with: station)
-            }
-            return nil
-        }
-    }
-    
-    
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             self.stations = DataManager.shared.stations.sorted(userLocation: self.locationManager.userLocation, by: <)

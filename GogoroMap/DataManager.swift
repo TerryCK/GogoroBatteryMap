@@ -26,32 +26,6 @@ final class DataManager: NSObject {
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
    
-    var goShareDataModels: [GoShareDataModel] = [] {
-        didSet {
-            goShareAnnotations = goShareDataModels.compactMap { dataModal in
-                guard let coordinate = dataModal.coordinate else {
-                    return nil
-                }
-                return GoSharePointAnnotation(title: dataModal.plate, subtitle: dataModal.remainingMileage, coordinate: coordinate)
-            }
-        }
-    }
-    var goShareAnnotations: [GoSharePointAnnotation] = [] {
-        didSet {
-            self.lastUpdate = Date()
-        }
-    }
-    
-    func fetchGoShare() {
-        fetchData(api: .goShare) { result in
-            switch result {
-            case .success(let data):
-                self.goShareDataModels = (try? JSONDecoder().decode([GoShareDataModel].self, from: data)) ?? []
-                self.lastUpdate = Date()
-            case .failure : break
-            }
-        }
-    }
     
     @objc dynamic var lastUpdate: Date = Date()
     
@@ -60,16 +34,16 @@ final class DataManager: NSObject {
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
-    func fetchStations(completionHandler: @escaping (Result<[BatteryStationPointAnnotation], Error>) -> [BatteryStationPointAnnotation]?) {
+
+    
+    func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
         fetchData { (result) in
-            if case let .success(data) = result, let response = (try? JSONDecoder().decode(Response.self, from: data))?.stations {
-                if let stations = completionHandler(.success(response.map(BatteryStationPointAnnotation.init))) {
-                    self.stations = stations
-                }
-                self.lastUpdate = Date()
-            } else {
-                _ = completionHandler(.failure(ServiceError.general))
+            guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) else {
+                return
             }
+            let handler = completionHandler ?? DataManager.shared.stations.keepOldUpdate
+            self.stations = handler(stations)
+            self.lastUpdate = Date()
         }
     }
     
