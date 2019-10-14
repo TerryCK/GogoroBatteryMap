@@ -198,18 +198,15 @@ extension BackupViewController {
                     guard let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else {
                         return
                     }
-                    DataManager.shared.fetchStations { (result) in
-                        guard case let .success(stations) = result else {
-                            return nil
-                        }
+                    
+                    DataManager.shared.fetchStations { stations in
                         
                         for record in stationRecords {
-                            for station in stations where  record.id == station.coordinate {
+                            for station in stations where record.id == station.coordinate {
                                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                             }
                         }
                         
-//                        DataManager.shared.stations = stations
                         DispatchQueue.main.async {
                             self.navigationItem.title = "備份與還原"
                         }

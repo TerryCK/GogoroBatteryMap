@@ -172,6 +172,10 @@ final class MapViewController: UIViewController, ManuDelegate  {
         $0.showsScale = true
         $0.showsTraffic = false
         $0.userLocation.title = "😏 \("here".localize())"
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
+        longPressRecognizer.numberOfTapsRequired = 1
+        longPressRecognizer.minimumPressDuration = 0.1
+        $0.addGestureRecognizer(longPressRecognizer)
         view.addSubview($0)
         $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 45)
         return $0
@@ -210,7 +214,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupNavigationTitle()
         setupNavigationItems()
         setupSideMenu()
-        
     }
 
     func promptLocationAuthenticateError() {
@@ -237,10 +240,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
         
         setupPurchase()
         Answers.log(view: "Map Page")
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(action))
-        longPressRecognizer.numberOfTapsRequired = 1
-        longPressRecognizer.minimumPressDuration = 0.1
-        mapView.addGestureRecognizer(longPressRecognizer)
+        
+        DataManager.shared.fetchStations()
         fpc.addPanel(toParent: self, animated: true)
     }
     
@@ -294,7 +295,6 @@ final class MapViewController: UIViewController, ManuDelegate  {
                 self.clusterManager.removeAll()
                 self.clusterManager.reload(mapView: self.mapView) { _ in
                     self.clusterManager.add(DataManager.shared.stations)
-//                    self.clusterManager.add(DataManager.shared.goShareAnnotations)
                     self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                 }
@@ -311,15 +311,14 @@ final class MapViewController: UIViewController, ManuDelegate  {
     
     @objc func performMenu() {
         Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
-        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else  {
+        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
             return
         }
         
         setTracking(mode: .none)
-        (self.fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
+        (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
         adLoader = adLoaderBuild()
         fpc.present(sideManuController, animated: true)
-        
     }
     
     //     MARK: - View setups
