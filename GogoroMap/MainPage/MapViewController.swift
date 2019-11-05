@@ -49,9 +49,14 @@ extension MapViewController: FloatingPanelControllerDelegate {
             return MapFloatingLayout()
         }
     }
+    func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
+        bannerView.isHidden = targetPosition == .full
+        print(targetPosition)
+    }
     
     
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        
         guard vc.position == .full,
             let tableViewController = vc.contentViewController as? TableViewController else {
                 return
@@ -214,6 +219,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         setupNavigationTitle()
         setupNavigationItems()
         setupSideMenu()
+        
     }
 
     func promptLocationAuthenticateError() {
@@ -243,6 +249,7 @@ final class MapViewController: UIViewController, ManuDelegate  {
         
         DataManager.shared.fetchStations()
         fpc.addPanel(toParent: self, animated: true)
+        setupAd(with: view)
     }
     
     enum Status {

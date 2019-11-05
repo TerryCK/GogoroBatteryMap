@@ -46,7 +46,7 @@ extension ADSupportable where Self: UIViewController {
         bannerView.adUnitID = adUnitID
         
         let request = GADRequest()
-        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone]
+        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
         bannerView.load(request)
         #endif
     }
