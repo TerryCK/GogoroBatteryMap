@@ -51,7 +51,7 @@ final class MapFloatingLayout : FloatingPanelLayout {
         switch position {
         case .full: return 18.0
         case .half: return 262.0
-        case .tip: return 60.0
+        case .tip: return 60.0 + 50
         case .hidden: return nil
         }
     }

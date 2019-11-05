@@ -35,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         print("==== enviroment: \(Environment.environment) ====")
+        DataManager.shared.fetchStations()
         return true
     }
     
