@@ -11,7 +11,7 @@ pod 'Fabric'
 pod 'Crashlytics'
 pod 'Firebase/Core'
 pod 'SwiftyStoreKit'
-pod 'Cluster'
+pod 'Cluster', :git => 'https://github.com/efremidze/Cluster.git', :tag => '3.0.0'
 pod 'FloatingPanel'
 end
 
@@ -36,13 +36,6 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
      config.build_settings['SWIFT_VERSION'] = '5'
-#      if target.name.include? 'SideMenu'
-#          config.build_settings['SWIFT_VERSION'] = '5'
-#      elsif target.name.include? 'Cluster'
-#          config.build_settings['SWIFT_VERSION'] = '5'
-#      else
-#          config.build_settings['SWIFT_VERSION'] = '5'
-#      end
     end
   end
 end

@@ -25,7 +25,7 @@ enum SegmentStatus: Int, CaseIterable {
         return String(describing: self)
     }
     
-    var hanlder: (BatteryDataModalProtocol) -> Bool {
+    var hanlder: (BatteryStationPointAnnotation) -> Bool {
         switch self {
         case .checkin       : return { $0.checkinCounter ?? 0 > 0 }
         case .uncheck       : return { $0.checkinCounter ?? 0 == 0 }
