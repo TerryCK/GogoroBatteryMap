@@ -176,7 +176,7 @@ final class DetailAnnotationView: UIView {
     
     
     @discardableResult
-    func configure(annotation: BatteryDataModalProtocol, nativeAd: GADUnifiedNativeAd?) -> Self {
+    func configure<T: BatteryDataModalProtocol>(annotation: T, nativeAd: GADUnifiedNativeAd?) -> Self {
         if let nativeAd = nativeAd {
             nativeAdView?.nativeAd = nativeAd
             (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body

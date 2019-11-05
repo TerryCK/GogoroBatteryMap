@@ -58,14 +58,14 @@ extension BatteryStationPointAnnotation : Codable {
     }
     
     public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.init(title: try container.decode(String?.self, forKey: .title),
-                  subtitle: try container.decode(String?.self, forKey: .subtitle),
-                  coordinate: try container.decode(CLLocationCoordinate2D.self, forKey: .coordinate),
-                  address: try container.decode(String.self, forKey: .address),
-                  state:  try container.decode(Int.self, forKey: .state),
-                  checkinCounter: try container.decode(Int?.self, forKey: .checkinCounter),
-                  checkinDay: try container.decode(Date?.self, forKey: .checkinDay))
+        let container =             try decoder.container(keyedBy: CodingKeys.self)
+        self.init(title:            try container.decode(String?.self, forKey: .title),
+                  subtitle:         try container.decode(String?.self, forKey: .subtitle),
+                  coordinate:       try container.decode(CLLocationCoordinate2D.self, forKey: .coordinate),
+                  address:          try container.decode(String.self, forKey: .address),
+                  state:            try container.decode(Int.self, forKey: .state),
+                  checkinCounter:   try container.decode(Int?.self, forKey: .checkinCounter),
+                  checkinDay:       try container.decode(Date?.self, forKey: .checkinDay))
     }
 }
 
@@ -104,11 +104,10 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
 }
 
 extension Array where Element: BatteryStationPointAnnotation {
-     func keepOldUpdate(with newArray: Array) -> Array {
-        return newArray.compactMap { (newElement) -> Element in
-            for oldElement in self where oldElement.isEqual(newElement) {
-                (newElement.checkinDay, newElement.checkinCounter) = (oldElement.checkinDay, oldElement.checkinCounter)
-                return newElement
+     func keepOldUpdate(with other: Array) -> Array {
+        return other.map { (newElement) -> Element in
+            for localElement in self where localElement.isEqual(newElement) {
+                return localElement
             }
             return newElement
         }
