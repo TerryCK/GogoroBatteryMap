@@ -49,14 +49,13 @@ extension MapViewController: FloatingPanelControllerDelegate {
             return MapFloatingLayout()
         }
     }
+    
     func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
         bannerView.isHidden = targetPosition == .full
-        print(targetPosition)
     }
     
     
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
-        
         guard vc.position == .full,
             let tableViewController = vc.contentViewController as? TableViewController else {
                 return
@@ -77,33 +76,7 @@ extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     }
 }
 
-extension MapViewController: GADUnifiedNativeAdDelegate {
-    func nativeAdDidRecordClick(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-    
-    func nativeAdDidRecordImpression(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-    
-    func nativeAdWillPresentScreen(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-    
-    func nativeAdWillDismissScreen(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-    
-    func nativeAdDidDismissScreen(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-    
-    func nativeAdWillLeaveApplication(_ nativeAd: GADUnifiedNativeAd) {
-        print("\(#function) called")
-    }
-}
-
-final class MapViewController: UIViewController, ManuDelegate  {
+final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeAdDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
@@ -300,9 +273,8 @@ final class MapViewController: UIViewController, ManuDelegate  {
             DispatchQueue.main.async {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
+                self.clusterManager.add(DataManager.shared.stations)
                 self.clusterManager.reload(mapView: self.mapView) { _ in
-                    self.clusterManager.add(DataManager.shared.stations)
-                    self.reloadMapView()
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                 }
             }

@@ -175,7 +175,7 @@ extension MenuController {
         presentErrorMailReport()
     }
     
-    @objc func changeMapOption() {
+    @objc func changeMapOption(sender: UIButton) {
         let alertController = UIAlertController(title: "導航選項", message: "選擇偏好的導航地圖", preferredStyle: .actionSheet)
         var actions = Navigator.Option.allCases.map { option in
             UIAlertAction(title: option.description,
@@ -187,6 +187,9 @@ extension MenuController {
         }
         actions.append(UIAlertAction(title: "取消", style: .cancel, handler: nil))
         actions.forEach(alertController.addAction)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            alertController.popoverPresentationController?.sourceView = sender
+        }
         present(alertController, animated: true)
     }
     

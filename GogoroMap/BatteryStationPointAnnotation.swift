@@ -78,7 +78,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     public var city: String? = nil
     
     public override func isEqual(_ object: Any?) -> Bool {
-        return coordinate == (object as? BatteryStationPointAnnotation)?.coordinate
+        return coordinate.hashValue == (object as? BatteryStationPointAnnotation)?.coordinate.hashValue
     }
     
     public convenience init(station: Response.Station) {
