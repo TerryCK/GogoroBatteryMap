@@ -200,16 +200,17 @@ extension BackupViewController {
                     }
                     
                     DataManager.shared.fetchStations { stations in
+                        DispatchQueue.main.async {
+                            self.navigationItem.title = "備份與還原"
+                        }
                         
                         for record in stationRecords {
-                            for station in stations where record.id == station.coordinate {
+                            for station in stations where record.id.hashValue == station.coordinate.hashValue {
                                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                             }
                         }
                         
-                        DispatchQueue.main.async {
-                            self.navigationItem.title = "備份與還原"
-                        }
+                       
                         return stations
                     }
                 }),

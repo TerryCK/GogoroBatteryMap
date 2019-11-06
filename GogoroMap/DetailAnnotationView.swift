@@ -140,12 +140,10 @@ final class DetailAnnotationView: UIView {
         
         addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
         
+        
         nativeAdView?.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, height: 32)
+        buttonStackView.anchor(top: (nativeAdView ?? addressLabel).bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5)
         
-        buttonStackView.anchor(top: nativeAdView?.bottomAnchor ?? mainStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5)
-        
-        buttonStackView.topAnchor.constraint(greaterThanOrEqualTo: addressLabel.bottomAnchor,
-                                             constant: 5).isActive = true
         widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
         backgroundColor = .clear
         layer.cornerRadius = 5
@@ -176,7 +174,7 @@ final class DetailAnnotationView: UIView {
     
     
     @discardableResult
-    func configure<T: BatteryDataModalProtocol>(annotation: T, nativeAd: GADUnifiedNativeAd?) -> Self {
+    func configure(annotation: BatteryStationPointAnnotation, nativeAd: GADUnifiedNativeAd?) -> Self {
         if let nativeAd = nativeAd {
             nativeAdView?.nativeAd = nativeAd
             (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body
