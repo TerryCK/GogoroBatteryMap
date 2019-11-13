@@ -83,7 +83,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         $0.font = .systemFont(ofSize: 9)
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
-        $0.textColor = .gray
+//        $0.textColor = .gray
     }
     
     private lazy var availableLabel: UILabel = {     
@@ -331,7 +331,7 @@ final class StationsViewCell: BaseCollectionViewCell {
     }
     
     override func setupViews() {
-        backgroundColor = .clear
+//        backgroundColor = .
         layer.cornerRadius = 10
         layer.masksToBounds = true
         
@@ -342,7 +342,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         }
         headStackView.anchor(top: viewContainer.topAnchor, left: viewContainer.leftAnchor, bottom: nil, right: viewContainer.rightAnchor, topPadding: 10, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 225)
         
-        let separatorView = UIView { $0.backgroundColor = .gray }
+        let separatorView = UIView { $0.backgroundColor = .lightGray }
         
         viewContainer.addSubview(separatorView)
         separatorView.anchor(top: headStackView.bottomAnchor, left:  viewContainer.leftAnchor, bottom: nil, right:  viewContainer.rightAnchor, topPadding: 10, leftPadding: 10, bottomPadding: 0, rightPadding: 10, width: 0, height: 0.75)
@@ -355,7 +355,7 @@ final class StationsViewCell: BaseCollectionViewCell {
         viewContainer.addSubview(buttonsStackView)
         buttonsStackView.anchor(top: separatorView.bottomAnchor, left: viewContainer.leftAnchor, bottom: authorLabel.topAnchor, right: viewContainer.rightAnchor, topPadding: 16, leftPadding: 20, bottomPadding: 0, rightPadding: 20, width: 0, height: 0)
         
-        [totalLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
+//        [totalLabel, thanksLabel, authorLabel, buildingLabel, copyrightLabel, availableLabel, hasCheckinsLabel, haveBeenLabel, lastUpdateDateLabel, completedRatioLabel, clusterDescribingLabel].forEach { $0.textColor = .gray }
         
     }
 }

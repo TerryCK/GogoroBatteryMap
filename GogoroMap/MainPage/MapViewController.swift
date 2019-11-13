@@ -72,7 +72,9 @@ extension MapViewController: GADAdLoaderDelegate {
 
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-        self.nativeAd = nativeAd
+        if Environment.environment == .release {
+            self.nativeAd = nativeAd
+        }
     }
 }
 
@@ -285,7 +287,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
-        present(GuidePageViewController(), animated: true)
+        let guide = GuidePageViewController()
+        guide.modalPresentationStyle = .fullScreen
+        present(guide, animated: true)
     }
     
     @objc func performMenu() {
@@ -327,6 +331,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
+        navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.barTintColor = .lightGreen
@@ -383,7 +388,7 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         let annotationView = mapView.annotationView(of: CountClusterAnnotationView.self, annotation: clusterAnnotation, reuseIdentifier: "Cluster")
-        annotationView.countLabel.backgroundColor = .green
+        annotationView.countLabel.backgroundColor = .lightGreen
         return annotationView
     }
     
@@ -485,5 +490,15 @@ extension MapViewController: IAPPurchasable {
             DataManager.shared.lastUpdate = Date()
         }
         
+    }
+}
+extension UIImage {
+    /// Inverts the colors from the current image. Black turns white, white turns black etc.
+    func invertedColors() -> UIImage? {
+        guard let ciImage = CIImage(image: self) ?? ciImage, let filter = CIFilter(name: "CIColorInvert") else { return nil }
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+
+        guard let outputImage = filter.outputImage else { return nil }
+        return UIImage(ciImage: outputImage)
     }
 }

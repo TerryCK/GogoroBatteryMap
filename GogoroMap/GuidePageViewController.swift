@@ -10,7 +10,6 @@ import UIKit
 import Crashlytics
 
 final class GuidePageViewController: UIViewController {
-
     private lazy var guideImageView: UIImageView = {
         let imageView: UIImageView = UIImageView(frame: view.frame)
         imageView.image = #imageLiteral(resourceName: "guidePage")
