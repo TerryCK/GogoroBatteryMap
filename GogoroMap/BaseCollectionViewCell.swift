@@ -13,7 +13,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         addSubview(view)
         view.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
-        view.backgroundColor = .white
+        view.backgroundColor = .groupTableViewBackground
        return view
     }()
  
