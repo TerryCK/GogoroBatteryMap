@@ -10,9 +10,9 @@ import Foundation
 
 struct StationAnalyticsModel {
     let total, availables, flags, checkins: Int
-    var buildings: Int { return total - availables }
-    var completedPercentage: String { return String(format: "%.1f", percentageOfCheckins) }
-    private var percentageOfCheckins: Double { return Double(flags) / Double(availables) * 100}
+    var buildings: Int { total - availables }
+    var completedPercentage: String {  String(format: "%.1f", percentageOfCheckins) }
+    private var percentageOfCheckins: Double { Double(flags) / Double(availables) * 100}
 }
 
 extension StationAnalyticsModel {

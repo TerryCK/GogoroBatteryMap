@@ -191,12 +191,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     override func loadView() {
         super.loadView()
-        
         setupNavigationTitle()
         setupNavigationItems()
         setupSideMenu()
-        
-        
     }
 
     func promptLocationAuthenticateError() {
@@ -356,14 +353,13 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             setupBottomBackgroundView()
         }
         
-//        fpc.surfaceView.addSubview(menuBarButton)
         locationArrowView.anchor(top: topAnchor, left:  nil, bottom: nil, right:  navigationController.view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: sidePading, width: width, height: height)
         menuBarButton.anchor(top: topAnchor, left: navigationController.view.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
         [locationArrowView,  menuBarButton].forEach {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = 38/2
-//            $0.backgroundColor = UIColor.orange.withAlphaComponent(0.9)
             $0.tintColor = .white
+//            $0.backgroundColor = UIColor.orange.withAlphaComponent(0.9)
 //            $0.layer.borderWidth = 1
 //            $0.layer.borderColor = UIColor.white.cgColor
         }
@@ -418,8 +414,8 @@ extension MapViewController: MKMapViewDelegate {
         annotationView.canShowCallout = true
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
-            annotationView.alpha = batteryStation.isOperating ? 1 : 0.5
             annotationView.image = batteryStation.iconImage
+            annotationView.alpha = batteryStation.isOperating ? 1 : 0.5
             annotationView.detailCalloutAccessoryView = DetailAnnotationView()
                 .configure(annotation: batteryStation,
                            nativeAd: nil)
@@ -431,16 +427,8 @@ extension MapViewController: MKMapViewDelegate {
         return annotationView
     }
     
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        views.forEach { $0.alpha = 0 }
-        UIView.animate(withDuration: 0.35) {
-            views.forEach { $0.alpha = 1 }
-        }
-    }
-    
     func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
         locationArrowView.setImage(mapView.userTrackingMode.arrowImage, for: .normal)
-        
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -505,6 +493,5 @@ extension MapViewController: IAPPurchasable {
             removeAds(view: view)
             DataManager.shared.lastUpdate = Date()
         }
-        
     }
 }
