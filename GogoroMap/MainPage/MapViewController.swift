@@ -418,6 +418,7 @@ extension MapViewController: MKMapViewDelegate {
         annotationView.canShowCallout = true
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
+            annotationView.alpha = batteryStation.isOperating ? 1 : 0.5
             annotationView.image = batteryStation.iconImage
             annotationView.detailCalloutAccessoryView = DetailAnnotationView()
                 .configure(annotation: batteryStation,
