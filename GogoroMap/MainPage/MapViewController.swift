@@ -164,7 +164,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     lazy var locationArrowView: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "locationArrowNone"), for: .normal)
-        button.tintColor = .white
         button.addTarget(self, action: #selector(locationArrowPressed), for: .touchUpInside)
         return button
     }()
@@ -172,7 +171,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     private lazy var menuBarButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
-        button.tintColor = .white
         button.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
         return button
     }()
@@ -181,19 +179,23 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
+//        navigationController?.setNavigationBarHidden(true, animated: animated)
         reloadMapView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+//        navigationController?.setNavigationBarHidden(false, animated: animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
     
     override func loadView() {
         super.loadView()
+        
         setupNavigationTitle()
         setupNavigationItems()
         setupSideMenu()
+        
         
     }
 
@@ -254,8 +256,10 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         gestureRecognizerStatus = isLongPressGestureRecognizerActive ? .lock : .release
         guard isLongPressGestureRecognizerActive, let lastTouchPoint = lastTouchPoint else {
             clusterManager.reload(mapView: mapView)
+        Answers.log(event: .MapButton, customAttributes: "single hand zoom")
             return
         }
+        
         let current = sender.location(in: mapView)
         let deltaY = current.y - lastTouchPoint.y
         self.lastTouchPoint = current
@@ -293,7 +297,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     @objc func performMenu() {
-        Answers.log(event: .MapButtons, customAttributes: "Perform Menu")
+        Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
             return
         }
@@ -341,8 +345,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private func setupNavigationItems() {
         guard let navigationController = navigationController else { return }
-        [locationArrowView,  menuBarButton].forEach(navigationController.view.addSubview)
-        let sidePading: CGFloat = 8, height: CGFloat = 38,  width: CGFloat = 50
+        [locationArrowView, menuBarButton].forEach(navigationController.view.addSubview)
+        let sidePading: CGFloat = 12, height: CGFloat = 38,  width: CGFloat = 38
         var topAnchor: NSLayoutYAxisAnchor = navigationController.view.topAnchor
         var topPadding: CGFloat = 23
         
@@ -351,8 +355,19 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             topPadding = 0
             setupBottomBackgroundView()
         }
+        
+//        fpc.surfaceView.addSubview(menuBarButton)
         locationArrowView.anchor(top: topAnchor, left:  nil, bottom: nil, right:  navigationController.view.rightAnchor, topPadding: topPadding, leftPadding: 0, bottomPadding: 0, rightPadding: sidePading, width: width, height: height)
         menuBarButton.anchor(top: topAnchor, left: navigationController.view.leftAnchor, bottom: nil, right: nil, topPadding: topPadding, leftPadding: sidePading, bottomPadding: 0, rightPadding: 0, width: width, height: height)
+        [locationArrowView,  menuBarButton].forEach {
+            $0.layer.masksToBounds = true
+            $0.layer.cornerRadius = 38/2
+//            $0.backgroundColor = UIColor.orange.withAlphaComponent(0.9)
+            $0.tintColor = .white
+//            $0.layer.borderWidth = 1
+//            $0.layer.borderColor = UIColor.white.cgColor
+        }
+        
     }
     
     
@@ -438,7 +453,7 @@ extension MapViewController: MKMapViewDelegate {
             return
         }
         adLoader = adLoaderBuild()
-        Answers.log(event: .MapButtons, customAttributes: "Display annotation view")
+        Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
             DetailCalloutAccessoryViewModel(annotationView: view,
                                             controller: self).bind(mapView: mapView,
@@ -468,7 +483,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     @objc func locationArrowPressed() {
-        Answers.log(event: .MapButtons, customAttributes: #function)
+        Answers.log(event: .MapButton, customAttributes: #function)
         fpc.move(to: .tip, animated: true) {
             self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
         }
@@ -490,15 +505,5 @@ extension MapViewController: IAPPurchasable {
             DataManager.shared.lastUpdate = Date()
         }
         
-    }
-}
-extension UIImage {
-    /// Inverts the colors from the current image. Black turns white, white turns black etc.
-    func invertedColors() -> UIImage? {
-        guard let ciImage = CIImage(image: self) ?? ciImage, let filter = CIFilter(name: "CIColorInvert") else { return nil }
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
-
-        guard let outputImage = filter.outputImage else { return nil }
-        return UIImage(ciImage: outputImage)
     }
 }

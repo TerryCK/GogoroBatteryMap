@@ -17,6 +17,7 @@
 		7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */; };
 		7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22F7F822EE940100E6FE63 /* TableViewCell.swift */; };
 		7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C22F7F922EE940100E6FE63 /* TableViewCell.xib */; };
+		7C52699D237D47B200F70C51 /* SearchBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */; };
 		7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED0225B3F220045A796 /* BackupElement.swift */; };
 		7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED2225B3F400045A796 /* SupplementaryCell.swift */; };
 		7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C646ED6225B583A0045A796 /* ADSupport.swift */; };
@@ -100,6 +101,7 @@
 		7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDataModalProtocol.swift; sourceTree = "<group>"; };
 		7C22F7F822EE940100E6FE63 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		7C22F7F922EE940100E6FE63 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchBar+Extension.swift"; sourceTree = "<group>"; };
 		7C646ED0225B3F220045A796 /* BackupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupElement.swift; sourceTree = "<group>"; };
 		7C646ED2225B3F400045A796 /* SupplementaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCell.swift; sourceTree = "<group>"; };
 		7C646ED6225B583A0045A796 /* ADSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADSupport.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 			children = (
 				A869AA181F4414B20085133C /* IAPs */,
 				7C646ED6225B583A0045A796 /* ADSupport.swift */,
+				7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				DE772FE322FD3286000A67C3 /* Array+Extension.swift */,
 				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
@@ -756,6 +759,7 @@
 				A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */,
 				A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */,
 				A8E71FD71F3D693600C8E34D /* StationsViewCell.swift in Sources */,
+				7C52699D237D47B200F70C51 /* SearchBar+Extension.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
 				7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */,
 				7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */,

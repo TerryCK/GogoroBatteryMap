@@ -17,7 +17,7 @@ struct DetailCalloutAccessoryViewModel {
 
 extension DetailCalloutAccessoryViewModel {
     private func checkinCount(with calculate: (Int, Int) -> Int, nativeAd: GADUnifiedNativeAd?) {
-        Answers.log(event: .MapButtons, customAttributes: #function)
+        Answers.log(event: .MapButton, customAttributes: #function)
         guard let batteryAnnotation = annotationView.annotation as? BatteryStationPointAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date() : nil
