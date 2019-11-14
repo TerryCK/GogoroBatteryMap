@@ -91,21 +91,11 @@ final class TableViewController: UITableViewController {
         updateSearchBar(showScope: true)
         setupAd(with: tableView)
         setupObserve()
-        if let color = mapViewController?.navigationController?.navigationBar.barTintColor {
-            searchBar.tintColor = color
-        }
         
-        setTextFieldTintColor(to: .gray, for: searchBar)
+        searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
+        searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
     }
     
-   private func setTextFieldTintColor(to color: UIColor, for view: UIView) {
-        if view is UITextField {
-            view.tintColor = color
-        }
-        for subview in view.subviews {
-            setTextFieldTintColor(to: color, for: subview)
-        }
-    }
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
@@ -164,5 +154,23 @@ final class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         searchBar.resignFirstResponder()
         mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
+    }
+    
+}
+extension UIColor {
+    enum Colors {
+        static let label: UIColor = {
+            if #available(iOS 13.0, *) {
+                return .label
+            } else {
+                return .white
+            }
+        }()
+        static let tint: UIColor = {
+            guard  #available(iOS 13.0, *) else {
+                return .white
+            }
+            return UIColor { $0.userInterfaceStyle == .dark ? .white : .lightText }
+        }()
     }
 }
