@@ -7,6 +7,7 @@
 //
 
 import MapKit
+
 struct BatteryStationRecord: Codable {
    
     let id: CLLocationCoordinate2D, checkinCount: Int, checkinDay: Date?
