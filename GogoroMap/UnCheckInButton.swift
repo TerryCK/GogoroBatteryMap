@@ -9,7 +9,9 @@
 import UIKit
 
 class UnCheckInButton: CustomButton {
+    
     var mainColor: UIColor {  return .lightRed }
+    
     let slaveColor = UIColor.white
 
    override func setup() {

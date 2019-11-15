@@ -9,6 +9,7 @@
 import Foundation
 
 struct StationAnalyticsModel {
+    
     let total, availables, flags, checkins: Int
     var buildings: Int { total - availables }
     var completedPercentage: String {  String(format: "%.1f", percentageOfCheckins) }
@@ -16,6 +17,7 @@ struct StationAnalyticsModel {
 }
 
 extension StationAnalyticsModel {
+    
     init<T: BatteryDataModalProtocol>(_ stations: [T]) {
         total       = stations.count
         availables  = stations.reduce(0) { $0 +  ($1.isOperating ? 1 : 0) }

@@ -9,7 +9,8 @@
 import UIKit
 
 extension String {
-    func localize() -> String { return NSLocalizedString(self, comment: "") }
+    
+    func localize() -> String {  NSLocalizedString(self, comment: "") }
 }
 
 

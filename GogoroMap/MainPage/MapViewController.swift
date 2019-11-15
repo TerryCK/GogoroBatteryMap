@@ -16,12 +16,14 @@ import CloudKit
 import FloatingPanel
 
 extension MapViewController: ADSupportable {
+    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bridgeAd(bannerView)
     }
 }
 
 extension MapViewController  {
+    
     func setCurrentLocation(latDelta: Double, longDelta: Double) {
         let userLocation = locationManager.userLocation ?? CLLocation(latitude: 25.047908, longitude: 121.517315)
         mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate,
@@ -37,6 +39,7 @@ extension MapViewController  {
 
 
 extension MapViewController: FloatingPanelControllerDelegate {
+    
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         switch newCollection.verticalSizeClass {
         case .compact:
@@ -65,12 +68,14 @@ extension MapViewController: FloatingPanelControllerDelegate {
     }
 }
 extension MapViewController: GADAdLoaderDelegate {
+    
     func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
         print(error)
     }
 }
 
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
+    
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
         if Environment.environment == .release {
             self.nativeAd = nativeAd
@@ -90,6 +95,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     private var menuController: MenuController?
+    
     private var adLoader: GADAdLoader?
     
     private func adLoaderBuild() -> GADAdLoader? {
@@ -481,6 +487,7 @@ extension MapViewController: MKMapViewDelegate {
 
 // MARK:- Verify purchase notification
 extension MapViewController: IAPPurchasable {
+    
     func setupObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),

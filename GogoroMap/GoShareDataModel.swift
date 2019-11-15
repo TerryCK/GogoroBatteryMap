@@ -8,6 +8,7 @@
 
 import MapKit
 struct GoShareDataModel: Codable {
+    
     let id, plate, lat, lng, soc, remainingMileage, socLevel, modelCode: String
     var coordinate: CLLocationCoordinate2D? {
         switch (Double(lat), Double(lng)) {
@@ -17,6 +18,7 @@ struct GoShareDataModel: Codable {
     }
 }
 public final class GoSharePointAnnotation: MKPointAnnotation {
+    
     init(title: String, subtitle: String, coordinate: CLLocationCoordinate2D) {
         super.init()
         self.title      = title

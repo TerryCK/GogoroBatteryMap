@@ -11,11 +11,13 @@ import MapKit
 import GoogleMobileAds
 
 extension TableViewController: ADSupportable {
+    
     public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bridgeAd(bannerView)
     }
 }
 extension TableViewController: UISearchBarDelegate {
+    
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         mapViewController?.fpc.move(to: .full, animated: true)
         searchBar.showsCancelButton = true
@@ -52,6 +54,7 @@ extension TableViewController: UISearchBarDelegate {
 final class TableViewController: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
+    
     var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
     private var observation: NSKeyValueObservation?
@@ -158,6 +161,7 @@ final class TableViewController: UITableViewController {
     
 }
 extension UIColor {
+    
     enum Colors {
         static let label: UIColor = {
             if #available(iOS 13.0, *) {

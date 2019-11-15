@@ -8,10 +8,12 @@
 
 import MapKit
 struct BatteryStationRecord: Codable {
+   
     let id: CLLocationCoordinate2D, checkinCount: Int, checkinDay: Date?
 }
 
 extension BatteryStationRecord {
+    
     init?(_ batteryModel: BatteryStationPointAnnotation) {
         guard let count = batteryModel.checkinCounter else { return nil }
         self.init(id: batteryModel.coordinate, checkinCount: count, checkinDay: batteryModel.checkinDay)

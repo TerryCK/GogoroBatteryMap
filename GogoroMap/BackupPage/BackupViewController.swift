@@ -11,13 +11,13 @@ import CloudKit
 import GoogleMobileAds
 import Crashlytics
 
-
-
 extension BackupViewController: ADSupportable {
+    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bridgeAd(bannerView)
     }
 }
+
 final class BackupViewController: UITableViewController {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
@@ -270,6 +270,7 @@ extension BackupViewController {
 }
 
 extension BackupViewController {
+    
     private func setupObserve() {
         NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.addObserver(self,

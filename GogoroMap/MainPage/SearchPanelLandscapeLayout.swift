@@ -10,6 +10,7 @@ import Foundation
 import FloatingPanel
 
 public class SearchPanelLandscapeLayout: FloatingPanelLayout {
+    
     public var initialPosition: FloatingPanelPosition {
         return .tip
     }
@@ -27,26 +28,25 @@ public class SearchPanelLandscapeLayout: FloatingPanelLayout {
     }
     
     public func prepareLayout(surfaceView: UIView, in view: UIView) -> [NSLayoutConstraint] {
+        
+        let leftAnchor: NSLayoutXAxisAnchor
         if #available(iOS 11.0, *) {
-            return [
-                surfaceView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 8.0),
-                surfaceView.widthAnchor.constraint(equalToConstant: 291),
-            ]
+            leftAnchor = view.safeAreaLayoutGuide.leftAnchor
         } else {
-            return [
-                surfaceView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8.0),
-                surfaceView.widthAnchor.constraint(equalToConstant: 291),
-            ]
+            leftAnchor = view.leftAnchor
         }
+        
+        return [
+            surfaceView.leftAnchor.constraint(equalTo: leftAnchor, constant: 8.0),
+            surfaceView.widthAnchor.constraint(equalToConstant: 291),
+        ]
     }
-    
-//    public func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
-//        return 0.0
-//    }
 }
 
 final class MapFloatingLayout : FloatingPanelLayout {
+    
     var initialPosition: FloatingPanelPosition { return .half }
+    
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         switch position {
         case .full: return 18.0

@@ -9,6 +9,7 @@
 import UIKit
 
 enum SegmentStatus: Int, CaseIterable {
+    
     case nearby = 0, checkin, uncheck, building
     
     

@@ -12,6 +12,7 @@ import UIKit
 
 
 extension CKAccountStatus: CustomStringConvertible {
+    
     public var description: String {
         switch self {
         case .available:         return "iCloud is available"
@@ -23,6 +24,7 @@ extension CKAccountStatus: CustomStringConvertible {
 }
 
 extension Optional where Wrapped: Comparable {
+    
     static func >(lhs: Optional, rhs: Optional) -> Bool {
         switch (lhs, rhs) {
         case let (left?, right?): return left > right
@@ -83,9 +85,7 @@ extension CKContainer {
                         }
                         completionHanlder(nil, "\(PersonNameComponentsFormatter().string(from: components))  歡迎回來")
                     }
-                } else {
-                    return
-                }
+                } 
             }
         }
     }
