@@ -5,7 +5,8 @@ def shared_pods
 use_frameworks!
 
 pod 'AlamofireNetworkActivityLogger'
-pod 'SideMenu', '~> 5.0.1'
+#pod 'SideMenu', '~> 5.0.1'
+pod 'ColorMatchTabs'
 pod 'Google-Mobile-Ads-SDK'
 pod 'Fabric'
 pod 'Crashlytics'

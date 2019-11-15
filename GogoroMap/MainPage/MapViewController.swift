@@ -8,12 +8,13 @@
 
 import UIKit
 import MapKit
-import SideMenu
+//import SideMenu
 import Crashlytics
 import GoogleMobileAds
 import Cluster
 import CloudKit
 import FloatingPanel
+import ColorMatchTabs
 
 extension MapViewController: ADSupportable {
     
@@ -90,11 +91,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
      var nativeAd: GADUnifiedNativeAd? {
         didSet {
             nativeAd?.delegate = self
-            menuController?.collectionView.reloadData()
+//            menuController?.collectionView.reloadData()
         }
     }
     
-    private var menuController: MenuController?
+//    private var menuController: MenuController?
     
     private var adLoader: GADAdLoader?
     
@@ -130,8 +131,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         $0.surfaceView.shadowHidden = false
         $0.surfaceView.grabberTopPadding = 3
         let tableViewController = TableViewController()
-        $0.set(contentViewController: tableViewController)
-        $0.track(scrollView: tableViewController.tableView)
+        let floatingVC = FloatingViewController()
+        floatingVC.flatingPanelController = $0
+        $0.set(contentViewController: floatingVC)
         return $0
     }(FloatingPanelController(delegate: nil))
     
@@ -199,7 +201,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         super.loadView()
         setupNavigationTitle()
         setupNavigationItems()
-        setupSideMenu()
+//        setupSideMenu()
     }
 
     func promptLocationAuthenticateError() {
@@ -301,40 +303,39 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     @objc func performMenu() {
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
-        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
-            return
-        }
+//        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
+//            return
+//        }
         
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
         adLoader = adLoaderBuild()
-        fpc.present(sideManuController, animated: true)
+//        fpc.present(sideManuController, animated: true)
     }
     
-    //     MARK: - View setups
-    private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
-        
-        let flowLyout: UICollectionViewFlowLayout = {
-            $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
-            $0.minimumLineSpacing = 0
-            $0.minimumInteritemSpacing = 0
-            return $0
-        }(UICollectionViewFlowLayout())
-        
-        let menuController = MenuController(collectionViewLayout: flowLyout)
-        menuController.delegate = self
-        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-        sideMenuManager.menuLeftNavigationController?.leftSide = true
-        sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-        sideMenuManager.menuFadeStatusBar = true
-        sideMenuManager.menuShadowOpacity = 0.59
-        sideMenuManager.menuWidth = view.frame.width * displayFactor
-        sideMenuManager.menuAnimationTransformScaleFactor = 0.95
-        sideMenuManager.menuAnimationFadeStrength = 0.40
-        sideMenuManager.menuBlurEffectStyle = nil
-        sideMenuManager.menuPresentMode = .viewSlideInOut
-        self.menuController = menuController
-    }
+//    private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
+//
+//        let flowLyout: UICollectionViewFlowLayout = {
+//            $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
+//            $0.minimumLineSpacing = 0
+//            $0.minimumInteritemSpacing = 0
+//            return $0
+//        }(UICollectionViewFlowLayout())
+//
+//        let menuController = MenuController(collectionViewLayout: flowLyout)
+//        menuController.delegate = self
+//        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+//        sideMenuManager.menuLeftNavigationController?.leftSide = true
+//        sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
+//        sideMenuManager.menuFadeStatusBar = true
+//        sideMenuManager.menuShadowOpacity = 0.59
+//        sideMenuManager.menuWidth = view.frame.width * displayFactor
+//        sideMenuManager.menuAnimationTransformScaleFactor = 0.95
+//        sideMenuManager.menuAnimationFadeStrength = 0.40
+//        sideMenuManager.menuBlurEffectStyle = nil
+//        sideMenuManager.menuPresentMode = .viewSlideInOut
+////        self.menuController = menuController
+//    }
     
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"

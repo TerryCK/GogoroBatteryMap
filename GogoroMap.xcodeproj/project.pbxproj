@@ -15,6 +15,7 @@
 		7C0DBE7722EAF8CD002B76D5 /* CountClusterAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE7622EAF8CD002B76D5 /* CountClusterAnnotationView.swift */; };
 		7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */; };
 		7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */; };
+		7C1A02A3237E5DBD004CF48E /* FloatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A02A2237E5DBD004CF48E /* FloatingViewController.swift */; };
 		7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22F7F822EE940100E6FE63 /* TableViewCell.swift */; };
 		7C22F7FB22EE940100E6FE63 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C22F7F922EE940100E6FE63 /* TableViewCell.xib */; };
 		7C52699D237D47B200F70C51 /* SearchBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */; };
@@ -99,6 +100,7 @@
 		7C0DBE7622EAF8CD002B76D5 /* CountClusterAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountClusterAnnotationView.swift; sourceTree = "<group>"; };
 		7C18F47922D343F5009914A4 /* BatteryStationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStationRecord.swift; sourceTree = "<group>"; };
 		7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryDataModalProtocol.swift; sourceTree = "<group>"; };
+		7C1A02A2237E5DBD004CF48E /* FloatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingViewController.swift; sourceTree = "<group>"; };
 		7C22F7F822EE940100E6FE63 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		7C22F7F922EE940100E6FE63 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchBar+Extension.swift"; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 			children = (
 				A8EACCB81F8EF534000B12BF /* Views */,
 				A8D3686C1F3B435E0015F5F9 /* MapViewController.swift */,
+				7C1A02A2237E5DBD004CF48E /* FloatingViewController.swift */,
 				7CE0C0FE231F7F1B009D6370 /* SearchPanelLandscapeLayout.swift */,
 				7C22F7F822EE940100E6FE63 /* TableViewCell.swift */,
 				7C22F7F922EE940100E6FE63 /* TableViewCell.xib */,
@@ -573,9 +576,9 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger/AlamofireNetworkActivityLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/Cluster/Cluster.framework",
+				"${BUILT_PRODUCTS_DIR}/ColorMatchTabs/ColorMatchTabs.framework",
 				"${BUILT_PRODUCTS_DIR}/FloatingPanel/FloatingPanel.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -584,9 +587,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorMatchTabs.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FloatingPanel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -681,9 +684,9 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityLogger/AlamofireNetworkActivityLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/Cluster/Cluster.framework",
+				"${BUILT_PRODUCTS_DIR}/ColorMatchTabs/ColorMatchTabs.framework",
 				"${BUILT_PRODUCTS_DIR}/FloatingPanel/FloatingPanel.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -692,9 +695,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cluster.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorMatchTabs.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FloatingPanel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -736,6 +739,7 @@
 				A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
 				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
+				7C1A02A3237E5DBD004CF48E /* FloatingViewController.swift in Sources */,
 				A83ACBF622211DF3003907FD /* Decorator.swift in Sources */,
 				A8D3689B1F3B44D70015F5F9 /* Extensions.swift in Sources */,
 				A805C32E1F3ED74600D74107 /* GuidePageViewController.swift in Sources */,
