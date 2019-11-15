@@ -54,11 +54,8 @@ final class MenuController: UICollectionViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        #if RELEASE
-        if #available(iOS 10.3, *) {
+        guard Environment.environment == .release, #available(iOS 10.3, *) else { return }
             SKStoreReviewController.requestReview()
-        }
-        #endif
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

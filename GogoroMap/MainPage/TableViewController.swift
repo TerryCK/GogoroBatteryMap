@@ -16,6 +16,7 @@ extension TableViewController: ADSupportable {
         bridgeAd(bannerView)
     }
 }
+
 extension TableViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
