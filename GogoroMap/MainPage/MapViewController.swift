@@ -129,7 +129,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             $0.surfaceView.cornerRadius = 0.0
         }
         $0.surfaceView.shadowHidden = false
-        $0.surfaceView.grabberTopPadding = 3
+        $0.surfaceView.grabberTopPadding = 1
         let tableViewController = TableViewController()
         let floatingVC = FloatingViewController()
         floatingVC.flatingPanelController = $0
