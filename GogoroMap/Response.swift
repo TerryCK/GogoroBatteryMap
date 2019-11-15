@@ -8,6 +8,7 @@
 
 import UIKit
 public extension Response.Station.Detail {
+    
     func localized() -> String? {
         return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value?.replacingOccurrences(regex: "臺".regex, replacement: "台")
     }
@@ -15,6 +16,7 @@ public extension Response.Station.Detail {
 
 
 public struct Response: Decodable {
+    
     public let stations: [Station]
     
     enum CodingKeys: String, CodingKey {

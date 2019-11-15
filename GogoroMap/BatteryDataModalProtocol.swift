@@ -10,6 +10,7 @@ import MapKit
 import UIKit
 
 extension BatteryDataModalProtocol {
+    
     var isOperating: Bool { return state == 1 && !(title?.contains("(維修中)") ?? true) }
     
     public var iconImage: UIImage {
@@ -28,6 +29,7 @@ extension BatteryDataModalProtocol {
 }
 
 protocol BatteryDataModalProtocol {
+    
     var title: String? { get }
     var subtitle: String? { get }
     var coordinate: CLLocationCoordinate2D { get }

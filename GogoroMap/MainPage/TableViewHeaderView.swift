@@ -8,7 +8,8 @@
 
 import UIKit
 
-final class TableViewHeaderView: UITableViewHeaderFooterView {  
+final class TableViewHeaderView: UITableViewHeaderFooterView {
+    
     @IBOutlet weak var regionLabel: UILabel!
     @IBOutlet weak var countLabel: UILabel!
 }

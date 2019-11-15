@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 
 protocol IAPAlartable: Alartable  {
+    
     func alertForProductRetrievalInfo(_ result: RetrieveResults) -> UIAlertController
     func alertForPurchase(_ result: PurchaseResult) -> UIAlertController?
     func alertForRestore(_ results: RestoreResults) -> UIAlertController
@@ -20,9 +21,11 @@ protocol IAPAlartable: Alartable  {
 }
 
 protocol Alartable {
+    
     func alertWithTitle(_ title: String, message: String) -> UIAlertController
     func showAlert(_ alert: UIAlertController?)
 }
+
 extension Alartable where Self: UIViewController {
    
     func alertWithTitle(_ title: String, message: String) -> UIAlertController {
@@ -174,8 +177,10 @@ extension IAPAlartable where Self: UIViewController {
 
 
 protocol CloudBackupAlartable: Alartable {
+    
     func checkoutCloudAccuntStatus() -> UIAlertController?
 }
+
 extension CloudBackupAlartable where Self: UIViewController {
     
 }

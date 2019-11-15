@@ -10,7 +10,7 @@ import UIKit
 import GoogleMobileAds
 
 final class DetailAnnotationView: UIView {
-    // MARK: - View creators
+    
     let goButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)

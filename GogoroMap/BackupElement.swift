@@ -7,6 +7,7 @@
 //
 
 struct BackupElement {
+    
     enum type { case backup, delete }
     let titleView: SupplementaryCell?
     var cells: [BackupTableViewCell]?

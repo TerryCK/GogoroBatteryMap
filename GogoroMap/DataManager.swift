@@ -9,6 +9,7 @@
 import Foundation
 
 enum ServiceError: Error {
+    
     case general
 }
 
@@ -62,6 +63,7 @@ final class DataManager: NSObject {
     }
     
     enum API {
+        
         case gogoro, goShare
         var url: URL? { return URL(string: api) }
         
@@ -91,6 +93,7 @@ final class DataManager: NSObject {
 }
 
 struct GoogleAppScript {
+    
     let id: String
     var url: URL { return URL(string: apiString)! }
     var apiString : String { return "https://script.google.com/macros/s/\(id)/exec" }

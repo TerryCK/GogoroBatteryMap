@@ -9,10 +9,10 @@
 import UIKit
 
 final class TableViewCell: UITableViewCell {
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var statusIconImageView: UIImageView!
     @IBOutlet weak var checkinLabel: UILabel!
-    
 }

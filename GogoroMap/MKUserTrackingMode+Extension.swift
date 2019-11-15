@@ -7,7 +7,9 @@
 //
 
 import MapKit
+
 extension MKUserTrackingMode: CustomStringConvertible {
+    
     var arrowImage: UIImage {
         switch self {
         case .none:              return #imageLiteral(resourceName: "locationArrowNone")
@@ -26,7 +28,5 @@ extension MKUserTrackingMode: CustomStringConvertible {
         }
     }
     
-    public var nextMode: MKUserTrackingMode {
-        return MKUserTrackingMode(rawValue: (rawValue + 1) % 3)!
-    }
+    public var nextMode: MKUserTrackingMode { MKUserTrackingMode(rawValue: (rawValue + 1) % 3)! }
 }

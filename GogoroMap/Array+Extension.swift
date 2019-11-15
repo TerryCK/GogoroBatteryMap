@@ -8,6 +8,7 @@
 
 import MapKit
 extension Array where Element: BatteryStationPointAnnotation {
+    
     func filter(text searchText: String) -> Array {
         guard !searchText.isEmpty else {
             return self

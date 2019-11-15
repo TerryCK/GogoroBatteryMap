@@ -9,6 +9,7 @@
 import MapKit
 
 protocol Navigable {
+    
     static var option: Navigator.Option { get }
     static func go<T: BatteryStationPointAnnotation>(to destination: T)
     static func travelETA(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completionHandler: @escaping (Result<MKDirections.Response, Error>)-> Void)

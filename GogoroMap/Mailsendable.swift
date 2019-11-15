@@ -10,6 +10,7 @@ import UIKit
 import MessageUI
 
 protocol Mailsendable: MFMailComposeViewControllerDelegate {
+    
     func presentErrorMailReport()
 }
 

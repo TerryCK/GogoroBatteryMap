@@ -9,6 +9,7 @@
 import Cluster
 
 final class CountClusterAnnotationView: ClusterAnnotationView {
+    
     override func configure() {
         super.configure()
         guard let annotation = annotation as? ClusterAnnotation else { return }

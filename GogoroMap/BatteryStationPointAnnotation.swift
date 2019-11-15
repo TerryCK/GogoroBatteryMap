@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 
 extension BatteryStationPointAnnotation {
+    
     convenience init(_ customPointAnnotation: CustomPointAnnotation) {
         self.init(title         : customPointAnnotation.title,
                   subtitle      : customPointAnnotation.subtitle,
@@ -24,6 +25,7 @@ extension BatteryStationPointAnnotation {
 
 
 extension CLLocationCoordinate2D: Codable {
+    
     enum CodingKeys: String, CodingKey {
         case latitude, longitude
     }
@@ -104,7 +106,8 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
 }
 
 extension Array where Element: BatteryStationPointAnnotation {
-     func keepOldUpdate(with other: Array) -> Array {
+     
+    func keepOldUpdate(with other: Array) -> Array {
         return other.map { (newElement) -> Element in
             for localElement in self where localElement.isEqual(newElement) {
                 return localElement

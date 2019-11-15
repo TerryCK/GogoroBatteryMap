@@ -9,9 +9,12 @@
 import Foundation
 
 protocol Decorator: AnyObject {
+    
     init()
 }
+
 extension Decorator where Self: NSObject {
+    
     init(_ configureHandler: (Self) -> Void) {
         self.init()
         configureHandler(self)

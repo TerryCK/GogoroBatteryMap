@@ -11,11 +11,13 @@ import Crashlytics
 import GoogleMobileAds
 
 struct DetailCalloutAccessoryViewModel {
+    
     let annotationView: MKAnnotationView
     let controller: MapViewController
 }
 
 extension DetailCalloutAccessoryViewModel {
+    
     private func checkinCount(with calculate: (Int, Int) -> Int, nativeAd: GADUnifiedNativeAd?) {
         Answers.log(event: .MapButton, customAttributes: #function)
         guard let batteryAnnotation = annotationView.annotation as? BatteryStationPointAnnotation else { return }

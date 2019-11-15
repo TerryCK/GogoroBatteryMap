@@ -10,6 +10,7 @@ import MapKit
 import Foundation
 
 final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
+    
     var image: UIImage!
     var placemark: MKPlacemark!
     var checkinCounter: Int = 0
