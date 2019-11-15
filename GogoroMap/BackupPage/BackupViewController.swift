@@ -188,7 +188,7 @@ extension BackupViewController {
                     }}),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
-            self.present(alertController, animated: true)
+            present(alertController, animated: true)
             
         case (.backupButton?, _):
             let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)

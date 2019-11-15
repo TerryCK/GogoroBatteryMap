@@ -19,38 +19,40 @@ final class FloatingViewController: ColorMatchTabsViewController {
         colorMatchTabDataSource = self
         colorMatchTabDelegate = self
     }
+    
+    private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
-
 
 extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
     
     func numberOfItems(inController controller: ColorMatchTabsViewController) -> Int {
-        return TabItemsProvider.items.count
+        return tabItemProvider.count
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, viewControllerAt index: Int) -> UIViewController {
-        return StubContentViewControllersProvider.viewControllers[index]
+        return TabItemCase.viewControllers[index]
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, titleAt index: Int) -> String {
-        return TabItemsProvider.items[index].title
+        return tabItemProvider[index].tabItem.title
     }
     
+    
     func tabsViewController(_ controller: ColorMatchTabsViewController, iconAt index: Int) -> UIImage {
-        return TabItemsProvider.items[index].normalImage
+        return tabItemProvider[index].tabItem.normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, hightlightedIconAt index: Int) -> UIImage {
-        return TabItemsProvider.items[index].highlightedImage
+        return tabItemProvider[index].tabItem.highlightedImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, tintColorAt index: Int) -> UIColor {
-        return TabItemsProvider.items[index].tintColor
+        return tabItemProvider[index].tabItem.tintColor
     }
     
-        
+    
     func didSelectItemAt(_ index: Int) {
-        if let scrollerView = StubContentViewControllersProvider.viewControllers[index] as? TableViewController {
+        if let scrollerView = TabItemCase.viewControllers[index] as? TableViewController {
             flatingPanelController?.track(scrollView: scrollerView.tableView)
         }
     }
@@ -68,18 +70,77 @@ struct TabItem {
 
 enum TabItemCase: CaseIterable {
     
-    case nearby, checkin, uncheck, building, setting
+    case nearby, checkin, uncheck, building, setting, backup
     
-    var name: String {
+    var title: String {
         switch self {
         case .building  : return "即將啟用"
         case .nearby    : return "附近營運中"
         case .checkin   : return "已打卡"
         case .uncheck   : return "未打卡"
         case .setting   : return "設定"
+        case .backup    : return "雲端備份"
         }
     }
     
+    
+    static let viewControllers = TabItemCase.allCases.map { $0.viewController }
+    
+    var tabItem: TabItem {
+        switch self {
+        case .building  :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
+                normalImage: #imageLiteral(resourceName: "building"))
+            
+        case .nearby    :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.15, green: 0.67, blue: 0.99, alpha: 1.00),
+                normalImage: #imageLiteral(resourceName: "pinFull"))
+        case .checkin   :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
+                normalImage: #imageLiteral(resourceName: "checkin"))
+        case .uncheck   :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
+                normalImage: #imageLiteral(resourceName: "pinFull"))
+        case .setting   :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
+                normalImage: UIImage(named: "convenientStore")!)
+        case .backup    :
+            return TabItem(
+                title: title,
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
+                normalImage: UIImage(named: "downloadFromCloud")!)
+        }
+    }
+    
+    private var viewController: UIViewController {
+        switch self {
+            
+        case .building, .nearby , .uncheck, .checkin:
+            let tabViewController = TableViewController()
+            tabViewController.segmentStatus = SegmentStatus.allCases.first { String(describing: $0) == String(describing: self) } ?? .nearby
+            return tabViewController
+            
+        case .setting   :
+            let flowLyout: UICollectionViewFlowLayout = {
+                $0.itemSize = CGSize(width: UIScreen.main.bounds.width - 20 , height: UIScreen.main.bounds.height - 90)
+                $0.minimumLineSpacing = 0
+                $0.minimumInteritemSpacing = 0
+                return $0
+            }(UICollectionViewFlowLayout())
+            return MenuController(collectionViewLayout: flowLyout)
+        case .backup: return BackupViewController()
+        }
+    }
 }
 
 
@@ -89,80 +150,8 @@ extension UIImage {
     func invertedColors() -> UIImage? {
         guard let ciImage = CIImage(image: self) ?? ciImage, let filter = CIFilter(name: "CIColorInvert") else { return nil }
         filter.setValue(ciImage, forKey: kCIInputImageKey)
-
+        
         guard let outputImage = filter.outputImage else { return nil }
         return UIImage(ciImage: outputImage)
     }
-}
-
-
-class TabItemsProvider {
-    
-    static let items = {
-        return [
-            TabItem(
-                title: "附近營運中",
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: UIImage(named: "convenientStore")!
-            ),
-            TabItem(
-                title: "已打卡",
-                tintColor: UIColor(red: 0.15, green: 0.67, blue: 0.99, alpha: 1.00),
-                normalImage: UIImage(named: "shortTime")!
-            ),
-            TabItem(
-                title: "即將啟用",
-                tintColor: UIColor(red: 1.00, green: 0.61, blue: 0.16, alpha: 1.00),
-                normalImage: UIImage(named: "shortTime")!
-            ),
-            TabItem(
-                title: "未打卡",
-                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
-                normalImage: UIImage(named: "shortTime")!
-            ),
-            TabItem(
-                title: "設定",
-                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
-                normalImage: UIImage(named: "shortTime")!
-            ),
-            
-        ]
-    }()
-    
-}
-class StubContentViewControllersProvider {
-    
-    static let viewControllers: [UIViewController] = {
-        let productsViewController = TableViewController()
-        
-        let flowLyout: UICollectionViewFlowLayout = {
-            
-            $0.itemSize = CGSize(width: UIScreen.main.bounds.width - 20 , height: UIScreen.main.bounds.height - 90)
-            $0.minimumLineSpacing = 0
-            $0.minimumInteritemSpacing = 0
-            return $0
-        }(UICollectionViewFlowLayout())
-        let venuesViewController = MenuController(collectionViewLayout: flowLyout)
-        
-        
-        let reviewsViewController = TableViewController()
-        
-        
-        let usersViewController = TableViewController()
-        
-        let usersViewController2 = TableViewController()
-                
-        let usersViewController6 = TableViewController()
-         
-        let usersViewController3 = TableViewController()
-         
-        let usersViewController4 = TableViewController()
-         
-        let usersViewController5 = TableViewController()
-        
-        
-        
-        return [productsViewController, venuesViewController, reviewsViewController, usersViewController, usersViewController2, usersViewController3, usersViewController4, usersViewController5, usersViewController6]
-    }()
-
 }

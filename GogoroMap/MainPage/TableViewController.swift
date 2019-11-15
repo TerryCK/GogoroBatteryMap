@@ -60,11 +60,11 @@ final class TableViewController: UITableViewController {
     private var observation: NSKeyValueObservation?
 
     private func updateSearchBar(showScope: Bool) {
-        searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
+//        searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
         searchBar.showsScopeBar = showScope
-        if showScope {
-            searchBar.selectedScopeButtonIndex = segmentStatus.rawValue
-        }
+//        if showScope {
+//            searchBar.selectedScopeButtonIndex = segmentStatus.rawValue
+//        }
         tableView.tableHeaderView?.sizeToFit()
         tableView.reloadData()
     }
@@ -94,9 +94,10 @@ final class TableViewController: UITableViewController {
         updateSearchBar(showScope: true)
         setupAd(with: tableView)
         setupObserve()
-        
+        tableView.contentInset = .init(top: 0, left: 0, bottom: 20, right: 0)
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
+        searchBar.set(textColor: .white)
     }
     
     
@@ -118,7 +119,9 @@ final class TableViewController: UITableViewController {
     
     private var searchResultData = DataManager.shared.stations {
         didSet {
-            DispatchQueue.main.async(execute: tableView.reloadData)
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
         }
     }
     override func viewWillAppear(_ animated: Bool) {

@@ -25,6 +25,7 @@ final class SupplementaryCell: UIView {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupView()
+        
     }
     
     lazy var titleLabel = UILabel {
@@ -40,7 +41,7 @@ final class SupplementaryCell: UIView {
     
     func setupView() {
         [titleLabel, subtitleLabel].forEach(addSubview)
-        
+        backgroundColor = .groupTableViewBackground
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 12, leftPadding: 20, bottomPadding: 0, rightPadding: 10, width: 0, height: 22)
         
         subtitleLabel.anchor(top: titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: bottomAnchor, right: titleLabel.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
