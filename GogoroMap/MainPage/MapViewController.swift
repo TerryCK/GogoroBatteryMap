@@ -443,11 +443,21 @@ extension MapViewController: MKMapViewDelegate {
         clusterManager.reload(mapView: mapView)
     }
     
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        if let annotation = view.annotation as? BatteryStationPointAnnotation {
+            UIView.animate(withDuration: 0.35) {
+                view.alpha = annotation.isOperating ? 1 : 0.5
+            }
+        }
+    }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let clusterAnnotation = view.annotation as? ClusterAnnotation {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
+        
+       
         adLoader = adLoaderBuild()
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
@@ -455,8 +465,21 @@ extension MapViewController: MKMapViewDelegate {
                                             controller: self).bind(mapView: mapView,
                                                                        nativeAd: self.nativeAd)
         }
+        
+        UIView.animate(withDuration: 0.35) {
+            view.alpha = 1
+        }
     }
-    
+
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        
+        UIView.animate(withDuration: 0.35) {
+            views.forEach {
+                $0.alpha = ($0.annotation as? BatteryStationPointAnnotation)?.isOperating == .some(false) ? 0.5 : 1
+            }
+        }
+    }
     
     private func mapZoomWith(scale: Double) {
         var span = mapView.region.span
