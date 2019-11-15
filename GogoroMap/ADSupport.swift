@@ -35,7 +35,7 @@ extension ADSupportable where Self: UIViewController {
     }
     
     func setupAd(with view: UIView) {
-        #if RELEASE
+        guard Environment.environment == .release else { return }
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else { return }
         Answers.log(view: "Ad View")
@@ -51,7 +51,6 @@ extension ADSupportable where Self: UIViewController {
         let request = GADRequest()
         request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
         bannerView.load(request)
-        #endif
     }
     
     func bridgeAd(_ bannerView: GADBannerView) {
