@@ -22,7 +22,7 @@ final class DataManager: NSObject {
     
     static let shared = DataManager()
     
-    lazy var stations: [BatteryStationPointAnnotation] = {
+    lazy var originalStations: [BatteryStationPointAnnotation] = {
         return fetchData(from: .database).flatMap(dataBridge) ??
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
     }()
@@ -35,7 +35,10 @@ final class DataManager: NSObject {
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
-
+    lazy var stations: [BatteryStationPointAnnotation] = {
+           originalStations
+       }()
+    
     
     func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
         fetchData { (result) in

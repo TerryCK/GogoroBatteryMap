@@ -7,6 +7,7 @@
 //
 
 import MapKit
+
 extension Array where Element: BatteryStationPointAnnotation {
     
     func filter(text searchText: String) -> Array {

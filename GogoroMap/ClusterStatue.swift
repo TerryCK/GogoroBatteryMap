@@ -9,6 +9,7 @@
 import Foundation
 
 enum ClusterStatus {
+    
     case on, off
     
     init(_ bool: Bool = UserDefaults.standard.value(forKey: "cluster") as? Bool ?? true) {
@@ -21,4 +22,5 @@ enum ClusterStatus {
         self = willBe
     }
     
+    var maxZoomLevel: Double { self == .on ? 16 : 8 }
 }

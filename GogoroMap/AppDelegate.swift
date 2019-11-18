@@ -27,7 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
         window?.makeKeyAndVisible()
         setupIAPOberserver()
-        
         switch Environment.environment {
         case .release:
             FirebaseApp.configure()
@@ -43,8 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DataManager.shared.fetchStations()
         return true
     }
-    
-    
+
     private func setupIAPOberserver() {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             for purchase in purchases where [.purchased, .restored].contains(purchase.transaction.transactionState) && purchase.needsFinishTransaction {

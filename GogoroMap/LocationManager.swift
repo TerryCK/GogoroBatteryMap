@@ -30,5 +30,5 @@ final class LocationManager {
         onComplete(CLLocationManager.authorizationStatus())
     }
     
-    var userLocation: CLLocation? { return manager.location }
+    var userLocation: CLLocation? { manager.location }
 }
