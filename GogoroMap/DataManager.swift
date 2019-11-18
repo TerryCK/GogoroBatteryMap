@@ -40,7 +40,7 @@ final class DataManager: NSObject {
             buildings = newValue.filter(SegmentStatus.building.hanlder)
             originalStations = newValue
         }
-        get { originalStations }
+        get { originalStations.filter(SegmentStatus.nearby.hanlder) }
     }
     
     lazy var checkins: [BatteryStationPointAnnotation] = {
@@ -48,7 +48,7 @@ final class DataManager: NSObject {
     }()
     
     lazy var unchecks: [BatteryStationPointAnnotation] = {
-        originalStations.filter(SegmentStatus.uncheck.hanlder)
+         originalStations.filter(SegmentStatus.uncheck.hanlder)
     }()
     
     lazy var buildings: [BatteryStationPointAnnotation] = {

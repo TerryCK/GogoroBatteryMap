@@ -63,9 +63,9 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
             return
         }
         
-        let segment = SegmentStatus(rawValue: index) ?? .nearby
-        
-        DataManager.shared.stations = DataManager.shared.originalStations.filter(segment.hanlder).filter(text: tableViewController.searchBar.text ?? "")
+//        let segment = SegmentStatus(rawValue: index) ?? .nearby
+//        
+////        DataManager.shared.stations = DataManager.shared.originalStations.filter(segment.hanlder).filter(text: tableViewController.searchBar.text ?? "")
         DataManager.shared.lastUpdate = Date()
     }
 }
@@ -152,8 +152,10 @@ enum TabItemCase: CaseIterable {
         switch self {
             
         case .building, .nearby , .uncheck, .checkin:
-            let tabViewController = TableViewController(style: .grouped)
-            tabViewController.segmentStatus = SegmentStatus.allCases.first { String(describing: $0) == String(describing: self) } ?? .nearby
+            let segment: SegmentStatus  = SegmentStatus.allCases.first { String(describing: $0) == String(describing: self) } ?? .nearby
+            let tabViewController = TableViewController(style: .grouped,
+                                                        segmentStatus: segment)
+            
             return tabViewController
             
         case .setting   :

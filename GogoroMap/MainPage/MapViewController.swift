@@ -118,6 +118,10 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
     }
     
+    private var selectedIndex: Int {
+        (fpc.contentViewController as? FloatingViewController)?.selectedIndex ?? 0
+    }
+    
     lazy var fpc: FloatingPanelController = {
         $0.delegate = self
         $0.surfaceView.backgroundColor = .clear
@@ -274,14 +278,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             DispatchQueue.main.async {
                 self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
-                self.clusterManager.add(DataManager.shared.stations)
+                let stations = (SegmentStatus(rawValue: self.selectedIndex) ?? .nearby).stationDataSource
+                self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView) { _ in
                     self.navigationItem.title = "Gogoro \("Battery Station".localize())"
                 }
             }
         }
     }
-    
     
     //     MARK: - Perfrom
     func performGuidePage() {
