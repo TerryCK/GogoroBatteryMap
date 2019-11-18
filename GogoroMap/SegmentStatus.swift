@@ -12,6 +12,7 @@ enum SegmentStatus: Int, CaseIterable {
     
     case nearby = 0, checkin, uncheck, building
     
+    
     var name: String {
         switch self {
         case .building  : return "即將啟用"
@@ -31,6 +32,19 @@ enum SegmentStatus: Int, CaseIterable {
         case .uncheck       : return { $0.checkinCounter ?? 0 == 0 && $0.isOperating }
         case .nearby        : return { $0.isOperating }
         case .building      : return { !$0.isOperating }
+        }
+    }
+    
+    var stationDataSource: [BatteryStationPointAnnotation] {
+        switch self {
+        case .nearby:
+            return DataManager.shared.stations
+        case .checkin:
+            return DataManager.shared.checkins
+        case .uncheck:
+            return DataManager.shared.unchecks
+        case .building:
+            return DataManager.shared.buildings
         }
     }
 }

@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-//import SideMenu
 import Crashlytics
 import GoogleMobileAds
 import Cluster
@@ -36,8 +35,6 @@ extension MapViewController  {
         mapView.setUserTrackingMode(mode, animated: true)
     }
 }
-
-
 
 extension MapViewController: FloatingPanelControllerDelegate {
     
@@ -95,11 +92,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
      var nativeAd: GADUnifiedNativeAd? {
         didSet {
             nativeAd?.delegate = self
-//            menuController?.collectionView.reloadData()
         }
     }
-    
-//    private var menuController: MenuController?
     
     private var adLoader: GADAdLoader?
     
@@ -183,7 +177,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         return $0
     }(UIButton(type: .system))
     
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
@@ -230,9 +223,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupAd(with: view)
     }
     
-    enum Status {
+    private enum Status {
+        
         case lock, release
     }
+    
     private var lastTouchPoint: CGPoint?
     
     private var gestureRecognizerStatus: Status  = .release {
@@ -303,7 +298,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         adLoader = adLoaderBuild()
     }
     
-    
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
         navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
@@ -339,8 +333,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
         
     }
-    
-    
     
     private func setupBottomBackgroundView() {
         let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
