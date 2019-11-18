@@ -56,6 +56,9 @@ extension MapViewController: FloatingPanelControllerDelegate {
     
     func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
         bannerView.isHidden = targetPosition == .full
+        if targetPosition == .full {
+          setTracking(mode: .none)
+        }
     }
     
     
@@ -68,6 +71,7 @@ extension MapViewController: FloatingPanelControllerDelegate {
         tableViewController.searchBar.resignFirstResponder()
     }
 }
+
 extension MapViewController: GADAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
@@ -116,7 +120,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     var clusterSwitcher = ClusterStatus() {
         didSet {
-            clusterManager.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
+            clusterManager.maxZoomLevel = clusterSwitcher.maxZoomLevel
         }
     }
     
@@ -130,7 +134,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
         $0.surfaceView.shadowHidden = false
         $0.surfaceView.grabberTopPadding = 1
-        let tableViewController = TableViewController()
         let floatingVC = FloatingViewController()
         floatingVC.flatingPanelController = $0
         $0.set(contentViewController: floatingVC)
@@ -144,12 +147,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
 
     private lazy var clusterManager: ClusterManager = {
-        let cm = ClusterManager()
-        cm.maxZoomLevel = clusterSwitcher == .on ? 16 : 8
-        cm.minCountForClustering = 3
-        cm.add(DataManager.shared.stations)
-        return cm
-    }()
+        $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
+        $0.minCountForClustering = 3
+        $0.add(DataManager.shared.stations)
+        return $0
+    }(ClusterManager())
    
     private lazy var mapView : MKMapView = {
         $0.delegate = self
@@ -262,7 +264,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         let current = sender.location(in: mapView)
         let deltaY = current.y - lastTouchPoint.y
         self.lastTouchPoint = current
-        
         mapZoomWith(scale: deltaY > 0 ? 1.05 : 0.95)
     }
     
@@ -297,14 +298,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     @objc func performMenu() {
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
-//        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
-//            return
-//        }
-        
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
         adLoader = adLoaderBuild()
-//        fpc.present(sideManuController, animated: true)
     }
     
     

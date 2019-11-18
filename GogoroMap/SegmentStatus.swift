@@ -12,7 +12,6 @@ enum SegmentStatus: Int, CaseIterable {
     
     case nearby = 0, checkin, uncheck, building
     
-    
     var name: String {
         switch self {
         case .building  : return "即將啟用"
@@ -28,8 +27,8 @@ enum SegmentStatus: Int, CaseIterable {
     
     var hanlder: (BatteryStationPointAnnotation) -> Bool {
         switch self {
-        case .checkin       : return { $0.checkinCounter ?? 0 > 0 }
-        case .uncheck       : return { $0.checkinCounter ?? 0 == 0 }
+        case .checkin       : return { $0.checkinCounter ?? 0 > 0 && $0.isOperating }
+        case .uncheck       : return { $0.checkinCounter ?? 0 == 0 && $0.isOperating }
         case .nearby        : return { $0.isOperating }
         case .building      : return { !$0.isOperating }
         }

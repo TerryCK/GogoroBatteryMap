@@ -7,6 +7,7 @@
 //
 
 import MapKit
+
 struct GoShareDataModel: Codable {
     
     let id, plate, lat, lng, soc, remainingMileage, socLevel, modelCode: String

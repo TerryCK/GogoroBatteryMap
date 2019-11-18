@@ -30,28 +30,28 @@ final class FloatingViewController: ColorMatchTabsViewController {
 extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
     
     func numberOfItems(inController controller: ColorMatchTabsViewController) -> Int {
-        return tabItemProvider.count
+         tabItemProvider.count
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, viewControllerAt index: Int) -> UIViewController {
-        return TabItemCase.viewControllers[index]
+         TabItemCase.viewControllers[index]
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, titleAt index: Int) -> String {
-        return tabItemProvider[index].tabItem.title
+         tabItemProvider[index].tabItem.title
     }
     
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, iconAt index: Int) -> UIImage {
-        return tabItemProvider[index].tabItem.normalImage
+         tabItemProvider[index].tabItem.normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, hightlightedIconAt index: Int) -> UIImage {
-        return tabItemProvider[index].tabItem.highlightedImage
+         tabItemProvider[index].tabItem.highlightedImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, tintColorAt index: Int) -> UIColor {
-        return tabItemProvider[index].tabItem.tintColor
+         tabItemProvider[index].tabItem.tintColor
     }
     
     
@@ -59,17 +59,29 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
         if let scrollerView = (TabItemCase.viewControllers[index] as? ViewTrackable)?.trackView {
             flatingPanelController?.track(scrollView: scrollerView)
         }
+        guard let tableViewController = TabItemCase.viewControllers[index] as? TableViewController else  {
+            return
+        }
+        
+        let segment = SegmentStatus(rawValue: index) ?? .nearby
+        
+        DataManager.shared.stations = DataManager.shared.originalStations.filter(segment.hanlder).filter(text: tableViewController.searchBar.text ?? "")
+        DataManager.shared.lastUpdate = Date()
     }
 }
 
 protocol ViewTrackable {
+    
     var trackView: UIScrollView { get }
 }
+
 extension ViewTrackable where Self: UITableViewController {
+
     var trackView: UIScrollView { tableView }
 }
 
 extension ViewTrackable where Self: UICollectionViewController {
+
     var trackView: UIScrollView { collectionView }
 }
 
@@ -88,10 +100,10 @@ enum TabItemCase: CaseIterable {
     
     var title: String {
         switch self {
-        case .building  : return "即將啟用"
         case .nearby    : return "附近營運中"
         case .checkin   : return "已打卡"
         case .uncheck   : return "未打卡"
+        case .building  : return "即將啟用"
         case .setting   : return "設定"
         case .backup    : return "雲端備份"
         }
@@ -111,12 +123,12 @@ enum TabItemCase: CaseIterable {
         case .nearby    :
             return TabItem(
                 title: title,
-                tintColor: UIColor(red: 0.15, green: 0.67, blue: 0.99, alpha: 1.00),
-                normalImage: #imageLiteral(resourceName: "pinFull"))
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
+                normalImage: #imageLiteral(resourceName: "recent"))
         case .checkin   :
             return TabItem(
                 title: title,
-                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
                 normalImage: #imageLiteral(resourceName: "checkin"))
         case .uncheck   :
             return TabItem(
@@ -126,13 +138,13 @@ enum TabItemCase: CaseIterable {
         case .setting   :
             return TabItem(
                 title: title,
-                tintColor: UIColor(red: 0.96, green: 0.61, blue: 0.58, alpha: 1.00),
-                normalImage: UIImage(named: "convenientStore")!)
+                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
+                normalImage: UIImage(named: "setting")!)
         case .backup    :
             return TabItem(
                 title: title,
                 tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: UIImage(named: "downloadFromCloud")!)
+                normalImage: UIImage(named: "cloud")!)
         }
     }
     
