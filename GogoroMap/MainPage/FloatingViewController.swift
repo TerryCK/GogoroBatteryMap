@@ -11,7 +11,11 @@ import FloatingPanel
 
 final class FloatingViewController: ColorMatchTabsViewController {
     
-    weak var flatingPanelController: FloatingPanelController?
+    weak var flatingPanelController: FloatingPanelController? {
+        didSet {
+            didSelectItemAt(0)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
