@@ -34,11 +34,26 @@ final class DataManager: NSObject {
         guard let data = try? JSONEncoder().encode(stations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
+  
+    var stations: [BatteryStationPointAnnotation] {
+        set {
+            buildings = newValue.filter(SegmentStatus.building.hanlder)
+            originalStations = newValue
+        }
+        get { originalStations }
+    }
     
-    lazy var stations: [BatteryStationPointAnnotation] = {
-           originalStations
-       }()
+    lazy var checkins: [BatteryStationPointAnnotation] = {
+        originalStations.filter(SegmentStatus.checkin.hanlder)
+    }()
     
+    lazy var unchecks: [BatteryStationPointAnnotation] = {
+        originalStations.filter(SegmentStatus.uncheck.hanlder)
+    }()
+    
+    lazy var buildings: [BatteryStationPointAnnotation] = {
+        originalStations.filter(SegmentStatus.building.hanlder)
+    }()
     
     func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
         fetchData { (result) in

@@ -71,7 +71,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     var segmentStatus: SegmentStatus = .nearby {
         didSet {
             DispatchQueue.global().async {
-                self.stations = self.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+                self.stations = self.segmentStatus.stationDataSource.sorted(userLocation: self.locationManager.userLocation, by: <)
             }
         }
     }
@@ -92,7 +92,10 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            self.stations = DataManager.shared.stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+            
+            self.stations = self.segmentStatus
+                .stationDataSource
+                .sorted(userLocation: self.locationManager.userLocation, by: <)
         }
     }
     
