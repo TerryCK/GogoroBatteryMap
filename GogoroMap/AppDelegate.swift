@@ -13,6 +13,11 @@ import Firebase
 import SwiftyStoreKit
 import AlamofireNetworkActivityLogger
 
+extension UIApplication {
+    static var mapViewController: MapViewController? {
+        ((shared.delegate as? AppDelegate)?.window?.rootViewController as? UINavigationController)?.viewControllers.first { $0.isKind(of: MapViewController.self) } as? MapViewController
+    }
+}
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     

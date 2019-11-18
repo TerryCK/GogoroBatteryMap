@@ -17,7 +17,7 @@ protocol ManuDelegate: AnyObject {
 }
 
 
-final class MenuController: UICollectionViewController {
+final class MenuController: UICollectionViewController, ViewTrackable {
     
     weak var delegate: ManuDelegate?
     
