@@ -43,10 +43,6 @@ extension TableViewController: UISearchBarDelegate {
         searchBar.showsCancelButton = false
         searchBar.resignFirstResponder()
     }
-    
-    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        segmentStatus = SegmentStatus(rawValue: selectedScope) ?? .nearby
-    }
 }
 
 final class TableViewController: UITableViewController, ViewTrackable {
@@ -61,22 +57,24 @@ final class TableViewController: UITableViewController, ViewTrackable {
     private var searchText = "" {
         didSet {
             DispatchQueue.global().async {
-                self.searchResultData = self.stations.filter(self.segmentStatus.hanlder).filter(text: self.searchText)
+                self.searchResultData = self.stations.filter(text: self.searchText)
             }
         }
     }
 
     private let locationManager: LocationManager = .shared
     
-    var segmentStatus: SegmentStatus = .nearby {
-        didSet {
-            DispatchQueue.global().async {
-                self.stations = self.segmentStatus.stationDataSource.sorted(userLocation: self.locationManager.userLocation, by: <)
-            }
-        }
+    let segmentStatus: SegmentStatus
+    
+    init(style: UITableView.Style, segmentStatus: SegmentStatus) {
+        self.segmentStatus = segmentStatus
+        super.init(style: style)
     }
     
-
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
@@ -105,7 +103,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private var stations = DataManager.shared.stations {
         didSet {
-            searchResultData = stations.filter(segmentStatus.hanlder).filter(text: searchText)
+            searchResultData = stations.filter(text: searchText)
         }
     }
     
@@ -115,10 +113,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
                 self?.tableView.reloadData()
             }
         }
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        segmentStatus = .nearby
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
