@@ -170,18 +170,16 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }(MKMapView())
     
     lazy var locationArrowView: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(#imageLiteral(resourceName: "locationArrowNone"), for: .normal)
-        button.addTarget(self, action: #selector(locationArrowPressed), for: .touchUpInside)
-        return button
-    }()
+        $0.setImage(#imageLiteral(resourceName: "locationArrowNone"), for: .normal)
+        $0.addTarget(self, action: #selector(locationArrowPressed), for: .touchUpInside)
+        return $0
+    }(UIButton(type: .system))
     
     private lazy var menuBarButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
-        button.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
-        return button
-    }()
+        $0.setImage(#imageLiteral(resourceName: "manuButton"), for: .normal)
+        $0.addTarget(self, action: #selector(MapViewController.performMenu), for: .touchUpInside)
+        return $0
+    }(UIButton(type: .system))
     
     
     override func viewDidAppear(_ animated: Bool) {
@@ -309,29 +307,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
 //        fpc.present(sideManuController, animated: true)
     }
     
-//    private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
-//
-//        let flowLyout: UICollectionViewFlowLayout = {
-//            $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
-//            $0.minimumLineSpacing = 0
-//            $0.minimumInteritemSpacing = 0
-//            return $0
-//        }(UICollectionViewFlowLayout())
-//
-//        let menuController = MenuController(collectionViewLayout: flowLyout)
-//        menuController.delegate = self
-//        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-//        sideMenuManager.menuLeftNavigationController?.leftSide = true
-//        sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-//        sideMenuManager.menuFadeStatusBar = true
-//        sideMenuManager.menuShadowOpacity = 0.59
-//        sideMenuManager.menuWidth = view.frame.width * displayFactor
-//        sideMenuManager.menuAnimationTransformScaleFactor = 0.95
-//        sideMenuManager.menuAnimationFadeStrength = 0.40
-//        sideMenuManager.menuBlurEffectStyle = nil
-//        sideMenuManager.menuPresentMode = .viewSlideInOut
-////        self.menuController = menuController
-//    }
     
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
