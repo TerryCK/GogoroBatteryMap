@@ -18,7 +18,8 @@ extension BackupViewController: ADSupportable {
     }
 }
 
-final class BackupViewController: UITableViewController {
+final class BackupViewController: UITableViewController, ViewTrackable {
+    
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     

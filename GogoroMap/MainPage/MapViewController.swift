@@ -196,13 +196,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
 //        navigationController?.setNavigationBarHidden(false, animated: animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
-    
-    override func loadView() {
-        super.loadView()
-        setupNavigationTitle()
-        setupNavigationItems()
-//        setupSideMenu()
-    }
+
 
     func promptLocationAuthenticateError() {
         let alertController = UIAlertController(title: "定位權限已關閉",
@@ -214,6 +208,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationTitle()
+        setupNavigationItems()
         setupObserve()
         setupObserver()
         performGuidePage()

@@ -20,7 +20,8 @@ extension TableViewController: ADSupportable {
 extension TableViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        mapViewController?.fpc.move(to: .full, animated: true)
+       
+        UIApplication.mapViewController?.fpc.move(to: .full, animated: true)
         searchBar.showsCancelButton = true
     }
     
@@ -46,13 +47,9 @@ extension TableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         segmentStatus = SegmentStatus(rawValue: selectedScope) ?? .nearby
     }
-    
-    private var mapViewController: MapViewController? {
-        return navigationController?.viewControllers.first(where: { $0.isKind(of: MapViewController.self) }) as? MapViewController
-    }
 }
 
-final class TableViewController: UITableViewController {
+final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -60,15 +57,6 @@ final class TableViewController: UITableViewController {
     
     private var observation: NSKeyValueObservation?
 
-    private func updateSearchBar(showScope: Bool) {
-//        searchBar.scopeButtonTitles = showScope ? SegmentStatus.allCases.map { $0.name } : nil
-        searchBar.showsScopeBar = showScope
-//        if showScope {
-//            searchBar.selectedScopeButtonIndex = segmentStatus.rawValue
-//        }
-        tableView.tableHeaderView?.sizeToFit()
-        tableView.reloadData()
-    }
     
     private var searchText = "" {
         didSet {
@@ -92,7 +80,6 @@ final class TableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
-        updateSearchBar(showScope: true)
         setupAd(with: tableView)
         setupObserve()
         tableView.contentInset = .init(top: 0, left: 0, bottom: 20, right: 0)
@@ -160,10 +147,10 @@ final class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         searchBar.resignFirstResponder()
-        mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
+         UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
     }
-    
 }
+
 extension UIColor {
     
     enum Colors {

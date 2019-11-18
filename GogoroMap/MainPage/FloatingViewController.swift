@@ -52,12 +52,22 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
     
     
     func didSelectItemAt(_ index: Int) {
-        if let scrollerView = TabItemCase.viewControllers[index] as? TableViewController {
-            flatingPanelController?.track(scrollView: scrollerView.tableView)
+        if let scrollerView = (TabItemCase.viewControllers[index] as? ViewTrackable)?.trackView {
+            flatingPanelController?.track(scrollView: scrollerView)
         }
     }
 }
 
+protocol ViewTrackable {
+    var trackView: UIScrollView { get }
+}
+extension ViewTrackable where Self: UITableViewController {
+    var trackView: UIScrollView { tableView }
+}
+
+extension ViewTrackable where Self: UICollectionViewController {
+    var trackView: UIScrollView { collectionView }
+}
 
 struct TabItem {
     
@@ -126,7 +136,7 @@ enum TabItemCase: CaseIterable {
         switch self {
             
         case .building, .nearby , .uncheck, .checkin:
-            let tabViewController = TableViewController()
+            let tabViewController = TableViewController(style: .grouped)
             tabViewController.segmentStatus = SegmentStatus.allCases.first { String(describing: $0) == String(describing: self) } ?? .nearby
             return tabViewController
             
@@ -138,7 +148,7 @@ enum TabItemCase: CaseIterable {
                 return $0
             }(UICollectionViewFlowLayout())
             return MenuController(collectionViewLayout: flowLyout)
-        case .backup: return BackupViewController()
+        case .backup: return BackupViewController(style: .grouped)
         }
     }
 }
