@@ -119,7 +119,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     private var selectedIndex: Int {
-        (fpc.contentViewController as? FloatingViewController)?.selectedIndex ?? 0
+        (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0
     }
     
     lazy var fpc: FloatingPanelController = {
