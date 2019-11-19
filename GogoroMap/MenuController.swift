@@ -98,7 +98,7 @@ final class MenuController: UICollectionViewController, ViewTrackable {
         navigationItem.title = "Information".localize()
         navigationItem.titleView?.layer.cornerRadius = 10
         navigationItem.titleView?.layer.masksToBounds = true
-//        collectionView?.backgroundColor = .clear
+        collectionView?.backgroundColor = .clear
         collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         collectionView?.isScrollEnabled = true
         collectionView?.showsVerticalScrollIndicator = false
