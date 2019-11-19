@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import SideMenu
 import Crashlytics
 import GoogleMobileAds
 import Cluster
@@ -133,8 +134,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         $0.surfaceView.shadowHidden = false
         $0.surfaceView.grabberTopPadding = 1
         let floatingVC = FloatingViewController()
-        floatingVC.flatingPanelController = $0
         $0.set(contentViewController: floatingVC)
+        floatingVC.flatingPanelController = $0
         return $0
     }(FloatingPanelController(delegate: nil))
     
@@ -211,7 +212,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupObserver()
         performGuidePage()
         adLoader = adLoaderBuild()
-        
+        setupSideMenu()
         LocationManager.shared.authorize { (status) in
             if [.denied, .restricted].contains(status) {
                 promptLocationAuthenticateError()
@@ -276,13 +277,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             DispatchQueue.main.async {
-                self.navigationItem.title = "地圖狀態更新中..."
                 self.clusterManager.removeAll()
-                let stations = (SegmentStatus(rawValue: self.selectedIndex) ?? .nearby).stationDataSource
-                self.clusterManager.add(stations)
-                self.clusterManager.reload(mapView: self.mapView) { _ in
-                    self.navigationItem.title = "Gogoro \("Battery Station".localize())"
-                }
+                self.clusterManager.add((TabItemCase(rawValue: self.selectedIndex) ?? .nearby).stationDataSource)
+                self.clusterManager.reload(mapView: self.mapView)
             }
         }
     }
@@ -296,12 +293,39 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     @objc func performMenu() {
+         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
+                    return
+                }
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
         adLoader = adLoaderBuild()
+        fpc.present(sideManuController, animated: true)
     }
     
+    private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
+    
+            let flowLyout: UICollectionViewFlowLayout = {
+                $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
+                $0.minimumLineSpacing = 0
+                $0.minimumInteritemSpacing = 0
+                return $0
+            }(UICollectionViewFlowLayout())
+    
+            let menuController = MenuController(collectionViewLayout: flowLyout)
+            menuController.delegate = self
+            sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+            sideMenuManager.menuLeftNavigationController?.leftSide = true
+            sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
+            sideMenuManager.menuFadeStatusBar = true
+            sideMenuManager.menuShadowOpacity = 0.59
+            sideMenuManager.menuWidth = view.frame.width * displayFactor
+            sideMenuManager.menuAnimationTransformScaleFactor = 0.95
+            sideMenuManager.menuAnimationFadeStrength = 0.40
+            sideMenuManager.menuBlurEffectStyle = nil
+            sideMenuManager.menuPresentMode = .viewSlideInOut
+            
+        }
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
         navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
@@ -385,7 +409,6 @@ extension MapViewController: MKMapViewDelegate {
         switch annotation {
         case let batteryStation as BatteryStationPointAnnotation:
             annotationView.image = batteryStation.iconImage
-            annotationView.alpha = batteryStation.isOperating ? 1 : 0.5
             annotationView.detailCalloutAccessoryView = DetailAnnotationView()
                 .configure(annotation: batteryStation,
                            nativeAd: nil)
@@ -404,14 +427,6 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         guard gestureRecognizerStatus == .release else { return }
         clusterManager.reload(mapView: mapView)
-    }
-    
-    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
-        if let annotation = view.annotation as? BatteryStationPointAnnotation {
-            UIView.animate(withDuration: 0.35) {
-                view.alpha = annotation.isOperating ? 1 : 0.5
-            }
-        }
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -439,7 +454,7 @@ extension MapViewController: MKMapViewDelegate {
         
         UIView.animate(withDuration: 0.35) {
             views.forEach {
-                $0.alpha = ($0.annotation as? BatteryStationPointAnnotation)?.isOperating == .some(false) ? 0.5 : 1
+                $0.alpha =  1
             }
         }
     }

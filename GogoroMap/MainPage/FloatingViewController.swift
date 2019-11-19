@@ -17,6 +17,8 @@ final class FloatingViewController: ColorMatchTabsViewController {
         }
     }
     
+    private let locationManager: LocationManager = .shared
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
@@ -30,7 +32,7 @@ final class FloatingViewController: ColorMatchTabsViewController {
 extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
     
     func numberOfItems(inController controller: ColorMatchTabsViewController) -> Int {
-         tabItemProvider.count
+         tabItemProvider.count - 2
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, viewControllerAt index: Int) -> UIViewController {
@@ -56,17 +58,22 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
     
     
     func didSelectItemAt(_ index: Int) {
+        
         if let scrollerView = (TabItemCase.viewControllers[index] as? ViewTrackable)?.trackView {
             flatingPanelController?.track(scrollView: scrollerView)
         }
+        
+        if tabItemProvider[index] != .setting {
+             DataManager.shared.lastUpdate = Date()
+        }
+        
         guard let tableViewController = TabItemCase.viewControllers[index] as? TableViewController else  {
             return
         }
+        tableViewController.stations = tabItemProvider[index]
+            .stationDataSource
+            .sorted(userLocation: self.locationManager.userLocation, by: <)
         
-//        let segment = SegmentStatus(rawValue: index) ?? .nearby
-//        
-////        DataManager.shared.stations = DataManager.shared.originalStations.filter(segment.hanlder).filter(text: tableViewController.searchBar.text ?? "")
-        DataManager.shared.lastUpdate = Date()
     }
 }
 
@@ -94,13 +101,13 @@ struct TabItem {
 }
 
 
-enum TabItemCase: CaseIterable {
+enum TabItemCase: Int, CaseIterable {
     
     case nearby, checkin, uncheck, building, setting, backup
     
     var title: String {
         switch self {
-        case .nearby    : return "附近營運中"
+        case .nearby    : return "營運中"
         case .checkin   : return "已打卡"
         case .uncheck   : return "未打卡"
         case .building  : return "即將啟用"
@@ -108,7 +115,6 @@ enum TabItemCase: CaseIterable {
         case .backup    : return "雲端備份"
         }
     }
-    
     
     static let viewControllers = TabItemCase.allCases.map { $0.viewController }
     
@@ -167,6 +173,21 @@ enum TabItemCase: CaseIterable {
             }(UICollectionViewFlowLayout())
             return MenuController(collectionViewLayout: flowLyout)
         case .backup: return BackupViewController(style: .grouped)
+        }
+    }
+    
+    var stationDataSource: [BatteryStationPointAnnotation] {
+        switch self {
+        case .nearby:
+            return DataManager.shared.stations
+        case .checkin, .backup:
+            return DataManager.shared.checkins
+        case .uncheck:
+            return DataManager.shared.unchecks
+        case .building:
+            return DataManager.shared.buildings
+        case .setting:
+            return DataManager.shared.originalStations
         }
     }
 }

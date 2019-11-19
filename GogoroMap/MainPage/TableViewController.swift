@@ -87,21 +87,20 @@ final class TableViewController: UITableViewController, ViewTrackable {
         searchBar.set(textColor: .white)
     }
     
-    
     private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            
-            self.stations = self.segmentStatus
-                .stationDataSource
-                .sorted(userLocation: self.locationManager.userLocation, by: <)
-        }
+//        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
+//
+//            self.stations = self.segmentStatus
+//                .stationDataSource
+//                .sorted(userLocation: self.locationManager.userLocation, by: <)
+//        }
     }
     
     deinit {
         observation?.invalidate()
     }
     
-    private var stations = DataManager.shared.stations {
+    var stations = DataManager.shared.stations {
         didSet {
             searchResultData = stations.filter(text: searchText)
         }
