@@ -110,7 +110,9 @@ extension Array where Element: BatteryStationPointAnnotation {
     func keepOldUpdate(with other: Array) -> Array {
         return other.map { (newElement) -> Element in
             for localElement in self where localElement.isEqual(newElement) {
-                return localElement
+                newElement.checkinCounter = localElement.checkinCounter
+                newElement.checkinDay     = localElement.checkinDay
+                return newElement
             }
             return newElement
         }
