@@ -96,7 +96,7 @@ extension ADSupportable where Self: UIViewController {
 }
 
 extension GADAdLoader {
-    static func new<T: GADAdLoaderDelegate & UIViewController & ADSupportable>(delegate vc: T) -> GADAdLoader? {
+    static func createNativeAd<T: GADAdLoaderDelegate & UIViewController & ADSupportable>(delegate vc: T) -> GADAdLoader? {
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
             return nil
         }

@@ -87,11 +87,11 @@ extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
 
 final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeAdDelegate  {
     
-    var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
+    var bannerView: GADBannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
     
     var nativeAd: GADUnifiedNativeAd?
     
-    lazy var adLoader: GADAdLoader? = GADAdLoader.new(delegate: self)
+    lazy var nativeAdLoader: GADAdLoader? = GADAdLoader.createNativeAd(delegate: self)
     
     private let locationManager: LocationManager = .shared
     
@@ -188,7 +188,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupObserve()
         setupObserver()
         performGuidePage()
-        adLoader?.update()
+        nativeAdLoader?.update()
         setupSideMenu()
         LocationManager.shared.authorize { (status) in
             if [.denied, .restricted].contains(status) {
@@ -276,7 +276,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-        adLoader?.update()
+        nativeAdLoader?.update()
         fpc.present(sideManuController, animated: true)
     }
     
@@ -413,7 +413,7 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         
-        adLoader?.update()
+        nativeAdLoader?.update()
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
             DetailCalloutAccessoryViewModel(annotationView: view,
