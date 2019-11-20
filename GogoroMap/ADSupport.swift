@@ -41,7 +41,8 @@ extension ADSupportable where Self: UIViewController {
         view.addSubview(bannerView)
         var bottomAnchor = view.bottomAnchor
         if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
-        bannerView.anchor(left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, height: 50)
+        bannerView.anchor(left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor)
+        bannerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
         bannerView.delegate = self
         bannerView.rootViewController = self
         bannerView.adUnitID = adUnitID//"ca-app-pub-3940256099942544/2435281174"

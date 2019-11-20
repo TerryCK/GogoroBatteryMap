@@ -106,7 +106,8 @@ final class BackupViewController: UITableViewController, ViewTrackable {
         super.viewDidLoad()
         Answers.log(view: "backup page")
         setupObserve()
-        setupAd(with: tableView)
+        
+        setupAd(with: navigationController?.view ?? tableView)
        
         tableView.delegate = self
         tableView.dataSource = self
