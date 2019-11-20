@@ -26,7 +26,12 @@ extension DetailCalloutAccessoryViewModel {
         batteryAnnotation.checkinCounter = counterOfcheckin
         annotationView.image = batteryAnnotation.iconImage
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
-        (controller.fpc.contentViewController as? TableViewController)?.tableView.reloadData()
+        (controller.selectedTabItem.tabContantController as? TableViewController)?.tableView.reloadData()
+        DispatchQueue.global().async {
+            if let index = DataManager.shared.originalStations.firstIndex(where: { $0.coordinate.hashValue == batteryAnnotation.coordinate.hashValue}) {
+                DataManager.shared.originalStations[index] = batteryAnnotation
+            }
+        }
     }
     
     func bind(mapView: MKMapView, nativeAd: GADUnifiedNativeAd?) {

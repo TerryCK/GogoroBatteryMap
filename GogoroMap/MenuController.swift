@@ -17,8 +17,6 @@ protocol ManuDelegate: AnyObject {
     var nativeAd: GADUnifiedNativeAd? { get }
 }
 
-
-
 final class MenuController: UICollectionViewController, ViewTrackable {
     
     weak var delegate: ManuDelegate?

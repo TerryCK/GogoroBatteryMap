@@ -100,7 +100,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
     }
     
-    private var selectedTabItem: TabItemCase {
+    var selectedTabItem: TabItemCase {
         TabItemCase(rawValue: (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
     
@@ -201,7 +201,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         
         DataManager.shared.fetchStations()
         fpc.addPanel(toParent: self, animated: true)
-        setupAd(with: view)
+        setupAd(with: navigationController?.view ?? view)
     }
     
     private enum Status {
@@ -254,7 +254,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
-                self.clusterManager.add(self.selectedTabItem.stationDataSource)
+                let stations = self.selectedTabItem.stationDataSource
+                (self.selectedTabItem.tabContantController as? TableViewController)?.stations = stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+                self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
             }
         }

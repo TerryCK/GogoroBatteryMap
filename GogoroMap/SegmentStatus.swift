@@ -41,8 +41,12 @@ enum TabItemCase: Int, CaseIterable {
         case .nearby: return #imageLiteral(resourceName: "recent").invertedColors() ?? normalImage
         default     : return normalImage
         }
-        
     }
+    
+    var tabContantController: UIViewController {
+        Self.viewControllers[rawValue]
+    }
+    
     static let viewControllers = TabItemCase.allCases.map { $0.viewController }
     
     var hanlder: (BatteryStationPointAnnotation) -> Bool {
