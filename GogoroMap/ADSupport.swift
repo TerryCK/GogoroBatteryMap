@@ -35,22 +35,19 @@ extension ADSupportable where Self: UIViewController {
     }
     
     func setupAd(with view: UIView) {
-        guard Environment.environment == .release else { return }
+//        guard Environment.environment == .release else { return }
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else { return }
         Answers.log(view: "Ad View")
         view.addSubview(bannerView)
         var bottomAnchor = view.bottomAnchor
         if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
-        bannerView.anchor(top: nil, left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 60)
-        
+        bannerView.anchor(left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor)
+        bannerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
         bannerView.delegate = self
         bannerView.rootViewController = self
         bannerView.adUnitID = adUnitID
-        
-        let request = GADRequest()
-        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
-        bannerView.load(request)
+        loadBannerAd()
     }
     
     func bridgeAd(_ bannerView: GADBannerView) {
@@ -71,6 +68,31 @@ extension ADSupportable where Self: UIViewController {
             }
         }
     }
+    
+
+      func loadBannerAd() {
+        // Step 2 - Determine the view width to use for the ad width.
+        let frame = { () -> CGRect in
+          // Here safe area is taken into account, hence the view frame is used
+          // after the view has been laid out.
+          if #available(iOS 11.0, *) {
+            return view.frame.inset(by: view.safeAreaInsets)
+          } else {
+            return view.frame
+          }
+        }()
+        let viewWidth = frame.size.width
+
+        // Step 3 - Get Adaptive GADAdSize and set the ad view.
+        // Here the current interface orientation is used. If the ad is being preloaded
+        // for a future orientation change or different orientation, the function for the
+        // relevant orientation should be used.
+        bannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+        let request = GADRequest()
+        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
+        // Step 4 - Create an ad request and load the adaptive banner ad.
+        bannerView.load(request)
+      }
 }
 
 extension GADAdLoader {
