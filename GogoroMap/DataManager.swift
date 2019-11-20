@@ -37,22 +37,22 @@ final class DataManager: NSObject {
   
     var stations: [BatteryStationPointAnnotation] {
         set {
-            buildings = newValue.filter(SegmentStatus.building.hanlder)
+            buildings = newValue.filter(TabItemCase.building.hanlder)
             originalStations = newValue
         }
-        get { originalStations.filter(SegmentStatus.nearby.hanlder) }
+        get { originalStations.filter(TabItemCase.nearby.hanlder) }
     }
     
     lazy var checkins: [BatteryStationPointAnnotation] = {
-        originalStations.filter(SegmentStatus.checkin.hanlder)
+        originalStations.filter(TabItemCase.checkin.hanlder)
     }()
     
     lazy var unchecks: [BatteryStationPointAnnotation] = {
-         originalStations.filter(SegmentStatus.uncheck.hanlder)
+         originalStations.filter(TabItemCase.uncheck.hanlder)
     }()
     
     lazy var buildings: [BatteryStationPointAnnotation] = {
-        originalStations.filter(SegmentStatus.building.hanlder)
+        originalStations.filter(TabItemCase.building.hanlder)
     }()
     
     func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
