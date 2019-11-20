@@ -40,16 +40,16 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, titleAt index: Int) -> String {
-         tabItemProvider[index].tabItem.title
+         tabItemProvider[index].title
     }
     
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, iconAt index: Int) -> UIImage {
-         tabItemProvider[index].tabItem.normalImage
+         tabItemProvider[index].normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, hightlightedIconAt index: Int) -> UIImage {
-         tabItemProvider[index].tabItem.highlightedImage
+         tabItemProvider[index].normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, tintColorAt index: Int) -> UIColor {
@@ -116,43 +116,20 @@ enum TabItemCase: Int, CaseIterable {
         }
     }
     
-    static let viewControllers = TabItemCase.allCases.map { $0.viewController }
     
-    var tabItem: TabItem {
+    var normalImage: UIImage {
         switch self {
-        case .building  :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: #imageLiteral(resourceName: "building"))
-            
-        case .nearby    :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: #imageLiteral(resourceName: "recent"))
-        case .checkin   :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: #imageLiteral(resourceName: "checkin"))
-        case .uncheck   :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: #imageLiteral(resourceName: "pinFull"))
-        case .setting   :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: UIImage(named: "setting")!)
-        case .backup    :
-            return TabItem(
-                title: title,
-                tintColor: UIColor(red: 0.51, green: 0.72, blue: 0.25, alpha: 1.00),
-                normalImage: UIImage(named: "cloud")!)
+        case .nearby:    return #imageLiteral(resourceName: "recent")
+        case .checkin:   return #imageLiteral(resourceName: "checkin")
+        case .uncheck:   return #imageLiteral(resourceName: "pinFull")
+        case .building:  return #imageLiteral(resourceName: "building")
+        case .setting:   return #imageLiteral(resourceName: "setting")
+        case .backup:    return #imageLiteral(resourceName: "cloud")
         }
     }
+    
+    static let viewControllers = TabItemCase.allCases.map { $0.viewController }
+    
     
     private var viewController: UIViewController {
         switch self {
@@ -174,16 +151,11 @@ enum TabItemCase: Int, CaseIterable {
     
     var stationDataSource: [BatteryStationPointAnnotation] {
         switch self {
-        case .nearby:
-            return DataManager.shared.stations
-        case .checkin, .backup:
-            return DataManager.shared.checkins
-        case .uncheck:
-            return DataManager.shared.unchecks
-        case .building:
-            return DataManager.shared.buildings
-        case .setting:
-            return DataManager.shared.originalStations
+        case .nearby            : return DataManager.shared.stations
+        case .checkin, .backup  : return DataManager.shared.checkins
+        case .uncheck           : return DataManager.shared.unchecks
+        case .building          : return DataManager.shared.buildings
+        case .setting           : return DataManager.shared.originalStations
         }
     }
 }
@@ -195,7 +167,6 @@ extension UIImage {
     func invertedColors() -> UIImage? {
         guard let ciImage = CIImage(image: self) ?? ciImage, let filter = CIFilter(name: "CIColorInvert") else { return nil }
         filter.setValue(ciImage, forKey: kCIInputImageKey)
-        
         guard let outputImage = filter.outputImage else { return nil }
         return UIImage(ciImage: outputImage)
     }
