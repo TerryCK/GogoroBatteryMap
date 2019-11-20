@@ -11,13 +11,9 @@ import FloatingPanel
 
 public class SearchPanelLandscapeLayout: FloatingPanelLayout {
     
-    public var initialPosition: FloatingPanelPosition {
-        return .tip
-    }
+    public var initialPosition: FloatingPanelPosition { .tip  }
     
-    public var supportedPositions: Set<FloatingPanelPosition> {
-        return [.full, .tip]
-    }
+    public var supportedPositions: Set<FloatingPanelPosition> { [.full, .tip] }
     
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         switch position {
@@ -45,7 +41,7 @@ public class SearchPanelLandscapeLayout: FloatingPanelLayout {
 
 final class MapFloatingLayout : FloatingPanelLayout {
     
-    var initialPosition: FloatingPanelPosition { return .half }
+    var initialPosition: FloatingPanelPosition { .half }
     
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         switch position {
