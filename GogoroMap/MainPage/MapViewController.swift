@@ -78,7 +78,6 @@ extension MapViewController: GADAdLoaderDelegate {
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-//        guard Environment.environment == .release else { return }
         self.nativeAd = nativeAd
         self.nativeAd?.delegate = self
     }
@@ -101,8 +100,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
     }
     
-    private var selectedIndex: Int {
-        (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0
+    private var selectedTabItem: TabItemCase {
+        TabItemCase(rawValue: (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
     
     lazy var fpc: FloatingPanelController = {
@@ -255,7 +254,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
-                self.clusterManager.add((TabItemCase(rawValue: self.selectedIndex) ?? .nearby).stationDataSource)
+                self.clusterManager.add(self.selectedTabItem.stationDataSource)
                 self.clusterManager.reload(mapView: self.mapView)
             }
         }
