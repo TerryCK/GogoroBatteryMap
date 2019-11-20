@@ -108,13 +108,12 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
 extension Array where Element: BatteryStationPointAnnotation {
      
     func keepOldUpdate(with other: Array) -> Array {
-        return other.map { (newElement) -> Element in
-            for localElement in self where localElement.isEqual(newElement) {
-                newElement.checkinCounter = localElement.checkinCounter
-                newElement.checkinDay     = localElement.checkinDay
-                return newElement
+        return other.map { (new) -> Element in
+            for local in self where local.isEqual(new) {
+                (new.checkinCounter, new.checkinDay ) = (local.checkinCounter, local.checkinDay)
+                return new
             }
-            return newElement
+            return new
         }
     }
 }
