@@ -64,42 +64,28 @@ final class TableViewController: UITableViewController, ViewTrackable {
 
     private let locationManager: LocationManager = .shared
     
-    let segmentStatus: SegmentStatus
-    
-    init(style: UITableView.Style, segmentStatus: SegmentStatus) {
-        self.segmentStatus = segmentStatus
-        super.init(style: style)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    let segmentStatus: SegmentStatus
+//
+//    init(style: UITableView.Style, segmentStatus: SegmentStatus) {
+//        self.segmentStatus = segmentStatus
+//        super.init(style: style)
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         setupAd(with: tableView)
-        setupObserve()
         tableView.contentInset = .init(top: 0, left: 0, bottom: 20, right: 0)
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
     }
-    
-    private func setupObserve() {
-//        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-//
-//            self.stations = self.segmentStatus
-//                .stationDataSource
-//                .sorted(userLocation: self.locationManager.userLocation, by: <)
-//        }
-    }
-    
-    deinit {
-        observation?.invalidate()
-    }
-    
+
     var stations = DataManager.shared.stations {
         didSet {
             searchResultData = stations.filter(text: searchText)
@@ -117,7 +103,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
         header.countLabel.text = "\(searchResultData.count) 站"
-        header.regionLabel.text = searchText.isEmpty ? segmentStatus.name : "過濾關鍵字：\(searchText)"
+        header.regionLabel.text = searchText.isEmpty ? "總共: " : "過濾關鍵字：\(searchText)"
         return header
     }
     

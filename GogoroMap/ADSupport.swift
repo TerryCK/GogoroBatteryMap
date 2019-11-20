@@ -72,3 +72,22 @@ extension ADSupportable where Self: UIViewController {
         }
     }
 }
+
+extension GADAdLoader {
+    static func new<T: GADAdLoaderDelegate & UIViewController & ADSupportable>(delegate vc: T) -> GADAdLoader? {
+        guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
+            return nil
+        }
+        let adLoader = GADAdLoader(adUnitID: vc.adUnitID,
+                                   rootViewController: vc,
+                                   adTypes: [ .unifiedNative ],
+                                   options: nil)
+        adLoader.delegate = vc
+        adLoader.load(GADRequest())
+        return adLoader
+    }
+    
+    func update() {
+        load(GADRequest())
+    }
+}
