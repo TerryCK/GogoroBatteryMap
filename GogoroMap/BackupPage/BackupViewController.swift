@@ -21,7 +21,7 @@ extension BackupViewController: ADSupportable {
 final class BackupViewController: UITableViewController, ViewTrackable {
     
     
-    var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
+    var bannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
     
     let adUnitID: String = Keys.standard.backupAdUnitID
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
