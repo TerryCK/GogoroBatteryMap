@@ -54,9 +54,7 @@ extension MapViewController: FloatingPanelControllerDelegate {
     
     func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
         bannerView.isHidden = targetPosition == .full
-        if targetPosition == .full {
-            setTracking(mode: .none)
-        }
+        if targetPosition == .full { setTracking(mode: .none) }
     }
     
     
@@ -80,9 +78,9 @@ extension MapViewController: GADAdLoaderDelegate {
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-        if Environment.environment == .release {
-            self.nativeAd = nativeAd
-        }
+        guard Environment.environment == .release else { return }
+        self.nativeAd = nativeAd
+        self.nativeAd?.delegate = self
     }
 }
 
@@ -91,11 +89,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-    var nativeAd: GADUnifiedNativeAd? {
-        didSet {
-            nativeAd?.delegate = self
-        }
-    }
+    var nativeAd: GADUnifiedNativeAd?
     
     lazy var adLoader: GADAdLoader? = GADAdLoader.new(delegate: self)
     
@@ -308,6 +302,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         sideMenuManager.menuBlurEffectStyle = nil
         sideMenuManager.menuPresentMode = .viewSlideInOut
     }
+    
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
         navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
@@ -347,7 +342,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     private func setupBottomBackgroundView() {
         let backgroundView = UIView {  $0.backgroundColor = .lightGreen }
         view.addSubview(backgroundView)
-        backgroundView.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topPadding: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 40)
+        backgroundView.anchor(left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, height: 40)
     }
     
     func mapViewMove(to annotation: MKAnnotation) {
