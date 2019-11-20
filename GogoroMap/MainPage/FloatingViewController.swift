@@ -53,7 +53,7 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, tintColorAt index: Int) -> UIColor {
-         tabItemProvider[index].tabItem.tintColor
+         .lightGreen
     }
     
     

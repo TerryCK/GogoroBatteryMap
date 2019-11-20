@@ -73,7 +73,7 @@ final class MenuController: UICollectionViewController, ViewTrackable {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: type(of: self)), for: indexPath) as! StationsViewCell
         
         cell.delegate = self
-        cell.analytics = StationAnalyticsModel(DataManager.shared.stations)
+        cell.analytics = StationAnalyticsModel(DataManager.shared.originalStations)
         cell.product = products.first
         cell.purchaseHandler = purchase
         cell.mapOptions.setTitle("導航：" + Navigator.option.description, for: .normal)
