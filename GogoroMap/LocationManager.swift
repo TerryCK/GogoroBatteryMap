@@ -8,8 +8,8 @@
 
 import CoreLocation
 
-final class LocationManager {
-    private init() {}
+final class LocationManager: NSObject, CLLocationManagerDelegate {
+    private override init() {}
     static let shared = LocationManager()
     
     private let manager: CLLocationManager = {
@@ -31,4 +31,10 @@ final class LocationManager {
     }
     
     var userLocation: CLLocation? { manager.location }
+    
+    static var locationUpdate: Bool = false
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        LocationManager.locationUpdate = userLocation == locations.first
+    }
 }

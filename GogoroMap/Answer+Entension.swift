@@ -12,7 +12,7 @@ import Crashlytics
 extension Answers {
     
     enum Name: String {
-        case MapButton, ManuButton, PurchaseEvent
+        case MapButton, ManuButton, PurchaseEvent, Tab
     }
 }
 

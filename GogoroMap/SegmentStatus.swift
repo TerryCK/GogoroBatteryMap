@@ -36,6 +36,13 @@ enum TabItemCase: Int, CaseIterable {
         }
     }
     
+    var hightlightImage: UIImage {
+        switch self {
+        case .nearby: return #imageLiteral(resourceName: "recent").invertedColors() ?? normalImage
+        default     : return normalImage
+        }
+        
+    }
     static let viewControllers = TabItemCase.allCases.map { $0.viewController }
     
     var hanlder: (BatteryStationPointAnnotation) -> Bool {
@@ -51,7 +58,8 @@ enum TabItemCase: Int, CaseIterable {
         switch self {
             
         case .building, .nearby , .uncheck, .checkin:
-            return TableViewController(style: .grouped)
+            let tableViewController = TableViewController(style: .grouped, tabItem: self)
+            return tableViewController
             
         case .setting   :
             let flowLyout: UICollectionViewFlowLayout = {
