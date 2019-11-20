@@ -78,7 +78,7 @@ extension MapViewController: GADAdLoaderDelegate {
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-        guard Environment.environment == .release else { return }
+//        guard Environment.environment == .release else { return }
         self.nativeAd = nativeAd
         self.nativeAd?.delegate = self
     }

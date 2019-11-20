@@ -49,7 +49,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var bannerView: GADBannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
+    var bannerView: GADBannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
     
     private var observation: NSKeyValueObservation?
 
