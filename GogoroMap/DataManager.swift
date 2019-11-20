@@ -31,7 +31,7 @@ final class DataManager: NSObject {
     @objc dynamic var lastUpdate: Date = Date()
     
     func save() {
-        guard let data = try? JSONEncoder().encode(stations) else { return }
+        guard let data = try? JSONEncoder().encode(originalStations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
   

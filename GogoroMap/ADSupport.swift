@@ -35,19 +35,17 @@ extension ADSupportable where Self: UIViewController {
     }
     
     func setupAd(with view: UIView) {
-//        guard Environment.environment == .release else { return }
         bannerView.isHidden = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else { return }
         Answers.log(view: "Ad View")
         view.addSubview(bannerView)
         var bottomAnchor = view.bottomAnchor
         if #available(iOS 11.0, *) { bottomAnchor = view.safeAreaLayoutGuide.bottomAnchor }
-        bannerView.anchor(left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor)
-        bannerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
+        bannerView.anchor(left: view.leftAnchor, bottom: bottomAnchor, right: view.rightAnchor, height: 50)
         bannerView.delegate = self
         bannerView.rootViewController = self
-        bannerView.adUnitID = adUnitID
-        loadBannerAd()
+        bannerView.adUnitID = adUnitID//"ca-app-pub-3940256099942544/2435281174"
+        bannerView.load(DFPRequest())
     }
     
     func bridgeAd(_ bannerView: GADBannerView) {
@@ -87,11 +85,10 @@ extension ADSupportable where Self: UIViewController {
         // Here the current interface orientation is used. If the ad is being preloaded
         // for a future orientation change or different orientation, the function for the
         // relevant orientation should be used.
-        bannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-        let request = GADRequest()
-        request.testDevices = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
+        
+        bannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width)
         // Step 4 - Create an ad request and load the adaptive banner ad.
-        bannerView.load(request)
+        bannerView.load(DFPRequest())
       }
 }
 
@@ -100,16 +97,16 @@ extension GADAdLoader {
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
             return nil
         }
-        let adLoader = GADAdLoader(adUnitID: vc.adUnitID,
+        let adLoader = GADAdLoader(adUnitID: vc.nativeAdID,
                                    rootViewController: vc,
                                    adTypes: [ .unifiedNative ],
                                    options: nil)
         adLoader.delegate = vc
-        adLoader.load(GADRequest())
+        adLoader.load(DFPRequest())
         return adLoader
     }
     
     func update() {
-        load(GADRequest())
+        load(DFPRequest())
     }
 }

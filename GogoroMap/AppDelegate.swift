@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
         window?.makeKeyAndVisible()
         setupIAPOberserver()
+        GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [kGADSimulatorID, Keys.standard.gadiPhone] as? [String]
         switch Environment.environment {
         case .release:
             FirebaseApp.configure()
