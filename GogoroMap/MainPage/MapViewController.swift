@@ -55,7 +55,7 @@ extension MapViewController: FloatingPanelControllerDelegate {
     func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
         bannerView.isHidden = targetPosition == .full
         if targetPosition == .full {
-          setTracking(mode: .none)
+            setTracking(mode: .none)
         }
     }
     
@@ -86,30 +86,18 @@ extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     }
 }
 
+
 final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeAdDelegate  {
     
     var bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: UIScreen.main.bounds.width, height: 50)))
     
-     var nativeAd: GADUnifiedNativeAd? {
+    var nativeAd: GADUnifiedNativeAd? {
         didSet {
             nativeAd?.delegate = self
         }
     }
     
-    private var adLoader: GADAdLoader?
-    
-    private func adLoaderBuild() -> GADAdLoader? {
-        guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
-            return nil
-        }
-        let adLoader = GADAdLoader(adUnitID: nativeAdID,
-                                   rootViewController: self,
-                                   adTypes: [ .unifiedNative ],
-                                   options: nil)
-        adLoader.delegate = self
-        adLoader.load(GADRequest())
-        return adLoader
-    }
+    lazy var adLoader: GADAdLoader? = GADAdLoader.new(delegate: self)
     
     private let locationManager: LocationManager = .shared
     
@@ -139,19 +127,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         return $0
     }(FloatingPanelController(delegate: nil))
     
-    func reloadMapView() {
-        DispatchQueue.main.async {
-            self.clusterManager.reload(mapView: self.mapView)
-        }
-    }
-
+    
     private lazy var clusterManager: ClusterManager = {
         $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
         $0.minCountForClustering = 3
         $0.add(DataManager.shared.stations)
         return $0
     }(ClusterManager())
-   
+    
     private lazy var mapView : MKMapView = {
         $0.delegate = self
         $0.mapType = .standard
@@ -185,17 +168,17 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = false }
-//        navigationController?.setNavigationBarHidden(true, animated: animated)
-        reloadMapView()
+        DispatchQueue.main.async {
+            self.clusterManager.reload(mapView: self.mapView)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        navigationController?.setNavigationBarHidden(false, animated: animated)
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
-
-
+    
+    
     func promptLocationAuthenticateError() {
         let alertController = UIAlertController(title: "定位權限已關閉",
                                                 message: "如要變更權限，請至 設定 > 隱私權 > 定位服務 開啟",
@@ -211,7 +194,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupObserve()
         setupObserver()
         performGuidePage()
-        adLoader = adLoaderBuild()
+        adLoader?.update()
         setupSideMenu()
         LocationManager.shared.authorize { (status) in
             if [.denied, .restricted].contains(status) {
@@ -257,7 +240,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         gestureRecognizerStatus = isLongPressGestureRecognizerActive ? .lock : .release
         guard isLongPressGestureRecognizerActive, let lastTouchPoint = lastTouchPoint else {
             clusterManager.reload(mapView: mapView)
-        Answers.log(event: .MapButton, customAttributes: "single hand zoom")
+            Answers.log(event: .MapButton, customAttributes: "single hand zoom")
             return
         }
         
@@ -293,39 +276,38 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     @objc func performMenu() {
-         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
-                    return
-                }
+        guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
+            return
+        }
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-        adLoader = adLoaderBuild()
+        adLoader?.update()
         fpc.present(sideManuController, animated: true)
     }
     
     private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
-    
-            let flowLyout: UICollectionViewFlowLayout = {
-                $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
-                $0.minimumLineSpacing = 0
-                $0.minimumInteritemSpacing = 0
-                return $0
-            }(UICollectionViewFlowLayout())
-    
-            let menuController = MenuController(collectionViewLayout: flowLyout)
-            menuController.delegate = self
-            sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
-            sideMenuManager.menuLeftNavigationController?.leftSide = true
-            sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
-            sideMenuManager.menuFadeStatusBar = true
-            sideMenuManager.menuShadowOpacity = 0.59
-            sideMenuManager.menuWidth = view.frame.width * displayFactor
-            sideMenuManager.menuAnimationTransformScaleFactor = 0.95
-            sideMenuManager.menuAnimationFadeStrength = 0.40
-            sideMenuManager.menuBlurEffectStyle = nil
-            sideMenuManager.menuPresentMode = .viewSlideInOut
-            
-        }
+        
+        let flowLyout: UICollectionViewFlowLayout = {
+            $0.itemSize = CGSize(width: view.frame.width * displayFactor - 20 , height: view.frame.height - 90)
+            $0.minimumLineSpacing = 0
+            $0.minimumInteritemSpacing = 0
+            return $0
+        }(UICollectionViewFlowLayout())
+        
+        let menuController = MenuController(collectionViewLayout: flowLyout)
+        menuController.delegate = self
+        sideMenuManager.menuLeftNavigationController = UISideMenuNavigationController(rootViewController: menuController)
+        sideMenuManager.menuLeftNavigationController?.leftSide = true
+        sideMenuManager.menuAnimationBackgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "background"))
+        sideMenuManager.menuFadeStatusBar = true
+        sideMenuManager.menuShadowOpacity = 0.59
+        sideMenuManager.menuWidth = view.frame.width * displayFactor
+        sideMenuManager.menuAnimationTransformScaleFactor = 0.95
+        sideMenuManager.menuAnimationFadeStrength = 0.40
+        sideMenuManager.menuBlurEffectStyle = nil
+        sideMenuManager.menuPresentMode = .viewSlideInOut
+    }
     private func setupNavigationTitle() {
         navigationItem.title = "Gogoro \("Battery Station".localize())"
         navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
@@ -355,9 +337,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = 38/2
             $0.tintColor = .white
-//            $0.backgroundColor = UIColor.orange.withAlphaComponent(0.9)
-//            $0.layer.borderWidth = 1
-//            $0.layer.borderColor = UIColor.white.cgColor
+            //            $0.backgroundColor = UIColor.orange.withAlphaComponent(0.9)
+            //            $0.layer.borderWidth = 1
+            //            $0.layer.borderColor = UIColor.white.cgColor
         }
         
     }
@@ -386,7 +368,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
 
 //MARK: - Present annotationView and Navigatorable
 extension MapViewController: MKMapViewDelegate {
-
+    
     @objc func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let clusterAnnotation = annotation as? ClusterAnnotation else {
             return originalMKAnnotationView(mapView, viewFor: annotation)
@@ -435,20 +417,20 @@ extension MapViewController: MKMapViewDelegate {
             return
         }
         
-       
-        adLoader = adLoaderBuild()
+        
+        adLoader?.update()
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc.move(to: .tip, animated: true) {
             DetailCalloutAccessoryViewModel(annotationView: view,
                                             controller: self).bind(mapView: mapView,
-                                                                       nativeAd: self.nativeAd)
+                                                                   nativeAd: self.nativeAd)
         }
         
         UIView.animate(withDuration: 0.35) {
             view.alpha = 1
         }
     }
-
+    
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         views.forEach { $0.alpha = 0 }
         

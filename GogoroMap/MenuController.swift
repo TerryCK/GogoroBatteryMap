@@ -12,9 +12,11 @@ import Crashlytics
 import GoogleMobileAds
 
 protocol ManuDelegate: AnyObject {
+    
     var clusterSwitcher: ClusterStatus { set get }
     var nativeAd: GADUnifiedNativeAd? { get }
 }
+
 
 
 final class MenuController: UICollectionViewController, ViewTrackable {
@@ -57,6 +59,7 @@ final class MenuController: UICollectionViewController, ViewTrackable {
         guard Environment.environment == .release, #available(iOS 10.3, *) else { return }
             SKStoreReviewController.requestReview()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)

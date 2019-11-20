@@ -158,11 +158,7 @@ enum TabItemCase: Int, CaseIterable {
         switch self {
             
         case .building, .nearby , .uncheck, .checkin:
-            let segment: SegmentStatus  = SegmentStatus.allCases.first { String(describing: $0) == String(describing: self) } ?? .nearby
-            let tabViewController = TableViewController(style: .grouped,
-                                                        segmentStatus: segment)
-            
-            return tabViewController
+            return TableViewController(style: .grouped)
             
         case .setting   :
             let flowLyout: UICollectionViewFlowLayout = {
