@@ -26,7 +26,6 @@ final class FloatingViewController: ColorMatchTabsViewController {
         colorMatchTabDataSource = self
         colorMatchTabDelegate = self
     }
-    
     private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
 
@@ -70,16 +69,6 @@ extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorM
         
         Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
         
-//
-//        guard let tableViewController = TabItemCase.viewControllers[index] as? TableViewController else  {
-//            return
-//        }
-//
-//        let stations = tabItemProvider[index].stationDataSource
-//
-//        if tableViewController.stations != stations || LocationManager.locationUpdate {
-//            tableViewController.stations = stations.sorted(userLocation: locationManager.userLocation, by: <)
-//        }
     }
 }
 
