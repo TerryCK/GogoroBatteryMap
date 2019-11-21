@@ -15,7 +15,13 @@ struct DetailCalloutAccessoryViewModel {
     let annotationView: MKAnnotationView
     let controller: MapViewController
 }
-
+extension Array where Element == TabItemCase {
+    func setNeedCalculator() {
+        for var element in self {
+            element.isNeedCalculate = true
+        }
+    }
+}
 extension DetailCalloutAccessoryViewModel {
     
     private func checkinCount(with calculate: (Int, Int) -> Int, nativeAd: GADUnifiedNativeAd?) {
@@ -27,21 +33,36 @@ extension DetailCalloutAccessoryViewModel {
         annotationView.image = batteryAnnotation.iconImage
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
         
-        DispatchQueue.global(qos: .userInteractive).async {
+        DispatchQueue.global(qos: .default).async {
             
             if counterOfcheckin <= 0, let index = DataManager.shared.checkins.firstIndex(of: batteryAnnotation) {
-                    DataManager.shared.checkins.remove(at: index)
+                DataManager.shared.checkins.remove(at: index)
+                if [.checkin,.uncheck].contains(self.controller.selectedTabItem) {
+                    [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
                 }
+            }
             
-            if counterOfcheckin > 0, DataManager.shared.checkins.firstIndex(of: batteryAnnotation)  == nil {
+            if counterOfcheckin > 0, DataManager.shared.checkins.firstIndex(of: batteryAnnotation) == nil {
                 DataManager.shared.checkins.append(batteryAnnotation)
+                if [.checkin,.uncheck].contains(self.controller.selectedTabItem) {
+                    [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
+                }
             }
             
             if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate.hashValue == batteryAnnotation.coordinate.hashValue}) {
-                DataManager.shared.operations[index] = batteryAnnotation
+                if DataManager.shared.operations[index].checkinDay != batteryAnnotation.checkinDay {
+                    DataManager.shared.operations[index] = batteryAnnotation
+                    print("find in operations:", batteryAnnotation)
+////                    DataManager.shared.lastUpdate = Date()
+//                    guard self.controller.selectedTabItem == .nearby else { return }
+//                    DispatchQueue.main.async {
+//                        (TabItemCase.nearby.tabContantController as? TableViewController)?.tableView.reloadData()
+//                    }
+                }
             }
+            
+            DataManager.shared.lastUpdate = Date()
         }
-        DataManager.shared.lastUpdate = Date()
     }
     
     func bind(mapView: MKMapView, nativeAd: GADUnifiedNativeAd?) {

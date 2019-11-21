@@ -36,16 +36,14 @@ enum TabItemCase: Int, CaseIterable {
         }
     }
     
-    var hightlightImage: UIImage {
-        switch self {
-        case .nearby: return #imageLiteral(resourceName: "recent").invertedColors() ?? normalImage
-        default     : return normalImage
-        }
+    static var needsCalculateStorage = Array(repeating: false, count: TabItemCase.allCases.count)
+    
+    var isNeedCalculate: Bool {
+        set {  Self.needsCalculateStorage[rawValue] = newValue  }
+        get {  Self.needsCalculateStorage[rawValue] }
     }
     
-    var tabContantController: UIViewController {
-        Self.viewControllers[rawValue]
-    }
+    var tabContantController: UIViewController { Self.viewControllers[rawValue] }
     
     static let viewControllers = TabItemCase.allCases.map { $0.viewController }
     

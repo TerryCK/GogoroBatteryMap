@@ -66,8 +66,11 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     init(style: UITableView.Style, tabItem: TabItemCase) {
         self.tabItem = tabItem
-        self.searchResultData = tabItem.stationDataSource
         super.init(style: style)
+        
+        DispatchQueue.global().async {
+            self.stations = tabItem.stationDataSource
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -86,11 +89,16 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     var stations: [BatteryStationPointAnnotation]  {
-        set { searchResultData = newValue.filter(text: searchText) }
-        get { tabItem.stationDataSource  }
+        set {
+            searchResultData = newValue
+                .lazy
+                .filter(text: searchText)
+                .sorted(userLocation: locationManager.userLocation, by: <) }
+        
+        get { tabItem.stationDataSource }
     }
     
-    private var searchResultData: [BatteryStationPointAnnotation] {
+    private var searchResultData: [BatteryStationPointAnnotation] = [] {
         didSet {
             DispatchQueue.main.async { [unowned self] in
                 self.tableView.reloadData()
@@ -106,9 +114,8 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResultData.count
+        searchResultData.count
     }
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell

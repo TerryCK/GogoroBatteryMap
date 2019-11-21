@@ -22,24 +22,24 @@ final class DataManager: NSObject {
         super.init()
         let storage = fetchData(from: .database).flatMap(dataBridge) ??
             (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
-        
+        processStation(storage)
+    }
+    
+    private func processStation(_ storage: [BatteryStationPointAnnotation]) {
         DispatchQueue.global(qos: .default).async {
             let buildings = storage.filter(TabItemCase.building.hanlder)
             let operating = Set(storage).subtracting(buildings)
             let checkins = operating.filter(TabItemCase.checkin.hanlder)
-            
             self.checkins = Array(checkins)
             self.buildings = buildings
             self.operations = Array(operating)
         }
-        originalStations = storage
     }
     
     static let shared = DataManager()
     
-    var originalStations: [BatteryStationPointAnnotation] = []
+    var originalStations: [BatteryStationPointAnnotation] { buildings + operations }
    
-    
     @objc dynamic var lastUpdate: Date = Date()
     
     func save() {
@@ -48,10 +48,7 @@ final class DataManager: NSObject {
     }
   
     var stations: [BatteryStationPointAnnotation] {
-        set {
-            buildings = newValue.filter(TabItemCase.building.hanlder)
-            originalStations = newValue
-        }
+        set { processStation(newValue) }
         get { operations }
     }
     
@@ -121,6 +118,6 @@ final class DataManager: NSObject {
 struct GoogleAppScript {
     
     let id: String
-    var url: URL { return URL(string: apiString)! }
+    var url: URL {  URL(string: apiString)! }
     var apiString : String { return "https://script.google.com/macros/s/\(id)/exec" }
 }
