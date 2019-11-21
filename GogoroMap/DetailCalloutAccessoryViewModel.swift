@@ -34,34 +34,30 @@ extension DetailCalloutAccessoryViewModel {
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
         
         DispatchQueue.global(qos: .default).async {
+            let tabItem = self.controller.selectedTabItem
             
             if counterOfcheckin <= 0, let index = DataManager.shared.checkins.firstIndex(of: batteryAnnotation) {
                 DataManager.shared.checkins.remove(at: index)
-                if [.checkin,.uncheck].contains(self.controller.selectedTabItem) {
+                if [.checkin,.uncheck].contains(tabItem) {
                     [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
+                    DataManager.shared.lastUpdate = Date()
                 }
-            }
-            
-            if counterOfcheckin > 0, DataManager.shared.checkins.firstIndex(of: batteryAnnotation) == nil {
+            } else if counterOfcheckin > 0, DataManager.shared.checkins.firstIndex(of: batteryAnnotation) == nil {
                 DataManager.shared.checkins.append(batteryAnnotation)
-                if [.checkin,.uncheck].contains(self.controller.selectedTabItem) {
+                if [.checkin,.uncheck].contains(tabItem) {
                     [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
+                    DataManager.shared.lastUpdate = Date()
                 }
             }
             
-            if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate.hashValue == batteryAnnotation.coordinate.hashValue}) {
-                if DataManager.shared.operations[index].checkinDay != batteryAnnotation.checkinDay {
-                    DataManager.shared.operations[index] = batteryAnnotation
-                    print("find in operations:", batteryAnnotation)
-////                    DataManager.shared.lastUpdate = Date()
-//                    guard self.controller.selectedTabItem == .nearby else { return }
-//                    DispatchQueue.main.async {
-//                        (TabItemCase.nearby.tabContantController as? TableViewController)?.tableView.reloadData()
-//                    }
+            if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate == batteryAnnotation.coordinate}) {
+                DataManager.shared.operations[index] = batteryAnnotation
+                if tabItem == .nearby {
+                    DispatchQueue.main.async {
+                        (tabItem.tabContantController as? TableViewController)?.tableView.reloadData()
+                    }
                 }
             }
-            
-            DataManager.shared.lastUpdate = Date()
         }
     }
     

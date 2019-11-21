@@ -91,7 +91,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
     var stations: [BatteryStationPointAnnotation]  {
         set {
             searchResultData = newValue
-                .lazy
                 .filter(text: searchText)
                 .sorted(userLocation: locationManager.userLocation, by: <) }
         
