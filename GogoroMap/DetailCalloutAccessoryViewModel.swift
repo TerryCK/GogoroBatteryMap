@@ -53,9 +53,7 @@ extension DetailCalloutAccessoryViewModel {
             if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate == batteryAnnotation.coordinate}) {
                 DataManager.shared.operations[index] = batteryAnnotation
                 if tabItem == .nearby {
-                    DispatchQueue.main.async {
-                        (tabItem.tabContantController as? TableViewController)?.tableView.reloadData()
-                    }
+                        (tabItem.tabContantController as? TableViewController)?.searchResultData = DataManager.shared.operations
                 }
             }
         }
