@@ -79,7 +79,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         setupAd(with: tableView)
-        tableView.contentInset = .init(top: 0, left: 0, bottom: 20, right: 0)
+        tableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
