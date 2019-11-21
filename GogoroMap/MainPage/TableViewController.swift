@@ -83,6 +83,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         setupAd(with: tableView)
         tableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
+        tableView.contentOffset = .init(x: 0, y: 56)
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
@@ -97,7 +98,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         get { tabItem.stationDataSource }
     }
     
-    private var searchResultData: [BatteryStationPointAnnotation] = [] {
+    var searchResultData: [BatteryStationPointAnnotation] = [] {
         didSet {
             DispatchQueue.main.async { [unowned self] in
                 self.tableView.reloadData()
