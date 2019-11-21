@@ -18,6 +18,7 @@ struct GoShareDataModel: Codable {
         }
     }
 }
+
 public final class GoSharePointAnnotation: MKPointAnnotation {
     
     init(title: String, subtitle: String, coordinate: CLLocationCoordinate2D) {

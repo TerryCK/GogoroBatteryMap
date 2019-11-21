@@ -250,14 +250,22 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private var observation: NSKeyValueObservation?
     
+    
+    
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
+            var selectedTabItem = self.selectedTabItem
+            let stations = selectedTabItem.stationDataSource
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
-                let stations = self.selectedTabItem.stationDataSource
-                (self.selectedTabItem.tabContantController as? TableViewController)?.stations = stations.lazy.sorted(userLocation: self.locationManager.userLocation, by: <)
                 self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
+            }
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                guard selectedTabItem.isNeedCalculate else { return }
+                selectedTabItem.isNeedCalculate = false
+               (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
             }
         }
     }
