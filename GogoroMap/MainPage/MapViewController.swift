@@ -200,11 +200,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         
         setupPurchase()
         Answers.log(view: "Map Page")
-        DispatchQueue.main.async {
-            self.fpc.addPanel(toParent: self, animated: true)
-            self.setupAd(with: self.navigationController?.view ?? self.view)
-        }
-        
+        fpc.addPanel(toParent: self, animated: true)
+        setupAd(with: navigationController?.view ?? view)
+        DataManager.shared.fetchStations()
     }
     
     private enum Status {
@@ -253,23 +251,21 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private var observation: NSKeyValueObservation?
     
-    
-    
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            DispatchQueue.global(qos: .userInitiated).async {
-                var selectedTabItem = self.selectedTabItem
-                let stations = selectedTabItem.stationDataSource
+            var selectedTabItem = self.selectedTabItem
+            let stations = selectedTabItem.stationDataSource
+            DispatchQueue.global().async {
                 if selectedTabItem.isNeedCalculate {
                     selectedTabItem.isNeedCalculate = false
                     (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
-                }   
+                }
             }
             DispatchQueue.main.async {
-                self.clusterManager.removeAll()
-                self.clusterManager.add(stations)
-                self.clusterManager.reload(mapView: self.mapView)
-            }
+                           self.clusterManager.removeAll()
+                           self.clusterManager.add(stations)
+                           self.clusterManager.reload(mapView: self.mapView)
+                       }
         }
     }
     
@@ -365,7 +361,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         mapView.setVisibleMapRect(pointRect, animated: false)
         fpc.move(to: .tip, animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-                if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude }) {
+                if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate == annotation.coordinate }) {
                     self.mapView.selectAnnotation(selectedAnnotation, animated: true)
                 }
             }
