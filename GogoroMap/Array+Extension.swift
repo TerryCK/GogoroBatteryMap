@@ -8,12 +8,10 @@
 
 import MapKit
 
-extension Array where Element: BatteryStationPointAnnotation {
+extension Collection where Element: BatteryStationPointAnnotation {
     
-    func filter(text searchText: String) -> Array {
-        guard !searchText.isEmpty else {
-            return self
-        }
+    func filter(text searchText: String) -> [Element] {
+        guard !searchText.isEmpty else { return Array(self)  }
         let keywords = searchText.replacingOccurrences(regex: "臺".regex, replacement: "台").regex
         return filter {
             $0.address.match(regex: keywords)
@@ -25,10 +23,8 @@ extension Array where Element: BatteryStationPointAnnotation {
         }
     }
     
-    func sorted(userLocation: CLLocation?, by order: (CLLocationDistance, CLLocationDistance) -> Bool) -> Array {
-        guard let userLocation = userLocation else { return self }
+    func sorted(userLocation: CLLocation?, by order: (CLLocationDistance, CLLocationDistance) -> Bool) -> [Element] {
+        guard let userLocation = userLocation else { return Array(self) }
         return sorted { order($0.distance(from: userLocation), $1.distance(from: userLocation)) }
     }
-    
-    
 }

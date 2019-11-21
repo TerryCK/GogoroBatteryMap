@@ -255,7 +255,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
                 let stations = self.selectedTabItem.stationDataSource
-                (self.selectedTabItem.tabContantController as? TableViewController)?.stations = stations.sorted(userLocation: self.locationManager.userLocation, by: <)
+                (self.selectedTabItem.tabContantController as? TableViewController)?.stations = stations.lazy.sorted(userLocation: self.locationManager.userLocation, by: <)
                 self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
             }

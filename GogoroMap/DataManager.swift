@@ -18,14 +18,26 @@ final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
     
-    private override init() { }
+    private override init() {
+        super.init()
+        let storage = fetchData(from: .database).flatMap(dataBridge) ??
+            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
+        
+        DispatchQueue.global(qos: .default).async {
+            let buildings = storage.filter(TabItemCase.building.hanlder)
+            let operating = Set(storage).subtracting(buildings)
+            let checkins = operating.filter(TabItemCase.checkin.hanlder)
+            
+            self.checkins = Array(checkins)
+            self.buildings = buildings
+            self.operations = Array(operating)
+        }
+        originalStations = storage
+    }
     
     static let shared = DataManager()
     
-    lazy var originalStations: [BatteryStationPointAnnotation] = {
-        return fetchData(from: .database).flatMap(dataBridge) ??
-            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
-    }()
+    var originalStations: [BatteryStationPointAnnotation] = []
    
     
     @objc dynamic var lastUpdate: Date = Date()
@@ -40,20 +52,16 @@ final class DataManager: NSObject {
             buildings = newValue.filter(TabItemCase.building.hanlder)
             originalStations = newValue
         }
-        get { originalStations.filter(TabItemCase.nearby.hanlder) }
+        get { operations }
     }
     
-    lazy var checkins: [BatteryStationPointAnnotation] = {
-        originalStations.filter(TabItemCase.checkin.hanlder)
-    }()
+    var operations: [BatteryStationPointAnnotation] = []
     
-    lazy var unchecks: [BatteryStationPointAnnotation] = {
-         originalStations.filter(TabItemCase.uncheck.hanlder)
-    }()
+    var checkins: [BatteryStationPointAnnotation] = []
     
-    lazy var buildings: [BatteryStationPointAnnotation] = {
-        originalStations.filter(TabItemCase.building.hanlder)
-    }()
+    var unchecks: [BatteryStationPointAnnotation] { Array(Set(operations).subtracting(checkins)) }
+    
+    var buildings: [BatteryStationPointAnnotation] = []
     
     func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
         fetchData { (result) in
@@ -83,7 +91,7 @@ final class DataManager: NSObject {
     enum API {
         
         case gogoro, goShare
-        var url: URL? { return URL(string: api) }
+        var url: URL? { URL(string: api) }
         
         var api: String {
             switch self {

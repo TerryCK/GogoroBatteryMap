@@ -31,11 +31,6 @@
                     <outlet property="delegate" destination="-1" id="3wi-HK-L1k"/>
                 </connections>
             </searchBar>
-            <userDefinedRuntimeAttributes>
-                <userDefinedRuntimeAttribute type="rect" keyPath="contentInset">
-                    <rect key="value" x="0.0" y="0.0" width="60" height="0.0"/>
-                </userDefinedRuntimeAttribute>
-            </userDefinedRuntimeAttributes>
             <connections>
                 <outlet property="dataSource" destination="-1" id="Tng-2m-Rnh"/>
                 <outlet property="delegate" destination="-1" id="9aC-8N-iBw"/>

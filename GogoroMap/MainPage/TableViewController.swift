@@ -92,8 +92,8 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private var searchResultData: [BatteryStationPointAnnotation] {
         didSet {
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
+            DispatchQueue.main.async { [unowned self] in
+                self.tableView.reloadData()
             }
         }
     }
