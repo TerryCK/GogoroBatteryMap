@@ -65,7 +65,7 @@ final class DataManager: NSObject {
             guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) else {
                 return
             }
-            let handler = completionHandler ?? DataManager.shared.stations.keepOldUpdate
+            let handler = completionHandler ?? DataManager.shared.originalStations.keepOldUpdate
             self.stations = handler(stations)
             self.lastUpdate = Date()
         }

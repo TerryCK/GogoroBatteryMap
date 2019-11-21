@@ -104,7 +104,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         TabItemCase(rawValue: (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
     
+    
     lazy var fpc: FloatingPanelController = {
+        
         $0.delegate = self
         $0.surfaceView.backgroundColor = .clear
         if #available(iOS 11, *) {
@@ -198,10 +200,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         
         setupPurchase()
         Answers.log(view: "Map Page")
+        DispatchQueue.main.async {
+            self.fpc.addPanel(toParent: self, animated: true)
+            self.setupAd(with: self.navigationController?.view ?? self.view)
+        }
         
-        DataManager.shared.fetchStations()
-        fpc.addPanel(toParent: self, animated: true)
-        setupAd(with: navigationController?.view ?? view)
     }
     
     private enum Status {
@@ -254,18 +257,18 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            var selectedTabItem = self.selectedTabItem
-            let stations = selectedTabItem.stationDataSource
+            DispatchQueue.global(qos: .userInitiated).async {
+                var selectedTabItem = self.selectedTabItem
+                let stations = selectedTabItem.stationDataSource
+                if selectedTabItem.isNeedCalculate {
+                    selectedTabItem.isNeedCalculate = false
+                    (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
+                }   
+            }
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
                 self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
-            }
-            
-            DispatchQueue.global(qos: .userInitiated).async {
-                guard selectedTabItem.isNeedCalculate else { return }
-                selectedTabItem.isNeedCalculate = false
-               (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
             }
         }
     }
