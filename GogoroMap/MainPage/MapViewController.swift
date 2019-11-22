@@ -173,15 +173,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
     
-    
-    func promptLocationAuthenticateError() {
-        let alertController = UIAlertController(title: "定位權限已關閉",
-                                                message: "如要變更權限，請至 設定 > 隱私權 > 定位服務 開啟",
-                                                preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "確認", style: .default))
-        present(alertController, animated: true, completion: nil)
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationTitle()
@@ -193,7 +185,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupSideMenu()
         LocationManager.shared.authorize { (status) in
             if [.denied, .restricted].contains(status) {
-                promptLocationAuthenticateError()
+                 present(UIAlertController.locationAlertController, animated: true, completion: nil)
             }
             setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
         }
@@ -256,11 +248,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
             var selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
             DispatchQueue.global().async {
+                var temp: [BatteryStationPointAnnotation] = stations
                 if selectedTabItem.isNeedCalculate {
                     selectedTabItem.isNeedCalculate = false
-                    (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
+                    temp = stations.sorted(userLocation: self.locationManager.userLocation, by: <)
                 }
+                (selectedTabItem.tabContantController as? TableViewController)?.stations = temp
             }
+            
             DispatchQueue.main.async {
                            self.clusterManager.removeAll()
                            self.clusterManager.add(stations)

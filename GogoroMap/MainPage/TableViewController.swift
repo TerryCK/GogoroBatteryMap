@@ -92,9 +92,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     var stations: [BatteryStationPointAnnotation]  {
         set {
             searchResultData = newValue
-                .filter(text: searchText)
-                .sorted(userLocation: locationManager.userLocation, by: <) }
-        
+                .filter(text: searchText) }
         get { tabItem.stationDataSource }
     }
     
