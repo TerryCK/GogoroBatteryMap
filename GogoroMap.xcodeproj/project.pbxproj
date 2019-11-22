@@ -38,13 +38,11 @@
 		A819F0721F45E43A00F472CA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D368731F3B435E0015F5F9 /* LaunchScreen.storyboard */; };
 		A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A81ADFF02026DC1B008A757D /* CloudKit.framework */; };
 		A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A833AC67223DE5F900016284 /* ClusterStatue.swift */; };
-		A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C8BAC31F3C1FF900E9E18C /* CustomAnnotation.swift */; };
 		A83ACBF622211DF3003907FD /* Decorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF522211DF3003907FD /* Decorator.swift */; };
 		A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83ACBF722212898003907FD /* BatteryStationPointAnnotation.swift */; };
 		A84209D71F4ECB1E00633FC7 /* TainanTW.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D61F4ECB1E00633FC7 /* TainanTW.gpx */; };
 		A84209D91F4ECB3700633FC7 /* Taipei.gpx in Resources */ = {isa = PBXBuildFile; fileRef = A84209D81F4ECB3700633FC7 /* Taipei.gpx */; };
 		A8422D431F947BC200AA28C2 /* SegmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422D421F947BC200AA28C2 /* SegmentStatus.swift */; };
-		A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84AC8001F46EB71004F5E3B /* GogoroMapTests.swift */; };
 		A84CA4FB223E55530048D451 /* StationAnalyticsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84CA4FA223E55530048D451 /* StationAnalyticsModel.swift */; };
 		A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85E9FBB201D7D530008665B /* String+Extension.swift */; };
 		A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8646FCB22461C7F00A96934 /* DataManager.swift */; };
@@ -717,7 +715,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A84AC8011F46EB71004F5E3B /* GogoroMapTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -740,7 +737,6 @@
 				7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */,
 				A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */,
 				7C0DBE7722EAF8CD002B76D5 /* CountClusterAnnotationView.swift in Sources */,
-				A833AC69223DF33D00016284 /* CustomAnnotation.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
 				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
 				7C1A02A3237E5DBD004CF48E /* FloatingViewController.swift in Sources */,

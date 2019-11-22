@@ -35,7 +35,7 @@ class GogoroMapTests: XCTestCase {
         let custom = [CustomPointAnnotation(title: "x", subtitle: "x", coordinate: coordinate, placemark: placemark, image: image, address: "x", isOpening: true)]
 
         let archiveData = NSKeyedArchiver.archivedData(withRootObject: custom)
-        let element = DataManager.shared.dataBridge(data: archiveData)?.first
+//        let element = DataManager.shared.dataBridge(data: archiveData)?.first
         XCTAssert(element?.title == "x")
         XCTAssert(element! is BatteryStationPointAnnotation)
       

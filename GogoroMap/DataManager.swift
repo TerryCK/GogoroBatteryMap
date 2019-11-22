@@ -20,8 +20,8 @@ final class DataManager: NSObject {
     
     private override init() {
         super.init()
-        let storage = fetchData(from: .database).flatMap(dataBridge) ??
-            (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
+        let storage = fetchData(from: .database).flatMap(decode)
+            ?? (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
         processStation(storage)
     }
     
@@ -71,9 +71,8 @@ final class DataManager: NSObject {
         }
     }
     
-    private func dataBridge(data: Data) -> [BatteryStationPointAnnotation]? {
-        return (try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data))
-            ?? (NSKeyedUnarchiver.unarchiveObject(with: data) as? [CustomPointAnnotation])?.map(BatteryStationPointAnnotation.init)
+    private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
+        try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
     }
     
     private func fetchData(from apporach: Approach) -> Data? {
