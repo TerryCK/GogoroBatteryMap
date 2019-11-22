@@ -24,7 +24,12 @@ extension BatteryDataModalProtocol {
         return #imageLiteral(resourceName: "pinFull")
     }
     func distance(from userPosition: CLLocation) -> CLLocationDistance {
-        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
+        CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
+    }
+    
+    func distance() -> CLLocationDistance? {
+        guard let userLocal = LocationManager.shared.userLocation else { return nil }
+        return distance(from: userLocal)
     }
 }
 
@@ -40,4 +45,5 @@ protocol BatteryDataModalProtocol {
     var iconImage: UIImage { get }
     var isOperating: Bool { get }
     func distance(from userPosition: CLLocation) -> Double
+    func distance() -> CLLocationDistance?
 }

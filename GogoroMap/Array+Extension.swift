@@ -23,8 +23,9 @@ extension Collection where Element: BatteryStationPointAnnotation {
         }
     }
     
-    func sorted(userLocation: CLLocation?, by order: (CLLocationDistance, CLLocationDistance) -> Bool) -> [Element] {
-        guard let userLocation = userLocation else { return Array(self) }
+    func sorted(by order: (CLLocationDistance, CLLocationDistance) -> Bool) -> [Element] {
+        guard let userLocation = LocationManager.shared.userLocation else { return Array(self) }
         return sorted { order($0.distance(from: userLocation), $1.distance(from: userLocation)) }
     }
 }
+

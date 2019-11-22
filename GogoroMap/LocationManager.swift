@@ -31,10 +31,4 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     var userLocation: CLLocation? { manager.location }
-    
-    static var locationUpdate: Bool = false
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        LocationManager.locationUpdate = userLocation == locations.first
-    }
 }

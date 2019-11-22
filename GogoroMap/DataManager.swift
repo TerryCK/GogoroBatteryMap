@@ -28,11 +28,12 @@ final class DataManager: NSObject {
     private func processStation(_ storage: [BatteryStationPointAnnotation]) {
         DispatchQueue.global(qos: .default).async {
             let buildings = storage.filter(TabItemCase.building.hanlder)
-            let operating = Set(storage).subtracting(buildings)
+            let operating = Set(storage).subtracting(buildings).sorted(by: <)
             let checkins = operating.filter(TabItemCase.checkin.hanlder)
-            self.checkins = Array(checkins)
-            self.buildings = buildings
-            self.operations = Array(operating)
+            self.checkins = checkins
+            self.buildings = buildings.sorted(by: <)
+            self.operations = operating
+            self.unchecks = Set(operating).subtracting(checkins).sorted(by: <)
         }
     }
     
@@ -56,7 +57,7 @@ final class DataManager: NSObject {
     
     var checkins: [BatteryStationPointAnnotation] = []
     
-    var unchecks: [BatteryStationPointAnnotation] { Array(Set(operations).subtracting(checkins)) }
+    var unchecks: [BatteryStationPointAnnotation] = []
     
     var buildings: [BatteryStationPointAnnotation] = []
     

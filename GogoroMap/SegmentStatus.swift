@@ -36,7 +36,7 @@ enum TabItemCase: Int, CaseIterable {
         }
     }
     
-    static var needsCalculateStorage = Array(repeating: false, count: TabItemCase.allCases.count)
+    static var needsCalculateStorage = Array(repeating: true, count: TabItemCase.allCases.count)
     
     var isNeedCalculate: Bool {
         set {  Self.needsCalculateStorage[rawValue] = newValue  }
@@ -60,8 +60,8 @@ enum TabItemCase: Int, CaseIterable {
         switch self {
             
         case .building, .nearby , .uncheck, .checkin:
-            let tableViewController = TableViewController(style: .grouped, tabItem: self)
-            return tableViewController
+            return TableViewController(style: .grouped, tabItem: self)
+           
             
         case .setting   :
             let flowLyout: UICollectionViewFlowLayout = {
@@ -76,12 +76,24 @@ enum TabItemCase: Int, CaseIterable {
     }
     
     var stationDataSource: [BatteryStationPointAnnotation] {
-        switch self {
-        case .nearby, .setting  : return DataManager.shared.operations
-        case .checkin, .backup  : return DataManager.shared.checkins
-        case .uncheck           : return DataManager.shared.unchecks
-        case .building          : return DataManager.shared.buildings
+        set {
+            switch self {
+            case .nearby   :  DataManager.shared.operations = newValue
+            case .checkin  :  DataManager.shared.checkins = newValue
+            case .building :  DataManager.shared.buildings = newValue
+            default: break
+            }
         }
+        get {
+            switch self {
+            case .nearby   : return DataManager.shared.operations
+            case .checkin  : return DataManager.shared.checkins
+            case .uncheck  : return DataManager.shared.unchecks
+            case .building : return DataManager.shared.buildings
+            default        : return DataManager.shared.operations
+            }
+        }
+        
     }
 }
 
