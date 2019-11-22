@@ -247,20 +247,18 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
             var selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
-            DispatchQueue.global().async {
-                var temp: [BatteryStationPointAnnotation] = stations
-                if selectedTabItem.isNeedCalculate {
-                    selectedTabItem.isNeedCalculate = false
-                    temp = stations.sorted(userLocation: self.locationManager.userLocation, by: <)
-                }
-                (selectedTabItem.tabContantController as? TableViewController)?.stations = temp
-            }
             
             DispatchQueue.main.async {
-                           self.clusterManager.removeAll()
-                           self.clusterManager.add(stations)
-                           self.clusterManager.reload(mapView: self.mapView)
-                       }
+                self.clusterManager.removeAll()
+                self.clusterManager.add(stations)
+                self.clusterManager.reload(mapView: self.mapView)
+            }
+            
+//            guard  selectedTabItem.isNeedCalculate else { return }
+            DispatchQueue.global().async {
+//                selectedTabItem.isNeedCalculate = false
+                (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
+            }
         }
     }
     

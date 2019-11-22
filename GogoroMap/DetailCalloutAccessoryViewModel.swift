@@ -34,27 +34,54 @@ extension DetailCalloutAccessoryViewModel {
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
         
         DispatchQueue.global(qos: .default).async {
-            let tabItem = self.controller.selectedTabItem
+            var tabItem = self.controller.selectedTabItem
+            var opposition: TabItemCase = tabItem == .checkin ? .uncheck : .checkin
             
-            if counterOfcheckin <= 0, let index = DataManager.shared.checkins.firstIndex(of: batteryAnnotation) {
-                DataManager.shared.checkins.remove(at: index)
-                if [.checkin,.uncheck].contains(tabItem) {
-                    [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
-                    DataManager.shared.lastUpdate = Date()
-                }
-            } else if counterOfcheckin > 0, DataManager.shared.checkins.firstIndex(of: batteryAnnotation) == nil {
-                DataManager.shared.checkins.append(batteryAnnotation)
-                if [.checkin,.uncheck].contains(tabItem) {
-                    [TabItemCase.nearby, .checkin, .uncheck].setNeedCalculator()
-                    DataManager.shared.lastUpdate = Date()
-                }
+            let willAddToList: Bool = {
+                (tabItem == .checkin && counterOfcheckin <= 0)
+             || (tabItem == .uncheck && counterOfcheckin > 0)
+            }()
+            
+            if willAddToList {
+                self.update(.add, to: &tabItem, batteryAnnotation: batteryAnnotation)
+                self.update(.remove, to: &opposition, batteryAnnotation: batteryAnnotation)
+            } else {
+                self.update(.add, to: &opposition, batteryAnnotation: batteryAnnotation)
+                self.update(.remove, to: &tabItem, batteryAnnotation: batteryAnnotation)
+            }
+            
+            if willAddToList, let index = tabItem.stationDataSource.firstIndex(of: batteryAnnotation) {
+                tabItem.stationDataSource.remove(at: index)
+            } else if let index = tabItem.stationDataSource.firstIndex(where: { $0.distance() > batteryAnnotation.distance()  } ) {
+                tabItem.stationDataSource.insert(batteryAnnotation, at: index)
+            } else {
+                tabItem.stationDataSource.append(batteryAnnotation)
             }
             
             if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate == batteryAnnotation.coordinate}) {
                 DataManager.shared.operations[index] = batteryAnnotation
-                if tabItem == .nearby {
-                        (tabItem.tabContantController as? TableViewController)?.searchResultData = DataManager.shared.operations
-                }
+            }
+            
+            DataManager.shared.lastUpdate = Date()
+        }
+    }
+    
+    enum Strategy {
+        case add, remove
+    }
+    
+    func update(_ operation: Strategy, to tabItem: inout TabItemCase, batteryAnnotation: BatteryStationPointAnnotation) {
+        switch operation {
+        case .add:
+            guard tabItem.stationDataSource.firstIndex(of: batteryAnnotation) == nil else { return }
+            if let index = tabItem.stationDataSource.firstIndex(where: { $0.distance() > batteryAnnotation.distance()  } ) {
+                tabItem.stationDataSource.insert(batteryAnnotation, at: index)
+            } else {
+                tabItem.stationDataSource.append(batteryAnnotation)
+            }
+        case .remove:
+            if let index = tabItem.stationDataSource.firstIndex(of: batteryAnnotation) {
+                tabItem.stationDataSource.remove(at: index)
             }
         }
     }
