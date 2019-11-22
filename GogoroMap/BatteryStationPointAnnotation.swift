@@ -9,21 +9,6 @@
 import UIKit
 import MapKit
 
-extension BatteryStationPointAnnotation {
-    
-    convenience init(_ customPointAnnotation: CustomPointAnnotation) {
-        self.init(title         : customPointAnnotation.title,
-                  subtitle      : customPointAnnotation.subtitle,
-                  coordinate    : customPointAnnotation.coordinate,
-                  address       : customPointAnnotation.address,
-                  state         : customPointAnnotation.isOpening ? 1 : 0,
-                  checkinCounter: customPointAnnotation.checkinCounter,
-                  checkinDay    : customPointAnnotation.dateBrige)
-    } 
-}
-
-
-
 extension CLLocationCoordinate2D: Codable {
     
     enum CodingKeys: String, CodingKey {

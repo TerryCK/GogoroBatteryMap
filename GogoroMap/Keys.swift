@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Keys {
+final class Keys {
    
     let adUnitID: String
     let applicationID: String

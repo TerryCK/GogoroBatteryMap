@@ -112,8 +112,6 @@ final class CustomPointAnnotation: MKPointAnnotation, NSCoding {
         aCoder.encode(subtitle, forKey: CustomPointAnnotation.subtitleKey)
     }
     
-    var toCLLocation: CLLocation {
-        return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-    }
+    var toCLLocation: CLLocation {  CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude) }
     
 }
