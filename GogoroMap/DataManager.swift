@@ -24,15 +24,20 @@ final class DataManager: NSObject {
             ?? (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
         processStation(storage)
     }
-    
-    private func processStation(_ storage: [BatteryStationPointAnnotation]) {
+    enum ProcessStrategy {
+        case all, allExceptBuilding
+    }
+    private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
+        
         DispatchQueue.global(qos: .default).async {
-            let buildings = storage.filter(TabItemCase.building.hanlder)
-            self.operations = Set(storage).subtracting(buildings).sorted(by: <)
+            self.operations =     stations.filter(TabItemCase.nearby.hanlder).sorted(by: <)
             let checkins = self.operations.filter(TabItemCase.checkin.hanlder)
             self.checkins = checkins
-            self.buildings = buildings.sorted(by: <)
             self.unchecks = Set(self.operations).subtracting(checkins).sorted(by: <)
+            
+            if strategy == .all {
+                self.buildings = stations.filter(TabItemCase.building.hanlder).sorted(by: <)
+            }
             self.lastUpdate = Date()
         }
     }
@@ -40,12 +45,19 @@ final class DataManager: NSObject {
     static let shared = DataManager()
     
     var originalStations: [BatteryStationPointAnnotation] { buildings + operations }
-   
+    
+    private var remoteStorage: [BatteryStationPointAnnotation] = []
+    
     @objc dynamic var lastUpdate: Date = Date()
     
     func save() {
         guard let data = try? JSONEncoder().encode(originalStations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
+    }
+    
+    func recoveryStations(from records: [BatteryStationRecord]) {
+        let result = remoteStorage.merge(from: records)
+        processStation(result, strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []
@@ -57,13 +69,14 @@ final class DataManager: NSObject {
     var buildings: [BatteryStationPointAnnotation] = []
     
     
-    func fetchStations(transform: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil, onCompletion: (() -> Void)? = nil) {
+    func fetchStations(onCompletion: (() -> Void)? = nil) {
         fetchData { (result) in
             guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) else {
                 return
             }
-            let handler = transform ?? DataManager.shared.originalStations.keepOldUpdate
-            self.processStation(handler(stations))
+            self.remoteStorage = stations
+            let result = DataManager.shared.originalStations.keepOldUpdate(with: stations)
+            self.processStation(result)
             onCompletion?()
         }
     }

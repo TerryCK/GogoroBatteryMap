@@ -364,6 +364,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         let width = factor * height
         let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
+        bannerView.isHidden = false
         fpc.move(to: .tip, animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
                 if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate == annotation.coordinate }) {
@@ -471,6 +472,7 @@ extension MapViewController: MKMapViewDelegate {
     
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButton, customAttributes: #function)
+        bannerView.isHidden = false
         fpc.move(to: .tip, animated: true) {
             self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
         }
