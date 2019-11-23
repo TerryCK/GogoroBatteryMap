@@ -32,8 +32,7 @@ extension DetailCalloutAccessoryViewModel {
         batteryAnnotation.checkinCounter = counterOfcheckin
         annotationView.image = batteryAnnotation.iconImage
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
-        
-        DispatchQueue.global(qos: .default).async {
+        DispatchQueue(label: "com.GogoroMap.StationListQueue").async {
             DataManager.shared.unchecks.update(counterOfcheckin <= 0 ? .sync : .remove, batteryAnnotation)
             DataManager.shared.checkins.update(counterOfcheckin <= 0 ? .remove : .sync, batteryAnnotation)
             DataManager.shared.operations.update(.sync, batteryAnnotation)

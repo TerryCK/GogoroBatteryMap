@@ -101,26 +101,42 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     var selectedTabItem: TabItemCase {
-        TabItemCase(rawValue: (fpc.contentViewController as? FloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
+        TabItemCase(rawValue: (fpc.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        let fpc = Self.setupFloatingPanelController()
+        self.fpc = fpc
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        fpc.delegate = self
     }
     
     
-    lazy var fpc: FloatingPanelController = {
-        
-        $0.delegate = self
-        $0.surfaceView.backgroundColor = .clear
+    required init?(coder: NSCoder) {
+        let fpc = Self.setupFloatingPanelController()
+        self.fpc = fpc
+        super.init(coder: coder)
+        fpc.delegate = self
+    }
+    
+    static func setupFloatingPanelController() -> FloatingPanelController {
+        let fcp = FloatingPanelController(delegate: nil)
+        fcp.surfaceView.backgroundColor = .clear
         if #available(iOS 11, *) {
-            $0.surfaceView.cornerRadius = 9.0
+            fcp.surfaceView.cornerRadius = 9.0
         } else {
-            $0.surfaceView.cornerRadius = 0.0
+            fcp.surfaceView.cornerRadius = 0.0
         }
-        $0.surfaceView.shadowHidden = false
-        $0.surfaceView.grabberTopPadding = 1
-        let floatingVC = FloatingViewController()
-        $0.set(contentViewController: floatingVC)
-        floatingVC.flatingPanelController = $0
-        return $0
-    }(FloatingPanelController(delegate: nil))
+        fcp.surfaceView.shadowHidden = false
+        fcp.surfaceView.grabberTopPadding = 1
+        let floatingVC = ColorMatchTabsFloatingViewController()
+        fcp.set(contentViewController: floatingVC)
+        floatingVC.flatingPanelController = fcp
+        return fcp
+    }
+    
+    let fpc: FloatingPanelController
+    
     
     
     private lazy var clusterManager: ClusterManager = {
@@ -244,7 +260,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     private var observation: NSKeyValueObservation?
     
     private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .old]) { [unowned self] (_, _) in
             let selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
             DispatchQueue.main.async {
