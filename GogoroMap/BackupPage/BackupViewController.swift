@@ -197,16 +197,10 @@ extension BackupViewController {
             let alertController =  UIAlertController(title: "要使用此資料？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "覆蓋", style: .destructive, handler : { _ in
-                    self.navigationItem.title = "資料覆蓋中..."
                     guard let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else {
                         return
                     }
-                    
-                    DataManager.shared.fetchStations(transform: { $0.merge(from: stationRecords) }) {
-                        DispatchQueue.main.async {
-                            self.navigationItem.title = "備份與還原"
-                        }
-                    }
+                    DataManager.shared.recoveryStations(from: stationRecords)
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
@@ -280,12 +274,12 @@ extension BackupViewController {
 
 extension Array where Element: BatteryStationPointAnnotation {
     func merge(from records: [BatteryStationRecord]) -> Array {
-        let copy = self
+        guard !records.isEmpty else { return self }
         for record in records {
-            for station in copy where record.id.hashValue == station.coordinate.hashValue {
+            for station in self where record.id == station.coordinate {
                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
             }
         }
-        return copy
+        return self
     }
 }
