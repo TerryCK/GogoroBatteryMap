@@ -126,7 +126,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     private lazy var clusterManager: ClusterManager = {
         $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
         $0.minCountForClustering = 3
-        $0.add(DataManager.shared.stations)
+        $0.add(DataManager.shared.operations)
         return $0
     }(ClusterManager())
     
@@ -194,7 +194,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         Answers.log(view: "Map Page")
         fpc.addPanel(toParent: self, animated: true)
         setupAd(with: navigationController?.view ?? view)
-        DataManager.shared.fetchStations()
+//        DataManager.shared.fetchStations()
     }
     
     private enum Status {
@@ -245,18 +245,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private func setupObserve() {
         observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            var selectedTabItem = self.selectedTabItem
+            let selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
-            
             DispatchQueue.main.async {
                 self.clusterManager.removeAll()
                 self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
             }
-            
-//            guard  selectedTabItem.isNeedCalculate else { return }
             DispatchQueue.global().async {
-//                selectedTabItem.isNeedCalculate = false
                 (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
             }
         }

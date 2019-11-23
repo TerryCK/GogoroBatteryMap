@@ -157,7 +157,8 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            guard  let data = try? JSONEncoder().encode(DataManager.shared.stations.compactMap(BatteryStationRecord.init)) else { return }
+            let record = DataManager.shared.operations.compactMap(BatteryStationRecord.init)
+            guard  let data = try? JSONEncoder().encode(record) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
                 cell?.isUserInteractionEnabled = true
                 cell?.titleLabel.text = "立即備份"

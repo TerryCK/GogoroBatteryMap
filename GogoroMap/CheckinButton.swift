@@ -10,7 +10,7 @@ import UIKit
 
 final class CheckinButton: UnCheckInButton {
     
-    override var mainColor: UIColor {  return .grassGreen }
+    override var mainColor: UIColor { .grassGreen }
     
     override var isEnabled: Bool {
         didSet {
