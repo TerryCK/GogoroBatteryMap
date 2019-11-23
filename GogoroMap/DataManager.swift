@@ -56,14 +56,15 @@ final class DataManager: NSObject {
     
     var buildings: [BatteryStationPointAnnotation] = []
     
-    func fetchStations(completionHandler: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil) {
+    
+    func fetchStations(transform: (([BatteryStationPointAnnotation]) -> [BatteryStationPointAnnotation])? = nil, onCompletion: (() -> Void)? = nil) {
         fetchData { (result) in
             guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) else {
                 return
             }
-            let handler = completionHandler ?? DataManager.shared.originalStations.keepOldUpdate
+            let handler = transform ?? DataManager.shared.originalStations.keepOldUpdate
             self.processStation(handler(stations))
-            self.lastUpdate = Date()
+            onCompletion?()
         }
     }
     

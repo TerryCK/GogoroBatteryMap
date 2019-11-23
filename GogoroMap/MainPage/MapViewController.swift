@@ -210,7 +210,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         Answers.log(view: "Map Page")
         fpc.addPanel(toParent: self, animated: true)
         setupAd(with: navigationController?.view ?? view)
-//        DataManager.shared.fetchStations()
+        DataManager.shared.fetchStations()
     }
     
     private enum Status {
