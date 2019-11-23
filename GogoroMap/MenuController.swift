@@ -31,25 +31,11 @@ final class MenuController: UICollectionViewController, ViewTrackable {
         super.viewDidLoad()
         setupNaviagtionAndCollectionView()
         setupPurchaseItem()
-        setupObserve()
     }
     
     
     deinit {
         NotificationCenter.default.removeObserver(self)
-        observation?.invalidate()
-    }
-    
-    private var observation: NSKeyValueObservation?
-    
-    private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .initial, .old]) { [unowned self] (_, _) in
-            DispatchQueue.main.async {
-                self.navigationItem.title = "Information".localize()
-                self.collectionView?.reloadData()
-                self.refreshButton?.isUserInteractionEnabled = true
-            }
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,8 +47,9 @@ final class MenuController: UICollectionViewController, ViewTrackable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
-//        collectionView?.reloadData()
-        
+        if self.refreshButton?.isUserInteractionEnabled == .some(false) {
+            self.refreshButton?.rotate360Degrees()
+        }
     }
 
     // MARK: - CollectionView logics
@@ -196,7 +183,14 @@ extension MenuController {
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         refreshButton?.isUserInteractionEnabled = false
-        DataManager.shared.fetchStations()
+        
+        DataManager.shared.fetchStations {
+            DispatchQueue.main.async {
+                self.navigationItem.title = "Information".localize()
+                self.collectionView?.reloadData()
+            }
+            self.refreshButton?.isUserInteractionEnabled = true
+        }
     }
     
     private func log(_ event: String) {

@@ -202,19 +202,10 @@ extension BackupViewController {
                         return
                     }
                     
-                    DataManager.shared.fetchStations { stations in
+                    DataManager.shared.fetchStations(transform: { $0.merge(from: stationRecords) }) {
                         DispatchQueue.main.async {
                             self.navigationItem.title = "備份與還原"
                         }
-                        
-                        for record in stationRecords {
-                            for station in stations where record.id.hashValue == station.coordinate.hashValue {
-                                (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
-                            }
-                        }
-                        
-                       
-                        return stations
                     }
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
@@ -284,5 +275,17 @@ extension BackupViewController {
     
     @objc private func checkTheCloudAccountStatus() {
         CKContainer.default().accountStatus { (status, _) in self.cloudAccountStatus = status }
+    }
+}
+
+extension Array where Element: BatteryStationPointAnnotation {
+    func merge(from records: [BatteryStationRecord]) -> Array {
+        let copy = self
+        for record in records {
+            for station in copy where record.id.hashValue == station.coordinate.hashValue {
+                (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
+            }
+        }
+        return copy
     }
 }
