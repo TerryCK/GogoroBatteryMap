@@ -54,6 +54,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private var searchText = "" {
         didSet {
+            guard !searchText.isEmpty else { return }
             DispatchQueue.global().async {
                 self.searchResultData = self.stations.filter(text: self.searchText)
             }
@@ -67,7 +68,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
     init(style: UITableView.Style, tabItem: TabItemCase) {
         self.tabItem = tabItem
         super.init(style: style)
-        
         DispatchQueue.global().async {
             self.stations = tabItem.stationDataSource
         }
@@ -91,8 +91,12 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     var stations: [BatteryStationPointAnnotation]  {
         set {
-            searchResultData = newValue
-                .filter(text: searchText) }
+            if searchText.isEmpty {
+                searchResultData = newValue
+            } else {
+                searchResultData = newValue.filter(text: searchText)
+            }
+        }
         get { tabItem.stationDataSource }
     }
     

@@ -18,14 +18,13 @@ final class ColorMatchTabsFloatingViewController: ColorMatchTabsViewController {
         }
     }
     
-    private let locationManager: LocationManager = .shared
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
         colorMatchTabDataSource = self
         colorMatchTabDelegate = self
     }
+    
     private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
 
