@@ -28,12 +28,12 @@ final class DataManager: NSObject {
     private func processStation(_ storage: [BatteryStationPointAnnotation]) {
         DispatchQueue.global(qos: .default).async {
             let buildings = storage.filter(TabItemCase.building.hanlder)
-            let operating = Set(storage).subtracting(buildings).sorted(by: <)
-            let checkins = operating.filter(TabItemCase.checkin.hanlder)
+            self.operations = Set(storage).subtracting(buildings).sorted(by: <)
+            let checkins = self.operations.filter(TabItemCase.checkin.hanlder)
             self.checkins = checkins
             self.buildings = buildings.sorted(by: <)
-            self.operations = operating
-            self.unchecks = Set(operating).subtracting(checkins).sorted(by: <)
+            self.unchecks = Set(self.operations).subtracting(checkins).sorted(by: <)
+            self.lastUpdate = Date()
         }
     }
     
@@ -46,11 +46,6 @@ final class DataManager: NSObject {
     func save() {
         guard let data = try? JSONEncoder().encode(originalStations) else { return }
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
-    }
-  
-    var stations: [BatteryStationPointAnnotation] {
-        set { processStation(newValue) }
-        get { operations }
     }
     
     var operations: [BatteryStationPointAnnotation] = []
@@ -67,7 +62,7 @@ final class DataManager: NSObject {
                 return
             }
             let handler = completionHandler ?? DataManager.shared.originalStations.keepOldUpdate
-            self.stations = handler(stations)
+            self.processStation(handler(stations))
             self.lastUpdate = Date()
         }
     }

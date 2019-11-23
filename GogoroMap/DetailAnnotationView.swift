@@ -39,19 +39,17 @@ final class DetailAnnotationView: UIView {
     var uncheckinAction:  (() -> Void)?
     
     let checkinButton: UIButton = {
-        let button = CheckinButton(type: .system)
-        button.tag = ButtonAction.checkin.rawValue
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        return button
-    }()
+        $0.tag = ButtonAction.checkin.rawValue
+        $0.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        return $0
+    }(CheckinButton(type: .system))
     
     let unCheckinButton: UIButton = {
-        let button = UnCheckInButton(type: .system)
-        button.isHidden = true
-        button.tag = ButtonAction.uncheckin.rawValue
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        return button
-    }()
+        $0.isHidden = true
+        $0.tag = ButtonAction.uncheckin.rawValue
+        $0.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        return $0
+    }(UnCheckInButton(type: .system))
     
     lazy var buttonStackView: UIStackView = {
         let stackView: UIStackView = UIStackView(arrangedSubviews: [checkinButton, unCheckinButton])

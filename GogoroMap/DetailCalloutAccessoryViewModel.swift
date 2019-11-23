@@ -34,55 +34,10 @@ extension DetailCalloutAccessoryViewModel {
         _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
         
         DispatchQueue.global(qos: .default).async {
-            var tabItem = self.controller.selectedTabItem
-            var opposition: TabItemCase = tabItem == .checkin ? .uncheck : .checkin
-            
-            let willAddToList: Bool = {
-                (tabItem == .checkin && counterOfcheckin <= 0)
-             || (tabItem == .uncheck && counterOfcheckin > 0)
-            }()
-            
-            if willAddToList {
-                self.update(.add, to: &tabItem, batteryAnnotation: batteryAnnotation)
-                self.update(.remove, to: &opposition, batteryAnnotation: batteryAnnotation)
-            } else {
-                self.update(.add, to: &opposition, batteryAnnotation: batteryAnnotation)
-                self.update(.remove, to: &tabItem, batteryAnnotation: batteryAnnotation)
-            }
-            
-            if willAddToList, let index = tabItem.stationDataSource.firstIndex(of: batteryAnnotation) {
-                tabItem.stationDataSource.remove(at: index)
-            } else if let index = tabItem.stationDataSource.firstIndex(where: { $0.distance() > batteryAnnotation.distance()  } ) {
-                tabItem.stationDataSource.insert(batteryAnnotation, at: index)
-            } else {
-                tabItem.stationDataSource.append(batteryAnnotation)
-            }
-            
-            if let index = DataManager.shared.operations.firstIndex(where: { $0.coordinate == batteryAnnotation.coordinate}) {
-                DataManager.shared.operations[index] = batteryAnnotation
-            }
-            
+            DataManager.shared.unchecks.update(counterOfcheckin <= 0 ? .sync : .remove, batteryAnnotation)
+            DataManager.shared.checkins.update(counterOfcheckin <= 0 ? .remove : .sync, batteryAnnotation)
+            DataManager.shared.operations.update(.sync, batteryAnnotation)
             DataManager.shared.lastUpdate = Date()
-        }
-    }
-    
-    enum Strategy {
-        case add, remove
-    }
-    
-    func update(_ operation: Strategy, to tabItem: inout TabItemCase, batteryAnnotation: BatteryStationPointAnnotation) {
-        switch operation {
-        case .add:
-            guard tabItem.stationDataSource.firstIndex(of: batteryAnnotation) == nil else { return }
-            if let index = tabItem.stationDataSource.firstIndex(where: { $0.distance() > batteryAnnotation.distance()  } ) {
-                tabItem.stationDataSource.insert(batteryAnnotation, at: index)
-            } else {
-                tabItem.stationDataSource.append(batteryAnnotation)
-            }
-        case .remove:
-            if let index = tabItem.stationDataSource.firstIndex(of: batteryAnnotation) {
-                tabItem.stationDataSource.remove(at: index)
-            }
         }
     }
     

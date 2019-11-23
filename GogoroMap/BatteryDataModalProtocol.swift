@@ -27,7 +27,7 @@ extension BatteryDataModalProtocol {
         CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
     }
     
-    func distance() -> CLLocationDistance? {
+    var distance: CLLocationDistance? {
         guard let userLocal = LocationManager.shared.userLocation else { return nil }
         return distance(from: userLocal)
     }
@@ -45,5 +45,5 @@ protocol BatteryDataModalProtocol {
     var iconImage: UIImage { get }
     var isOperating: Bool { get }
     func distance(from userPosition: CLLocation) -> Double
-    func distance() -> CLLocationDistance?
+    var distance: CLLocationDistance? { get }
 }

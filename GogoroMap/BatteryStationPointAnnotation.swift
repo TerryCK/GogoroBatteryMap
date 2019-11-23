@@ -102,3 +102,27 @@ extension Array where Element: BatteryStationPointAnnotation {
         }
     }
 }
+
+extension Array where Element: BatteryDataModalProtocol {
+    enum Strategy {
+        case sync, remove
+    }
+    
+    mutating func update(_ operation: Strategy, _ target: Element) {
+        switch operation {
+        case .sync:
+            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
+                self[index] = target
+            } else if let index = firstIndex(where: { $0.distance > target.distance }) {
+                insert(target, at: index)
+            } else {
+                append(target)
+            }
+            
+        case .remove:
+            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
+                remove(at: index)
+            }
+        }
+    }
+}

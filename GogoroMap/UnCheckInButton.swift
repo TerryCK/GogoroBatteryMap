@@ -10,7 +10,7 @@ import UIKit
 
 class UnCheckInButton: CustomButton {
     
-    var mainColor: UIColor {  return .lightRed }
+    var mainColor: UIColor { .lightRed }
     
     let slaveColor = UIColor.white
 
