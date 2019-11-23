@@ -10,7 +10,7 @@ import ColorMatchTabs
 import FloatingPanel
 import Crashlytics
 
-final class FloatingViewController: ColorMatchTabsViewController {
+final class ColorMatchTabsFloatingViewController: ColorMatchTabsViewController {
     
     weak var flatingPanelController: FloatingPanelController? {
         didSet {
@@ -29,7 +29,7 @@ final class FloatingViewController: ColorMatchTabsViewController {
     private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
 
-extension FloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
+extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
     
     func numberOfItems(inController controller: ColorMatchTabsViewController) -> Int {
          tabItemProvider.count - 2
