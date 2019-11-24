@@ -22,6 +22,7 @@ final class DataManager: NSObject {
         super.init()
         let storage = fetchData(from: .database).flatMap(decode)
             ?? (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
+        remoteStorage = storage
         processStation(storage)
     }
     enum ProcessStrategy {
@@ -56,8 +57,8 @@ final class DataManager: NSObject {
     }
     
     func recoveryStations(from records: [BatteryStationRecord]) {
-        let result = remoteStorage.merge(from: records)
-        processStation(result, strategy: .allExceptBuilding)
+        processStation(records.isEmpty ? remoteStorage : remoteStorage.merge(from: records),
+                       strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []

@@ -38,3 +38,9 @@
 
 
 "Cluster" = "地標聚集" ;
+
+// MARK: Location permission.
+"LocationPermission" = "定位權限已拒絕";
+"LocationMessage" = "如要變更權限，請至 設定 > 隱私權 > 定位服務 開啟";
+"Settings" = "設定";
+"Cancel" = "取消";
