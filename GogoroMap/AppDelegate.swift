@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        DataManager.shared.fetchStations()
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
         window?.makeKeyAndVisible()
         setupIAPOberserver()

@@ -104,40 +104,37 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         TabItemCase(rawValue: (fpc.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
     
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        let fpc = Self.setupFloatingPanelController()
-        self.fpc = fpc
+        fpc = Self.setupFloatingPanelController()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         fpc.delegate = self
     }
     
     
     required init?(coder: NSCoder) {
-        let fpc = Self.setupFloatingPanelController()
-        self.fpc = fpc
+        fpc = Self.setupFloatingPanelController()
         super.init(coder: coder)
         fpc.delegate = self
     }
     
     static func setupFloatingPanelController() -> FloatingPanelController {
-        let fcp = FloatingPanelController(delegate: nil)
-        fcp.surfaceView.backgroundColor = .clear
+        let fpc = FloatingPanelController(delegate: nil)
+        fpc.surfaceView.backgroundColor = .clear
         if #available(iOS 11, *) {
-            fcp.surfaceView.cornerRadius = 9.0
+            fpc.surfaceView.cornerRadius = 9.0
         } else {
-            fcp.surfaceView.cornerRadius = 0.0
+            fpc.surfaceView.cornerRadius = 0.0
         }
-        fcp.surfaceView.shadowHidden = false
-        fcp.surfaceView.grabberTopPadding = 1
+        fpc.surfaceView.shadowHidden = false
+        fpc.surfaceView.grabberTopPadding = 1
         let floatingVC = ColorMatchTabsFloatingViewController()
-        fcp.set(contentViewController: floatingVC)
-        floatingVC.flatingPanelController = fcp
-        return fcp
+        fpc.set(contentViewController: floatingVC)
+        floatingVC.flatingPanelController = fpc
+        return fpc
     }
     
     let fpc: FloatingPanelController
-    
-    
     
     private lazy var clusterManager: ClusterManager = {
         $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
@@ -189,28 +186,20 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationTitle()
         setupNavigationItems()
-        setupObserve()
         setupObserver()
-        performGuidePage()
         nativeAdLoader?.update()
         setupSideMenu()
-        LocationManager.shared.authorize { (status) in
-            if [.denied, .restricted].contains(status) {
-                 present(UIAlertController.locationAlertController, animated: true, completion: nil)
-            }
-            setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-        }
-        
+        fpc.addPanel(toParent: self, animated: true)
+        LocationManager.shared.authorize()
+        performGuidePage()
         setupPurchase()
         Answers.log(view: "Map Page")
-        fpc.addPanel(toParent: self, animated: true)
         setupAd(with: navigationController?.view ?? view)
-        DataManager.shared.fetchStations()
     }
     
     private enum Status {
@@ -259,33 +248,19 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     private var observation: NSKeyValueObservation?
     
-    private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .old]) { [unowned self] (_, _) in
-            let selectedTabItem = self.selectedTabItem
-            let stations = selectedTabItem.stationDataSource
-            DispatchQueue.main.async {
-                self.clusterManager.removeAll()
-                self.clusterManager.add(stations)
-                self.clusterManager.reload(mapView: self.mapView)
-            }
-            DispatchQueue.global().async {
-                (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
-            }
-        }
-    }
-    
     //     MARK: - Perfrom
     func performGuidePage() {
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
         let guide = GuidePageViewController()
         guide.modalPresentationStyle = .fullScreen
-        present(guide, animated: true)
+        fpc.present(guide, animated: true)
     }
     
     @objc func performMenu() {
         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
             return
         }
+        
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
@@ -483,6 +458,19 @@ extension MapViewController: MKMapViewDelegate {
 extension MapViewController: IAPPurchasable {
     
     func setupObserver() {
+        
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .old]) { [unowned self] (_, _) in
+            let selectedTabItem = self.selectedTabItem
+            let stations = selectedTabItem.stationDataSource
+            DispatchQueue.main.async {
+                self.clusterManager.removeAll()
+                self.clusterManager.add(stations)
+                self.clusterManager.reload(mapView: self.mapView)
+            }
+            DispatchQueue.global().async {
+                (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
+            }
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handlePurchaseNotification(_:)),
                                                name:  .init(rawValue: Keys.standard.removeAdsObserverName),

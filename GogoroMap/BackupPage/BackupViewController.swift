@@ -274,7 +274,6 @@ extension BackupViewController {
 
 extension Array where Element: BatteryStationPointAnnotation {
     func merge(from records: [BatteryStationRecord]) -> Array {
-        guard !records.isEmpty else { return self }
         for record in records {
             for station in self where record.id == station.coordinate {
                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
