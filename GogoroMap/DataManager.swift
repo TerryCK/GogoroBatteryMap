@@ -31,6 +31,8 @@ final class DataManager: NSObject {
     
     func sorting() { processStation(originalStations) }
     
+    func resetStations() { processStation(remoteStorage, strategy: .allExceptBuilding)  }
+    
     private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
         
         DispatchQueue.global(qos: .default).async {
@@ -60,8 +62,7 @@ final class DataManager: NSObject {
     }
     
     func recoveryStations(from records: [BatteryStationRecord]) {
-        processStation(records.isEmpty ? remoteStorage : remoteStorage.merge(from: records),
-                       strategy: .allExceptBuilding)
+        processStation(remoteStorage.merge(from: records), strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []

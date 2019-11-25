@@ -31,7 +31,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
     
     private let backupCell = BackupTableViewCell(type: .none, title: "立即備份", titleColor: .gray)
     private let deleteCell = BackupTableViewCell(type: .none, title: "刪除全部的備份資料", titleColor: .red)
-    
+    private let resetRecord = BackupTableViewCell(type: .none, title: "重設站點紀錄", titleColor: .red)
     private let noDataCell = BackupTableViewCell(type: .none, title: "暫無資料", titleColor: .lightGray)
     private lazy var backupElement = BackupElement(titleView: backupHeadView, cells: [backupCell], footView: backupfooterView, type: .backup)
     
@@ -47,9 +47,12 @@ final class BackupViewController: UITableViewController, ViewTrackable {
     }
     
     private func checkAccountStatus() {
-        backupCell.isUserInteractionEnabled = cloudAccountStatus == .available
+        let isBackupEnable = cloudAccountStatus == .available && !DataManager.shared.checkins.isEmpty
+        backupCell.isUserInteractionEnabled = isBackupEnable
+        backupCell.titleLabel.textColor = isBackupEnable ? .grassGreen : .gray
+        
+        backupCell.titleLabel.text = isBackupEnable ? "立即備份" : "目前沒有打卡記錄可供備份"
         deleteCell.isUserInteractionEnabled = cloudAccountStatus == .available
-        backupCell.titleLabel.textColor = cloudAccountStatus == .available ? .grassGreen : .gray
         deleteCell.titleLabel.textColor = cloudAccountStatus == .available ? .red        : .gray
         switch cloudAccountStatus {
         case .available:
@@ -67,6 +70,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
         didSet {
             records?.sort { $0.creationDate > $1.creationDate }
             let dataSize = records?.reduce(0) { $0 + (($1.value(forKey: "batteryStationPointAnnotation") as? Data)?.count ?? 0) }
+            let appendCells = DataManager.shared.checkins.isEmpty ? [self.deleteCell] : [self.resetRecord, self.deleteCell]
             DispatchQueue.main.async {
                 let subtitleText: String?
                 if let records = self.records, let date = records.first?.creationDate?.string(dateformat: "yyyy.MM.dd  hh:mm:ss") {
@@ -79,7 +83,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
                                 subtitle: "檔案容量: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
                                 stationRecords: batteryRecords)
-                        } + [self.deleteCell]
+                        } + appendCells
                     
                     
                     subtitleText = "最新備份時間：\(date)"
@@ -152,12 +156,20 @@ extension BackupViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         defer { tableView.deselectRow(at: indexPath, animated: true) }
         guard cloudAccountStatus == .available else { return }
+        
+        
         let cell = elements[indexPath.section].cells?[indexPath.row]
+        
+        if cell === resetRecord {
+            DataManager.shared.resetStations()
+            return
+        }
+        
         switch (cell?.cellType, elements[indexPath.section].type) {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
-            let record = DataManager.shared.operations.compactMap(BatteryStationRecord.init)
+            let record = DataManager.shared.checkins.compactMap(BatteryStationRecord.init)
             guard  let data = try? JSONEncoder().encode(record) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
                 cell?.isUserInteractionEnabled = true
