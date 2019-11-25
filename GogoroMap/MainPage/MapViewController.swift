@@ -195,7 +195,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         nativeAdLoader?.update()
         setupSideMenu()
         LocationManager.shared.authorize()
-        fpc.addPanel(toParent: self, animated: true)
         performGuidePage()
         setupPurchase()
         Answers.log(view: "Map Page")
@@ -448,6 +447,7 @@ extension MapViewController: MKMapViewDelegate {
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButton, customAttributes: #function)
         bannerView.isHidden = false
+        locationManager.authorize()
         fpc.move(to: .tip, animated: true) {
             self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
         }

@@ -21,15 +21,18 @@ extension BatteryDataModalProtocol {
         if ["家樂福", "大潤發", "Mall", "百貨", "Global Mall", "CITYLINK"].reduce(false, { $0 || name.contains($1) })     { return #imageLiteral(resourceName: "mallStore") }
         if ["HiLife", "全聯", "7-ELEVEN", "全家"].reduce(false, { $0 || name.contains($1) })  { return #imageLiteral(resourceName: "convenientStore") }
         if name.match(regex: "捷運".regex) { return #imageLiteral(resourceName: "MRT") }
-        if name.match(regex: "銀行".regex) { return #imageLiteral(resourceName: "bank") }
+        if name.match(regex: "銀行 | 郵局".regex) { return #imageLiteral(resourceName: "bank") }
         return #imageLiteral(resourceName: "pinFull")
     }
+    
     func distance(from userPosition: CLLocation) -> CLLocationDistance {
         CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).distance(from: userPosition)
     }
     
     var distance: CLLocationDistance? {
-        guard let userLocal = LocationManager.shared.userLocation else { return nil }
+        guard let userLocal = LocationManager.shared.userLocation else {
+            LocationManager.shared.authorize()
+            return nil }
         return distance(from: userLocal)
     }
 }
