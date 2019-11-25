@@ -21,7 +21,7 @@ extension TableViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
        
-        UIApplication.mapViewController?.fpc.move(to: .full, animated: true)
+        UIApplication.mapViewController?.fpc?.move(to: .full, animated: true)
         searchBar.showsCancelButton = true
     }
     

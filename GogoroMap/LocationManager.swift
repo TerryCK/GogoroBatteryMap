@@ -11,10 +11,6 @@ import UIKit
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     
-    private override init() {
-        super.init()
-    }
-    
     static let shared = LocationManager()
     
     private var manager: CLLocationManager? {
@@ -29,13 +25,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         if manager == nil { manager = CLLocationManager() }
     }
     
-    private var status: CLAuthorizationStatus? {
+    var status: CLAuthorizationStatus? {
         didSet {
             if [.authorizedWhenInUse, .authorizedAlways].contains(status) {
                 DataManager.shared.sorting()
             }
         }
     }
+    
     
     func authorization(status: CLAuthorizationStatus) {
         switch status {
@@ -44,9 +41,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         case .authorizedWhenInUse, .authorizedAlways:
             manager?.startUpdatingLocation()
-            
-            
-            
             UIApplication.mapViewController?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
             
         case .restricted, .denied, _:
@@ -64,12 +58,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             alert.addAction(settingsAction)
             alert.addAction(cancelAction)
             alert.preferredAction = settingsAction
-            UIApplication.mapViewController?.fpc.present(alert, animated: true, completion: nil)
+            UIApplication.mapViewController?.fpc?.present(alert, animated: true, completion: nil)
         }
         
         guard let mapViewController = UIApplication.mapViewController else { return }
-        if  mapViewController.fpc.parent != mapViewController {
-            mapViewController.fpc.addPanel(toParent: mapViewController , animated: true)
+        if  mapViewController.fpc?.parent != mapViewController {
+            mapViewController.fpc?.addPanel(toParent: mapViewController , animated: true)
         }
         
     }
