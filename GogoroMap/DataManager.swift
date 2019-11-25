@@ -13,15 +13,6 @@ enum ServiceError: Error {
     case general
 }
 
-extension Array where Element: BatteryDataModalProtocol {
-    func reset() -> Array {
-        for var element in self where element.checkinDay != nil {
-            element.checkinDay = nil
-            element.checkinCounter = nil
-        }
-        return self
-    }
-}
 final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
@@ -44,10 +35,11 @@ final class DataManager: NSObject {
     func resetStations() {
         processStation(remoteStorage, strategy: .allExceptBuilding)
     }
+    private let queue = DispatchQueue(label: "com.GogoroMap.processQueue")
     
     private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
         
-        DispatchQueue(label: "com.GogoroMap.processQueue").async {
+        queue.async {
             let origin = stations.sorted(by: <)
             self.operations = origin.filter(TabItemCase.nearby.hanlder)
             self.checkins = self.operations.filter(TabItemCase.checkin.hanlder)
@@ -73,10 +65,10 @@ final class DataManager: NSObject {
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
-    private var queueHandler: [() -> Void] = []
     
     func recoveryStations(from records: [BatteryStationRecord]) {
-        processStation(remoteStorage.merge(from: records), strategy: .allExceptBuilding)
+        remoteStorage.update(from: records)
+        processStation(remoteStorage, strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []
@@ -101,8 +93,8 @@ final class DataManager: NSObject {
                 return
             }
             self.remoteStorage = stations
-            let result = DataManager.shared.originalStations.keepOldUpdate(with: stations)
-            self.processStation(result)
+            DataManager.shared.originalStations.keepOldUpdate(with: stations)
+            self.processStation(DataManager.shared.originalStations)
             onCompletion?()
         }
     }

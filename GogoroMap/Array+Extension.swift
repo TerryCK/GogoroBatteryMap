@@ -8,7 +8,7 @@
 
 import MapKit
 
-extension Collection where Element: BatteryStationPointAnnotation {
+extension Collection where Element: BatteryDataModalProtocol {
     
     func filter(text searchText: String) -> [Element] {
         guard !searchText.isEmpty else { return Array(self)  }
@@ -29,20 +29,35 @@ extension Collection where Element: BatteryStationPointAnnotation {
     }
 }
 
-
 extension Array where Element: BatteryDataModalProtocol {
     enum Strategy {
         case sync, remove
     }
     
-    func keepOldUpdate(with other: Array) -> Array {
-        for var new in other {
+    func keepOldUpdate(with remote: Array) {
+        for var new in remote {
             for local in self where local == new {
                 (new.checkinCounter, new.checkinDay) = (local.checkinCounter, local.checkinDay)
                 break
             }
         }
-        return other
+    }
+    
+    func update(from records: [BatteryStationRecord]) {
+        for record in records {
+            for var station in self where record.id == station.coordinate {
+                (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
+                break
+            }
+        }
+    }
+    
+    func reset() -> Array {
+        for var element in self where element.checkinDay != nil {
+            element.checkinDay = nil
+            element.checkinCounter = nil
+        }
+        return self
     }
     
     mutating func update(_ operation: Strategy, _ target: Element) {
@@ -62,4 +77,6 @@ extension Array where Element: BatteryDataModalProtocol {
             }
         }
     }
+    
+    
 }
