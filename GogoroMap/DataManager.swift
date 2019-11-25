@@ -20,8 +20,7 @@ final class DataManager: NSObject {
     
     private override init() {
         super.init()
-        let storage = fetchData(from: .database).flatMap(decode)
-            ?? (try! JSONDecoder().decode(Response.self, from: fetchData(from: .bundle)!).stations.map(BatteryStationPointAnnotation.init))
+        let storage = fetchData(from: .database).flatMap(decode) ?? DataManager.parse(data: fetchData(from: .bundle)!)!
         remoteStorage = storage
         processStation(storage)
     }
@@ -31,18 +30,20 @@ final class DataManager: NSObject {
     
     func sorting() { processStation(originalStations) }
     
-    func resetStations() { processStation(remoteStorage, strategy: .allExceptBuilding)  }
+    func resetStations() {
+        processStation(remoteStorage, strategy: .allExceptBuilding)
+    }
     
     private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
         
-        DispatchQueue.global(qos: .default).async {
-            self.operations =     stations.filter(TabItemCase.nearby.hanlder).sorted(by: <)
-            let checkins = self.operations.filter(TabItemCase.checkin.hanlder)
-            self.checkins = checkins
-            self.unchecks = Set(self.operations).subtracting(checkins).sorted(by: <)
+        DispatchQueue(label: "com.GogoroMap.processQueue").async {
+            let origin = stations.sorted(by: <)
+            self.operations = origin.filter(TabItemCase.nearby.hanlder)
+            self.checkins = self.operations.filter(TabItemCase.checkin.hanlder)
+            self.unchecks = self.operations.filter(TabItemCase.uncheck.hanlder)
             
             if strategy == .all {
-                self.buildings = stations.filter(TabItemCase.building.hanlder).sorted(by: <)
+                self.buildings = origin.filter(TabItemCase.building.hanlder)
             }
             self.lastUpdate = Date()
         }
@@ -61,8 +62,10 @@ final class DataManager: NSObject {
         UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
+    private var queueHandler: [() -> Void] = []
+    
     func recoveryStations(from records: [BatteryStationRecord]) {
-        processStation(remoteStorage.merge(from: records), strategy: .allExceptBuilding)
+        self.processStation(self.remoteStorage.merge(from: records), strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []
@@ -73,10 +76,17 @@ final class DataManager: NSObject {
     
     var buildings: [BatteryStationPointAnnotation] = []
     
+    static func parse(data: Data) -> [BatteryStationPointAnnotation]? {
+        (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
+    }
+    
+    private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
+           try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
+       }
     
     func fetchStations(onCompletion: (() -> Void)? = nil) {
         fetchData { (result) in
-            guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init) else {
+            guard case let .success(data) = result, let stations = Self.parse(data: data) else {
                 return
             }
             self.remoteStorage = stations
@@ -86,9 +96,7 @@ final class DataManager: NSObject {
         }
     }
     
-    private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
-        try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
-    }
+   
     
     private func fetchData(from apporach: Approach) -> Data? {
         switch apporach {
