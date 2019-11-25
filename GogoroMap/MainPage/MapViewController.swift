@@ -101,24 +101,40 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     var selectedTabItem: TabItemCase {
-        TabItemCase(rawValue: (fpc.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
+        TabItemCase(rawValue: (fpc?.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
     
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fpc = Self.setupFloatingPanelController()
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        fpc.delegate = self
-    }
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        fpc = Self.setupFloatingPanelController()
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        fpc.delegate = self
+//    }
+//
+//
+//    required init?(coder: NSCoder) {
+//        fpc = Self.setupFloatingPanelController()
+//        super.init(coder: coder)
+//        fpc.delegate = self
+//    }
     
+//    static func setupFloatingPanelController() -> FloatingPanelController {
+//        let fpc = FloatingPanelController(delegate: nil)
+//        fpc.surfaceView.backgroundColor = .clear
+//        if #available(iOS 11, *) {
+//            fpc.surfaceView.cornerRadius = 9.0
+//        } else {
+//            fpc.surfaceView.cornerRadius = 0.0
+//        }
+//        fpc.surfaceView.shadowHidden = false
+//        fpc.surfaceView.grabberTopPadding = 1
+//        let floatingVC = ColorMatchTabsFloatingViewController()
+//        fpc.set(contentViewController: floatingVC)
+//        floatingVC.flatingPanelController = fpc
+//        return fpc
+//    }
     
-    required init?(coder: NSCoder) {
-        fpc = Self.setupFloatingPanelController()
-        super.init(coder: coder)
-        fpc.delegate = self
-    }
-    
-    static func setupFloatingPanelController() -> FloatingPanelController {
+    func setupFloatingPanelController() {
         let fpc = FloatingPanelController(delegate: nil)
         fpc.surfaceView.backgroundColor = .clear
         if #available(iOS 11, *) {
@@ -131,10 +147,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         let floatingVC = ColorMatchTabsFloatingViewController()
         fpc.set(contentViewController: floatingVC)
         floatingVC.flatingPanelController = fpc
-        return fpc
+        self.fpc = fpc
     }
     
-    let fpc: FloatingPanelController
+    var fpc: FloatingPanelController? {
+        didSet {
+            fpc?.delegate = self
+        }
+    }
     
     private lazy var clusterManager: ClusterManager = {
         $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
@@ -144,7 +164,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }(ClusterManager())
     
     private lazy var mapView : MKMapView = {
-        $0.delegate = self
         $0.mapType = .standard
         $0.showsUserLocation = true
         $0.isZoomEnabled = true
@@ -157,7 +176,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         longPressRecognizer.minimumPressDuration = 0.1
         $0.addGestureRecognizer(longPressRecognizer)
         view.addSubview($0)
-        $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 45)
+        $0.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, bottomPadding: 60)
         return $0
     }(MKMapView())
     
@@ -189,13 +208,16 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
+        setupFloatingPanelController()
+        LocationManager.shared.authorize()
         setupNavigationTitle()
         setupNavigationItems()
         setupObserver()
         nativeAdLoader?.update()
         setupSideMenu()
-        LocationManager.shared.authorize()
-        performGuidePage()
+        
+//        performGuidePage()
         setupPurchase()
         Answers.log(view: "Map Page")
         setupAd(with: navigationController?.view ?? view)
@@ -219,8 +241,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPoint = touches.first?.location(in: mapView)
         if lastTouchPoint != nil {
-            (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-            fpc.move(to: .tip, animated: true)
+            (fpc?.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
+            fpc?.move(to: .tip, animated: true)
         }
     }
     
@@ -252,7 +274,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         if UserDefaults.standard.bool(forKey: Keys.standard.beenHereKey) { return }
         let guide = GuidePageViewController()
         guide.modalPresentationStyle = .fullScreen
-        fpc.present(guide, animated: true)
+        fpc?.present(guide, animated: true)
     }
     
     @objc func performMenu() {
@@ -262,9 +284,9 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
-        (fpc.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
+        (fpc?.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
         nativeAdLoader?.update()
-        fpc.present(sideManuController, animated: true)
+        fpc?.present(sideManuController, animated: true)
     }
     
     private func setupSideMenu(sideMenuManager: SideMenuManager = .default, displayFactor: CGFloat = 0.8) {
@@ -339,7 +361,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: width, height: height)
         mapView.setVisibleMapRect(pointRect, animated: false)
         bannerView.isHidden = false
-        fpc.move(to: .tip, animated: true) {
+        fpc?.move(to: .tip, animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
                 if let selectedAnnotation = self.mapView.annotations.first(where: { $0.coordinate == annotation.coordinate }) {
                     self.mapView.selectAnnotation(selectedAnnotation, animated: true)
@@ -403,7 +425,7 @@ extension MapViewController: MKMapViewDelegate {
         
         nativeAdLoader?.update()
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
-        fpc.move(to: .tip, animated: true) {
+        fpc?.move(to: .tip, animated: true) {
             DetailCalloutAccessoryViewModel(annotationView: view,
                                             controller: self).bind(mapView: mapView,
                                                                    nativeAd: self.nativeAd)
@@ -447,9 +469,13 @@ extension MapViewController: MKMapViewDelegate {
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButton, customAttributes: #function)
         bannerView.isHidden = false
-        locationManager.authorize()
-        fpc.move(to: .tip, animated: true) {
-            self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
+        
+        if case .denied? = locationManager.status {
+            locationManager.authorization(status: .denied)
+        } else {
+            fpc?.move(to: .tip, animated: true) {
+                self.setTracking(mode: self.mapView.userTrackingMode.nextMode)
+            }
         }
     }
 }
