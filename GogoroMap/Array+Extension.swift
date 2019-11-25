@@ -29,3 +29,37 @@ extension Collection where Element: BatteryStationPointAnnotation {
     }
 }
 
+
+extension Array where Element: BatteryDataModalProtocol {
+    enum Strategy {
+        case sync, remove
+    }
+    
+    func keepOldUpdate(with other: Array) -> Array {
+        for var new in other {
+            for local in self where local == new {
+                (new.checkinCounter, new.checkinDay) = (local.checkinCounter, local.checkinDay)
+                break
+            }
+        }
+        return other
+    }
+    
+    mutating func update(_ operation: Strategy, _ target: Element) {
+        switch operation {
+        case .sync:
+            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
+                self[index] = target
+            } else if let index = firstIndex(where: { $0.distance > target.distance }) {
+                insert(target, at: index)
+            } else {
+                append(target)
+            }
+            
+        case .remove:
+            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
+                remove(at: index)
+            }
+        }
+    }
+}

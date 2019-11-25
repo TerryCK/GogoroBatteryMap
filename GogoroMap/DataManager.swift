@@ -13,7 +13,15 @@ enum ServiceError: Error {
     case general
 }
 
-
+extension Array where Element: BatteryDataModalProtocol {
+    func reset() -> Array {
+        for var element in self where element.checkinDay != nil {
+            element.checkinDay = nil
+            element.checkinCounter = nil
+        }
+        return self
+    }
+}
 final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
@@ -21,8 +29,10 @@ final class DataManager: NSObject {
     private override init() {
         super.init()
         let storage = fetchData(from: .database).flatMap(decode) ?? DataManager.parse(data: fetchData(from: .bundle)!)!
-        remoteStorage = storage
         processStation(storage)
+        DispatchQueue.global().async {
+            self.remoteStorage = storage.reset()
+        }
     }
     
     enum ProcessStrategy {
@@ -82,8 +92,8 @@ final class DataManager: NSObject {
     }
     
     private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
-           try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
-       }
+        try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
+    }
     
     func fetchStations(onCompletion: (() -> Void)? = nil) {
         fetchData { (result) in
@@ -97,7 +107,7 @@ final class DataManager: NSObject {
         }
     }
     
-   
+    
     
     private func fetchData(from apporach: Approach) -> Data? {
         switch apporach {
@@ -134,7 +144,7 @@ final class DataManager: NSObject {
             case .some(let response):  completionHandler(.success(response))
             case .none: completionHandler(.failure(ServiceError.general))
             }
-            }.resume()
+        }.resume()
     }
 }
 
