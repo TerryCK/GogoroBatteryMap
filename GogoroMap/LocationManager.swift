@@ -13,36 +13,50 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     private override init() {
         super.init()
-        manager.delegate = self
-        manager.distanceFilter = kCLLocationAccuracyNearestTenMeters
-        manager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     static let shared = LocationManager()
     
-    private let manager: CLLocationManager = CLLocationManager()
+    private var manager: CLLocationManager? {
+        didSet {
+            manager?.distanceFilter = kCLLocationAccuracyNearestTenMeters
+            manager?.desiredAccuracy = kCLLocationAccuracyBest
+            manager?.delegate = self
+        }
+    }
     
     func authorize() {
-        let authorizationStatus = CLLocationManager.authorizationStatus()
-        if authorizationStatus == .notDetermined {
-            manager.requestWhenInUseAuthorization()
+        if manager == nil { manager = CLLocationManager() }
+    }
+    
+    private var status: CLAuthorizationStatus? {
+        didSet {
+            if [.authorizedWhenInUse, .authorizedAlways].contains(status) {
+                DataManager.shared.sorting()
+            }
         }
-        authorization(status: authorizationStatus)
     }
     
     func authorization(status: CLAuthorizationStatus) {
         switch status {
+        case .notDetermined:
+            manager?.requestWhenInUseAuthorization()
+            
         case .authorizedWhenInUse, .authorizedAlways:
-            manager.startUpdatingLocation()
+            manager?.startUpdatingLocation()
+            
+            
+            
             UIApplication.mapViewController?.setCurrentLocation(latDelta: 0.05, longDelta: 0.05)
-        case .restricted, .denied, .notDetermined:
+            
+        case .restricted, .denied, _:
             let alert = UIAlertController(title: "LocationPermission".localize(),
                                           message: "LocationMessage".localize(),
                                           preferredStyle: .alert)
             
             let settingsAction = UIAlertAction(title: "Settings".localize(), style: .default)  { _ in
                 if let settingURL = URL(string: UIApplication.openSettingsURLString) {
-                     UIApplication.shared.open(settingURL)
+                    UIApplication.shared.open(settingURL)
                 }
             }
             
@@ -52,14 +66,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             alert.preferredAction = settingsAction
             UIApplication.mapViewController?.fpc.present(alert, animated: true, completion: nil)
         }
+        
+        guard let mapViewController = UIApplication.mapViewController else { return }
+        if  mapViewController.fpc.parent != mapViewController {
+            mapViewController.fpc.addPanel(toParent: mapViewController , animated: true)
+        }
+        
     }
     
-    var userLocation: CLLocation? { manager.location }
+    var userLocation: CLLocation? { manager?.location }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        self.status = status
         authorization(status: status)
-        if let mapViewController = UIApplication.mapViewController{
-            UIApplication.mapViewController?.fpc.addPanel(toParent: mapViewController , animated: true)
-        }
     }
 }

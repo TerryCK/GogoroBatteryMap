@@ -28,6 +28,9 @@ final class DataManager: NSObject {
     enum ProcessStrategy {
         case all, allExceptBuilding
     }
+    
+    func sorting() { processStation(originalStations) }
+    
     private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
         
         DispatchQueue.global(qos: .default).async {
