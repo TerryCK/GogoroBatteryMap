@@ -14,29 +14,14 @@ import MapKit
 extension UIColor {
     
     static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
-        return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+        UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
     
-    static var lightBlue: UIColor {
-        return .rgb(red: 149, green: 204, blue: 244)
-    }
-    
-    static var lightGreen: UIColor {
-        return .rgb(red: 45, green: 149, blue: 64)
-    }
-    
-    static var heavyBlue: UIColor {
-        return .rgb(red: 17, green: 154, blue: 237)
-    }
-    
-    static var grassGreen: UIColor {
-        return .rgb(red: 85 , green: 177, blue: 114)
-    }
-    
-    static var lightRed: UIColor {
-        return .rgb(red: 218 , green: 52, blue: 53)
-    }
-    
+    static var lightBlue  : UIColor { .rgb(red: 149, green: 204, blue: 244)  }
+    static var lightGreen : UIColor { .rgb(red: 45, green: 149, blue: 64)    }
+    static var heavyBlue  : UIColor { .rgb(red: 17, green: 154, blue: 237)   }
+    static var grassGreen : UIColor { .rgb(red: 85 , green: 177, blue: 114)  }
+    static var lightRed   : UIColor { .rgb(red: 218 , green: 52, blue: 53)   }   
 }
 
 
