@@ -24,6 +24,7 @@ final class DataManager: NSObject {
         remoteStorage = storage
         processStation(storage)
     }
+    
     enum ProcessStrategy {
         case all, allExceptBuilding
     }
@@ -65,7 +66,7 @@ final class DataManager: NSObject {
     private var queueHandler: [() -> Void] = []
     
     func recoveryStations(from records: [BatteryStationRecord]) {
-        self.processStation(self.remoteStorage.merge(from: records), strategy: .allExceptBuilding)
+        processStation(remoteStorage.merge(from: records), strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []
