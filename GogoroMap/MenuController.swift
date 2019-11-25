@@ -188,8 +188,8 @@ extension MenuController {
             DispatchQueue.main.async {
                 self.navigationItem.title = "Information".localize()
                 self.collectionView?.reloadData()
+                self.refreshButton?.isUserInteractionEnabled = true
             }
-            self.refreshButton?.isUserInteractionEnabled = true
         }
     }
     
