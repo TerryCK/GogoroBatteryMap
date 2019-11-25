@@ -58,5 +58,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         authorization(status: status)
+        if let mapViewController = UIApplication.mapViewController{
+            UIApplication.mapViewController?.fpc.addPanel(toParent: mapViewController , animated: true)
+        }
     }
 }
