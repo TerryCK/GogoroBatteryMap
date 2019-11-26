@@ -10,13 +10,6 @@ import UIKit
 import MapKit
 import GoogleMobileAds
 
-extension TableViewController: ADSupportable {
-    
-    public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        bridgeAd(bannerView)
-    }
-}
-
 extension TableViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -49,8 +42,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var bannerView: GADBannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
-
     
     private var searchText = "" {
         didSet {
@@ -79,7 +70,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
-        setupAd(with: tableView)
+        
         tableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
         tableView.contentOffset = .init(x: 0, y: 56)
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))

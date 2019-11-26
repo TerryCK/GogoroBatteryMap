@@ -11,17 +11,17 @@ import CloudKit
 import GoogleMobileAds
 import Crashlytics
 
-extension BackupViewController: ADSupportable {
-    
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        bridgeAd(bannerView)
-    }
-}
+//extension BackupViewController: ADSupportable {
+//
+//    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+//        bridgeAd(bannerView)
+//    }
+//}
 
 final class BackupViewController: UITableViewController, ViewTrackable {
     
     
-    var bannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
+//    var bannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
     
     let adUnitID: String = Keys.standard.backupAdUnitID
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
@@ -111,7 +111,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
         Answers.log(view: "backup page")
         setupObserve()
         
-        setupAd(with: navigationController?.view ?? tableView)
+//        setupAd(with: navigationController?.view ?? tableView)
        
         tableView.delegate = self
         tableView.dataSource = self

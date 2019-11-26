@@ -59,8 +59,8 @@ extension DetailCalloutAccessoryViewModel {
             return
         }
         
-        detailCalloutView?.checkinAction = { self.checkinCount(with: +) }
-        detailCalloutView?.uncheckinAction = { self.checkinCount(with: -) }
+        detailCalloutView.checkinAction = { self.checkinCount(with: +) }
+        detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
         detailCalloutView.distanceLabel.text = "距離計算中..."
         detailCalloutView.etaLabel.text = "時間計算中..."
         
