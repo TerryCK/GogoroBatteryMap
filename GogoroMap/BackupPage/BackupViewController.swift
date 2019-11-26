@@ -161,7 +161,15 @@ extension BackupViewController {
         let cell = elements[indexPath.section].cells?[indexPath.row]
         
         if cell === resetRecord {
-            DataManager.shared.resetStations()
+            let alertController =  UIAlertController(title: "確定要重設打卡記錄？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
+            [
+                UIAlertAction(title: "重設", style: .destructive, handler : { _ in
+                    DataManager.shared.resetStations()
+                }),
+                UIAlertAction(title: "取消", style: .cancel, handler: nil),
+                ].forEach(alertController.addAction)
+            
+            present(alertController, animated: true)
             return
         }
         

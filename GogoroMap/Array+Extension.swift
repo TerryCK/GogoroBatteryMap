@@ -30,6 +30,7 @@ extension Collection where Element: BatteryDataModalProtocol {
 }
 
 extension Array where Element: BatteryDataModalProtocol {
+    
     enum Strategy {
         case sync, remove
     }
