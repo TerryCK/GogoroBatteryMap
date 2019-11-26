@@ -80,7 +80,7 @@ extension ADSupportable where Self: UIViewController {
             return view.frame
           }
         }()
-        let viewWidth = frame.size.width
+        let _ = frame.size.width
 
         // Step 3 - Get Adaptive GADAdSize and set the ad view.
         // Here the current interface orientation is used. If the ad is being preloaded

@@ -18,7 +18,7 @@ extension CKAccountStatus: CustomStringConvertible {
         case .available:         return "iCloud is available"
         case .noAccount:         return "尚未登入"
         case .restricted:        return "iCloud設置受家長或文件的限制"
-        case .couldNotDetermine: return "請稍後再嘗試"
+        case .couldNotDetermine, _: return "請稍後再嘗試"
         }
     }
 }

@@ -35,11 +35,9 @@ extension BatteryDataModalProtocol {
             return nil }
         return distance(from: userLocal)
     }
-    
-    static func ==(lhs: Self, rhs: Self) -> Bool { lhs.coordinate == rhs.coordinate }
 }
 
-protocol BatteryDataModalProtocol: Equatable {
+protocol BatteryDataModalProtocol {
     
     var title: String? { get }
     var subtitle: String? { get }
