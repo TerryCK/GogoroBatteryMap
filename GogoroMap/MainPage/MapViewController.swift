@@ -53,7 +53,6 @@ extension MapViewController: FloatingPanelControllerDelegate {
     }
     
     func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
-        bannerView.isHidden = targetPosition == .full
         if targetPosition == .full { setTracking(mode: .none) }
     }
     
@@ -78,6 +77,7 @@ extension MapViewController: GADAdLoaderDelegate {
 extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
+        debugPrint("recived an native ad: ", nativeAd)
         self.nativeAd = nativeAd
         self.nativeAd?.delegate = self
     }
@@ -255,7 +255,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc?.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
-        nativeAdLoader?.update()
         fpc?.present(sideManuController, animated: true)
     }
     
@@ -367,8 +366,7 @@ extension MapViewController: MKMapViewDelegate {
         case let batteryStation as BatteryStationPointAnnotation:
             annotationView.image = batteryStation.iconImage
             annotationView.detailCalloutAccessoryView = DetailAnnotationView()
-                .configure(annotation: batteryStation,
-                           nativeAd: nil)
+                .configure(annotation: batteryStation)
         case _ as GoSharePointAnnotation:
             annotationView.image = UIImage(named: "test")
             
@@ -391,9 +389,8 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
-        
-        
-        nativeAdLoader?.update()
+        nativeAdLoader?.load(DFPRequest())
+        bannerView.load(DFPRequest())
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc?.move(to: .tip, animated: true) {
             DetailCalloutAccessoryViewModel(annotationView: view).bind()
@@ -436,7 +433,6 @@ extension MapViewController: MKMapViewDelegate {
     
     @objc func locationArrowPressed() {
         Answers.log(event: .MapButton, customAttributes: #function)
-        bannerView.isHidden = false
         
         if case .denied? = locationManager.status {
             locationManager.authorization(status: .denied)

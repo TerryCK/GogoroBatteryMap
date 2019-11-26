@@ -79,7 +79,7 @@ final class DetailAnnotationView: UIView {
         return stackView
     }()
     
-
+    
     private lazy var goButtonStackView: UIStackView = {   
         let stackView: UIStackView = UIStackView(arrangedSubviews: [goButton, etaStackview])
         stackView.axis = .horizontal
@@ -138,8 +138,10 @@ final class DetailAnnotationView: UIView {
         
         addressLabel.anchor(top: mainStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, leftPadding: 10, bottomPadding: 10, rightPadding: 10, width: 0, height: 0)
         
+        if !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            nativeAdView?.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, height: 32)
+        }
         
-        nativeAdView?.anchor(top: addressLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, topPadding: 5, height: 32)
         buttonStackView.anchor(top: (nativeAdView ?? addressLabel).bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, topPadding: 5)
         
         widthAnchor.constraint(lessThanOrEqualToConstant: 210).isActive = true
@@ -171,15 +173,16 @@ final class DetailAnnotationView: UIView {
     }()
     
     
-    @discardableResult
-    func configure(annotation: BatteryStationPointAnnotation) -> Self {
+    
+    func setupNativeAd() {
         if let nativeAd = UIApplication.mapViewController?.nativeAd {
             nativeAdView?.nativeAd = nativeAd
             (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body
         }
-        if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            nativeAdView?.removeFromSuperview()
-        }
+    }
+    @discardableResult
+    func configure(annotation: BatteryStationPointAnnotation) -> Self {
+        
         
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
