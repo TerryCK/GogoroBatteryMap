@@ -47,6 +47,7 @@ final class MenuController: UICollectionViewController, ViewTrackable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Answers.logContentView(withName: "Menu Page", contentType: nil, contentId: nil, customAttributes: nil)
+        collectionView.reloadData()
         if self.refreshButton?.isUserInteractionEnabled == .some(false) {
             self.refreshButton?.rotate360Degrees()
         }
@@ -183,12 +184,11 @@ extension MenuController {
         navigationItem.title = "\("Updating".localize())..."
         refreshButton?.rotate360Degrees()
         refreshButton?.isUserInteractionEnabled = false
-        
         DataManager.shared.fetchStations {
             DispatchQueue.main.async {
                 self.navigationItem.title = "Information".localize()
                 self.collectionView?.reloadData()
-                self.refreshButton?.isUserInteractionEnabled = true
+                self.refreshButton?.isUserInteractionEnabled = true                
             }
         }
     }

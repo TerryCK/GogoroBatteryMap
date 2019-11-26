@@ -90,7 +90,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     
     var nativeAd: GADUnifiedNativeAd?
     
-    lazy var nativeAdLoader: GADAdLoader? = GADAdLoader.createNativeAd(delegate: self)
+    var nativeAdLoader: GADAdLoader?
     
     private let locationManager: LocationManager = .shared
     
@@ -103,36 +103,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     var selectedTabItem: TabItemCase {
         TabItemCase(rawValue: (fpc?.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
     }
-    
-    
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        fpc = Self.setupFloatingPanelController()
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//        fpc.delegate = self
-//    }
-//
-//
-//    required init?(coder: NSCoder) {
-//        fpc = Self.setupFloatingPanelController()
-//        super.init(coder: coder)
-//        fpc.delegate = self
-//    }
-    
-//    static func setupFloatingPanelController() -> FloatingPanelController {
-//        let fpc = FloatingPanelController(delegate: nil)
-//        fpc.surfaceView.backgroundColor = .clear
-//        if #available(iOS 11, *) {
-//            fpc.surfaceView.cornerRadius = 9.0
-//        } else {
-//            fpc.surfaceView.cornerRadius = 0.0
-//        }
-//        fpc.surfaceView.shadowHidden = false
-//        fpc.surfaceView.grabberTopPadding = 1
-//        let floatingVC = ColorMatchTabsFloatingViewController()
-//        fpc.set(contentViewController: floatingVC)
-//        floatingVC.flatingPanelController = fpc
-//        return fpc
-//    }
     
     func setupFloatingPanelController() {
         let fpc = FloatingPanelController(delegate: nil)
@@ -214,7 +184,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupNavigationTitle()
         setupNavigationItems()
         setupObserver()
-        nativeAdLoader?.update()
+        nativeAdLoader = GADAdLoader.createNativeAd(delegate: self)
         setupSideMenu()
         
 //        performGuidePage()
@@ -426,9 +396,7 @@ extension MapViewController: MKMapViewDelegate {
         nativeAdLoader?.update()
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc?.move(to: .tip, animated: true) {
-            DetailCalloutAccessoryViewModel(annotationView: view,
-                                            controller: self).bind(mapView: mapView,
-                                                                   nativeAd: self.nativeAd)
+            DetailCalloutAccessoryViewModel(annotationView: view).bind()
         }
         
         UIView.animate(withDuration: 0.35) {

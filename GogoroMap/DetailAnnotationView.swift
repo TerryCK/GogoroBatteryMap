@@ -172,8 +172,8 @@ final class DetailAnnotationView: UIView {
     
     
     @discardableResult
-    func configure(annotation: BatteryStationPointAnnotation, nativeAd: GADUnifiedNativeAd?) -> Self {
-        if let nativeAd = nativeAd {
+    func configure(annotation: BatteryStationPointAnnotation) -> Self {
+        if let nativeAd = UIApplication.mapViewController?.nativeAd {
             nativeAdView?.nativeAd = nativeAd
             (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body
         }

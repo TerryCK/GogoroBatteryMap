@@ -12,20 +12,34 @@ import GoogleMobileAds
 
 struct DetailCalloutAccessoryViewModel {
     
-    let annotationView: MKAnnotationView
-    let controller: MapViewController
+    let annotationView: MKAnnotationView?
+    let detailCalloutView: DetailAnnotationView?
+    let batteryAnnotation: BatteryStationPointAnnotation?
+    
+    init(annotationView: MKAnnotationView) {
+        self.annotationView    = annotationView
+        self.batteryAnnotation = annotationView.annotation as? BatteryStationPointAnnotation
+        self.detailCalloutView = annotationView.detailCalloutAccessoryView as? DetailAnnotationView
+        guard let destination = batteryAnnotation else { return }
+        
+        detailCalloutView?.goAction = { Navigator.go(to: destination) }
+        detailCalloutView?.configure(annotation: destination)
+    }
 }
+
+
 
 extension DetailCalloutAccessoryViewModel {
     
-    private func checkinCount(with calculate: (Int, Int) -> Int, nativeAd: GADUnifiedNativeAd?) {
+    private func checkinCount(with calculate: @escaping (Int, Int) -> Int) {
         Answers.log(event: .MapButton, customAttributes: #function)
-        guard let batteryAnnotation = annotationView.annotation as? BatteryStationPointAnnotation else { return }
+        guard let batteryAnnotation = batteryAnnotation else { return }
         let counterOfcheckin = calculate(batteryAnnotation.checkinCounter ?? 0, 1)
         batteryAnnotation.checkinDay = counterOfcheckin > 0 ? Date() : nil
         batteryAnnotation.checkinCounter = counterOfcheckin
-        annotationView.image = batteryAnnotation.iconImage
-        _ = (annotationView.detailCalloutAccessoryView as? DetailAnnotationView)?.configure(annotation: batteryAnnotation, nativeAd: nativeAd)
+        annotationView?.image = batteryAnnotation.iconImage
+        detailCalloutView?.configure(annotation: batteryAnnotation)
+        
         DispatchQueue(label: "com.GogoroMap.StationListQueue").async {
             DataManager.shared.unchecks.update(counterOfcheckin <= 0 ? .sync : .remove, batteryAnnotation)
             DataManager.shared.checkins.update(counterOfcheckin <= 0 ? .remove : .sync, batteryAnnotation)
@@ -34,15 +48,23 @@ extension DetailCalloutAccessoryViewModel {
         }
     }
     
-    func bind(mapView: MKMapView, nativeAd: GADUnifiedNativeAd?) {
-        guard let destination = annotationView.annotation as? BatteryStationPointAnnotation,
-            let detailCalloutView = annotationView.detailCalloutAccessoryView as? DetailAnnotationView else {
-                return
+    func bind() {
+        guard let destination = batteryAnnotation,
+            let detailCalloutView = detailCalloutView else { return }
+        
+        guard .denied != LocationManager.shared.status, let userLocation = LocationManager.shared.userLocation?.coordinate else  {
+            LocationManager.shared.authorization(status: .denied)
+            detailCalloutView.distanceLabel.text = "LocationPermission".localize()
+            detailCalloutView.etaLabel.text = nil
+            return
         }
         
+        detailCalloutView?.checkinAction = { self.checkinCount(with: +) }
+        detailCalloutView?.uncheckinAction = { self.checkinCount(with: -) }
         detailCalloutView.distanceLabel.text = "距離計算中..."
         detailCalloutView.etaLabel.text = "時間計算中..."
-        Navigator.travelETA(from: mapView.userLocation.coordinate, to: destination.coordinate) { (result) in
+        
+        Navigator.travelETA(from: userLocation, to: destination.coordinate) { (result) in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -53,15 +75,11 @@ extension DetailCalloutAccessoryViewModel {
                     detailCalloutView.distanceLabel.text = distance
                     detailCalloutView.etaLabel.text = travelTime
                 case .failure:
-                    detailCalloutView.distanceLabel.text = nil
-                    detailCalloutView.etaLabel.text = nil
+                    detailCalloutView.distanceLabel.text = "無法取得路線"
+                    detailCalloutView.etaLabel.text = "無法估算時間"
                 }
             }
         }
-        detailCalloutView.checkinAction = { self.checkinCount(with: +, nativeAd: nativeAd) }
-        detailCalloutView.uncheckinAction = { self.checkinCount(with: -, nativeAd: nativeAd) }
-        detailCalloutView.goAction = { Navigator.go(to: destination) }
-        detailCalloutView.configure(annotation: destination, nativeAd: nativeAd)
     }
 }
 
