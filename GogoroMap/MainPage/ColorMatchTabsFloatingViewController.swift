@@ -65,7 +65,7 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
         if tabItemProvider[index] != .setting {
              DataManager.shared.lastUpdate = Date()
         }
-        
+        UIApplication.mapViewController?.reloadBannerAds()
         Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
         
     }

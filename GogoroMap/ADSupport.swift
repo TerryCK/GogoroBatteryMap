@@ -67,6 +67,10 @@ extension ADSupportable where Self: UIViewController {
             }
         }
     }
+    
+    func reloadBannerAds() {
+        bannerView.load(DFPRequest())
+    }
 //    
 //
 //      func loadBannerAd() {

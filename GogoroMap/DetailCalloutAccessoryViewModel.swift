@@ -51,7 +51,7 @@ extension DetailCalloutAccessoryViewModel {
     func bind() {
         guard let destination = batteryAnnotation,
             let detailCalloutView = detailCalloutView else { return }
-        
+        detailCalloutView.setupNativeAd()
         guard .denied != LocationManager.shared.status, let userLocation = LocationManager.shared.userLocation?.coordinate else  {
             LocationManager.shared.authorization(status: .denied)
             detailCalloutView.distanceLabel.text = "LocationPermission".localize()

@@ -216,6 +216,8 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         }
     }
     
+    
+    
     @objc func action(sender: UILongPressGestureRecognizer) {
         let isLongPressGestureRecognizerActive = [.possible, .began, .changed].contains(sender.state)
         
@@ -389,10 +391,14 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
-        nativeAdLoader?.load(DFPRequest())
-        bannerView.load(DFPRequest())
+//        nativeAdLoader?.load(DFPRequest())
+//        bannerView.load(DFPRequest())
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc?.move(to: .tip, animated: true) {
+            if let detail = view.detailCalloutAccessoryView {
+                view.bringSubviewToFront(detail)
+            }
+            
             DetailCalloutAccessoryViewModel(annotationView: view).bind()
         }
         
@@ -469,7 +475,8 @@ extension MapViewController: IAPPurchasable {
     
     @objc func handlePurchaseNotification(_ notification: Notification) {
         if UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
-            removeAds(view: view)
+            removeAds(view: navigationController?.view ?? view)
+            nativeAdLoader = nil
             DataManager.shared.lastUpdate = Date()
         }
     }

@@ -11,6 +11,26 @@ import GoogleMobileAds
 
 final class DetailAnnotationView: UIView {
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        if (hitView != nil) {
+            superview?.bringSubviewToFront(self)
+        }
+        return hitView
+    }
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        var isInside: Bool = bounds.contains(point)
+        if !isInside {
+            for view in self.subviews {
+                isInside = view.frame.contains(point)
+                if isInside {
+                    break
+                }
+            }
+        }
+        return isInside
+    }
+    
     let goButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)
@@ -156,7 +176,8 @@ final class DetailAnnotationView: UIView {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        setup()
     }
     
     
@@ -180,6 +201,7 @@ final class DetailAnnotationView: UIView {
             (nativeAdView?.bodyView as? UILabel)?.text = nativeAd.body
         }
     }
+    
     @discardableResult
     func configure(annotation: BatteryStationPointAnnotation) -> Self {
         
