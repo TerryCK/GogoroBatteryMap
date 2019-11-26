@@ -21,9 +21,9 @@ final class DataManager: NSObject {
         super.init()
         let storage = fetchData(from: .database).flatMap(decode) ?? DataManager.parse(data: fetchData(from: .bundle)!)!
         processStation(storage)
-        DispatchQueue.global().async {
-            self.remoteStorage = storage.reset()
-        }
+//        DispatchQueue.global().async {
+//            self.remoteStorage = storage.reset()
+//        }
     }
     
     enum ProcessStrategy {
@@ -67,8 +67,7 @@ final class DataManager: NSObject {
     
     
     func recoveryStations(from records: [BatteryStationRecord]) {
-        remoteStorage.update(from: records)
-        processStation(remoteStorage, strategy: .allExceptBuilding)
+        processStation(remoteStorage.update(from: records), strategy: .allExceptBuilding)
     }
     
     var operations: [BatteryStationPointAnnotation] = []
@@ -93,8 +92,7 @@ final class DataManager: NSObject {
                 return
             }
             self.remoteStorage = stations
-            DataManager.shared.originalStations.keepOldUpdate(with: stations)
-            self.processStation(DataManager.shared.originalStations)
+            self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: stations))
             onCompletion?()
         }
     }

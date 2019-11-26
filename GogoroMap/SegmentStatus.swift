@@ -36,13 +36,6 @@ enum TabItemCase: Int, CaseIterable {
         }
     }
     
-    static var needsCalculateStorage = Array(repeating: true, count: TabItemCase.allCases.count)
-    
-    var isNeedCalculate: Bool {
-        set {  Self.needsCalculateStorage[rawValue] = newValue  }
-        get {  Self.needsCalculateStorage[rawValue] }
-    }
-    
     var tabContantController: UIViewController { Self.viewControllers[rawValue] }
     
     static let viewControllers = TabItemCase.allCases.map { $0.viewController }
