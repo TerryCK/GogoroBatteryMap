@@ -45,23 +45,12 @@ extension Array where Element: BatteryDataModalProtocol {
         return remote
     }
     
-    @discardableResult
     func merge(from records: [BatteryStationRecord])  -> Array {
-        resetAllCheckinRecords()
         for record in records {
             for var station in self where record.id == station.coordinate {
                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                 break
             }
-        }
-        return self
-    }
-    
-    @discardableResult
-    func resetAllCheckinRecords() -> Array {
-        for var element in self where element.checkinDay != nil {
-            element.checkinDay = nil
-            element.checkinCounter = nil
         }
         return self
     }

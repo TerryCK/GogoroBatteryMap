@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum ServiceError: Error {
     
@@ -17,47 +18,66 @@ final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
     
-    private override init() {
-        super.init()
-        let storage = fetchData(from: .database).flatMap(decode) ?? DataManager.parse(data: fetchData(from: .bundle)!)!
-        processStation(storage)
-    }
-
     
-    func sorting() { processStation(originalStations) }
-    
-    func resetStations() {
-        operations.resetAllCheckinRecords()
-    }
     private let queue = DispatchQueue(label: "com.GogoroMap.processQueue")
     
-    private func processStation(_ stations: [BatteryStationPointAnnotation]) {
-        
+    private override init() {
+        super.init()
         queue.async {
-            let origin = stations.sorted(by: <)
-            self.operations = origin.filter(TabItemCase.nearby.hanlder)
-            self.checkins = self.operations.filter(TabItemCase.checkin.hanlder)
-            self.unchecks = self.operations.filter(TabItemCase.uncheck.hanlder)
-            self.buildings = origin.filter(TabItemCase.building.hanlder)
-            self.lastUpdate = Date()
+            let storage = self.fetchData(from: .database).flatMap(self.decode) ?? DataManager.parse(data: self.fetchData(from: .bundle)!)!
+            self.operations = storage.filter(TabItemCase.nearby.hanlder)
+            self.buildings  = storage.filter(TabItemCase.building.hanlder)
         }
     }
     
+    
+    func sorting() {
+        queue.async { self.processStation(self.originalStations) }
+    }
+    
+    func resetStations(completion: (() -> Void)?) {
+        queue.async {
+            self.processStation(self.remoteStorage.map(BatteryStationPointAnnotation.init), completion: completion)
+        }
+    }
+    
+    private func processStation(_ stations: [BatteryStationPointAnnotation], completion: (() -> Void)? = nil) {
+        DispatchQueue.main.async {
+            let title = UIApplication.mapViewController?.navigationItem.title
+            UIApplication.mapViewController?.navigationItem.title = "資料更新中..."
+            self.queue.async {
+                let origin = stations.sorted(by: <)
+                self.operations = origin.filter(TabItemCase.nearby.hanlder)
+                self.buildings  = origin.filter(TabItemCase.building.hanlder)
+                self.checkins = origin.filter(TabItemCase.checkin.hanlder)
+                self.unchecks = origin.filter(TabItemCase.uncheck.hanlder)
+                self.lastUpdate = Date()
+                DispatchQueue.main.async { UIApplication.mapViewController?.navigationItem.title = title }
+                completion?()
+            }
+        }
+    }
+    
+
     static let shared = DataManager()
-    
-    var originalStations: [BatteryStationPointAnnotation] { buildings + operations }
-    
-    private var remoteStorage: [BatteryStationPointAnnotation] = []
     
     @objc dynamic var lastUpdate: Date = Date()
     
     func save() {
-        guard let data = try? JSONEncoder().encode(originalStations) else { return }
-        UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
+        queue.async {
+            guard let data = try? JSONEncoder().encode(self.originalStations) else { return }
+            UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
+        }
     }
     
+    func recoveryStations(from records: [BatteryStationRecord]) {
+        queue.async {
+            let result = self.remoteStorage.map(BatteryStationPointAnnotation.init).merge(from: records)
+            self.processStation(result)
+        }
+    }
     
-    func recoveryStations(from records: [BatteryStationRecord]) { operations.merge(from: records) }
+    var originalStations: [BatteryStationPointAnnotation] { buildings + operations }
     
     var operations: [BatteryStationPointAnnotation] = []
     
@@ -75,17 +95,20 @@ final class DataManager: NSObject {
         try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
     }
     
+    var remoteStorage: [Response.Station] = []
+    
     func fetchStations(onCompletion: (() -> Void)? = nil) {
-        fetchData { (result) in
-            guard case let .success(data) = result, let stations = Self.parse(data: data) else {
-                return
+        queue.async {
+            self.fetchData { (result) in
+                guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations else {
+                    return
+                }
+                self.remoteStorage = stations
+                let result = stations.map(BatteryStationPointAnnotation.init)
+                self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: result), completion: onCompletion)
             }
-            self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: stations))
-            onCompletion?()
         }
     }
-    
-    
     
     private func fetchData(from apporach: Approach) -> Data? {
         switch apporach {

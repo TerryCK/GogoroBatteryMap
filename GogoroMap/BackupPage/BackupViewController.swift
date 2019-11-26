@@ -164,7 +164,16 @@ extension BackupViewController {
             let alertController =  UIAlertController(title: "確定要重設打卡記錄？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "重設", style: .destructive, handler : { _ in
-                    DataManager.shared.resetStations()
+                    DispatchQueue.main.async {
+                        let title = UIApplication.mapViewController?.navigationItem.title
+                        UIApplication.mapViewController?.navigationItem.title = "資料整理中..."
+                        DataManager.shared.resetStations {
+                            DispatchQueue.main.async {
+                                UIApplication.mapViewController?.navigationItem.title = title
+                            }
+                        }
+                    }
+                   
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
@@ -220,6 +229,7 @@ extension BackupViewController {
                     guard let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else {
                         return
                     }
+                
                     DataManager.shared.recoveryStations(from: stationRecords)
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
