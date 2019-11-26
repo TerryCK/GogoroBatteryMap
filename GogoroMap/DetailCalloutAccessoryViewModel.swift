@@ -15,13 +15,7 @@ struct DetailCalloutAccessoryViewModel {
     let annotationView: MKAnnotationView
     let controller: MapViewController
 }
-extension Array where Element == TabItemCase {
-    func setNeedCalculator() {
-        for var element in self {
-            element.isNeedCalculate = true
-        }
-    }
-}
+
 extension DetailCalloutAccessoryViewModel {
     
     private func checkinCount(with calculate: (Int, Int) -> Int, nativeAd: GADUnifiedNativeAd?) {

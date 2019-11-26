@@ -34,22 +34,24 @@ extension Array where Element: BatteryDataModalProtocol {
         case sync, remove
     }
     
-    func keepOldUpdate(with remote: Array) {
+    func keepOldUpdate(with remote: Array) -> Array {
         for var new in remote {
             for local in self where local == new {
                 (new.checkinCounter, new.checkinDay) = (local.checkinCounter, local.checkinDay)
                 break
             }
         }
+        return remote
     }
     
-    func update(from records: [BatteryStationRecord]) {
+    func update(from records: [BatteryStationRecord])  -> Array {
         for record in records {
             for var station in self where record.id == station.coordinate {
                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
                 break
             }
         }
+        return self
     }
     
     func reset() -> Array {
@@ -63,9 +65,8 @@ extension Array where Element: BatteryDataModalProtocol {
     mutating func update(_ operation: Strategy, _ target: Element) {
         switch operation {
         case .sync:
-            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
-                self[index] = target
-            } else if let index = firstIndex(where: { $0.distance > target.distance }) {
+            guard firstIndex(where: { $0.coordinate == target.coordinate }) == nil else { return }
+             if let index = firstIndex(where: { $0.distance > target.distance }) {
                 insert(target, at: index)
             } else {
                 append(target)
@@ -77,6 +78,4 @@ extension Array where Element: BatteryDataModalProtocol {
             }
         }
     }
-    
-    
 }
