@@ -49,8 +49,8 @@ final class DataManager: NSObject {
                 let origin = stations.sorted(by: <)
                 self.operations = origin.filter(TabItemCase.nearby.hanlder)
                 self.buildings  = origin.filter(TabItemCase.building.hanlder)
-                self.checkins = origin.filter(TabItemCase.checkin.hanlder)
-                self.unchecks = origin.filter(TabItemCase.uncheck.hanlder)
+                self.checkins   = origin.filter(TabItemCase.checkin.hanlder)
+                self.unchecks   = origin.filter(TabItemCase.uncheck.hanlder)
                 self.lastUpdate = Date()
                 DispatchQueue.main.async { UIApplication.mapViewController?.navigationItem.title = title }
                 completion?()
