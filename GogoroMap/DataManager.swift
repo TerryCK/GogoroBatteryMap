@@ -21,33 +21,24 @@ final class DataManager: NSObject {
         super.init()
         let storage = fetchData(from: .database).flatMap(decode) ?? DataManager.parse(data: fetchData(from: .bundle)!)!
         processStation(storage)
-//        DispatchQueue.global().async {
-//            self.remoteStorage = storage.reset()
-//        }
     }
-    
-    enum ProcessStrategy {
-        case all, allExceptBuilding
-    }
+
     
     func sorting() { processStation(originalStations) }
     
     func resetStations() {
-        processStation(remoteStorage, strategy: .allExceptBuilding)
+        operations.resetAllCheckinRecords()
     }
     private let queue = DispatchQueue(label: "com.GogoroMap.processQueue")
     
-    private func processStation(_ stations: [BatteryStationPointAnnotation], strategy: ProcessStrategy = .all) {
+    private func processStation(_ stations: [BatteryStationPointAnnotation]) {
         
         queue.async {
             let origin = stations.sorted(by: <)
             self.operations = origin.filter(TabItemCase.nearby.hanlder)
             self.checkins = self.operations.filter(TabItemCase.checkin.hanlder)
             self.unchecks = self.operations.filter(TabItemCase.uncheck.hanlder)
-            
-            if strategy == .all {
-                self.buildings = origin.filter(TabItemCase.building.hanlder)
-            }
+            self.buildings = origin.filter(TabItemCase.building.hanlder)
             self.lastUpdate = Date()
         }
     }
@@ -66,9 +57,7 @@ final class DataManager: NSObject {
     }
     
     
-    func recoveryStations(from records: [BatteryStationRecord]) {
-        processStation(remoteStorage.update(from: records), strategy: .allExceptBuilding)
-    }
+    func recoveryStations(from records: [BatteryStationRecord]) { operations.merge(from: records) }
     
     var operations: [BatteryStationPointAnnotation] = []
     
@@ -91,7 +80,6 @@ final class DataManager: NSObject {
             guard case let .success(data) = result, let stations = Self.parse(data: data) else {
                 return
             }
-            self.remoteStorage = stations
             self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: stations))
             onCompletion?()
         }

@@ -36,7 +36,7 @@ extension Array where Element: BatteryDataModalProtocol {
     
     func keepOldUpdate(with remote: Array) -> Array {
         for var new in remote {
-            for local in self where local == new {
+            for local in self where local.coordinate == new.coordinate {
                 (new.checkinCounter, new.checkinDay) = (local.checkinCounter, local.checkinDay)
                 break
             }
@@ -44,7 +44,9 @@ extension Array where Element: BatteryDataModalProtocol {
         return remote
     }
     
-    func update(from records: [BatteryStationRecord])  -> Array {
+    @discardableResult
+    func merge(from records: [BatteryStationRecord])  -> Array {
+        resetAllCheckinRecords()
         for record in records {
             for var station in self where record.id == station.coordinate {
                 (station.checkinDay, station.checkinCounter) = (record.checkinDay, record.checkinCount)
@@ -54,7 +56,8 @@ extension Array where Element: BatteryDataModalProtocol {
         return self
     }
     
-    func reset() -> Array {
+    @discardableResult
+    func resetAllCheckinRecords() -> Array {
         for var element in self where element.checkinDay != nil {
             element.checkinDay = nil
             element.checkinCounter = nil
@@ -66,7 +69,7 @@ extension Array where Element: BatteryDataModalProtocol {
         switch operation {
         case .sync:
             guard firstIndex(where: { $0.coordinate == target.coordinate }) == nil else { return }
-             if let index = firstIndex(where: { $0.distance > target.distance }) {
+            if let index = firstIndex(where: { $0.distance > target.distance }) {
                 insert(target, at: index)
             } else {
                 append(target)
