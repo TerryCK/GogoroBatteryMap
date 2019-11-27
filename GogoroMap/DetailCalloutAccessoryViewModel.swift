@@ -57,7 +57,7 @@ extension DetailCalloutAccessoryViewModel {
 
         guard let userLocation = LocationManager.shared.userLocation?.coordinate else {
             detailCalloutView.distanceLabel.text = "無法取得目前位置"
-            detailCalloutView.etaLabel.text = .denied != LocationManager.shared.status ? "LocationPermission".localize() : ""
+            detailCalloutView.etaLabel.text = .denied == LocationManager.shared.status ? "LocationPermission".localize() : ""
             return
         }
         detailCalloutView.distanceLabel.text = "距離計算中..."
