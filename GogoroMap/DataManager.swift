@@ -23,9 +23,10 @@ final class DataManager: NSObject {
     
     private override init() {
         super.init()
+        
+        let storage = self.fetchData(from: .database).flatMap(self.decode) ?? DataManager.parse(data: self.fetchData(from: .bundle)!)!
+        self.operations = storage.filter(TabItemCase.nearby.hanlder)
         queue.async {
-            let storage = self.fetchData(from: .database).flatMap(self.decode) ?? DataManager.parse(data: self.fetchData(from: .bundle)!)!
-            self.operations = storage.filter(TabItemCase.nearby.hanlder)
             self.buildings  = storage.filter(TabItemCase.building.hanlder)
         }
     }
