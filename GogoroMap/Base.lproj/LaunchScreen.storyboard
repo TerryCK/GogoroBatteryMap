@@ -19,16 +19,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="guidePage" translatesAutoresizingMaskIntoConstraints="NO" id="ZJr-xk-Vzf">
-                                <rect key="frame" x="0.0" y="52" width="414" height="802"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="Z8H-1F-gRz">
+                                <rect key="frame" x="113.5" y="398" width="187" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Z8H-1F-gRz" secondAttribute="height" multiplier="28:15" id="CDv-QH-H6d"/>
+                                    <constraint firstAttribute="height" constant="100" id="aPT-3v-Bgt"/>
+                                </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.34143039580000001" green="0.62514930960000004" blue="0.48749166729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ZJr-xk-Vzf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="Hc8-40-ixW"/>
-                            <constraint firstItem="ZJr-xk-Vzf" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="8" id="NPk-ks-ZZw"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="ZJr-xk-Vzf" secondAttribute="bottom" constant="8" id="YnW-T0-DDh"/>
-                            <constraint firstItem="ZJr-xk-Vzf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="gcf-hQ-G8A"/>
+                            <constraint firstItem="Z8H-1F-gRz" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="EHp-Lw-5rN"/>
+                            <constraint firstItem="Z8H-1F-gRz" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qJI-F3-gn1"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +40,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="guidePage" width="320" height="568"/>
+        <image name="icon" width="339.5" height="179.5"/>
     </resources>
 </document>
