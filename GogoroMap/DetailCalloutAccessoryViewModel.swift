@@ -53,9 +53,8 @@ extension DetailCalloutAccessoryViewModel {
             let detailCalloutView = detailCalloutView else { return }
         detailCalloutView.setupNativeAd()
         guard .denied != LocationManager.shared.status, let userLocation = LocationManager.shared.userLocation?.coordinate else  {
-            LocationManager.shared.authorization(status: .denied)
             detailCalloutView.distanceLabel.text = "LocationPermission".localize()
-            detailCalloutView.etaLabel.text = nil
+            detailCalloutView.etaLabel.text = "LocationMessage".localize()
             return
         }
         
