@@ -450,7 +450,7 @@ extension MapViewController: IAPPurchasable {
     
     func setupObserver() {
         
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new, .old]) { [unowned self] (_, _) in
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.initial, .new, .old]) { [unowned self] (_, _) in
             let selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
             DispatchQueue.main.async {

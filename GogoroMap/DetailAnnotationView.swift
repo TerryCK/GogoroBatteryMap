@@ -193,6 +193,10 @@ final class DetailAnnotationView: UIView {
     
     @discardableResult
     func configure(annotation: BatteryStationPointAnnotation) -> Self {
+        if nativeAdView != nil, UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) {
+            nativeAdView?.removeFromSuperview()
+        }
+        
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
         checkinButton.isEnabled = annotation.isOperating

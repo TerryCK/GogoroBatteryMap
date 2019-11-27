@@ -54,7 +54,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
                 }
             }
             
-            let cancelAction = UIAlertAction(title: "Cancel".localize(), style: .default, handler: nil)
+            let cancelAction = UIAlertAction(title: "Ignore".localize(), style: .default, handler: nil)
             alert.addAction(settingsAction)
             alert.addAction(cancelAction)
             alert.preferredAction = settingsAction
