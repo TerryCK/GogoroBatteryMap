@@ -11,30 +11,11 @@ import GoogleMobileAds
 
 final class DetailAnnotationView: UIView {
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let hitView = super.hitTest(point, with: event)
-        if (hitView != nil) {
-            superview?.bringSubviewToFront(self)
-        }
-        return hitView
-    }
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        var isInside: Bool = bounds.contains(point)
-        if !isInside {
-            for view in subviews {
-                isInside = view.frame.contains(point)
-                if isInside { break }
-            }
-        }
-        return isInside
-    }
-    
     let goButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "go").withRenderingMode(.alwaysOriginal), for: .normal)
         button.contentMode = .scaleAspectFill
         button.tag = ButtonAction.go.rawValue
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
     
@@ -59,14 +40,12 @@ final class DetailAnnotationView: UIView {
     
     let checkinButton: UIButton = {
         $0.tag = ButtonAction.checkin.rawValue
-        $0.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return $0
     }(CheckinButton(type: .system))
     
     let unCheckinButton: UIButton = {
         $0.isHidden = true
         $0.tag = ButtonAction.uncheckin.rawValue
-        $0.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return $0
     }(UnCheckInButton(type: .system))
     
@@ -167,6 +146,17 @@ final class DetailAnnotationView: UIView {
         backgroundColor = .clear
         layer.cornerRadius = 5
         layer.masksToBounds = true
+        let touchEvent: UIControl.Event
+        
+        if #available(iOS 13, *) {
+            touchEvent = .touchDown
+        } else {
+            touchEvent = .touchUpInside
+        }
+        
+        [checkinButton, unCheckinButton, goButton].forEach {
+            $0.addTarget(self, action: #selector(buttonPressed), for: touchEvent)
+        }
     }
     
     private override init(frame: CGRect) {
@@ -203,8 +193,6 @@ final class DetailAnnotationView: UIView {
     
     @discardableResult
     func configure(annotation: BatteryStationPointAnnotation) -> Self {
-        
-        
         opneHourLabel.text = "\(annotation.subtitle ?? "")"
         addressLabel.text = "地址：\(annotation.address)"
         checkinButton.isEnabled = annotation.isOperating

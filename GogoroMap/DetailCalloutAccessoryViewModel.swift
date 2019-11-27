@@ -52,7 +52,7 @@ extension DetailCalloutAccessoryViewModel {
         guard let destination = batteryAnnotation,
             let detailCalloutView = detailCalloutView else { return }
         detailCalloutView.setupNativeAd()
-        guard .denied != LocationManager.shared.status, let userLocation = LocationManager.shared.userLocation?.coordinate else  {
+        guard .denied != LocationManager.shared.status else  {
             detailCalloutView.distanceLabel.text = "LocationPermission".localize()
             detailCalloutView.etaLabel.text = "LocationMessage".localize()
             return
@@ -60,6 +60,11 @@ extension DetailCalloutAccessoryViewModel {
         
         detailCalloutView.checkinAction = { self.checkinCount(with: +) }
         detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
+        guard let userLocation = LocationManager.shared.userLocation?.coordinate else {
+            detailCalloutView.distanceLabel.text = "無法取得目前位置"
+            detailCalloutView.etaLabel.text = ""
+            return
+        }
         detailCalloutView.distanceLabel.text = "距離計算中..."
         detailCalloutView.etaLabel.text = "時間計算中..."
         
