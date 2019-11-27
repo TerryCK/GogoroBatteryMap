@@ -253,7 +253,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
             return
         }
-        
+        nativeAdLoader?.load(DFPRequest())
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc?.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
@@ -391,14 +391,9 @@ extension MapViewController: MKMapViewDelegate {
             clusterSetVisibleMapRect(with: clusterAnnotation)
             return
         }
-//        nativeAdLoader?.load(DFPRequest())
-//        bannerView.load(DFPRequest())
+        nativeAdLoader?.load(DFPRequest())
         Answers.log(event: .MapButton, customAttributes: "Display annotation view")
         fpc?.move(to: .tip, animated: true) {
-            if let detail = view.detailCalloutAccessoryView {
-                view.bringSubviewToFront(detail)
-            }
-            
             DetailCalloutAccessoryViewModel(annotationView: view).bind()
         }
         

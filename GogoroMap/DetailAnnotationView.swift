@@ -21,11 +21,9 @@ final class DetailAnnotationView: UIView {
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         var isInside: Bool = bounds.contains(point)
         if !isInside {
-            for view in self.subviews {
+            for view in subviews {
                 isInside = view.frame.contains(point)
-                if isInside {
-                    break
-                }
+                if isInside { break }
             }
         }
         return isInside
@@ -39,6 +37,7 @@ final class DetailAnnotationView: UIView {
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
+    
     enum ButtonAction: Int {
         case go = 0, checkin = 1, uncheckin = 2
     }
