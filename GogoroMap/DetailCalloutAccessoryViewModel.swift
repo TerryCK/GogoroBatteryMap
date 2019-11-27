@@ -54,7 +54,7 @@ extension DetailCalloutAccessoryViewModel {
         detailCalloutView.setupNativeAd()
         guard .denied != LocationManager.shared.status else  {
             detailCalloutView.distanceLabel.text = "LocationPermission".localize()
-            detailCalloutView.etaLabel.text = "LocationMessage".localize()
+            detailCalloutView.etaLabel.text = "無法取得目前位置"
             return
         }
         
