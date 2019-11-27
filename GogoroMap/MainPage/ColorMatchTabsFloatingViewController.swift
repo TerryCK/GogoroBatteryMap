@@ -24,7 +24,8 @@ final class ColorMatchTabsFloatingViewController: ColorMatchTabsViewController {
         colorMatchTabDataSource = self
         colorMatchTabDelegate = self
     }
-    
+    private var lastADReloadDate : Date = Date()
+       
     private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
 
@@ -55,7 +56,7 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
          .lightGreen
     }
     
-    
+   
     func didSelectItemAt(_ index: Int) {
         
         if let scrollerView = (TabItemCase.viewControllers[index] as? ViewTrackable)?.trackView {
@@ -65,7 +66,12 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
         if tabItemProvider[index] != .setting {
              DataManager.shared.lastUpdate = Date()
         }
-        UIApplication.mapViewController?.reloadBannerAds()
+        
+        if Date().timeIntervalSince(lastADReloadDate) > 5 {
+            UIApplication.mapViewController?.reloadBannerAds()
+            lastADReloadDate = Date()
+        }
+       
         Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
         
     }
