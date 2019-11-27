@@ -13,8 +13,8 @@ class UnCheckInButton: CustomButton {
     var mainColor: UIColor { .lightRed }
     
     let slaveColor = UIColor.white
-
-   override func setup() {
+    
+    override func setup() {
         backgroundColor = mainColor
         tintColor = slaveColor
         layer.borderWidth = 3
@@ -27,6 +27,7 @@ class UnCheckInButton: CustomButton {
     
     override var isHighlighted: Bool {
         didSet {
+            if #available(iOS 13, *) { return }
             backgroundColor = isHighlighted ? slaveColor : mainColor
             tintColor = isHighlighted ? mainColor : slaveColor
         }
