@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,20 +11,20 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TableViewHeaderView" customModule="GogoroMap">
-            <rect key="frame" x="0.0" y="0.0" width="368" height="60"/>
+            <rect key="frame" x="0.0" y="0.0" width="368" height="40"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MxY-Qi-TJq" userLabel="ContentView">
-                    <rect key="frame" x="0.0" y="0.0" width="368" height="60"/>
+                    <rect key="frame" x="0.0" y="0.0" width="368" height="40"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10 站" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTr-4A-MgA">
-                            <rect key="frame" x="82" y="33" width="40" height="21"/>
+                            <rect key="frame" x="82" y="13" width="40" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="彰化" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="bHD-sp-NbH">
-                            <rect key="frame" x="20" y="27.5" width="45" height="26.5"/>
+                            <rect key="frame" x="20" y="7.5" width="45" height="26.5"/>
                             <fontDescription key="fontDescription" type="system" weight="black" pointSize="22"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -37,7 +37,7 @@
                         <constraint firstAttribute="bottom" secondItem="bHD-sp-NbH" secondAttribute="bottom" constant="6" id="BwM-Zw-q0m"/>
                         <constraint firstItem="aTr-4A-MgA" firstAttribute="bottom" secondItem="bHD-sp-NbH" secondAttribute="bottom" id="RiR-6C-zdn"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="aTr-4A-MgA" secondAttribute="trailing" id="jZ9-nq-3gT"/>
-                        <constraint firstAttribute="height" constant="60" id="mYx-z0-0GU"/>
+                        <constraint firstAttribute="height" constant="40" id="mYx-z0-0GU"/>
                     </constraints>
                 </view>
             </subviews>
@@ -54,7 +54,7 @@
                 <outlet property="countLabel" destination="aTr-4A-MgA" id="Zk6-Lr-xDv"/>
                 <outlet property="regionLabel" destination="bHD-sp-NbH" id="cPO-eL-4Ej"/>
             </connections>
-            <point key="canvasLocation" x="-108.69565217391305" y="-95.424107142857139"/>
+            <point key="canvasLocation" x="-108.69565217391305" y="-102.45535714285714"/>
         </view>
     </objects>
 </document>

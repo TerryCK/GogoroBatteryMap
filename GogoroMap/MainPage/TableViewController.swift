@@ -13,7 +13,7 @@ import GoogleMobileAds
 extension TableViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-       
+        
         UIApplication.mapViewController?.fpc?.move(to: .full, animated: true)
         searchBar.showsCancelButton = true
     }
@@ -21,7 +21,7 @@ extension TableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
     }
-
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
@@ -37,11 +37,21 @@ extension TableViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
-
+extension Array where Element: BatteryDataModalProtocol {
+    mutating func ads(array: Array) -> Array {
+        for adCell in array  {
+            if adCell.state < count {
+                insert(adCell, at: adCell.state)
+            } else {
+                append(adCell)
+            }
+        }
+        return self
+    }
+}
 final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
-    
     
     private var searchText = "" {
         didSet {
@@ -78,7 +88,10 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     var stations: [BatteryStationPointAnnotation]  {
-        set { searchResultData = searchText.isEmpty ? newValue : newValue.filter(text: searchText)  }
+        set {
+            var result = searchText.isEmpty ? newValue : newValue.filter(text: searchText)
+            searchResultData = result.ads(array: adCells)
+        }
         get { tabItem.stationDataSource }
     }
     
@@ -89,10 +102,20 @@ final class TableViewController: UITableViewController, ViewTrackable {
             }
         }
     }
-
+    private let adid: String = "ads"
+    
+    var adCells: [BatteryStationPointAnnotation] {
+        (0...(searchResultData.count / 6)).map { BatteryStationPointAnnotation(ad: adid, insert: ($0 + 1) * 6) }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard searchResultData[indexPath.row].address != adid else { return 280 }
+        return UITableView.automaticDimension
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
-        header.countLabel.text = "\(searchResultData.count) 站"
+        header.countLabel.text = "\(searchResultData.count - adCells.count) 站"
         header.regionLabel.text = searchText.isEmpty ? "總共: " : "過濾關鍵字：\(searchText)"
         return header
     }
@@ -102,8 +125,11 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell
         let station = searchResultData[indexPath.row]
+        guard station.address != adid else {
+            return adCell.combind(index: indexPath.row + 1)
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier") as! TableViewCell
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
         cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
         cell.subtitleLabel.text = locationManager.userLocation
@@ -117,9 +143,21 @@ final class TableViewController: UITableViewController, ViewTrackable {
         return cell
     }
     
+    
+    private var adCell: NativeAdTableViewCell {
+        Bundle.main.loadNibNamed("NativeAdTableViewCell", owner: nil, options: nil)?.first as! NativeAdTableViewCell
+    }
+    
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        searchBar.resignFirstResponder()
-         UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
+        switch searchResultData[indexPath.row].address {
+        case adid:
+           let cell = tableView.cellForRow(at: indexPath) as! NativeAdTableViewCell
+           (cell.nativeAdView.callToActionView as? UIButton)?.sendActions(for: .touchUpInside)
+        case _:
+            searchBar.resignFirstResponder()
+            UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
+        }
     }
 }
 
