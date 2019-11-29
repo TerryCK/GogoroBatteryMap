@@ -88,4 +88,10 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         self.subtitle   = subtitle
         self.coordinate = coordinate
     }
+    
+    init(ad: String, insert: Int) {
+        self.address = ad
+        self.state = insert
+        super.init()
+    }
 }
