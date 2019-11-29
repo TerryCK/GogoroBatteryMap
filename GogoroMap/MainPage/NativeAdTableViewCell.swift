@@ -40,7 +40,9 @@ final class NativeAdTableViewCell: UITableViewCell {
         ratingImageView.image = imageOfStars(from: nativeAd?.starRating)
         storeLabel.text = nativeAd?.store
         mediaView.mediaContent = nativeAd?.mediaContent
-       
+        nativeAd?.register(self,
+                           clickableAssetViews: [GADUnifiedNativeAssetIdentifier.callToActionAsset : self],
+                           nonclickableAssetViews: [:])
     }
     
     func combind(index: Int) -> Self {
