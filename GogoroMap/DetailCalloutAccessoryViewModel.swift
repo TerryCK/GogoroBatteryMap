@@ -52,9 +52,15 @@ extension DetailCalloutAccessoryViewModel {
         guard let destination = batteryAnnotation,
             let detailCalloutView = detailCalloutView else { return }
         detailCalloutView.setupNativeAd()
-        detailCalloutView.checkinAction =   { view in
+        detailCalloutView.checkinAction =  { view in
             self.checkinCount(with: +)
-            UIApplication.mapViewController?.fireworksController.addFirework(sparks: Int.random(in: 10...30), above: view)
+            let checkinCount = destination.checkinCounter ?? 0
+            let count = min(checkinCount + Int.random(in: 4...10) ,20)
+            UIApplication.mapViewController?.fireworksController.addFireworks(count: count, sparks: 8, around: view.checkinButton)
+            
+            if checkinCount > 1 {
+                UIApplication.mapViewController?.fountainFireworkController.addFirework(sparks: count, above: view.timesOfCheckinLabel)
+            }
         }
         
         detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
