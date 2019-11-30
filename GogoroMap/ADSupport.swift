@@ -10,12 +10,16 @@ import Foundation
 import GoogleMobileAds
 import Crashlytics
 
-protocol ADSupportable: GADBannerViewDelegate {
+protocol ADSupportable: GADBannerViewDelegate, NativeAdIdentify {
     
     func setupAd(with view: UIView)
     var bannerView: GADBannerView { set get }
     var adUnitID: String { get }
     func adViewDidReceiveAd(_ bannerView: GADBannerView)
+}
+
+protocol NativeAdIdentify {
+    var nativeAdID: String { get }
 }
 
 extension ADSupportable where Self: UIViewController {
@@ -75,7 +79,7 @@ extension ADSupportable where Self: UIViewController {
 }
 
 extension GADAdLoader {
-    static func createNativeAd<T: GADAdLoaderDelegate & UIViewController & ADSupportable>(delegate vc: T) -> GADAdLoader? {
+    static func createNativeAd<T: GADAdLoaderDelegate & UIViewController & NativeAdIdentify>(delegate vc: T) -> GADAdLoader? {
         guard !UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey) else {
             return nil
         }

@@ -49,6 +49,8 @@ extension Array where Element: BatteryDataModalProtocol {
         return self
     }
 }
+
+
 final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
@@ -62,9 +64,15 @@ final class TableViewController: UITableViewController, ViewTrackable {
         }
     }
     
+    
+    
     private let locationManager: LocationManager = .shared
     
     let tabItem: TabItemCase
+    
+    var nativeAdLoader: GADAdLoader?
+    
+    var nativeAd: GADUnifiedNativeAd?
     
     init(style: UITableView.Style, tabItem: TabItemCase) {
         self.tabItem = tabItem
@@ -85,12 +93,13 @@ final class TableViewController: UITableViewController, ViewTrackable {
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
+        nativeAdLoader = GADAdLoader.createNativeAd(delegate: self)
     }
     
     var stations: [BatteryStationPointAnnotation]  {
         set {
             var result = searchText.isEmpty ? newValue : newValue.filter(text: searchText)
-            searchResultData = result.ads(array: adCells)
+            searchResultData = nativeAd == nil ? result : result.ads(array: ads)
         }
         get { tabItem.stationDataSource }
     }
@@ -102,21 +111,29 @@ final class TableViewController: UITableViewController, ViewTrackable {
             }
         }
     }
+    
     private let adid: String = "ads"
     
-    private let fequentlyAdShow = 4
-    var adCells: [BatteryStationPointAnnotation] {
+    private let fequentlyAdShow = 5
+    
+    var ads: [BatteryStationPointAnnotation] {
         (0...(searchResultData.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: ($0 + 1) * fequentlyAdShow) }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard searchResultData[indexPath.row].address != adid else { return 280 }
+        guard searchResultData[indexPath.row].address != adid else {
+            if let hight = nativeAd?.aspcetHeight {
+                return hight + 100
+            } else {
+                return 0
+            }
+        }
         return UITableView.automaticDimension
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
-        header.countLabel.text = "\(searchResultData.count - adCells.count) 站"
+        header.countLabel.text = "\(searchResultData.count - ads.count) 站"
         header.regionLabel.text = searchText.isEmpty ? "總共: " : "過濾關鍵字：\(searchText)"
         return header
     }
@@ -127,10 +144,12 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let station = searchResultData[indexPath.row]
-        guard station.address != adid else {
-            let cell = adCell.combind(index: indexPath.row + 1)
-            return cell
+        
+        if let nativeAd = nativeAd, station.address == adid {
+            return NativeAdTableViewCell.builder().combind(index: indexPath.row + 1, nativeAd: nativeAd)
         }
+        
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier") as! TableViewCell
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
         cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
@@ -146,38 +165,47 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     
-    private var adCell: NativeAdTableViewCell {
-        Bundle.main.loadNibNamed("NativeAdTableViewCell", owner: nil, options: nil)?.first as! NativeAdTableViewCell
-    }
-    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch searchResultData[indexPath.row].address {
-        case adid:
-           let cell = tableView.cellForRow(at: indexPath) as! NativeAdTableViewCell
-           (cell.nativeAdView.callToActionView as? UIButton)?.sendActions(for: .touchUpInside)
-        case _:
-            searchBar.resignFirstResponder()
-            UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
+        
+        guard searchResultData[indexPath.row].address != adid else {
+            return
         }
+        
+        searchBar.resignFirstResponder()
+        UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
     }
 }
 
-extension UIColor {
+
+ 
+extension TableViewController: GADUnifiedNativeAdLoaderDelegate {
+    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
+        debugPrint("TableViewController recived an native ad: ", nativeAd)
+        self.nativeAd = nativeAd
+        self.nativeAd?.delegate = self
+        stations = tabItem.stationDataSource
+    }
+}
+
+extension TableViewController: GADUnifiedNativeAdDelegate, NativeAdIdentify {
     
-    enum Colors {
-        static let label: UIColor = {
-            if #available(iOS 13.0, *) {
-                return .label
-            } else {
-                return .white
-            }
-        }()
-        static let tint: UIColor = {
-            guard  #available(iOS 13.0, *) else {
-                return .white
-            }
-            return UIColor { $0.userInterfaceStyle == .dark ? .white : .lightText }
-        }()
+    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
+        print("TableViewController: didFailToReceiveAdWithError ", error)
+    }
+    
+    var nativeAdID: String {
+        switch Environment.environment {
+        case .debug  : return "ca-app-pub-3940256099942544/3986624511"
+        case .release: return Keys.standard.tableViewNativeAdID
+        }
+    }
+    
+    
+}
+
+extension GADUnifiedNativeAd {
+    var aspcetHeight: CGFloat {
+        mediaContent.aspectRatio == 0 ? 0 : UIScreen.main.bounds.width / mediaContent.aspectRatio
     }
 }

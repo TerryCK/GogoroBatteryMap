@@ -10,15 +10,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="280" id="KGk-i7-Jjw" customClass="NativeAdTableViewCell" customModule="GogoroMap" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="444" height="280"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="309" id="KGk-i7-Jjw" customClass="NativeAdTableViewCell" customModule="GogoroMap" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="428" height="310"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="444" height="280"/>
+                <rect key="frame" x="0.0" y="0.0" width="428" height="310"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" id="20x-p2-Afh" customClass="GADUnifiedNativeAdView">
-                        <rect key="frame" x="0.0" y="0.0" width="444" height="280"/>
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="310"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="61G-0f-sMR">
@@ -31,48 +31,23 @@
                                     <constraint firstAttribute="width" constant="40" id="g6K-e1-lic"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Advertiser" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mE9-nU-i6K">
-                                <rect key="frame" x="67" y="47.5" width="66.5" height="17"/>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Advertiser + rating" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mE9-nU-i6K">
+                                <rect key="frame" x="67" y="47.5" width="345" height="17"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="ePY-vf-gUX"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="mhM-11-NZG" customClass="GADMediaView">
-                                <rect key="frame" x="70" y="66" width="358" height="178"/>
+                                <rect key="frame" x="22" y="90" width="390" height="187"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" notEnabled="YES"/>
                                 </accessibility>
-                                <constraints>
-                                    <constraint firstAttribute="height" priority="999" constant="178" id="cBk-ep-7Kz"/>
-                                </constraints>
                             </view>
-                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Fb-xQ-810">
-                                <rect key="frame" x="386" y="244" width="48" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="Install">
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                            </button>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFZ-Ds-25x">
-                                <rect key="frame" x="298" y="252.5" width="33" height="17"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Store" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tzo-9e-kjY">
-                                <rect key="frame" x="341" y="252.5" width="35" height="17"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Headline" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mLi-kJ-6qO">
-                                <rect key="frame" x="16" y="19" width="412" height="20.5"/>
+                                <rect key="frame" x="16" y="19" width="396" height="20.5"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -83,18 +58,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="17" translatesAutoresizingMaskIntoConstraints="NO" id="MGO-LQ-Udb">
-                                <rect key="frame" x="133.5" y="47.5" width="100" height="17"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
-                                </accessibility>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="dDC-2t-qOF"/>
-                                    <constraint firstAttribute="width" constant="100" id="wch-6A-5nk"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ad" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cAD-u2-QsC">
-                                <rect key="frame" x="0.0" y="0.0" width="15" height="15"/>
+                                <rect key="frame" x="-16" y="0.0" width="15" height="15"/>
                                 <color key="backgroundColor" red="1" green="0.80000001190000003" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
@@ -107,51 +72,71 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="bodyLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="sn4-Al-TjV">
+                                <rect key="frame" x="67" y="65.5" width="345" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" text="Price + Store " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YeN-J8-GKa">
+                                <rect key="frame" x="16" y="277" width="88" height="29"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Fb-xQ-810">
+                                <rect key="frame" x="104" y="277" width="308" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="ixM-54-NhI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <state key="normal" title="Install">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <accessibility key="accessibilityConfiguration">
                             <accessibilityTraits key="traits" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstItem="DFZ-Ds-25x" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="20x-p2-Afh" secondAttribute="leading" constant="20" symbolic="YES" id="1K8-gC-iOF"/>
+                            <constraint firstItem="mE9-nU-i6K" firstAttribute="top" secondItem="61G-0f-sMR" secondAttribute="top" id="61Z-JX-8cT"/>
                             <constraint firstItem="61G-0f-sMR" firstAttribute="leading" secondItem="Ttb-tb-A37" secondAttribute="leading" constant="22" id="C8N-jP-VC0"/>
-                            <constraint firstItem="3Fb-xQ-810" firstAttribute="top" secondItem="mhM-11-NZG" secondAttribute="bottom" id="Cgj-vt-8S9"/>
-                            <constraint firstItem="3Fb-xQ-810" firstAttribute="leading" secondItem="Tzo-9e-kjY" secondAttribute="trailing" constant="10" id="I0d-wb-7lO"/>
-                            <constraint firstItem="DFZ-Ds-25x" firstAttribute="centerY" secondItem="Tzo-9e-kjY" secondAttribute="centerY" id="Kr9-t9-qA3"/>
+                            <constraint firstItem="sn4-Al-TjV" firstAttribute="top" secondItem="mE9-nU-i6K" secondAttribute="bottom" constant="1" id="Cmb-jk-h3v"/>
+                            <constraint firstItem="3Fb-xQ-810" firstAttribute="top" secondItem="mhM-11-NZG" secondAttribute="bottom" id="IKR-BI-CAW"/>
+                            <constraint firstItem="mhM-11-NZG" firstAttribute="trailing" secondItem="3Fb-xQ-810" secondAttribute="trailing" id="KB9-0l-9fd"/>
                             <constraint firstItem="mLi-kJ-6qO" firstAttribute="leading" secondItem="Ttb-tb-A37" secondAttribute="leading" constant="16" id="LEp-ev-Qdy"/>
                             <constraint firstItem="cAD-u2-QsC" firstAttribute="top" secondItem="mLi-kJ-6qO" secondAttribute="top" constant="-19" id="O7h-Pi-7RB"/>
-                            <constraint firstItem="mhM-11-NZG" firstAttribute="leading" secondItem="61G-0f-sMR" secondAttribute="trailing" constant="8" id="PLx-uh-IW5"/>
+                            <constraint firstItem="61G-0f-sMR" firstAttribute="leading" secondItem="mhM-11-NZG" secondAttribute="leading" id="PLx-uh-IW5"/>
                             <constraint firstAttribute="trailing" secondItem="mLi-kJ-6qO" secondAttribute="trailing" constant="16" id="QRW-hz-7Ud"/>
                             <constraint firstItem="Ttb-tb-A37" firstAttribute="trailing" secondItem="mhM-11-NZG" secondAttribute="trailing" constant="16" id="QsQ-PQ-WNK"/>
-                            <constraint firstItem="MGO-LQ-Udb" firstAttribute="top" secondItem="61G-0f-sMR" secondAttribute="top" id="TAA-cP-yBG"/>
+                            <constraint firstItem="Ttb-tb-A37" firstAttribute="trailing" secondItem="sn4-Al-TjV" secondAttribute="trailing" constant="16" id="UdN-cU-5oC"/>
                             <constraint firstItem="61G-0f-sMR" firstAttribute="top" secondItem="mLi-kJ-6qO" secondAttribute="bottom" constant="8" id="YzM-dc-kCQ"/>
-                            <constraint firstItem="61G-0f-sMR" firstAttribute="bottom" secondItem="MGO-LQ-Udb" secondAttribute="bottom" id="clj-nL-dJC"/>
+                            <constraint firstItem="sn4-Al-TjV" firstAttribute="leading" secondItem="61G-0f-sMR" secondAttribute="trailing" constant="5" id="bnx-jG-6dJ"/>
+                            <constraint firstItem="mhM-11-NZG" firstAttribute="top" secondItem="sn4-Al-TjV" secondAttribute="bottom" constant="4" id="bpf-wc-Moy"/>
+                            <constraint firstItem="3Fb-xQ-810" firstAttribute="leading" secondItem="YeN-J8-GKa" secondAttribute="trailing" id="brn-sU-psl"/>
                             <constraint firstItem="cAD-u2-QsC" firstAttribute="trailing" secondItem="Ttb-tb-A37" secondAttribute="trailing" constant="-429" id="dRa-9q-lQX"/>
-                            <constraint firstItem="mhM-11-NZG" firstAttribute="top" secondItem="MGO-LQ-Udb" secondAttribute="bottom" constant="1.5" id="dVi-G8-eZd"/>
-                            <constraint firstItem="mE9-nU-i6K" firstAttribute="leading" secondItem="61G-0f-sMR" secondAttribute="trailing" constant="5" id="e5J-HT-ePj"/>
-                            <constraint firstItem="Ttb-tb-A37" firstAttribute="trailing" secondItem="3Fb-xQ-810" secondAttribute="trailing" constant="10" id="fKT-Ik-DRC"/>
+                            <constraint firstItem="YeN-J8-GKa" firstAttribute="bottom" secondItem="3Fb-xQ-810" secondAttribute="bottom" id="e0b-sh-RD0"/>
+                            <constraint firstItem="3Fb-xQ-810" firstAttribute="top" secondItem="YeN-J8-GKa" secondAttribute="top" id="es5-oS-ar2"/>
                             <constraint firstItem="mLi-kJ-6qO" firstAttribute="top" secondItem="20x-p2-Afh" secondAttribute="top" constant="19" id="fqZ-9b-byx"/>
-                            <constraint firstItem="MGO-LQ-Udb" firstAttribute="leading" secondItem="mE9-nU-i6K" secondAttribute="trailing" id="gpO-Wd-cRy"/>
-                            <constraint firstItem="mE9-nU-i6K" firstAttribute="centerY" secondItem="MGO-LQ-Udb" secondAttribute="centerY" id="pgc-FJ-70E"/>
-                            <constraint firstItem="Tzo-9e-kjY" firstAttribute="leading" secondItem="DFZ-Ds-25x" secondAttribute="trailing" constant="10" id="tvk-T2-RMW"/>
-                            <constraint firstItem="mE9-nU-i6K" firstAttribute="top" secondItem="61G-0f-sMR" secondAttribute="top" id="uHy-pn-l8I"/>
-                            <constraint firstItem="3Fb-xQ-810" firstAttribute="centerY" secondItem="Tzo-9e-kjY" secondAttribute="centerY" id="y0w-gB-gQo"/>
+                            <constraint firstItem="YeN-J8-GKa" firstAttribute="leading" secondItem="Ttb-tb-A37" secondAttribute="leading" constant="16" id="gYR-LD-8nb"/>
+                            <constraint firstAttribute="bottom" secondItem="3Fb-xQ-810" secondAttribute="bottom" constant="4" id="j5u-N7-c4D"/>
+                            <constraint firstItem="mE9-nU-i6K" firstAttribute="trailing" secondItem="sn4-Al-TjV" secondAttribute="trailing" id="kZN-aP-bte"/>
+                            <constraint firstItem="mE9-nU-i6K" firstAttribute="leading" secondItem="sn4-Al-TjV" secondAttribute="leading" id="so8-gG-70g"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ttb-tb-A37"/>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="clj-nL-dJC"/>
-                                <exclude reference="TAA-cP-yBG"/>
-                            </mask>
-                        </variation>
                         <connections>
-                            <outlet property="advertiserView" destination="mE9-nU-i6K" id="lIL-2E-2MK"/>
+                            <outlet property="advertiserView" destination="mE9-nU-i6K" id="yKD-Dr-aZD"/>
+                            <outlet property="bodyView" destination="sn4-Al-TjV" id="zhu-jZ-laF"/>
                             <outlet property="callToActionView" destination="3Fb-xQ-810" id="Bsp-CV-ho0"/>
                             <outlet property="headlineView" destination="mLi-kJ-6qO" id="BLP-zA-61V"/>
                             <outlet property="iconView" destination="61G-0f-sMR" id="dOV-CZ-UjG"/>
                             <outlet property="mediaView" destination="mhM-11-NZG" id="SyX-PW-gbq"/>
-                            <outlet property="priceView" destination="DFZ-Ds-25x" id="RGI-70-smN"/>
-                            <outlet property="starRatingView" destination="MGO-LQ-Udb" id="r63-qu-cmZ"/>
-                            <outlet property="storeView" destination="Tzo-9e-kjY" id="znv-kg-DYx"/>
+                            <outlet property="priceView" destination="YeN-J8-GKa" id="Slv-K7-XAh"/>
+                            <outlet property="starRatingView" destination="mE9-nU-i6K" id="ZHW-QQ-D8B"/>
+                            <outlet property="storeView" destination="YeN-J8-GKa" id="D1m-wS-R5o"/>
                         </connections>
                     </view>
                 </subviews>
@@ -163,16 +148,16 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="adLabel" destination="cAD-u2-QsC" id="MyL-Vb-VQh"/>
-                <outlet property="advertiserLabel" destination="mE9-nU-i6K" id="Ol2-Ar-Seh"/>
+                <outlet property="advertiserRatingLabel" destination="mE9-nU-i6K" id="SSF-Y4-1VC"/>
+                <outlet property="bodyLabel" destination="sn4-Al-TjV" id="pPp-Z2-UeK"/>
+                <outlet property="callToActionButton" destination="3Fb-xQ-810" id="Ey1-Hq-Nag"/>
                 <outlet property="headlineLabel" destination="mLi-kJ-6qO" id="I43-vt-Kkc"/>
                 <outlet property="iconImageView" destination="61G-0f-sMR" id="83i-sC-L8i"/>
                 <outlet property="mediaView" destination="mhM-11-NZG" id="Bc6-Zs-8nI"/>
-                <outlet property="nativeAdView" destination="20x-p2-Afh" id="5q2-gU-3Hn"/>
-                <outlet property="priceLabel" destination="DFZ-Ds-25x" id="KVF-Su-5Ov"/>
-                <outlet property="ratingImageView" destination="MGO-LQ-Udb" id="5c7-EM-vKa"/>
-                <outlet property="storeLabel" destination="Tzo-9e-kjY" id="s6Y-Le-Vth"/>
+                <outlet property="nativeAdView" destination="20x-p2-Afh" id="zbk-cQ-gQA"/>
+                <outlet property="priceStoreLabel" destination="YeN-J8-GKa" id="CAq-N2-c0R"/>
             </connections>
-            <point key="canvasLocation" x="52.173913043478265" y="43.526785714285715"/>
+            <point key="canvasLocation" x="40.579710144927539" y="53.571428571428569"/>
         </tableViewCell>
     </objects>
 </document>
