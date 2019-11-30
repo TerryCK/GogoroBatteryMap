@@ -41,7 +41,7 @@ extension Array where Element: BatteryDataModalProtocol {
     mutating func ads(array: Array) -> Array {
         for adCell in array  {
             if adCell.state < count {
-                insert(adCell, at: adCell.state)
+                insert(adCell, at: adCell.state - 1)
             } else {
                 append(adCell)
             }
@@ -104,8 +104,9 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     private let adid: String = "ads"
     
+    private let fequentlyAdShow = 4
     var adCells: [BatteryStationPointAnnotation] {
-        (0...(searchResultData.count / 6)).map { BatteryStationPointAnnotation(ad: adid, insert: ($0 + 1) * 6) }
+        (0...(searchResultData.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: ($0 + 1) * fequentlyAdShow) }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -127,7 +128,8 @@ final class TableViewController: UITableViewController, ViewTrackable {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let station = searchResultData[indexPath.row]
         guard station.address != adid else {
-            return adCell.combind(index: indexPath.row + 1)
+            let cell = adCell.combind(index: indexPath.row + 1)
+            return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier") as! TableViewCell
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first

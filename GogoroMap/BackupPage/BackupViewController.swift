@@ -177,7 +177,9 @@ extension BackupViewController {
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
-            
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                alertController.popoverPresentationController?.sourceView = resetRecord
+            }
             present(alertController, animated: true)
             return
         }
@@ -220,6 +222,9 @@ extension BackupViewController {
                     }}),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                alertController.popoverPresentationController?.sourceView = self.elements[1].cells?[indexPath.section]
+            }
             present(alertController, animated: true)
             
         case (.backupButton?, _):
@@ -234,7 +239,9 @@ extension BackupViewController {
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
-            
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                alertController.popoverPresentationController?.sourceView = self.elements[1].cells?[indexPath.row]
+            }
             present(alertController, animated: true)
         default: break
         }
@@ -263,6 +270,10 @@ extension BackupViewController {
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                alertController.popoverPresentationController?.sourceView = self.elements[1].cells?[indexPath.section]
+            }
+            
             self.present(alertController, animated: true)
         }
         
