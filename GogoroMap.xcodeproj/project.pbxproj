@@ -76,6 +76,28 @@
 		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
 		DE772FE622FD7369000A67C3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE522FD7369000A67C3 /* LocationManager.swift */; };
 		DEB9D37623121CAE00ACEBA9 /* gogoro.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB9D37523121CAE00ACEBA9 /* gogoro.json */; };
+		DED59D7A2392AFAB006EB9E0 /* ClassicSparkTrajectoryFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D602392AFAB006EB9E0 /* ClassicSparkTrajectoryFactoryProtocol.swift */; };
+		DED59D7B2392AFAB006EB9E0 /* ClassicFireworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D612392AFAB006EB9E0 /* ClassicFireworkController.swift */; };
+		DED59D7C2392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D622392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift */; };
+		DED59D7D2392AFAB006EB9E0 /* ClassicFireworkAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D632392AFAB006EB9E0 /* ClassicFireworkAnimator.swift */; };
+		DED59D7E2392AFAB006EB9E0 /* ClassicFirework.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D642392AFAB006EB9E0 /* ClassicFirework.swift */; };
+		DED59D7F2392AFAB006EB9E0 /* FountainFirework.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D662392AFAB006EB9E0 /* FountainFirework.swift */; };
+		DED59D802392AFAB006EB9E0 /* FountainFireworkAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D672392AFAB006EB9E0 /* FountainFireworkAnimator.swift */; };
+		DED59D812392AFAB006EB9E0 /* FountainFireworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D682392AFAB006EB9E0 /* FountainFireworkController.swift */; };
+		DED59D822392AFAB006EB9E0 /* FountainSparkTrajectoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D692392AFAB006EB9E0 /* FountainSparkTrajectoryFactory.swift */; };
+		DED59D832392AFAB006EB9E0 /* ImageSparkViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D6B2392AFAB006EB9E0 /* ImageSparkViewFactory.swift */; };
+		DED59D842392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D6C2392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift */; };
+		DED59D852392AFAB006EB9E0 /* CircleColorSparkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D6D2392AFAB006EB9E0 /* CircleColorSparkView.swift */; };
+		DED59D862392AFAB006EB9E0 /* ImageSparkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D6E2392AFAB006EB9E0 /* ImageSparkView.swift */; };
+		DED59D872392AFAB006EB9E0 /* SparkTrajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D702392AFAB006EB9E0 /* SparkTrajectory.swift */; };
+		DED59D882392AFAB006EB9E0 /* SparkTrajectoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D712392AFAB006EB9E0 /* SparkTrajectoryFactory.swift */; };
+		DED59D892392AFAB006EB9E0 /* FireworkSparkScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D722392AFAB006EB9E0 /* FireworkSparkScheduler.swift */; };
+		DED59D8A2392AFAB006EB9E0 /* Firework.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D732392AFAB006EB9E0 /* Firework.swift */; };
+		DED59D8B2392AFAB006EB9E0 /* SparkViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D742392AFAB006EB9E0 /* SparkViewAnimator.swift */; };
+		DED59D8C2392AFAB006EB9E0 /* SparkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D752392AFAB006EB9E0 /* SparkView.swift */; };
+		DED59D8D2392AFAB006EB9E0 /* SparkViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D762392AFAB006EB9E0 /* SparkViewFactory.swift */; };
+		DED59D8E2392AFAB006EB9E0 /* FireworkSpark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */; };
+		DED59D8F2392AFAB006EB9E0 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */; };
 		DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +194,28 @@
 		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		DE772FE522FD7369000A67C3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		DEB9D37523121CAE00ACEBA9 /* gogoro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gogoro.json; sourceTree = "<group>"; };
+		DED59D602392AFAB006EB9E0 /* ClassicSparkTrajectoryFactoryProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicSparkTrajectoryFactoryProtocol.swift; sourceTree = "<group>"; };
+		DED59D612392AFAB006EB9E0 /* ClassicFireworkController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFireworkController.swift; sourceTree = "<group>"; };
+		DED59D622392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicSparkTrajectoryFactory.swift; sourceTree = "<group>"; };
+		DED59D632392AFAB006EB9E0 /* ClassicFireworkAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFireworkAnimator.swift; sourceTree = "<group>"; };
+		DED59D642392AFAB006EB9E0 /* ClassicFirework.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFirework.swift; sourceTree = "<group>"; };
+		DED59D662392AFAB006EB9E0 /* FountainFirework.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainFirework.swift; sourceTree = "<group>"; };
+		DED59D672392AFAB006EB9E0 /* FountainFireworkAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainFireworkAnimator.swift; sourceTree = "<group>"; };
+		DED59D682392AFAB006EB9E0 /* FountainFireworkController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainFireworkController.swift; sourceTree = "<group>"; };
+		DED59D692392AFAB006EB9E0 /* FountainSparkTrajectoryFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainSparkTrajectoryFactory.swift; sourceTree = "<group>"; };
+		DED59D6B2392AFAB006EB9E0 /* ImageSparkViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSparkViewFactory.swift; sourceTree = "<group>"; };
+		DED59D6C2392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleColorSparkViewFactory.swift; sourceTree = "<group>"; };
+		DED59D6D2392AFAB006EB9E0 /* CircleColorSparkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleColorSparkView.swift; sourceTree = "<group>"; };
+		DED59D6E2392AFAB006EB9E0 /* ImageSparkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSparkView.swift; sourceTree = "<group>"; };
+		DED59D702392AFAB006EB9E0 /* SparkTrajectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkTrajectory.swift; sourceTree = "<group>"; };
+		DED59D712392AFAB006EB9E0 /* SparkTrajectoryFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkTrajectoryFactory.swift; sourceTree = "<group>"; };
+		DED59D722392AFAB006EB9E0 /* FireworkSparkScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireworkSparkScheduler.swift; sourceTree = "<group>"; };
+		DED59D732392AFAB006EB9E0 /* Firework.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Firework.swift; sourceTree = "<group>"; };
+		DED59D742392AFAB006EB9E0 /* SparkViewAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkViewAnimator.swift; sourceTree = "<group>"; };
+		DED59D752392AFAB006EB9E0 /* SparkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkView.swift; sourceTree = "<group>"; };
+		DED59D762392AFAB006EB9E0 /* SparkViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkViewFactory.swift; sourceTree = "<group>"; };
+		DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireworkSpark.swift; sourceTree = "<group>"; };
+		DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
 		DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoShareDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -341,6 +385,7 @@
 		A8D368991F3B44A00015F5F9 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				DED59D5E2392AFAB006EB9E0 /* Fireworks */,
 				DE6B596D2324BCBA00366F09 /* Environment.swift */,
 				A8CF75F81F94AB29005D52DE /* BaseCollectionViewCell.swift */,
 				DE772FE522FD7369000A67C3 /* LocationManager.swift */,
@@ -443,6 +488,75 @@
 				7C646ED2225B3F400045A796 /* SupplementaryCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		DED59D5E2392AFAB006EB9E0 /* Fireworks */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D5F2392AFAB006EB9E0 /* Classic Firework */,
+				DED59D652392AFAB006EB9E0 /* Fountain Firework */,
+				DED59D6A2392AFAB006EB9E0 /* Spark Views */,
+				DED59D6F2392AFAB006EB9E0 /* Model */,
+				DED59D782392AFAB006EB9E0 /* System Extensions */,
+			);
+			path = Fireworks;
+			sourceTree = "<group>";
+		};
+		DED59D5F2392AFAB006EB9E0 /* Classic Firework */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D602392AFAB006EB9E0 /* ClassicSparkTrajectoryFactoryProtocol.swift */,
+				DED59D612392AFAB006EB9E0 /* ClassicFireworkController.swift */,
+				DED59D622392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift */,
+				DED59D632392AFAB006EB9E0 /* ClassicFireworkAnimator.swift */,
+				DED59D642392AFAB006EB9E0 /* ClassicFirework.swift */,
+			);
+			path = "Classic Firework";
+			sourceTree = "<group>";
+		};
+		DED59D652392AFAB006EB9E0 /* Fountain Firework */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D662392AFAB006EB9E0 /* FountainFirework.swift */,
+				DED59D672392AFAB006EB9E0 /* FountainFireworkAnimator.swift */,
+				DED59D682392AFAB006EB9E0 /* FountainFireworkController.swift */,
+				DED59D692392AFAB006EB9E0 /* FountainSparkTrajectoryFactory.swift */,
+			);
+			path = "Fountain Firework";
+			sourceTree = "<group>";
+		};
+		DED59D6A2392AFAB006EB9E0 /* Spark Views */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D6B2392AFAB006EB9E0 /* ImageSparkViewFactory.swift */,
+				DED59D6C2392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift */,
+				DED59D6D2392AFAB006EB9E0 /* CircleColorSparkView.swift */,
+				DED59D6E2392AFAB006EB9E0 /* ImageSparkView.swift */,
+			);
+			path = "Spark Views";
+			sourceTree = "<group>";
+		};
+		DED59D6F2392AFAB006EB9E0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D702392AFAB006EB9E0 /* SparkTrajectory.swift */,
+				DED59D712392AFAB006EB9E0 /* SparkTrajectoryFactory.swift */,
+				DED59D722392AFAB006EB9E0 /* FireworkSparkScheduler.swift */,
+				DED59D732392AFAB006EB9E0 /* Firework.swift */,
+				DED59D742392AFAB006EB9E0 /* SparkViewAnimator.swift */,
+				DED59D752392AFAB006EB9E0 /* SparkView.swift */,
+				DED59D762392AFAB006EB9E0 /* SparkViewFactory.swift */,
+				DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DED59D782392AFAB006EB9E0 /* System Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */,
+			);
+			path = "System Extensions";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -731,18 +845,23 @@
 			files = (
 				7C646ED7225B583A0045A796 /* ADSupport.swift in Sources */,
 				7C9A002C22238FC200D5150D /* Answer+Entension.swift in Sources */,
+				DED59D7F2392AFAB006EB9E0 /* FountainFirework.swift in Sources */,
 				A8D3686B1F3B435D0015F5F9 /* AppDelegate.swift in Sources */,
 				DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */,
 				7C646ED1225B3F220045A796 /* BackupElement.swift in Sources */,
 				A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */,
 				7CB018EE224DE1FF0096948E /* BackupViewController.swift in Sources */,
 				A8CF75F91F94AB29005D52DE /* BaseCollectionViewCell.swift in Sources */,
+				DED59D822392AFAB006EB9E0 /* FountainSparkTrajectoryFactory.swift in Sources */,
 				7C18F47C22D3489A009914A4 /* BatteryDataModalProtocol.swift in Sources */,
 				A83ACBF822212898003907FD /* BatteryStationPointAnnotation.swift in Sources */,
 				7C18F47A22D343F5009914A4 /* BatteryStationRecord.swift in Sources */,
+				DED59D832392AFAB006EB9E0 /* ImageSparkViewFactory.swift in Sources */,
 				A80759681F4C04430031D576 /* CheckinButton.swift in Sources */,
+				DED59D7D2392AFAB006EB9E0 /* ClassicFireworkAnimator.swift in Sources */,
 				7CB018EF224DE23C0096948E /* CloudBackupable.swift in Sources */,
 				A833AC68223DE5F900016284 /* ClusterStatue.swift in Sources */,
+				DED59D802392AFAB006EB9E0 /* FountainFireworkAnimator.swift in Sources */,
 				7C0DBE7722EAF8CD002B76D5 /* CountClusterAnnotationView.swift in Sources */,
 				A8CE22531F3EAD5E00A4EF6D /* CustomButton.swift in Sources */,
 				A8646FCC22461C7F00A96934 /* DataManager.swift in Sources */,
@@ -754,13 +873,21 @@
 				A8B19D611F44032B0082283F /* IAPAlartable.swift in Sources */,
 				A869AA1A1F44150A0085133C /* IAPProducts.swift in Sources */,
 				DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */,
+				DED59D852392AFAB006EB9E0 /* CircleColorSparkView.swift in Sources */,
+				DED59D8E2392AFAB006EB9E0 /* FireworkSpark.swift in Sources */,
+				DED59D8D2392AFAB006EB9E0 /* SparkViewFactory.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
+				DED59D842392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift in Sources */,
+				DED59D8B2392AFAB006EB9E0 /* SparkViewAnimator.swift in Sources */,
 				A8742B021F449741002BA66B /* Keys.swift in Sources */,
+				DED59D7E2392AFAB006EB9E0 /* ClassicFirework.swift in Sources */,
 				A8E68F8E1F46D78400160388 /* Log.swift in Sources */,
 				7CE0C0FF231F7F1C009D6370 /* SearchPanelLandscapeLayout.swift in Sources */,
 				7C49DB612390E55600E468F7 /* NativeAdTableViewCell.swift in Sources */,
 				A8187E901F453E22008E1558 /* Mailsendable.swift in Sources */,
+				DED59D8F2392AFAB006EB9E0 /* CGPoint+Extensions.swift in Sources */,
 				A8D3686D1F3B435E0015F5F9 /* MapViewController.swift in Sources */,
+				DED59D892392AFAB006EB9E0 /* FireworkSparkScheduler.swift in Sources */,
 				A8E71FD51F3D4B7300C8E34D /* MenuController.swift in Sources */,
 				DE772FE622FD7369000A67C3 /* LocationManager.swift in Sources */,
 				A8187E8E1F453458008E1558 /* MKUserTrackingMode+Extension.swift in Sources */,
@@ -774,15 +901,24 @@
 				7C52699D237D47B200F70C51 /* SearchBar+Extension.swift in Sources */,
 				A85E9FBC201D7D530008665B /* String+Extension.swift in Sources */,
 				7C646ED3225B3F400045A796 /* SupplementaryCell.swift in Sources */,
+				DED59D7A2392AFAB006EB9E0 /* ClassicSparkTrajectoryFactoryProtocol.swift in Sources */,
 				7C22F7FA22EE940100E6FE63 /* TableViewCell.swift in Sources */,
 				7C0DBE6822EA9BE3002B76D5 /* TableViewController.swift in Sources */,
 				7C0DBE6F22EAC0E9002B76D5 /* TableViewController.xib in Sources */,
+				DED59D7B2392AFAB006EB9E0 /* ClassicFireworkController.swift in Sources */,
 				7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */,
+				DED59D7C2392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift in Sources */,
+				DED59D8C2392AFAB006EB9E0 /* SparkView.swift in Sources */,
 				7C0DBE6D22EAA1DA002B76D5 /* TableViewHeaderView.swift in Sources */,
 				7C0DBE7022EAC0E9002B76D5 /* TableViewHeaderView.xib in Sources */,
+				DED59D812392AFAB006EB9E0 /* FountainFireworkController.swift in Sources */,
 				DE3CAF7B23236740006AFE1A /* DetailAnnotationView.swift in Sources */,
+				DED59D872392AFAB006EB9E0 /* SparkTrajectory.swift in Sources */,
 				A8D2F79B1F4C0F5C00380343 /* UnCheckInButton.swift in Sources */,
+				DED59D862392AFAB006EB9E0 /* ImageSparkView.swift in Sources */,
+				DED59D882392AFAB006EB9E0 /* SparkTrajectoryFactory.swift in Sources */,
 				DE3CAF7A23236740006AFE1A /* DetailCalloutAccessoryViewModel.swift in Sources */,
+				DED59D8A2392AFAB006EB9E0 /* Firework.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

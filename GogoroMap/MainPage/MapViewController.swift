@@ -176,6 +176,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         [locationArrowView,  menuBarButton].forEach { $0.isHidden = true }
     }
     
+    let fireworksController = FountainFireworkController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
