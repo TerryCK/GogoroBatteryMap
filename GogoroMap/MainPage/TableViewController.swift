@@ -87,6 +87,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "reuseIdentifier")
+        tableView.register(UINib(nibName: "NativeAdTableViewCell", bundle: nil), forCellReuseIdentifier: adid)
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         
         tableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
@@ -147,11 +148,12 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let station = searchResultData[indexPath.row]
-        guard station.address != adid else {
-            return NativeAdTableViewCell.builder()
+        
+        if station.address == adid {
+            return tableView.dequeueReusableCell(withIdentifier: adid) ?? NativeAdTableViewCell.builder()
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier") as! TableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
         cell.titleLabel.text = "\(indexPath.row + 1). \(station.title ?? "")"
         cell.subtitleLabel.text = locationManager.userLocation
