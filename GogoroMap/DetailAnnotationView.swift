@@ -29,13 +29,13 @@ final class DetailAnnotationView: UIView {
         }
         switch action {
         case .go: goAction?()
-        case .checkin: checkinAction?()
+        case .checkin: checkinAction?(checkinButton)
         case .uncheckin: uncheckinAction?()
         }
     }
     
     var goAction : (() -> Void)?
-    var checkinAction  :  (() -> Void)?
+    var checkinAction  :  ((UIView) -> Void)?
     var uncheckinAction:  (() -> Void)?
     
     let checkinButton: UIButton = {

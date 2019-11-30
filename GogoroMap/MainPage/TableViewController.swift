@@ -115,7 +115,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private let adid: String = "ads"
     
-    private let fequentlyAdShow = 8
+    private let fequentlyAdShow = 12
     
     var ads: [BatteryStationPointAnnotation] {
         (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }

@@ -52,7 +52,11 @@ extension DetailCalloutAccessoryViewModel {
         guard let destination = batteryAnnotation,
             let detailCalloutView = detailCalloutView else { return }
         detailCalloutView.setupNativeAd()
-        detailCalloutView.checkinAction =   { self.checkinCount(with: +) }
+        detailCalloutView.checkinAction =   { view in
+            self.checkinCount(with: +)
+            UIApplication.mapViewController?.fireworksController.addFirework(sparks: Int.random(in: 10...30), above: view)
+        }
+        
         detailCalloutView.uncheckinAction = { self.checkinCount(with: -) }
 
         guard let userLocation = LocationManager.shared.userLocation?.coordinate else {
