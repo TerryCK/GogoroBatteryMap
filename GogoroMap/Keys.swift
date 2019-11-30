@@ -28,6 +28,7 @@ final class Keys {
     let backupAdUnitID: String
     let goShareScriptID: String
     let nativeAdID: String
+    let tableViewNativeAdID: String
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
@@ -40,7 +41,7 @@ final class Keys {
         backupAdUnitID = dictionary["backupAdUnitID"] as? String ?? ""
         goShareScriptID = dictionary["goShareScriptID"] as? String ?? ""
         nativeAdID = dictionary["nativeAdID"] as? String ?? ""
-        
+        tableViewNativeAdID = dictionary["tableViewNativeAdID"] as? String ?? ""
     }
     
     static let standard: Keys = {

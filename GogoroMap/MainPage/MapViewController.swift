@@ -80,6 +80,7 @@ extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
         debugPrint("recived an native ad: ", nativeAd)
         self.nativeAd = nativeAd
         self.nativeAd?.delegate = self
+        (selectedTabItem.tabContantController as? TableViewController)?.tableView.reloadData()
     }
 }
 

@@ -10,7 +10,11 @@ import UIKit
 import GoogleMobileAds
 
 final class NativeAdTableViewCell: UITableViewCell {
-
+    
+    static func builder() -> NativeAdTableViewCell {
+        Bundle.main.loadNibNamed("NativeAdTableViewCell", owner: nil, options: nil)?.first as! NativeAdTableViewCell
+    }
+    
     @IBOutlet weak var nativeAdView: GADUnifiedNativeAdView! {
         didSet {
             nativeAdView.translatesAutoresizingMaskIntoConstraints = false
@@ -20,55 +24,40 @@ final class NativeAdTableViewCell: UITableViewCell {
     
     @IBOutlet weak var iconImageView: UIImageView! {
         didSet {
-            iconImageView.layer.cornerRadius = iconImageView.frame.width/2
+            iconImageView.layer.cornerRadius = 5
             iconImageView.clipsToBounds = true
         }
     }
     
-    @IBOutlet weak var advertiserLabel: UILabel!
-    @IBOutlet weak var mediaView: GADMediaView!
-    @IBOutlet weak var headlineLabel: UILabel!
-    @IBOutlet weak var priceLabel: UILabel!
-    @IBOutlet weak var adLabel: UILabel!
-    
-    @IBOutlet weak var ratingImageView: UIImageView!
-    @IBOutlet weak var storeLabel: UILabel!
-    
-    func setup(nativeAd: GADUnifiedNativeAd?) {
-        nativeAdView.nativeAd = nativeAd
-        iconImageView.image = nativeAd?.icon?.image
-        advertiserLabel.text = nativeAd?.advertiser
-        headlineLabel.text = nativeAd?.headline
-        priceLabel.text = nativeAd?.price
-        ratingImageView.image = imageOfStars(from: nativeAd?.starRating)
-        storeLabel.text = nativeAd?.store
-        mediaView.mediaContent = nativeAd?.mediaContent
-        
-        nativeAd?.register(self, clickableAssetViews: [GADUnifiedNativeAssetIdentifier.mediaViewAsset: self], nonclickableAssetViews: [:])
-//        nativeAd?.register(self,
-//                           clickableAssetViews: [GADUnifiedNativeAssetIdentifier.callToActionAsset : nativeAdView.callToActionView!],
-//                           nonclickableAssetViews: [:])
-    }
-    
-    func combind(index: Int) -> Self {
-        let headLine = UIApplication.mapViewController?.nativeAd?.headline
-        headlineLabel.text = headLine.map { "\(index). " + $0 }
-        return self
-    }
-    
-    override func awakeFromNib() {
-         setup(nativeAd: UIApplication.mapViewController?.nativeAd)
-    }
-    
-    
-    func imageOfStars(from starRating: NSDecimalNumber?) -> UIImage? {
-      guard let rating = starRating?.doubleValue else { return nil }
-        switch rating {
-        case 5...:    return UIImage(named: "stars_5")
-        case 4.5..<5: return UIImage(named: "stars_4_5")
-        case 4..<4.5: return UIImage(named: "stars_4")
-        case 3.5..<4: return UIImage(named: "stars_3_5")
-        default: return nil
+    @IBOutlet weak var callToActionButton: UIButton! {
+        didSet {
+            callToActionButton.isUserInteractionEnabled = false
         }
+    }
+    @IBOutlet weak var advertiserRatingLabel: UILabel!
+    @IBOutlet weak var mediaView: GADMediaView! {
+        didSet {
+            mediaView.contentMode = .scaleAspectFill
+            mediaView.layer.cornerRadius = 12
+            mediaView.clipsToBounds = true
+        }
+    }
+    @IBOutlet weak var headlineLabel: UILabel!
+    @IBOutlet weak var priceStoreLabel: UILabel!
+    @IBOutlet weak var adLabel: UILabel!
+    @IBOutlet weak var bodyLabel: UILabel!
+    
+    func combind(index: Int, nativeAd: GADUnifiedNativeAd) -> Self {
+        nativeAdView.nativeAd = nativeAd
+        headlineLabel.text = nativeAd.headline.map { "\(index). " + $0 }
+        iconImageView.image = nativeAd.icon?.image
+        advertiserRatingLabel.text = (nativeAd.advertiser ?? "") + String(repeating: "🌟", count: nativeAd.starRating?.intValue ?? 0)
+        let price = nativeAd.price ?? ""
+        let store = nativeAd.store ?? ""
+        bodyLabel.text = nativeAd.body
+        priceStoreLabel.text = price + store + "   "
+        mediaView.mediaContent = nativeAd.mediaContent
+        callToActionButton.setTitle(nativeAd.callToAction ?? "", for: .normal)
+        return self
     }
 }

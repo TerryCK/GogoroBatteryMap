@@ -11,6 +11,7 @@ import StoreKit
 import Foundation
 import MapKit
 
+
 extension UIColor {
     
     static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
@@ -21,7 +22,23 @@ extension UIColor {
     static var lightGreen : UIColor { .rgb(red: 45, green: 149, blue: 64)    }
     static var heavyBlue  : UIColor { .rgb(red: 17, green: 154, blue: 237)   }
     static var grassGreen : UIColor { .rgb(red: 85 , green: 177, blue: 114)  }
-    static var lightRed   : UIColor { .rgb(red: 218 , green: 52, blue: 53)   }   
+    static var lightRed   : UIColor { .rgb(red: 218 , green: 52, blue: 53)   }
+    
+    enum Colors {
+        static let label: UIColor = {
+            if #available(iOS 13.0, *) {
+                return .label
+            } else {
+                return .white
+            }
+        }()
+        static let tint: UIColor = {
+            guard  #available(iOS 13.0, *) else {
+                return .white
+            }
+            return UIColor { $0.userInterfaceStyle == .dark ? .white : .lightText }
+        }()
+    }
 }
 
 
