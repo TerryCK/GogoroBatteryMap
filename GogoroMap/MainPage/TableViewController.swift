@@ -41,7 +41,7 @@ extension Array where Element: BatteryDataModalProtocol {
     mutating func ads(array: Array) -> Array {
         for adCell in array  {
             if adCell.state < count {
-                insert(adCell, at: adCell.state - 1)
+                insert(adCell, at: Swift.max(0, adCell.state - 1))
             } else {
                 append(adCell)
             }
@@ -63,8 +63,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
             }
         }
     }
-    
-    
     
     private let locationManager: LocationManager = .shared
     
@@ -114,26 +112,23 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private let adid: String = "ads"
     
-    private let fequentlyAdShow = 5
+    private let fequentlyAdShow = 8
     
     var ads: [BatteryStationPointAnnotation] {
-        (0...(searchResultData.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: ($0 + 1) * fequentlyAdShow) }
+        (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard searchResultData[indexPath.row].address != adid else {
-            if let hight = nativeAd?.aspcetHeight {
-                return hight + 100
-            } else {
-                return 0
-            }
+        if searchResultData[indexPath.row].address == adid, let nativeAd = nativeAd {
+            return nativeAd.aspcetHeight + 100
+        } else {
+            return UITableView.automaticDimension
         }
-        return UITableView.automaticDimension
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
-        header.countLabel.text = "\(searchResultData.count - ads.count) 站"
+        header.countLabel.text = "\(max(searchResultData.count - ads.count, 0)) 站"
         header.regionLabel.text = searchText.isEmpty ? "總共: " : "過濾關鍵字：\(searchText)"
         return header
     }
@@ -182,9 +177,11 @@ final class TableViewController: UITableViewController, ViewTrackable {
 extension TableViewController: GADUnifiedNativeAdLoaderDelegate {
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
         debugPrint("TableViewController recived an native ad: ", nativeAd)
-        self.nativeAd = nativeAd
-        self.nativeAd?.delegate = self
-        stations = tabItem.stationDataSource
+        DispatchQueue.global().async {
+            self.nativeAd = nativeAd
+            self.nativeAd?.delegate = self
+            self.stations = self.tabItem.stationDataSource
+        }
     }
 }
 

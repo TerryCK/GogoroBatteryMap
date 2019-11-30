@@ -38,10 +38,11 @@ final class NativeAdTableViewCell: UITableViewCell {
     @IBOutlet weak var mediaView: GADMediaView! {
         didSet {
             mediaView.contentMode = .scaleAspectFill
-            mediaView.layer.cornerRadius = 12
+            mediaView.layer.cornerRadius = 10
             mediaView.clipsToBounds = true
         }
     }
+    
     @IBOutlet weak var headlineLabel: UILabel!
     @IBOutlet weak var priceStoreLabel: UILabel!
     @IBOutlet weak var adLabel: UILabel!
