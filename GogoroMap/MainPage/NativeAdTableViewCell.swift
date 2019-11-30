@@ -17,13 +17,16 @@ final class NativeAdTableViewCell: UITableViewCell {
             nativeAdView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor)
         }
     }
-    @IBOutlet weak var iconImageView: UIImageView!
+    
+    @IBOutlet weak var iconImageView: UIImageView! {
+        didSet {
+            iconImageView.layer.cornerRadius = iconImageView.frame.width/2
+            iconImageView.clipsToBounds = true
+        }
+    }
     
     @IBOutlet weak var advertiserLabel: UILabel!
-    
-    @IBOutlet weak var bodyLabel: UILabel!
     @IBOutlet weak var mediaView: GADMediaView!
-    
     @IBOutlet weak var headlineLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var adLabel: UILabel!
@@ -40,9 +43,11 @@ final class NativeAdTableViewCell: UITableViewCell {
         ratingImageView.image = imageOfStars(from: nativeAd?.starRating)
         storeLabel.text = nativeAd?.store
         mediaView.mediaContent = nativeAd?.mediaContent
-        nativeAd?.register(self,
-                           clickableAssetViews: [GADUnifiedNativeAssetIdentifier.callToActionAsset : self],
-                           nonclickableAssetViews: [:])
+        
+        nativeAd?.register(self, clickableAssetViews: [GADUnifiedNativeAssetIdentifier.mediaViewAsset: self], nonclickableAssetViews: [:])
+//        nativeAd?.register(self,
+//                           clickableAssetViews: [GADUnifiedNativeAssetIdentifier.callToActionAsset : nativeAdView.callToActionView!],
+//                           nonclickableAssetViews: [:])
     }
     
     func combind(index: Int) -> Self {
@@ -50,6 +55,7 @@ final class NativeAdTableViewCell: UITableViewCell {
         headlineLabel.text = headLine.map { "\(index). " + $0 }
         return self
     }
+    
     override func awakeFromNib() {
          setup(nativeAd: UIApplication.mapViewController?.nativeAd)
     }
