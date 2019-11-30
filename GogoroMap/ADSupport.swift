@@ -26,8 +26,7 @@ extension ADSupportable where Self: UIViewController {
     
     var adUnitID: String {
         switch Environment.environment {
-        case .debug  : return "ca-app-pub-3940256099942544/3986624511"
-//            "ca-app-pub-3940256099942544/2934735716"
+        case .debug  : return "ca-app-pub-3940256099942544/2934735716"
         case .release: return Keys.standard.adUnitID
         }
     }

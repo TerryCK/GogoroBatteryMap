@@ -37,7 +37,9 @@ extension TableViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
+
 extension Array where Element: BatteryDataModalProtocol {
+    
     mutating func ads(array: Array) -> Array {
         for adCell in array  {
             if adCell.state < count {
@@ -137,13 +139,17 @@ final class TableViewController: UITableViewController, ViewTrackable {
         searchResultData.count
     }
     
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let nativeAd = nativeAd, searchResultData[indexPath.row].address == adid {
+            (cell as? NativeAdTableViewCell)?.combind(index: indexPath.row + 1, nativeAd: nativeAd)
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let station = searchResultData[indexPath.row]
-        
-        if let nativeAd = nativeAd, station.address == adid {
-            return NativeAdTableViewCell.builder().combind(index: indexPath.row + 1, nativeAd: nativeAd)
+        guard station.address != adid else {
+            return NativeAdTableViewCell.builder()
         }
-        
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier") as! TableViewCell
         cell.addressLabel.text = station.address.matches(with: "^[^()]*".regex).first
@@ -159,22 +165,15 @@ final class TableViewController: UITableViewController, ViewTrackable {
         return cell
     }
     
-    
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        guard searchResultData[indexPath.row].address != adid else {
-            return
-        }
-        
+        guard searchResultData[indexPath.row].address != adid else { return }
         searchBar.resignFirstResponder()
         UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
     }
 }
 
-
- 
 extension TableViewController: GADUnifiedNativeAdLoaderDelegate {
+    
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
         debugPrint("TableViewController recived an native ad: ", nativeAd)
         DispatchQueue.global().async {
@@ -197,11 +196,10 @@ extension TableViewController: GADUnifiedNativeAdDelegate, NativeAdIdentify {
         case .release: return Keys.standard.tableViewNativeAdID
         }
     }
-    
-    
 }
 
 extension GADUnifiedNativeAd {
+    
     var aspcetHeight: CGFloat {
         mediaContent.aspectRatio == 0 ? 0 : UIScreen.main.bounds.width / mediaContent.aspectRatio
     }

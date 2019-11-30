@@ -218,7 +218,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
     }
     
     
-    
     @objc func action(sender: UILongPressGestureRecognizer) {
         let isLongPressGestureRecognizerActive = [.possible, .began, .changed].contains(sender.state)
         

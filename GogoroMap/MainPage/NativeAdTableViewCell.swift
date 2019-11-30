@@ -48,7 +48,7 @@ final class NativeAdTableViewCell: UITableViewCell {
     @IBOutlet weak var adLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!
     
-    func combind(index: Int, nativeAd: GADUnifiedNativeAd) -> Self {
+    func combind(index: Int, nativeAd: GADUnifiedNativeAd) {
         nativeAdView.nativeAd = nativeAd
         headlineLabel.text = nativeAd.headline.map { "\(index). " + $0 }
         iconImageView.image = nativeAd.icon?.image
@@ -59,6 +59,5 @@ final class NativeAdTableViewCell: UITableViewCell {
         priceStoreLabel.text = price + store + "   "
         mediaView.mediaContent = nativeAd.mediaContent
         callToActionButton.setTitle(nativeAd.callToAction ?? "", for: .normal)
-        return self
     }
 }
