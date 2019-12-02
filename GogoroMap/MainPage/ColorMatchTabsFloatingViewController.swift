@@ -74,8 +74,8 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
         
         if let tableViewController = TabItemCase.viewControllers[index] as? TableViewController {
             tableViewController.stations = tabItemProvider[index].stationDataSource
+            tableViewController.nativeAd = UIApplication.mapViewController?.nativeAd
             tableViewController.setupAds()
-            UIApplication.mapViewController?.reloadNativeAd()
         }
        
         
