@@ -20,6 +20,7 @@ extension MapViewController: ADSupportable {
     
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bridgeAd(bannerView)
+        canRequestBannerAd = true
     }
 }
 
@@ -78,6 +79,7 @@ extension MapViewController: GADUnifiedNativeAdLoaderDelegate {
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
         debugPrint("recived an native ad: ", nativeAd)
+        canRequestNativeAd = true
         self.nativeAd = nativeAd
         self.nativeAd?.delegate = self
         (selectedTabItem.tabContantController as? TableViewController)?.tableView.reloadData()
@@ -99,6 +101,22 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         didSet {
             clusterManager.maxZoomLevel = clusterSwitcher.maxZoomLevel
         }
+    }
+    
+    private var canRequestNativeAd: Bool = true
+    private var canRequestBannerAd: Bool = true
+    
+    func reloadNativeAd() {
+        guard canRequestNativeAd else { return }
+        nativeAdLoader?.load(DFPRequest())
+        canRequestNativeAd.toggle()
+    }
+    
+    
+    func reloadBannerAds() {
+        guard canRequestBannerAd else { return }
+        bannerView.load(DFPRequest())
+        canRequestBannerAd.toggle()
     }
     
     var selectedTabItem: TabItemCase {
@@ -189,8 +207,6 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         setupObserver()
         nativeAdLoader = GADAdLoader.createNativeAd(delegate: self)
         setupSideMenu()
-        
-//        performGuidePage()
         setupPurchase()
         Answers.log(view: "Map Page")
         setupAd(with: navigationController?.view ?? view)
@@ -255,7 +271,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         guard let sideManuController = SideMenuManager.default.menuLeftNavigationController else {
             return
         }
-        nativeAdLoader?.load(DFPRequest())
+        reloadNativeAd()
         Answers.log(event: .MapButton, customAttributes: "Perform Menu")
         setTracking(mode: .none)
         (fpc?.contentViewController as? TableViewController)?.searchBar.resignFirstResponder()
