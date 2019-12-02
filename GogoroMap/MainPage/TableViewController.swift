@@ -70,9 +70,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     let tabItem: TabItemCase
     
-    var nativeAdLoader: GADAdLoader?
-    
-    var nativeAd: GADUnifiedNativeAd?
+   private var nativeAd: GADUnifiedNativeAd? { UIApplication.mapViewController?.nativeAd }
     
     init(style: UITableView.Style, tabItem: TabItemCase) {
         self.tabItem = tabItem
@@ -94,7 +92,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
-        nativeAdLoader = GADAdLoader.createNativeAd(delegate: self)
     }
     
     var stations: [BatteryStationPointAnnotation]  {
@@ -187,32 +184,6 @@ final class TableViewController: UITableViewController, ViewTrackable {
         guard searchResultData[indexPath.row].address != adid else { return }
         searchBar.resignFirstResponder()
         UIApplication.mapViewController?.mapViewMove(to: searchResultData[indexPath.row])
-    }
-}
-
-extension TableViewController: GADUnifiedNativeAdLoaderDelegate {
-    
-    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
-        debugPrint("TableViewController recived an native ad: ", nativeAd)
-        DispatchQueue.global().async {
-            self.nativeAd = nativeAd
-            self.nativeAd?.delegate = self
-            self.stations = self.tabItem.stationDataSource
-        }
-    }
-}
-
-extension TableViewController: GADUnifiedNativeAdDelegate, NativeAdIdentify {
-    
-    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
-        print("TableViewController: didFailToReceiveAdWithError ", error)
-    }
-    
-    var nativeAdID: String {
-        switch Environment.environment {
-        case .debug  : return "ca-app-pub-3940256099942544/3986624511"
-        case .release: return Keys.standard.tableViewNativeAdID
-        }
     }
 }
 
