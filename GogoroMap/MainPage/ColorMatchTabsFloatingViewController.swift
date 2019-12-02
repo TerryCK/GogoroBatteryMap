@@ -63,9 +63,6 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
             flatingPanelController?.track(scrollView: scrollerView)
         }
         
-        if tabItemProvider[index] != .setting {
-             DataManager.shared.lastUpdate = Date()
-        }
         
         if Date().timeIntervalSince(lastADReloadDate) > 10 {
             UIApplication.mapViewController?.reloadBannerAds()
@@ -75,10 +72,7 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
         UIApplication.mapViewController?.selectedTabItem = tabItemProvider[index]
         if let tableViewController = TabItemCase.viewControllers[index] as? TableViewController {
             tableViewController.nativeAd = UIApplication.mapViewController?.nativeAd
-            tableViewController.setupAds()
         }
-       
-        
         Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
         
     }
