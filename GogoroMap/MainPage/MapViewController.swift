@@ -119,7 +119,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         canRequestBannerAd.toggle()
     }
     
-    var selectedTabItem: TabItemCase = .nearby
+    var selectedTabItem: TabItemCase = .nearby {
+        didSet {
+            DataManager.shared.lastUpdate = Date()
+        }
+    }
     
     func setupFloatingPanelController() {
         let fpc = FloatingPanelController(delegate: nil)
@@ -473,9 +477,6 @@ extension MapViewController: IAPPurchasable {
                 self.clusterManager.removeAll()
                 self.clusterManager.add(stations)
                 self.clusterManager.reload(mapView: self.mapView)
-            }
-            DispatchQueue.global().async {
-                (selectedTabItem.tabContantController as? TableViewController)?.stations = stations
             }
         }
         NotificationCenter.default.addObserver(self,

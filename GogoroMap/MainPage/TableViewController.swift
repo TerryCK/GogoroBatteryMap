@@ -73,6 +73,8 @@ final class TableViewController: UITableViewController, ViewTrackable {
     var nativeAd: GADUnifiedNativeAd? {
         didSet {
             DispatchQueue.main.async {
+                self.setupAds()
+                guard self.nativeAd?.aspcetHeight != oldValue?.aspcetHeight else { return }
                 self.fequentlyAdShow = self.adfequently()
                 self.ads = self.recalculator()
                 self.stations = self.tabItem.stationDataSource
@@ -102,12 +104,10 @@ final class TableViewController: UITableViewController, ViewTrackable {
         searchBar.set(textColor: .white)
     }
     
-    var stations: [BatteryStationPointAnnotation]  {
+    private var stations: [BatteryStationPointAnnotation]  {
         set {
             var result = searchText.isEmpty ? newValue : newValue.filter(text: searchText)
-            DispatchQueue.main.async {
-                self.searchResultData = self.nativeAd == nil ? result : result.ads(array: self.ads)
-            }
+            searchResultData = nativeAd == nil ? result : result.ads(array: ads)
         }
         get { tabItem.stationDataSource }
     }
@@ -120,12 +120,11 @@ final class TableViewController: UITableViewController, ViewTrackable {
         }
     }
     
-    func setupAds() {
-        DispatchQueue.main.async {
-            guard let nativeAd = self.nativeAd else { return }
-            for case let adCells as NativeAdTableViewCell in self.tableView.visibleCells {
-                adCells.combind(nativeAd: nativeAd)
-            }
+    private func setupAds() {
+        guard let nativeAd = self.nativeAd else { return }
+        for case let adCells as NativeAdTableViewCell in self.tableView.visibleCells {
+            adCells.combind(nativeAd: nativeAd)
+            return
         }
     }
     
@@ -133,7 +132,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private func adfequently() -> Int {
         let cellHeight = tableView.visibleCells.first?.bounds.height ?? 100
-        let adHeight = nativeAd?.aspcetHeight ?? 100
+        let adHeight = nativeAd?.aspcetHeight ?? 200
         return Int((tableView.frame.height + adHeight) / max(cellHeight, 1)) + 2
     }
     
