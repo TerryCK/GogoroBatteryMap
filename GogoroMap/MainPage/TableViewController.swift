@@ -70,7 +70,15 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     let tabItem: TabItemCase
     
-   private var nativeAd: GADUnifiedNativeAd? { UIApplication.mapViewController?.nativeAd }
+    var nativeAd: GADUnifiedNativeAd? {
+        didSet {
+            DispatchQueue.main.async {
+                self.fequentlyAdShow = self.adfequently()
+                self.ads = self.recalculator()
+                self.stations = self.tabItem.stationDataSource
+            }
+        }
+    }
     
     init(style: UITableView.Style, tabItem: TabItemCase) {
         self.tabItem = tabItem
@@ -123,15 +131,19 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private let adid: String = "ads"
     
-    private lazy var fequentlyAdShow: Int = {
+    private func adfequently() -> Int {
         let cellHeight = tableView.visibleCells.first?.bounds.height ?? 100
         let adHeight = nativeAd?.aspcetHeight ?? 100
         return Int((tableView.frame.height + adHeight) / max(cellHeight, 1)) + 2
-    }()
+    }
     
-    private lazy var ads: [BatteryStationPointAnnotation] = {
+    private func recalculator() -> [BatteryStationPointAnnotation] {
         (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
-    }()
+    }
+    
+    private lazy var fequentlyAdShow: Int = adfequently()
+    
+    private lazy var ads: [BatteryStationPointAnnotation] = recalculator()
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             
