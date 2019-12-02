@@ -59,7 +59,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ad" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cAD-u2-QsC">
-                                <rect key="frame" x="-16" y="0.0" width="15" height="15"/>
+                                <rect key="frame" x="0.0" y="0.0" width="15" height="15"/>
                                 <color key="backgroundColor" red="1" green="0.80000001190000003" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
@@ -117,7 +117,7 @@
                             <constraint firstItem="sn4-Al-TjV" firstAttribute="leading" secondItem="61G-0f-sMR" secondAttribute="trailing" constant="5" id="bnx-jG-6dJ"/>
                             <constraint firstItem="mhM-11-NZG" firstAttribute="top" secondItem="sn4-Al-TjV" secondAttribute="bottom" constant="4" id="bpf-wc-Moy"/>
                             <constraint firstItem="3Fb-xQ-810" firstAttribute="leading" secondItem="YeN-J8-GKa" secondAttribute="trailing" id="brn-sU-psl"/>
-                            <constraint firstItem="cAD-u2-QsC" firstAttribute="trailing" secondItem="Ttb-tb-A37" secondAttribute="trailing" constant="-429" id="dRa-9q-lQX"/>
+                            <constraint firstItem="cAD-u2-QsC" firstAttribute="leading" secondItem="Ttb-tb-A37" secondAttribute="leading" id="dRa-9q-lQX"/>
                             <constraint firstItem="YeN-J8-GKa" firstAttribute="bottom" secondItem="3Fb-xQ-810" secondAttribute="bottom" id="e0b-sh-RD0"/>
                             <constraint firstItem="3Fb-xQ-810" firstAttribute="top" secondItem="YeN-J8-GKa" secondAttribute="top" id="es5-oS-ar2"/>
                             <constraint firstItem="mLi-kJ-6qO" firstAttribute="top" secondItem="20x-p2-Afh" secondAttribute="top" constant="19" id="fqZ-9b-byx"/>

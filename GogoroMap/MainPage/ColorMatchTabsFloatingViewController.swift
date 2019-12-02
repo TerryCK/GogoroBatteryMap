@@ -71,7 +71,7 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
             UIApplication.mapViewController?.reloadBannerAds()
             lastADReloadDate = Date()
         }
-        (TabItemCase.viewControllers[index] as? TableViewController)?.tableView.visibleCells.count
+        (TabItemCase.viewControllers[index] as? TableViewController)?.setupAds()
         
         Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
         

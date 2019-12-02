@@ -100,7 +100,9 @@ final class TableViewController: UITableViewController, ViewTrackable {
     var stations: [BatteryStationPointAnnotation]  {
         set {
             var result = searchText.isEmpty ? newValue : newValue.filter(text: searchText)
-            searchResultData = nativeAd == nil ? result : result.ads(array: ads)
+            DispatchQueue.main.async {
+                self.searchResultData = self.nativeAd == nil ? result : result.ads(array: self.ads)
+            }
         }
         get { tabItem.stationDataSource }
     }
@@ -113,16 +115,30 @@ final class TableViewController: UITableViewController, ViewTrackable {
         }
     }
     
-    private let adid: String = "ads"
-    
-    private let fequentlyAdShow = 12
-    
-    var ads: [BatteryStationPointAnnotation] {
-        (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
+    func setupAds() {
+        DispatchQueue.main.async {
+            guard let nativeAd = self.nativeAd else { return }
+            for case let adCells as NativeAdTableViewCell in self.tableView.visibleCells {
+                adCells.combind(nativeAd: nativeAd)
+            }
+        }
     }
     
+    private let adid: String = "ads"
+    
+    private lazy var fequentlyAdShow: Int = {
+        let cellHeight = tableView.visibleCells.first?.bounds.height ?? 100
+        let adHeight = nativeAd?.aspcetHeight ?? 100
+        return Int((tableView.frame.height + adHeight) / max(cellHeight, 1)) + 2
+    }()
+    
+    private lazy var ads: [BatteryStationPointAnnotation] = {
+        (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
+    }()
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if searchResultData[indexPath.row].address == adid, let nativeAd = nativeAd {
+            
+        if !searchResultData.isEmpty, searchResultData[indexPath.row].address == adid, let nativeAd = nativeAd {
             return nativeAd.aspcetHeight + 100
         } else {
             return UITableView.automaticDimension
@@ -131,7 +147,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableViewHeaderView") as! TableViewHeaderView
-        header.countLabel.text = "\(max(searchResultData.count - ads.count, 0)) 站"
+        header.countLabel.text = "\(nativeAd == nil ? searchResultData.count : max(searchResultData.count - ads.count, 0)) 站"
         header.regionLabel.text = searchText.isEmpty ? "總共: " : "過濾關鍵字：\(searchText)"
         return header
     }
