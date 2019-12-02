@@ -119,9 +119,7 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         canRequestBannerAd.toggle()
     }
     
-    var selectedTabItem: TabItemCase {
-        TabItemCase(rawValue: (fpc?.contentViewController as? ColorMatchTabsFloatingViewController)?.selectedSegmentIndex ?? 0) ?? .nearby
-    }
+    var selectedTabItem: TabItemCase = .nearby
     
     func setupFloatingPanelController() {
         let fpc = FloatingPanelController(delegate: nil)
