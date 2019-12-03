@@ -61,7 +61,8 @@ final class NativeAdTableViewCell: UITableViewCell {
     }
     
     func combind(index: Int, nativeAd: GADUnifiedNativeAd) {
-        headlineLabel.text = nativeAd.headline.map { "\(index). " + $0 }
+        let sponsored = "(\("sponsored".localize()))"
+        headlineLabel.text = nativeAd.headline.map { "\(index). " + $0 + sponsored }
         combind(nativeAd: nativeAd)
     } 
 }
