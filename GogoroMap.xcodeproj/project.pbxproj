@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F067ECC862500F7DCF98077 /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146C7E3BCACB5E70D507C1E4 /* Pods_GogoroMapTests.framework */; };
-		550FB723D54BB1C9E33D8B0F /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CD99A99C3360B05377DD661 /* Pods_GogoroMap.framework */; };
+		210227F92C7C0570904127FB /* Pods_GogoroMapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 572D43963CDCA59B8682AAF5 /* Pods_GogoroMapTests.framework */; };
+		6F989F2C62D36B3DD6B09743 /* Pods_GogoroMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE06F2B35B2D80D014133DE /* Pods_GogoroMap.framework */; };
 		7C0DBE6822EA9BE3002B76D5 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */; };
 		7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6922EA9BF2002B76D5 /* TableViewGroupDataManager.swift */; };
 		7C0DBE6D22EAA1DA002B76D5 /* TableViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0DBE6B22EAA1DA002B76D5 /* TableViewHeaderView.swift */; };
@@ -112,10 +112,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		129A1FD6D05BA5AF6D3C6ABF /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
-		146C7E3BCACB5E70D507C1E4 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3191D3A67125D89285721D39 /* Pods-GogoroMapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.debug.xcconfig"; sourceTree = "<group>"; };
-		3CD99A99C3360B05377DD661 /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AE06F2B35B2D80D014133DE /* Pods_GogoroMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		572D43963CDCA59B8682AAF5 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		64109B60FDF935129411C64F /* Pods-GogoroMapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7577DB0EECBC96FA65DFD9F8 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
 		7C0DBE6622EA9BE3002B76D5 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		7C0DBE6722EA9BE3002B76D5 /* TableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewController.xib; sourceTree = "<group>"; };
 		7C0DBE6922EA9BF2002B76D5 /* TableViewGroupDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewGroupDataManager.swift; sourceTree = "<group>"; };
@@ -139,7 +139,6 @@
 		7CE0C0FE231F7F1B009D6370 /* SearchPanelLandscapeLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelLandscapeLayout.swift; sourceTree = "<group>"; };
 		7CE4203C232219B300AD1506 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		7CED91BD22E8526F001042E2 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
-		8AEB50076733686283AB069F /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
 		A805C32D1F3ED74600D74107 /* GuidePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidePageViewController.swift; sourceTree = "<group>"; };
 		A80759671F4C04430031D576 /* CheckinButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckinButton.swift; sourceTree = "<group>"; };
 		A808F0452220ED3900761A31 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -186,7 +185,7 @@
 		A8E71FD61F3D693600C8E34D /* StationsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsViewCell.swift; sourceTree = "<group>"; };
 		A8F7503520260D1C00E2206D /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
 		A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableViewCell.swift; sourceTree = "<group>"; };
-		D6E9FFFBED89BDB24B7233D1 /* Pods-GogoroMapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMapTests.release.xcconfig"; path = "Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests.release.xcconfig"; sourceTree = "<group>"; };
+		D12FC8630A9B0960B4E07122 /* Pods-GogoroMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.debug.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.debug.xcconfig"; sourceTree = "<group>"; };
 		DE3CAF7823236740006AFE1A /* DetailCalloutAccessoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCalloutAccessoryViewModel.swift; sourceTree = "<group>"; };
 		DE3CAF7923236740006AFE1A /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
 		DE6B596D2324BCBA00366F09 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -217,6 +216,7 @@
 		DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireworkSpark.swift; sourceTree = "<group>"; };
 		DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
 		DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoShareDataModel.swift; sourceTree = "<group>"; };
+		E94EBD993C7D83613C5074BE /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,7 +224,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F067ECC862500F7DCF98077 /* Pods_GogoroMapTests.framework in Frameworks */,
+				210227F92C7C0570904127FB /* Pods_GogoroMapTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +234,7 @@
 			files = (
 				A81ADFF12026DC1B008A757D /* CloudKit.framework in Frameworks */,
 				A8DB8CE81F4153F40062FA7A /* StoreKit.framework in Frameworks */,
-				550FB723D54BB1C9E33D8B0F /* Pods_GogoroMap.framework in Frameworks */,
+				6F989F2C62D36B3DD6B09743 /* Pods_GogoroMap.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,8 +246,8 @@
 			children = (
 				A81ADFF02026DC1B008A757D /* CloudKit.framework */,
 				A8DB8CE71F4153F40062FA7A /* StoreKit.framework */,
-				3CD99A99C3360B05377DD661 /* Pods_GogoroMap.framework */,
-				146C7E3BCACB5E70D507C1E4 /* Pods_GogoroMapTests.framework */,
+				0AE06F2B35B2D80D014133DE /* Pods_GogoroMap.framework */,
+				572D43963CDCA59B8682AAF5 /* Pods_GogoroMapTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -255,10 +255,10 @@
 		8FD7339A92901AFF5D1515FF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8AEB50076733686283AB069F /* Pods-GogoroMap.debug.xcconfig */,
-				129A1FD6D05BA5AF6D3C6ABF /* Pods-GogoroMap.release.xcconfig */,
-				3191D3A67125D89285721D39 /* Pods-GogoroMapTests.debug.xcconfig */,
-				D6E9FFFBED89BDB24B7233D1 /* Pods-GogoroMapTests.release.xcconfig */,
+				D12FC8630A9B0960B4E07122 /* Pods-GogoroMap.debug.xcconfig */,
+				E94EBD993C7D83613C5074BE /* Pods-GogoroMap.release.xcconfig */,
+				64109B60FDF935129411C64F /* Pods-GogoroMapTests.debug.xcconfig */,
+				7577DB0EECBC96FA65DFD9F8 /* Pods-GogoroMapTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -566,11 +566,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A84AC8051F46EB71004F5E3B /* Build configuration list for PBXNativeTarget "GogoroMapTests" */;
 			buildPhases = (
-				F7372969208A69CD775ABD9F /* [CP] Check Pods Manifest.lock */,
+				90267565801ABA4407FB87F1 /* [CP] Check Pods Manifest.lock */,
 				A84AC7FA1F46EB70004F5E3B /* Sources */,
 				A84AC7FB1F46EB70004F5E3B /* Frameworks */,
 				A84AC7FC1F46EB70004F5E3B /* Resources */,
-				A06E4AE83174F50DBABD23EA /* [CP] Embed Pods Frameworks */,
+				BD263D113F542AC63AD40DCB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -586,13 +586,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A8D368791F3B435F0015F5F9 /* Build configuration list for PBXNativeTarget "GogoroMap" */;
 			buildPhases = (
-				A5FA0ED5D21098963DBDFF34 /* [CP] Check Pods Manifest.lock */,
+				6CB3911C6B40551CC25AAF93 /* [CP] Check Pods Manifest.lock */,
 				A8D368631F3B435D0015F5F9 /* Sources */,
 				A8D368641F3B435D0015F5F9 /* Frameworks */,
 				A8D368651F3B435D0015F5F9 /* Resources */,
 				A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */,
 				7C0DBE7522EAE059002B76D5 /* Auto Increase build number */,
-				E0B4AF55FCC83BC26E4388AF /* [CP] Embed Pods Frameworks */,
+				E8D9B69B6630EE8C8F8F9A44 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -685,6 +685,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6CB3911C6B40551CC25AAF93 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GogoroMap-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7C0DBE7522EAE059002B76D5 /* Auto Increase build number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -703,7 +725,43 @@
 			shellPath = /bin/sh;
 			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n";
 		};
-		A06E4AE83174F50DBABD23EA /* [CP] Embed Pods Frameworks */ = {
+		90267565801ABA4407FB87F1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GogoroMapTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Submit dSYM files to Crashlytics";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "FABRIC_APIKEY_FILE=\"${SRCROOT}/fabric.apikey\"\nFABRIC_BUILDSECRET_FILE=\"${SRCROOT}/fabric.buildsecret\"\n\nif test ! -f \"$FABRIC_APIKEY_FILE\" -o ! -f \"$FABRIC_BUILDSECRET_FILE\"; then\necho \"This build wants to upload dSYM files to Crashlytics.\"\necho \"Uploading is possible only if a Fabric API key and a Fabric build secret are\"\necho \"available. This build is failing because at least one of these pieces of\"\necho \"information is missing.\"\necho \"\"\necho \"To fix the problem, create the following files and store the API key and\"\necho \"build secret, respectively, within those files:\"\necho \"\"\necho \"  $FABRIC_APIKEY_FILE\"\necho \"  $FABRIC_BUILDSECRET_FILE\"\necho \"\"\necho \"If you forked the project then you must register with Crashlytics and\"\necho \"get your own API key and build secret.\"\n\n# Let the build fail\nexit 1\nfi\n\nFABRIC_APIKEY=$(cat \"$FABRIC_APIKEY_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_APIKEY_FILE\"\nexit 1\nfi\n\nFABRIC_BUILDSECRET=$(cat \"$FABRIC_BUILDSECRET_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_BUILDSECRET_FILE\"\nexit 1\nfi\n\necho \"Uploading dSYM files to Crashlytics\"\n\"${PODS_ROOT}/Fabric/run\" \"$FABRIC_APIKEY\" \"$FABRIC_BUILDSECRET\"\n";
+		};
+		BD263D113F542AC63AD40DCB /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -737,43 +795,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMapTests/Pods-GogoroMapTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A5FA0ED5D21098963DBDFF34 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-GogoroMap-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A8E68F8A1F46AC3D00160388 /* Submit dSYM files to Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Submit dSYM files to Crashlytics";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "FABRIC_APIKEY_FILE=\"${SRCROOT}/fabric.apikey\"\nFABRIC_BUILDSECRET_FILE=\"${SRCROOT}/fabric.buildsecret\"\n\nif test ! -f \"$FABRIC_APIKEY_FILE\" -o ! -f \"$FABRIC_BUILDSECRET_FILE\"; then\necho \"This build wants to upload dSYM files to Crashlytics.\"\necho \"Uploading is possible only if a Fabric API key and a Fabric build secret are\"\necho \"available. This build is failing because at least one of these pieces of\"\necho \"information is missing.\"\necho \"\"\necho \"To fix the problem, create the following files and store the API key and\"\necho \"build secret, respectively, within those files:\"\necho \"\"\necho \"  $FABRIC_APIKEY_FILE\"\necho \"  $FABRIC_BUILDSECRET_FILE\"\necho \"\"\necho \"If you forked the project then you must register with Crashlytics and\"\necho \"get your own API key and build secret.\"\n\n# Let the build fail\nexit 1\nfi\n\nFABRIC_APIKEY=$(cat \"$FABRIC_APIKEY_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_APIKEY_FILE\"\nexit 1\nfi\n\nFABRIC_BUILDSECRET=$(cat \"$FABRIC_BUILDSECRET_FILE\")\nif test $? -ne 0; then\necho \"Cannot read $FABRIC_BUILDSECRET_FILE\"\nexit 1\nfi\n\necho \"Uploading dSYM files to Crashlytics\"\n\"${PODS_ROOT}/Fabric/run\" \"$FABRIC_APIKEY\" \"$FABRIC_BUILDSECRET\"\n";
-		};
-		E0B4AF55FCC83BC26E4388AF /* [CP] Embed Pods Frameworks */ = {
+		E8D9B69B6630EE8C8F8F9A44 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -805,28 +827,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GogoroMap/Pods-GogoroMap-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F7372969208A69CD775ABD9F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-GogoroMapTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -956,7 +956,7 @@
 /* Begin XCBuildConfiguration section */
 		A84AC8061F46EB71004F5E3B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3191D3A67125D89285721D39 /* Pods-GogoroMapTests.debug.xcconfig */;
+			baseConfigurationReference = 64109B60FDF935129411C64F /* Pods-GogoroMapTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
@@ -972,7 +972,7 @@
 		};
 		A84AC8071F46EB71004F5E3B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D6E9FFFBED89BDB24B7233D1 /* Pods-GogoroMapTests.release.xcconfig */;
+			baseConfigurationReference = 7577DB0EECBC96FA65DFD9F8 /* Pods-GogoroMapTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
@@ -1103,7 +1103,7 @@
 		};
 		A8D3687A1F3B435F0015F5F9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AEB50076733686283AB069F /* Pods-GogoroMap.debug.xcconfig */;
+			baseConfigurationReference = D12FC8630A9B0960B4E07122 /* Pods-GogoroMap.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
@@ -1126,7 +1126,7 @@
 		};
 		A8D3687B1F3B435F0015F5F9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 129A1FD6D05BA5AF6D3C6ABF /* Pods-GogoroMap.release.xcconfig */;
+			baseConfigurationReference = E94EBD993C7D83613C5074BE /* Pods-GogoroMap.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
