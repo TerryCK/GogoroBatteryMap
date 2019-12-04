@@ -52,7 +52,21 @@ extension Array where Element: BatteryDataModalProtocol {
     }
 }
 
-
+extension TableViewController {
+    @objc func handlePurchaseNotification(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.nativeAd = nil
+            self.stations = self.tabItem.stationDataSource
+        }
+    }
+    
+    func setupObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePurchaseNotification(_:)),
+                                               name: .init(rawValue: Keys.standard.removeAdsObserverName),
+                                               object: nil)
+    }
+}
 final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
@@ -75,8 +89,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
             DispatchQueue.main.async {
                 self.setupAds()
                 guard self.nativeAd?.aspcetHeight != oldValue?.aspcetHeight else { return }
-                self.fequentlyAdShow = self.adfequently()
-                self.ads = self.recalculator()
+                self.adRecalculating()
                 self.stations = self.tabItem.stationDataSource
             }
         }
@@ -99,6 +112,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         tableView.register(UINib(nibName: "TableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "TableViewHeaderView")
         
         tableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
+        adRecalculating()
         searchBar.setTextField(color: UIColor.white.withAlphaComponent(0.3))
         searchBar.setPlaceholder(textColor: UIColor.white.withAlphaComponent(0.8))
         searchBar.set(textColor: .white)
@@ -122,10 +136,15 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     private func setupAds() {
         guard let nativeAd = self.nativeAd else { return }
-        for case let adCells as NativeAdTableViewCell in self.tableView.visibleCells {
+        for case let adCells as NativeAdTableViewCell in tableView.visibleCells {
             adCells.combind(nativeAd: nativeAd)
             return
         }
+    }
+    
+    private func adRecalculating() {
+        fequentlyAdShow = adfequently()
+        ads = recalculator()
     }
     
     private let adid: String = "ads"
@@ -140,12 +159,12 @@ final class TableViewController: UITableViewController, ViewTrackable {
         (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
     }
     
-    private lazy var fequentlyAdShow: Int = adfequently()
+    private var fequentlyAdShow: Int = 0
     
-    private lazy var ads: [BatteryStationPointAnnotation] = recalculator()
+    private var ads: [BatteryStationPointAnnotation] = []
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            
+        
         if !searchResultData.isEmpty, searchResultData[indexPath.row].address == adid, let nativeAd = nativeAd {
             return nativeAd.aspcetHeight + 100
         } else {
