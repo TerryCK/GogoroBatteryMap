@@ -25,12 +25,12 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>gogoro</string>
+				<string>gogoroMap</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1878</string>
+	<string>1879</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
