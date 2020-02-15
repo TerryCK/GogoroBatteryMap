@@ -58,8 +58,10 @@ extension Array where Element: BatteryDataModalProtocol {
     mutating func update(_ operation: Strategy, _ target: Element) {
         switch operation {
         case .sync:
-            guard firstIndex(where: { $0.coordinate == target.coordinate }) == nil else { return }
-            if let index = firstIndex(where: { $0.distance > target.distance }) {
+            if let index = firstIndex(where: { $0.coordinate == target.coordinate }) {
+                self[index] = target
+            }
+            else if let index = firstIndex(where: { $0.distance > target.distance }) {
                 insert(target, at: index)
             } else {
                 append(target)
@@ -70,5 +72,16 @@ extension Array where Element: BatteryDataModalProtocol {
                 remove(at: index)
             }
         }
+    }
+    
+    mutating func ads(array: Array) -> Array {
+        for adCell in array  {
+            if adCell.state < count {
+                insert(adCell, at: Swift.max(0, adCell.state - 1))
+            } else {
+                append(adCell)
+            }
+        }
+        return self
     }
 }

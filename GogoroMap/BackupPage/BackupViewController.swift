@@ -165,12 +165,9 @@ extension BackupViewController {
             [
                 UIAlertAction(title: "重設", style: .destructive, handler : { _ in
                     DispatchQueue.main.async {
-                        let title = UIApplication.mapViewController?.navigationItem.title
                         UIApplication.mapViewController?.navigationItem.title = "資料整理中..."
                         DataManager.shared.resetStations {
-                            DispatchQueue.main.async {
-                                UIApplication.mapViewController?.navigationItem.title = title
-                            }
+                            UIApplication.mapViewController?.resetTitle()
                         }
                     }
                    
