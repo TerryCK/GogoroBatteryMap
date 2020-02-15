@@ -25,40 +25,41 @@ final class ColorMatchTabsFloatingViewController: ColorMatchTabsViewController {
         colorMatchTabDelegate = self
     }
     private var lastADReloadDate : Date = Date()
-       
+    
     private var tabItemProvider: [TabItemCase] = TabItemCase.allCases
 }
 
 extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerDataSource, ColorMatchTabsViewControllerDelegate {
     
     func numberOfItems(inController controller: ColorMatchTabsViewController) -> Int {
-         tabItemProvider.count - 2
+        tabItemProvider.count - 2
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, viewControllerAt index: Int) -> UIViewController {
-         TabItemCase.viewControllers[index]
+        TabItemCase.viewControllers[index]
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, titleAt index: Int) -> String {
-         tabItemProvider[index].title
+        tabItemProvider[index].title
     }
     
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, iconAt index: Int) -> UIImage {
-         tabItemProvider[index].normalImage
+        tabItemProvider[index].normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, hightlightedIconAt index: Int) -> UIImage {
-         tabItemProvider[index].normalImage
+        tabItemProvider[index].normalImage
     }
     
     func tabsViewController(_ controller: ColorMatchTabsViewController, tintColorAt index: Int) -> UIColor {
-         .lightGreen
+        .lightGreen
     }
     
-   
+    
     func didSelectItemAt(_ index: Int) {
         
+        defer { Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index])) }
         if let scrollerView = (TabItemCase.viewControllers[index] as? ViewTrackable)?.trackView {
             flatingPanelController?.track(scrollView: scrollerView)
         }
@@ -68,13 +69,9 @@ extension ColorMatchTabsFloatingViewController: ColorMatchTabsViewControllerData
             UIApplication.mapViewController?.reloadBannerAds()
             lastADReloadDate = Date()
         }
-        
+        (UIApplication.mapViewController?.selectedTabItem.tabContantController as? TableViewController)?.invilidateObserver()
         UIApplication.mapViewController?.selectedTabItem = tabItemProvider[index]
-        if let tableViewController = TabItemCase.viewControllers[index] as? TableViewController {
-            tableViewController.nativeAd = UIApplication.mapViewController?.nativeAd
-        }
-        Answers.log(event: .Tab, customAttributes: String(describing: tabItemProvider[index]))
-        
+        (UIApplication.mapViewController?.selectedTabItem.tabContantController as? TableViewController)?.setup()
     }
 }
 
@@ -84,12 +81,12 @@ protocol ViewTrackable {
 }
 
 extension ViewTrackable where Self: UITableViewController {
-
+    
     var trackView: UIScrollView { tableView }
 }
 
 extension ViewTrackable where Self: UICollectionViewController {
-
+    
     var trackView: UIScrollView { collectionView }
 }
 

@@ -44,23 +44,22 @@ final class DataManager: NSObject {
     }
     
     private func processStation(_ stations: [BatteryStationPointAnnotation], completion: (() -> Void)? = nil) {
-        DispatchQueue.main.async {
-            let title = UIApplication.mapViewController?.navigationItem.title
-            UIApplication.mapViewController?.navigationItem.title = "資料更新中..."
-            self.queue.async {
-                let origin = stations.sorted(by: <)
-                self.operations = origin.filter(TabItemCase.nearby.hanlder)
-                self.buildings  = origin.filter(TabItemCase.building.hanlder)
-                self.checkins   = origin.filter(TabItemCase.checkin.hanlder)
-                self.unchecks   = origin.filter(TabItemCase.uncheck.hanlder)
-                self.lastUpdate = Date()
-                DispatchQueue.main.async { UIApplication.mapViewController?.navigationItem.title = title }
-                completion?()
+        self.queue.async {
+            let origin = stations.sorted(by: <)
+            self.operations = origin.filter(TabItemCase.nearby.hanlder)
+            self.buildings  = origin.filter(TabItemCase.building.hanlder)
+            self.checkins   = origin.filter(TabItemCase.checkin.hanlder)
+            self.unchecks   = origin.filter(TabItemCase.uncheck.hanlder)
+            self.lastUpdate = Date()
+            DispatchQueue.main.async {
+                 UIApplication.mapViewController?.resetTitle()
             }
+           
+            completion?()
         }
     }
     
-
+    
     static let shared = DataManager()
     
     @objc dynamic var lastUpdate: Date = Date()
@@ -100,6 +99,7 @@ final class DataManager: NSObject {
     var remoteStorage: [Response.Station] = []
     
     func fetchStations(onCompletion: (() -> Void)? = nil) {
+        UIApplication.mapViewController?.navigationItem.title = "資料更新中..."
         queue.async {
             self.fetchData { (result) in
                 guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations else {

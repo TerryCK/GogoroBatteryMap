@@ -303,8 +303,14 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         sideMenuManager.menuPresentMode = .viewSlideInOut
     }
     
+    func resetTitle() {
+        DispatchQueue.main.async {
+            self.navigationItem.title = "Gogoro \("Battery Station".localize())"
+        }
+    }
+    
     private func setupNavigationTitle() {
-        navigationItem.title = "Gogoro \("Battery Station".localize())"
+        resetTitle()
         navigationItem.titleView?.subviews.forEach { ($0 as? UILabel)?.textColor = .white }
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.barStyle = .blackTranslucent
@@ -471,6 +477,7 @@ extension MapViewController: IAPPurchasable {
     func setupObserver() {
         
         observation = DataManager.shared.observe(\.lastUpdate, options: [.initial, .new, .old]) { [unowned self] (_, _) in
+            print("shiung, lastUpdate", Date())
             let selectedTabItem = self.selectedTabItem
             let stations = selectedTabItem.stationDataSource
             DispatchQueue.main.async {

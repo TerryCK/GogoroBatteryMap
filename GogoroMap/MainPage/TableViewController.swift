@@ -38,20 +38,6 @@ extension TableViewController: UISearchBarDelegate {
     }
 }
 
-extension Array where Element: BatteryDataModalProtocol {
-    
-    mutating func ads(array: Array) -> Array {
-        for adCell in array  {
-            if adCell.state < count {
-                insert(adCell, at: Swift.max(0, adCell.state - 1))
-            } else {
-                append(adCell)
-            }
-        }
-        return self
-    }
-}
-
 extension TableViewController {
     @objc func handlePurchaseNotification(_ notification: Notification) {
         DispatchQueue.main.async {
@@ -60,23 +46,22 @@ extension TableViewController {
         }
     }
     
-    func setupObserver() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handlePurchaseNotification(_:)),
-                                               name: .init(rawValue: Keys.standard.removeAdsObserverName),
-                                               object: nil)
+    private func setupObserver() {
+        NotificationCenter.default
+            .addObserver(self,
+                         selector: #selector(handlePurchaseNotification(_:)),
+                         name: .init(rawValue: Keys.standard.removeAdsObserverName),
+                         object: nil)
     }
 }
+
 final class TableViewController: UITableViewController, ViewTrackable {
     
     @IBOutlet weak var searchBar: UISearchBar!
-    
+    private var observation: NSKeyValueObservation?
     private var searchText = "" {
         didSet {
-            guard !searchText.isEmpty else { return }
-            DispatchQueue.global().async {
-                self.searchResultData = self.stations.filter(text: self.searchText)
-            }
+            self.stations = self.tabItem.stationDataSource
         }
     }
     
@@ -103,6 +88,27 @@ final class TableViewController: UITableViewController, ViewTrackable {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {    
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func setup() {
+        nativeAd = UIApplication.mapViewController?.nativeAd
+        setupObserve()
+    }
+    
+    private func setupObserve() {
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.new]) { [unowned self] (_, _) in
+            DispatchQueue.main.async {
+                self.stations = self.tabItem.stationDataSource
+            }
+        }
+    }
+    
+    func invilidateObserver() {
+        observation?.invalidate()
     }
     
     override func viewDidLoad() {
