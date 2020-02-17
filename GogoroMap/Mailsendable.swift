@@ -26,9 +26,10 @@ extension Mailsendable where Self: UIViewController {
         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             systemInfo += "AppVersion: \(appVersion)"
         }
-        
+        let isPurchased = UserDefaults.standard.bool(forKey: Keys.standard.hasPurchesdKey)
+        let subject = "Gogoro電池站 - feedback" + (isPurchased ? "贊助" : "")
         mailComposerVC.setToRecipients(["pbikemapvision@gmail.com"])
-        mailComposerVC.setSubject("Gogoro電池站 - feedback")
+        mailComposerVC.setSubject(subject)
         mailComposerVC.setMessageBody("我們非常感謝您使用此App，歡迎寫下您希望的功能/錯誤回報或是您的感想，謝謝\n\n\n\n\(systemInfo)", isHTML: false)
         
         return mailComposerVC
