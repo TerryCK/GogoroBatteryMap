@@ -40,54 +40,22 @@ platform :ios do
 
   desc "Deploy a new version to the App Store"
   lane :release do
-    # match(type: "appstore")
-    # snapshot
-    # sync_code_signing(type: "appstore")  # see code signing guide for more information
-    # gym(scheme: "GogoroMap")
-    # build_app(scheme: "GogoroMap")
-    # upload_to_app_store
+    increment_build_number
 
-    # build_app(scheme: "GogoroMap",
-    #           workspace: "GogoroMap.xcworkspace",
-    #           include_bitcode: true)
-    # increment_build_number
-    # # match(type: "appstore")
-    # gym(
-    #   clean: true,
-    #   scheme:"GogoroMap",
-    #   export_method:"app-store",
-    #   output_directory:"./build",
-    #   archive_path:"./Archive"
-    # )
+    gym(
+      clean: true,
+      scheme:"GogoroMap",
+      export_method:"app-store",
+      output_directory:"./build",
+      archive_path:"./Archive"
+    )
 
     deliver(
       submit_for_review: true,
       force: true, # Skip HTMl report verification
       skip_screenshots: true,
-      skip_binary_upload: true,
       automatic_release: true,
-      promotional_text: {
-              'zh-Hant' => "騎gogoro沒電了嗎？
-              協助你紀錄旅遊行程，足跡
-              這裡可以幫助你快速的找到最近的充電站
-              讓你充滿能量再出發！",
-              'en-US' => "Need energy for long distance travel without pollution? Go Station will help you find the battery exchange station for gogoro Have a great travel experience"
-            },
-     release_notes: {
-        'zh-Hant' => "支援 Dark mode
-        列表支援左右滑動，切換過濾站點項目(附近, 已打卡, 未打卡, 即將啟用)
-        臭蟲修復
-        加強電池效能
-        加速電池站點狀態更新演算法
-        地圖站點與過濾站點清單同步
-        回應許願需求
-        增進搜尋效率",
-        'en-US' => "new status icon for station nearby bank
-        support dark mode
-        better battery performance
-        new filter mode for clear where you have been
-        more performance for backup flow"
-      },
+      
       # Comes from https://github.com/fastlane/fastlane/issues/5542#issuecomment-254201994
       submission_information: {
         add_id_info_limits_tracking: true,
