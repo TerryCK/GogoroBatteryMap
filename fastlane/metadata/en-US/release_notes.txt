@@ -1,0 +1,5 @@
+new status icon for station nearby bank
+	support dark mode
+        better battery performance
+        new filter mode for clear where you have been
+        more performance for backup flow
