@@ -55,7 +55,7 @@ platform :ios do
       force: true, # Skip HTMl report verification
       skip_screenshots: true,
       automatic_release: true,
-      
+
       # Comes from https://github.com/fastlane/fastlane/issues/5542#issuecomment-254201994
       submission_information: {
         add_id_info_limits_tracking: true,
@@ -77,7 +77,12 @@ platform :ios do
       }
     )
 
+    add_git_tag(
+      grouping: "fastlane-builds",
+      build_number: get_build_number
+    )
 
+    push_git_tags
     puts 'All done'
     # frameit
   end
