@@ -42,8 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NetworkActivityLogger.shared.startLogging()
             NetworkActivityLogger.shared.level = .debug
         }
-        
-        print("==== enviroment: \(Environment.environment) ====")
+        print("\n==== enviroment: \(Environment.environment) ====\n")
         
         return true
     }

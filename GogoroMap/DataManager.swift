@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 enum ServiceError: Error {
     
@@ -141,13 +142,20 @@ final class DataManager: NSObject {
             return
         }
         NetworkActivityIndicatorManager.shared.networkOperationStarted()
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
+        AF.request(url).response { (response) in
             NetworkActivityIndicatorManager.shared.networkOperationFinished()
-            switch data {
-            case .some(let response):  completionHandler(.success(response))
+            switch response.data {
+            case .some(let payload):  completionHandler(.success(payload))
             case .none: completionHandler(.failure(ServiceError.general))
             }
         }.resume()
+//        URLSession.shared.dataTask(with: url) { (data, _, error) in
+//            NetworkActivityIndicatorManager.shared.networkOperationFinished()
+//            switch data {
+//            case .some(let response):  completionHandler(.success(response))
+//            case .none: completionHandler(.failure(ServiceError.general))
+//            }
+//        }.resume()
     }
 }
 
