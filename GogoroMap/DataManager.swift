@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Alamofire
+import Crashlytics
 
 enum ServiceError: Error {
     
@@ -18,7 +19,6 @@ enum ServiceError: Error {
 final class DataManager: NSObject {
     
     enum Approach { case bundle, database }
-    
     
     private let queue = DispatchQueue(label: "com.GogoroMap.processQueue")
     
@@ -53,9 +53,8 @@ final class DataManager: NSObject {
             self.unchecks   = origin.filter(TabItemCase.uncheck.hanlder)
             self.lastUpdate = Date()
             DispatchQueue.main.async {
-                 UIApplication.mapViewController?.resetTitle()
+                UIApplication.mapViewController?.resetTitle()
             }
-           
             completion?()
         }
     }
@@ -149,13 +148,6 @@ final class DataManager: NSObject {
             case .none: completionHandler(.failure(ServiceError.general))
             }
         }.resume()
-//        URLSession.shared.dataTask(with: url) { (data, _, error) in
-//            NetworkActivityIndicatorManager.shared.networkOperationFinished()
-//            switch data {
-//            case .some(let response):  completionHandler(.success(response))
-//            case .none: completionHandler(.failure(ServiceError.general))
-//            }
-//        }.resume()
     }
 }
 

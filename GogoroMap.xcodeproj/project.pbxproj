@@ -71,6 +71,7 @@
 		A8F7504520261C0600E2206D /* BackupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7503820260D1C00E2206D /* BackupTableViewCell.swift */; };
 		DE3CAF7A23236740006AFE1A /* DetailCalloutAccessoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3CAF7823236740006AFE1A /* DetailCalloutAccessoryViewModel.swift */; };
 		DE3CAF7B23236740006AFE1A /* DetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3CAF7923236740006AFE1A /* DetailAnnotationView.swift */; };
+		DE4543DF2406BA7600D3069D /* TimerPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4543DE2406BA7600D3069D /* TimerPeriod.swift */; };
 		DE6B596E2324BCBB00366F09 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6B596D2324BCBA00366F09 /* Environment.swift */; };
 		DE772FE222FD1218000A67C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */; };
 		DE772FE422FD3286000A67C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE772FE322FD3286000A67C3 /* Array+Extension.swift */; };
@@ -188,6 +189,7 @@
 		D2F1D509753EDEAD67827431 /* Pods-GogoroMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GogoroMap.release.xcconfig"; path = "Target Support Files/Pods-GogoroMap/Pods-GogoroMap.release.xcconfig"; sourceTree = "<group>"; };
 		DE3CAF7823236740006AFE1A /* DetailCalloutAccessoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCalloutAccessoryViewModel.swift; sourceTree = "<group>"; };
 		DE3CAF7923236740006AFE1A /* DetailAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAnnotationView.swift; sourceTree = "<group>"; };
+		DE4543DE2406BA7600D3069D /* TimerPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPeriod.swift; sourceTree = "<group>"; };
 		DE6B596D2324BCBA00366F09 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		DE772FE022FD1218000A67C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE772FE322FD3286000A67C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				A8B19D641F4409620082283F /* NetworkActivityIndicatorManager.swift */,
 				7CED91BD22E8526F001042E2 /* Regex.swift */,
 				7C0DBE6922EA9BF2002B76D5 /* TableViewGroupDataManager.swift */,
+				DE4543DE2406BA7600D3069D /* TimerPeriod.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -880,6 +883,7 @@
 				DED59D852392AFAB006EB9E0 /* CircleColorSparkView.swift in Sources */,
 				DED59D8E2392AFAB006EB9E0 /* FireworkSpark.swift in Sources */,
 				DED59D8D2392AFAB006EB9E0 /* SparkViewFactory.swift in Sources */,
+				DE4543DF2406BA7600D3069D /* TimerPeriod.swift in Sources */,
 				A8B19D631F4406410082283F /* IAPPurchasable.swift in Sources */,
 				DED59D842392AFAB006EB9E0 /* CircleColorSparkViewFactory.swift in Sources */,
 				DED59D8B2392AFAB006EB9E0 /* SparkViewAnimator.swift in Sources */,
@@ -1113,7 +1117,7 @@
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1138,7 +1142,7 @@
 				CODE_SIGN_ENTITLEMENTS = GogoroMap/GogoroMap.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = Y8SJ5M44N4;
 				INFOPLIST_FILE = GogoroMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
