@@ -14,20 +14,28 @@ import SwiftyStoreKit
 import AlamofireNetworkActivityLogger
 
 extension UIApplication {
-   
+    
     static var mapViewController: MapViewController? {
         ((shared.delegate as? AppDelegate)?.window?.rootViewController as? UINavigationController)?.viewControllers.first { $0.isKind(of: MapViewController.self) } as? MapViewController
     }
 }
+
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     
+    private var autoUpdate = TimePeriod(effectiveDuration: 60*60)
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        DataManager.shared.fetchStations()
+        
+        DataManager.shared.fetchStations {
+            Answers.logCustomEvent(withName: "didFinishLaunchingWithOptions ", customAttributes: ["didFinishLaunchingWithOptions" : "fetchStations"])
+        }
+        
         window?.rootViewController = UINavigationController(rootViewController: MapViewController())
         window?.makeKeyAndVisible()
         setupIAPOberserver()
@@ -46,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-
+    
     private func setupIAPOberserver() {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             for purchase in purchases where [.purchased, .restored].contains(purchase.transaction.transactionState) && purchase.needsFinishTransaction {
@@ -61,13 +69,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-         DataManager.shared.save()
+        DataManager.shared.save()
+        autoUpdate.reset()
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        DataManager.shared.fetchStations()
+        
+        if autoUpdate.isExpired {
+            DataManager.shared.fetchStations {
+                Answers.logCustomEvent(withName: "AutoUpdate", customAttributes: ["AutoUpdate" : "fetchStations"])
+            }
+        }
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
     
