@@ -13,7 +13,7 @@ struct StationAnalyticsModel {
     let total, availables, flags, checkins: Int
     var buildings: Int { total - availables }
     var completedPercentage: String {  String(format: "%.1f", percentageOfCheckins) }
-    private var percentageOfCheckins: Double { Double(flags) / Double(availables) * 100}
+    private var percentageOfCheckins: Double { Double(flags) / Double(max(availables,1)) * 100}
 }
 
 extension StationAnalyticsModel {
