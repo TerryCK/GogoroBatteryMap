@@ -41,7 +41,7 @@ platform :ios do
   desc "Deploy a new version to the App Store"
   lane :release do
     increment_build_number
-
+    increment_version_number
     gym(
       clean: true,
       scheme:"GogoroMap",
@@ -79,7 +79,7 @@ platform :ios do
 
     add_git_tag(
       grouping: "fastlane-builds",
-      build_number: get_build_number
+      build_number: get_version_number
     )
 
     push_git_tags
