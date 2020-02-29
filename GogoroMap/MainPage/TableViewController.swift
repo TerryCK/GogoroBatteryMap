@@ -61,7 +61,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     private var observation: NSKeyValueObservation?
     private var searchText = "" {
         didSet {
-            self.stations = self.tabItem.stationDataSource
+            stations = tabItem.stationDataSource
         }
     }
     
@@ -100,7 +100,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     private func setupObserve() {
-        observation = DataManager.shared.observe(\.lastUpdate, options: [.new]) { [unowned self] (_, _) in
+        observation = DataManager.shared.observe(\.lastUpdate, options: [.initial, .new]) { [unowned self] (_, _) in
             DispatchQueue.main.async {
                 self.stations = self.tabItem.stationDataSource
             }
@@ -144,7 +144,7 @@ final class TableViewController: UITableViewController, ViewTrackable {
         guard let nativeAd = self.nativeAd else { return }
         for case let adCells as NativeAdTableViewCell in tableView.visibleCells {
             adCells.combind(nativeAd: nativeAd)
-            return
+            break
         }
     }
     
@@ -162,7 +162,8 @@ final class TableViewController: UITableViewController, ViewTrackable {
     }
     
     private func recalculator() -> [BatteryStationPointAnnotation] {
-        (0...(stations.count / fequentlyAdShow)).map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
+        (0...(stations.count / max(fequentlyAdShow, 1)))
+            .map { BatteryStationPointAnnotation(ad: adid, insert: $0 * fequentlyAdShow + 3)   }
     }
     
     private var fequentlyAdShow: Int = 0

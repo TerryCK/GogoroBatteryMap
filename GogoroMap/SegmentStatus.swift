@@ -69,24 +69,13 @@ enum TabItemCase: Int, CaseIterable {
     }
     
     var stationDataSource: [BatteryStationPointAnnotation] {
-        set {
-            switch self {
-            case .nearby   :  DataManager.shared.operations = newValue
-            case .checkin  :  DataManager.shared.checkins = newValue
-            case .building :  DataManager.shared.buildings = newValue
-            default: break
-            }
+        switch self {
+        case .nearby   : return DataManager.shared.operations
+        case .checkin  : return DataManager.shared.checkins
+        case .uncheck  : return DataManager.shared.unchecks
+        case .building : return DataManager.shared.buildings
+        default        : return DataManager.shared.operations
         }
-        get {
-            switch self {
-            case .nearby   : return DataManager.shared.operations
-            case .checkin  : return DataManager.shared.checkins
-            case .uncheck  : return DataManager.shared.unchecks
-            case .building : return DataManager.shared.buildings
-            default        : return DataManager.shared.operations
-            }
-        }
-        
     }
 }
 
