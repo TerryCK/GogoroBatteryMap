@@ -138,14 +138,11 @@ final class MapViewController: UIViewController, ManuDelegate, GADUnifiedNativeA
         let floatingVC = ColorMatchTabsFloatingViewController()
         fpc.set(contentViewController: floatingVC)
         floatingVC.flatingPanelController = fpc
+        fpc.delegate = self
         self.fpc = fpc
     }
     
-    var fpc: FloatingPanelController? {
-        didSet {
-            fpc?.delegate = self
-        }
-    }
+    var fpc: FloatingPanelController?
     
     private lazy var clusterManager: ClusterManager = {
         $0.maxZoomLevel = clusterSwitcher.maxZoomLevel
