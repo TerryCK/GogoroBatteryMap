@@ -41,10 +41,6 @@ platform :ios do
   desc "Deploy a new version to the App Store"
   lane :release do
     increment_build_number
-
-    # increment_version_number(
-    #   bump_type: "patch" # Automatically increment patch version number
-    # )
     increment_version_number_in_xcodeproj(bump_type: "patch", target: "GogoroMap")
     gym(
       clean: true,
@@ -87,6 +83,7 @@ platform :ios do
     )
 
     push_git_tags
+    sh("../Pods/Fabric/upload-symbols -a $(cat ../fabric.apikey) -p ios ../build/GogoroMap.app.dSYM.zip")
     puts 'All done'
     # frameit
   end
