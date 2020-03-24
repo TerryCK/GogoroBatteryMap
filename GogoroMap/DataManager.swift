@@ -65,10 +65,8 @@ final class DataManager: NSObject {
     @objc dynamic var lastUpdate: Date = Date()
     
     func save() {
-        queue.async {
-            guard let data = try? JSONEncoder().encode(self.originalStations) else { return }
-            UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
-        }
+        guard let data = try? JSONEncoder().encode(self.originalStations) else { return }
+        UserDefaults.standard.set(data, forKey: Keys.standard.annotationsKey)
     }
     
     func recoveryStations(from records: [BatteryStationRecord]) {
