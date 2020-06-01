@@ -89,7 +89,7 @@ final class DataManager: NSObject {
     static func parse(data: Data) -> [BatteryStationPointAnnotation]? {
         (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
     }
-    
+            
     private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
         try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
     }

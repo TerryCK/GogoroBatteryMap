@@ -7,6 +7,7 @@
 //
 
 import MapKit
+import Crashlytics
 
 protocol Navigable {
     
@@ -39,6 +40,7 @@ struct Navigator: Navigable {
     }
     
     static func go<T: BatteryStationPointAnnotation>(to destination: T) {
+        Answers.log(event: .Navigator, customAttributes: option.description)
         switch option {
         case .google:
             guard let address = destination.address.matches(with: #"^[^\(\)]*"#.regex).first?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
