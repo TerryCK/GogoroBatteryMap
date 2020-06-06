@@ -53,7 +53,9 @@ final class BackupViewController: UITableViewController, ViewTrackable {
             elements[1].cells = [noDataCell]
         }
         backupfooterView.subtitleLabel.text = cloudAccountStatus.description
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     var records: [CKRecord]? {
