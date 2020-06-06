@@ -68,7 +68,7 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
         return coordinate.hashValue == (object as? BatteryStationPointAnnotation)?.coordinate.hashValue
     }
     
-    public convenience init(station: Response.Station) {
+    public convenience init(station: Gogoro.Station) {
         self.init(title: station.name.localized() ?? "",
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
             coordinate: CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude),
