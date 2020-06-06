@@ -100,6 +100,7 @@
 		DED59D8E2392AFAB006EB9E0 /* FireworkSpark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */; };
 		DED59D8F2392AFAB006EB9E0 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */; };
 		DEDE26E2231A0B0600A19EF3 /* GoShareDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */; };
+		DEF02414248BCDA90050E7FC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF02413248BCDA90050E7FC /* Data+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +219,7 @@
 		DED59D772392AFAB006EB9E0 /* FireworkSpark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireworkSpark.swift; sourceTree = "<group>"; };
 		DED59D792392AFAB006EB9E0 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
 		DEDE26E1231A0B0600A19EF3 /* GoShareDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoShareDataModel.swift; sourceTree = "<group>"; };
+		DEF02413248BCDA90050E7FC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		F4D813E833E8A3D946D4B764 /* Pods_GogoroMapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GogoroMapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -338,6 +340,7 @@
 				7C52699C237D47B200F70C51 /* SearchBar+Extension.swift */,
 				7C9A002B22238FC200D5150D /* Answer+Entension.swift */,
 				DE772FE322FD3286000A67C3 /* Array+Extension.swift */,
+				DEF02413248BCDA90050E7FC /* Data+Extension.swift */,
 				7C18F47B22D3489A009914A4 /* BatteryDataModalProtocol.swift */,
 				A899BBBC2026C81C0043EA57 /* CloudBackupable.swift */,
 				A83ACBF522211DF3003907FD /* Decorator.swift */,
@@ -915,6 +918,7 @@
 				7C0DBE6F22EAC0E9002B76D5 /* TableViewController.xib in Sources */,
 				DED59D7B2392AFAB006EB9E0 /* ClassicFireworkController.swift in Sources */,
 				7C0DBE6A22EA9BF2002B76D5 /* TableViewGroupDataManager.swift in Sources */,
+				DEF02414248BCDA90050E7FC /* Data+Extension.swift in Sources */,
 				DED59D7C2392AFAB006EB9E0 /* ClassicSparkTrajectoryFactory.swift in Sources */,
 				DED59D8C2392AFAB006EB9E0 /* SparkView.swift in Sources */,
 				7C0DBE6D22EAA1DA002B76D5 /* TableViewHeaderView.swift in Sources */,

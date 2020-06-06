@@ -10,12 +10,7 @@ import UIKit
 import CloudKit
 
 final class BackupTableViewCell: UITableViewCell {
-    
-    static let byteCountFormatter = ByteCountFormatter {
-        $0.allowedUnits = [.useAll]
-        $0.countStyle = .file
-    }
-    
+
     enum CellType {
         case switchButton , none, backupButton
     }

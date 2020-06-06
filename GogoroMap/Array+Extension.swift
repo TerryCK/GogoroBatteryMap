@@ -85,3 +85,5 @@ extension Array where Element: BatteryDataModalProtocol {
         return self
     }
 }
+
+
