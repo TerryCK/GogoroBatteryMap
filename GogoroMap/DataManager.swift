@@ -87,19 +87,19 @@ final class DataManager: NSObject {
     var buildings: [BatteryStationPointAnnotation] = []
     
     static func parse(data: Data) -> [BatteryStationPointAnnotation]? {
-        (try? JSONDecoder().decode(Response.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
+        (try? JSONDecoder().decode(Gogoro.self, from: data))?.stations.map(BatteryStationPointAnnotation.init)
     }
             
     private func decode(data: Data) -> [BatteryStationPointAnnotation]? {
         try? JSONDecoder().decode([BatteryStationPointAnnotation].self, from: data)
     }
     
-    var remoteStorage: [Response.Station] = []
+    var remoteStorage: [Gogoro.Station] = []
     
     func fetchStations(onCompletion: (() -> Void)? = nil) {
         UIApplication.mapViewController?.navigationItem.title = "資料更新中..."
         
-        let handler: (Response) -> Void = { payload in
+        let handler: (Gogoro) -> Void = { payload in
             let stations = payload.stations
             self.remoteStorage = stations
             let result = stations.map(BatteryStationPointAnnotation.init)
@@ -111,12 +111,12 @@ final class DataManager: NSObject {
             self.fetchData(api: .script) { result in
                 guard case let .success(data) = result else { return }
                 do {
-                    handler(try JSONDecoder().decode(Response.self, from: data))
+                    handler(try JSONDecoder().decode(Gogoro.self, from: data))
                 } catch {
                     print("\n *** encounter the parser error: \(error) *** \n")
                     self.fetchData(api: .gogoro) { result in
                         if case let .success(data) = result {
-                            if let payload = try? JSONDecoder().decode(Response.self, from: data) {
+                            if let payload = try? JSONDecoder().decode(Gogoro.self, from: data) {
                                 handler(payload)
                             }
                         }
