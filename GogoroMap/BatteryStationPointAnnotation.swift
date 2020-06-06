@@ -69,12 +69,12 @@ public final class BatteryStationPointAnnotation: MKPointAnnotation, BatteryData
     }
     
     public convenience init(station: Gogoro.Station) {
-        self.init(title: station.name.localized() ?? "",
+        self.init(title: station.name,
                   subtitle: "\("Open hours:".localize()) \(station.availableTime ?? "")",
             coordinate: CLLocationCoordinate2D(latitude: station.latitude, longitude: station.longitude),
-            address: station.address.localized() ?? "",
+            address: station.address,
             state: station.state,
-            city: station.city.localized())
+            city: station.city)
     }
     
     private init(title: String?, subtitle: String?, coordinate: CLLocationCoordinate2D, address: String, state: Int, checkinCounter: Int? = nil, checkinDay: Date? = nil, city: String? = nil) {

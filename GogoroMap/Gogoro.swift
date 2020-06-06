@@ -7,13 +7,18 @@
 //
 
 import UIKit
-public extension Gogoro.Station.Detail {
+
+extension NSLocale {
     
-    func localized() -> String? {
-        return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value?.replacingOccurrences(regex: "臺".regex, replacement: "台")
-    }
+    static var isPreferredEnglish: Bool { preferredLanguages.first?.contains("en") ?? false }
 }
 
+extension Gogoro.Station {
+    
+    var keyPath: KeyPath<Detail, String?> {
+        NSLocale.isPreferredEnglish ? \.list.first?.value : \.list.last?.value
+    }
+}
 
 public struct Gogoro: Decodable {
     
@@ -26,9 +31,20 @@ public struct Gogoro: Decodable {
     public struct Station: Decodable {
         
         public let state: Int
-        public let name, address, city: Detail
+        
+        var name: String {
+            _name[keyPath: keyPath]?
+                .replacingOccurrences(regex: "臺".regex, replacement: "台") ?? ""
+        }
+        
+        var address: String {  _address[keyPath: keyPath] ?? "" }
+        var city: String    {  _city[keyPath: keyPath] ?? "" }
+        
         public let latitude, longitude: Double
         public let availableTime, id: String?
+        
+        
+        private let _name, _address, _city: Detail
         
         enum CodingKeys: String, CodingKey {
             case name          = "LocName"
@@ -51,9 +67,9 @@ public struct Gogoro: Decodable {
             let addressString = try container.decode(String.self, forKey: .address)
             let cityString = try container.decode(String.self, forKey: .city)
             let jsonDecoder = JSONDecoder()
-            name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
-            city = try jsonDecoder.decode(Detail.self, from: cityString.data(using: .utf8)!)
-            address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
+            _name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
+            _city = try jsonDecoder.decode(Detail.self, from: cityString.data(using: .utf8)!)
+            _address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
             id = try container.decode(String?.self, forKey: .id)
         }
         
