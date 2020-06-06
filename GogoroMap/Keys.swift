@@ -29,6 +29,7 @@ final class Keys {
     let goShareScriptID: String
     let nativeAdID: String
     let tableViewNativeAdID: String
+    let scriptAPIKey: String
     
     private init(dictionary: [String: Any] = ["": ""]) {
         adUnitID = dictionary["adUnitID"] as? String ?? ""
@@ -42,6 +43,7 @@ final class Keys {
         goShareScriptID = dictionary["goShareScriptID"] as? String ?? ""
         nativeAdID = dictionary["nativeAdID"] as? String ?? ""
         tableViewNativeAdID = dictionary["tableViewNativeAdID"] as? String ?? ""
+        scriptAPIKey = dictionary["scriptAPIKey"] as? String ?? ""
     }
     
     static let standard: Keys = {
