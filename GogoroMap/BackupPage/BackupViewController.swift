@@ -11,17 +11,7 @@ import CloudKit
 import GoogleMobileAds
 import Crashlytics
 
-//extension BackupViewController: ADSupportable {
-//
-//    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-//        bridgeAd(bannerView)
-//    }
-//}
-
 final class BackupViewController: UITableViewController, ViewTrackable {
-    
-    
-//    var bannerView = GADBannerView(adSize: GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
     
     let adUnitID: String = Keys.standard.backupAdUnitID
     private let backupHeadView = SupplementaryCell(title: "資料備份", subtitle: "建立一份備份資料，當機器損壞或遺失時，可以從iCloud回復舊有資料")
@@ -79,7 +69,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
                         .enumerated()
                         .compactMap { (index, element) in
                             guard let data = element.0, let batteryRecords = try? JSONDecoder().decode([BatteryStationRecord].self, from: data) else { return nil }
-                            let size = BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(data.count))
+                            let size = Data.size(count: data.count)
                             return BackupTableViewCell(title: "\(index + 1). 上傳時間: \(element.1 ?? "")",
                                 subtitle: "檔案容量: \(size), 打卡次數：\(batteryRecords.reduce(0) { $0 + $1.checkinCount })" ,
                                 stationRecords: batteryRecords)
@@ -92,7 +82,7 @@ final class BackupViewController: UITableViewController, ViewTrackable {
                     subtitleText = nil
                 }
                 if let dataSize = dataSize {
-                    self.elements[1].footView?.titleLabel.text = "iCloud 已使用儲存容量：" + BackupTableViewCell.byteCountFormatter.string(fromByteCount: Int64(dataSize))
+                    self.elements[1].footView?.titleLabel.text = "iCloud 已使用儲存容量：" + Data.size(count: dataSize)
                 }
                 self.backupfooterView.subtitleLabel.text = subtitleText
                 self.tableView.reloadData()
@@ -110,8 +100,6 @@ final class BackupViewController: UITableViewController, ViewTrackable {
         super.viewDidLoad()
         Answers.log(view: "backup page")
         setupObserve()
-        
-//        setupAd(with: navigationController?.view ?? tableView)
        
         tableView.delegate = self
         tableView.dataSource = self
@@ -164,6 +152,7 @@ extension BackupViewController {
             let alertController =  UIAlertController(title: "確定要重設打卡記錄？", message: "當前地圖資訊將被備份資料取代", preferredStyle: .actionSheet)
             [
                 UIAlertAction(title: "重設", style: .destructive, handler : { _ in
+                    Answers.log(event: .Backup, customAttributes: "reset checkin records")
                     DispatchQueue.main.async {
                         UIApplication.mapViewController?.navigationItem.title = "資料整理中..."
                         DataManager.shared.resetStations {
@@ -185,6 +174,7 @@ extension BackupViewController {
         case (.none?, .backup):
             cell?.isUserInteractionEnabled = false
             cell?.titleLabel.text = "資料備份中..."
+            Answers.log(event: .Backup, customAttributes: "backup data to iCloud")
             let record = DataManager.shared.checkins.compactMap(BatteryStationRecord.init)
             guard  let data = try? JSONEncoder().encode(record) else { return }
             CKContainer.default().save(data: data) { (newRecord, error) in
@@ -216,7 +206,10 @@ extension BackupViewController {
                                 let index = self.records?.map({ $0.recordID }).firstIndex(of: recordID) else { return }
                             self.records?.remove(at: index)
                         }
-                    }}),
+                    }
+                    Answers.log(event: .Backup, customAttributes: "delete data from iCloud")
+                    
+                }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
                 ].forEach(alertController.addAction)
             if UIDevice.current.userInterfaceIdiom == .pad {
@@ -231,7 +224,7 @@ extension BackupViewController {
                     guard let stationRecords = self.elements[1].cells?[indexPath.row].stationRecords else {
                         return
                     }
-                
+                    Answers.log(event: .Backup, customAttributes: "recovery")
                     DataManager.shared.recoveryStations(from: stationRecords)
                 }),
                 UIAlertAction(title: "取消", style: .cancel, handler: nil),
@@ -258,6 +251,7 @@ extension BackupViewController {
                     guard let record = self.records?[indexPath.row] else { return }
                     self.elements[indexPath.section].cells?[indexPath.row].titleLabel.text = "資料刪除中..."
                     self.elements[indexPath.section].cells?[indexPath.row].subtitleLabel.text = nil
+                    Answers.log(event: .Backup, customAttributes: "delete data from iCloud")
                     CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { (recordID, error) in
                         guard error == nil,
                             let recordID = recordID,
