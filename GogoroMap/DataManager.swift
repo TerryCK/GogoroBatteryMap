@@ -98,14 +98,30 @@ final class DataManager: NSObject {
     
     func fetchStations(onCompletion: (() -> Void)? = nil) {
         UIApplication.mapViewController?.navigationItem.title = "資料更新中..."
+        
+        let handler: (Response) -> Void = { payload in
+            let stations = payload.stations
+            self.remoteStorage = stations
+            let result = stations.map(BatteryStationPointAnnotation.init)
+            self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: result),
+                                completion: onCompletion)
+        }
+        
         queue.async {
-            self.fetchData { (result) in
-                guard case let .success(data) = result, let stations = (try? JSONDecoder().decode(Response.self, from: data))?.stations else {
-                    return
+            self.fetchData(api: .script) { result in
+                guard case let .success(data) = result else { return }
+                do {
+                    handler(try JSONDecoder().decode(Response.self, from: data))
+                } catch {
+                    print("\n *** encounter the parser error: \(error) *** \n")
+                    self.fetchData(api: .gogoro) { result in
+                        if case let .success(data) = result {
+                            if let payload = try? JSONDecoder().decode(Response.self, from: data) {
+                                handler(payload)
+                            }
+                        }
+                    }
                 }
-                self.remoteStorage = stations
-                let result = stations.map(BatteryStationPointAnnotation.init)
-                self.processStation(DataManager.shared.originalStations.keepOldUpdate(with: result), completion: onCompletion)
             }
         }
     }
@@ -120,13 +136,12 @@ final class DataManager: NSObject {
     }
     
     enum API {
-        
-        case gogoro, goShare
+        case gogoro, goShare, script
         var url: URL? { URL(string: api) }
-        
         var api: String {
             switch self {
             case .gogoro: return Keys.standard.gogoroAPI
+            case .script: return GoogleAppScript(id: Keys.standard.scriptAPIKey).apiString
             case .goShare: return GoogleAppScript(id: Keys.standard.goShareScriptID).apiString
             }
         }
