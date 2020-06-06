@@ -7,7 +7,7 @@
 //
 
 import UIKit
-public extension Response.Station.Detail {
+public extension Gogoro.Station.Detail {
     
     func localized() -> String? {
         return NSLocale.preferredLanguages.first?.contains("en") ?? false ? list.first?.value : list.last?.value?.replacingOccurrences(regex: "臺".regex, replacement: "台")
@@ -15,7 +15,7 @@ public extension Response.Station.Detail {
 }
 
 
-public struct Response: Decodable {
+public struct Gogoro: Decodable {
     
     public let stations: [Station]
     
@@ -28,7 +28,7 @@ public struct Response: Decodable {
         public let state: Int
         public let name, address, city: Detail
         public let latitude, longitude: Double
-        public let availableTime: String?
+        public let availableTime, id: String?
         
         enum CodingKeys: String, CodingKey {
             case name          = "LocName"
@@ -38,6 +38,7 @@ public struct Response: Decodable {
             case state         = "State"
             case availableTime = "AvailableTime"
             case city          = "City"
+            case id            = "Id"
         }
         
         public init(from decoder: Decoder) throws {
@@ -53,6 +54,7 @@ public struct Response: Decodable {
             name = try jsonDecoder.decode(Detail.self, from: nameString.data(using: .utf8)!)
             city = try jsonDecoder.decode(Detail.self, from: cityString.data(using: .utf8)!)
             address = try jsonDecoder.decode(Detail.self, from: addressString.data(using: .utf8)!)
+            id = try container.decode(String?.self, forKey: .id)
         }
         
         public struct Detail: Codable {
