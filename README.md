@@ -1,26 +1,24 @@
 # Go電池站 - 專屬於Gogoro電池交換站的地圖
 
-App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
+App Store免費下載 [傳送門](https://apple.co/2kb6u3a).<p>
 
 `Go電池站`是一套使用方便直觀快速找到最近的Gogoro電池交換站
 
 <p align="center" >★★ <b>請星星這個專案來鼓勵作者，謝謝 ⸜(* ॑꒳ ॑* )⸝</b> ★★</p>
 
-<nobr><img src="https://img.shields.io/badge/platform-ios-lightgrey.svg">
-<img src="http://img.shields.io/badge/License-MIT-green.svg?style=flat">
-<img src="https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat"></nobr>
+<nobr><img src="https://img.shields.io/badge/platform-iOS-lightgrey.svg">
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+<img src="https://img.shields.io/badge/Swift-5.2-orange.svg?style=flat"></nobr>
 
 ### Screen Shots
 -----------
-!["ScreenShots"](/Screenshot/GogoroMapV1.6.png)
-
-!["ScreenShots"](/Screenshot/demo2.gif)
+!["ScreenShots"](/Screenshot/GogoroMap.png)
 
 
 
 ### 主要特色
 -----------
-1. 站點地圖化 - 直觀清楚的顯示Gogoro交換站各站點資訊
+1. 換電站優先路線規劃
 
 2. 打卡記錄功能 - 流暢記錄採點打卡體驗(資料僅儲存於手機)
 
@@ -36,22 +34,21 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 8. 離線功能 - 提供最近一次連線時的地圖資料。
 
-9. 收錄台灣Gogoro 400+ 個站點資訊
+9. 收錄台灣Gogoro 1600+ 個站點資訊
 
 10. 更新地圖圖示，加入地圖標示集合功能，提昇使用體驗
 
 11. 新增列表模式： 已打卡、附近、建置中 
 
-12. 支援iPhone X的畫面
 
 
 
 ### Requirement
 -----------
 
-- Xcode 9
+- Xcode 10
 - iOS 10
-- Swift 4
+- Swift 5.2
 
 
 ### Author
@@ -62,7 +59,6 @@ Thanks for Gogoro and OpenData platform
 
 ### License
 
-Copyright 2019 Chen, Guan-Jhen
+Copyright 2020 Chen, Guan-Jhen
 
-[Licensed under MIT License](https://opensource.org/licenses/MIT)
-
+Under Apache License 2.0
