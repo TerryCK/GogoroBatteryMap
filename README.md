@@ -14,7 +14,6 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 -----------
 !["ScreenShots"](/Screenshot/GogoroMapV1.6.png)
 
-!["ScreenShots"](/Screenshot/demo2.gif)
 
 !["ScreenShots"](/Screenshot/01.jpg)
 !["ScreenShots"](/Screenshot/02.jpg)
@@ -49,8 +48,6 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 10. 更新地圖圖示，加入地圖標示集合功能，提昇使用體驗
 
 11. 新增列表模式： 已打卡、附近、建置中 
-
-12. 支援iPhone X的畫面
 
 
 
