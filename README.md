@@ -16,10 +16,18 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 !["ScreenShots"](/Screenshot/demo2.gif)
 
-
+!["ScreenShots"](/Screenshot/01.jpg)
+!["ScreenShots"](/Screenshot/02.jpg)
+!["ScreenShots"](/Screenshot/03.jpg)
+!["ScreenShots"](/Screenshot/a.jpg)
+!["ScreenShots"](/Screenshot/b.jpg)
+!["ScreenShots"](/Screenshot/c.jpg)
+!["ScreenShots"](/Screenshot/d.jpg)
 
 ### 主要特色
 -----------
+0. 串連換電站路徑規劃
+
 1. 站點地圖化 - 直觀清楚的顯示Gogoro交換站各站點資訊
 
 2. 打卡記錄功能 - 流暢記錄採點打卡體驗(資料僅儲存於手機)
@@ -36,7 +44,7 @@ App Store免費下載 [傳送門](https://goo.gl/oT9ymK).<p>
 
 8. 離線功能 - 提供最近一次連線時的地圖資料。
 
-9. 收錄台灣Gogoro 400+ 個站點資訊
+9. 收錄台灣Gogoro 3000+ 個站點資訊
 
 10. 更新地圖圖示，加入地圖標示集合功能，提昇使用體驗
 
@@ -62,7 +70,7 @@ Thanks for Gogoro and OpenData platform
 
 ### License
 
-Copyright 2019 Chen, Guan-Jhen
+Copyright 2022 Chen, Guan-Jhen
 
 [Licensed under MIT License](https://opensource.org/licenses/MIT)
 
